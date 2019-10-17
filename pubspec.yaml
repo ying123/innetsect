@@ -102,6 +102,7 @@ flutter:
     - assets/images/mall/wechat.jpg
     - assets/images/mall/qq.jpg
     - assets/images/mall/weibo.jpg
+    # ----商城底部导航----
     - assets/images/mall/tab_news.png
     - assets/images/mall/tab_news_h.png
     - assets/images/mall/tab_star.png
@@ -112,6 +113,7 @@ flutter:
     - assets/images/mall/tab_mall_h.png
     - assets/images/mall/tab_me.png
     - assets/images/mall/tab_me_h.png
+    # ------------------
     - assets/images/mall/msg.png
     - assets/images/mall/setting.png
     - assets/images/mall/me_header.png
