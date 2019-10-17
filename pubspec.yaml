@@ -74,6 +74,17 @@ flutter:
     - assets/images/ic_gravity.png
     - assets/images/ic_distance.png
     - assets/images/logo.png
+    #底部导航Icon
+    - assets/images/首页.png
+    - assets/images/首页-选中.png
+    - assets/images/品牌.png
+    - assets/images/品牌选中.png
+    - assets/images/活动选中.png
+    - assets/images/活动.png
+    - assets/images/购物车.png
+    - assets/images/购物车选中.png
+    - assets/images/我的.png
+    - assets/images/我的选中.png
 
     - assets/images/star.png
     - assets/images/vip.png

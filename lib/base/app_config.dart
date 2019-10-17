@@ -16,6 +16,8 @@ class AppConfig{
     primaryColor: Colors.white,
     accentColor: Colors.white,
   );
+///字体主颜色
+  static final fontPrimaryColor = Color.fromRGBO(18, 18, 18, 1.0);
 
   static UserTools userTools;
   static init()async{

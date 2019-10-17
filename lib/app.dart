@@ -52,7 +52,7 @@ class __AppContentPageState extends State<_AppContentPage> {
   ///完成
   void onDone() {
     _provide.isDone = true;
-    Navigator.of(context).pushNamed('/homePage');
+    Navigator.of(context).pushNamed('/appNavigationBarPage');
   }
 
   @override

@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:innetsect/app.dart';
+
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/res/const_defines.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
 import 'package:camera/camera.dart';
+
 
 GlobalKey<NavigatorState> gNavKey = GlobalKey();
 List<CameraDescription> gCameras;
@@ -32,6 +34,7 @@ class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
+
 /// WidgetsBindingObserver 监控当前app是否在前台
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // 语言包
@@ -40,19 +43,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   static final CHANNEL_FLUTTER_to_ANDROID = "channel_flutter2android";
   var m_channel_flutter2android = MethodChannel(CHANNEL_FLUTTER_to_ANDROID);
 
-  static const platform = const MethodChannel("myflutterhelo.flutter.io/android");
-  static const EventChannel eventChannel = const EventChannel('com.myflutterhelo.test/netChanged');
+  static const platform =
+      const MethodChannel("myflutterhelo.flutter.io/android");
+  static const EventChannel eventChannel =
+      const EventChannel('com.myflutterhelo.test/netChanged');
 
-   var netChangeStr = "点我获取当前网络状态";
+  var netChangeStr = "点我获取当前网络状态";
 
-   @override
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
       if (AppLifecycleState.resumed == state) {
-        
-      }else{
-        
-      }
+      } else {}
     });
     super.didChangeAppLifecycleState(state);
   }
