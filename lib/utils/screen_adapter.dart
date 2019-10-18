@@ -21,6 +21,11 @@ class ScreenAdapter {
     return ScreenUtil.screenHeightDp;
   }
 
+  /// 设备像素密度
+  static getPixelRatio(){
+    return ScreenUtil.pixelRatio;
+  }
+
   ///当前设备宽度 dpscreen_adapter
   static getScreenWidth() {
     return ScreenUtil.screenWidthDp;
