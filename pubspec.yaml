@@ -161,7 +161,9 @@ flutter:
     - assets/images/mall/ex/product_list4.png
     - assets/images/mall/ex/product_header.png
     - assets/images/mall/find.png
+    # 下拉刷新图---
     - assets/images/mall/fresh.png
+    # ---
     - assets/images/mall/del.png
     - assets/images/mall/edit.png
     - assets/images/mall/share.png
