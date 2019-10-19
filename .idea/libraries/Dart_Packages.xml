@@ -313,7 +313,7 @@
         <entry key="shared_preferences">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences-0.5.3+4/lib" />
+              <option value="$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences-0.5.3+5/lib" />
             </list>
           </value>
         </entry>
@@ -390,7 +390,7 @@
         <entry key="video_player">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.2+3/lib" />
+              <option value="$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.2+4/lib" />
             </list>
           </value>
         </entry>
@@ -452,7 +452,7 @@
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/pubspec_parse-0.1.5/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/quiver-2.0.5/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/rxdart-0.21.0/lib" />
-      <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences-0.5.3+4/lib" />
+      <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences-0.5.3+5/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/source_gen-0.9.4+5/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/source_span-1.5.5/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/stack_trace-1.9.3/lib" />
@@ -462,7 +462,7 @@
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/test_api-0.2.5/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/typed_data-1.1.6/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/vector_math-2.0.8/lib" />
-      <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.2+3/lib" />
+      <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.2+4/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/watcher-0.9.7+12/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/yaml-2.2.0/lib" />
       <root url="file://$PROJECT_DIR$/../../flutterSDK/bin/cache/pkg/sky_engine/lib" />
