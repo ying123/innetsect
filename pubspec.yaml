@@ -35,6 +35,9 @@ dependencies:
   camera: ^0.5.6
   json_serializable: ^3.2.2
   fluttertoast: ^3.0.4
+  # 图片缓存
+  cached_network_image: ^0.8.0
+  flutter_swiper: ^1.1.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -88,6 +91,21 @@ flutter:
     - assets/images/购物车选中.png
     - assets/images/我的.png
     - assets/images/我的选中.png
+
+    #刷新图标
+    - assets/images/icon_arrow.png
+    - assets/images/icon_cry.png
+    - assets/images/refresh.png
+    #首页icon和图
+    - assets/images/够买门票.png
+    - assets/images/签到绑定.png
+    - assets/images/排队扫码.png
+    - assets/images/场馆地图.png
+    - assets/images/l1.png
+    - assets/images/l2.png
+    - assets/images/关注.png
+    - assets/images/我的页面背景图.png
+
 
     - assets/images/star.png
     - assets/images/vip.png
