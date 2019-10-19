@@ -9,9 +9,9 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class CommodityPage extends PageProvideNode{
-  final CommodityProvode _provide = CommodityProvode();
+  final CommodityProvide _provide = CommodityProvide();
   MallPage(){
-    mProviders.provide(Provider<CommodityProvode>.value(_provide));
+    mProviders.provide(Provider<CommodityProvide>.value(_provide));
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -21,7 +21,7 @@ class CommodityPage extends PageProvideNode{
 }
 
 class CommodityContent extends StatefulWidget {
-  final CommodityProvode _provide;
+  final CommodityProvide _provide;
 
   CommodityContent(this._provide);
 
