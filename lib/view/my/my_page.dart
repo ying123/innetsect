@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view_model/my/my_provide.dart';
@@ -32,8 +31,7 @@ class _MyContentPageState extends State<MyContentPage> {
         body: Container(
       color: Colors.white,
       child: ListView(
-       // shrinkWrap: true,
-        //physics: //FixedExtentScrollPhysics(),
+        physics: BouncingScrollPhysics(),
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         children: <Widget>[
           _setupHeader(),

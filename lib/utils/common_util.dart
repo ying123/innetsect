@@ -1,6 +1,8 @@
 
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 
 class CommonUtil{
 
@@ -21,4 +23,22 @@ class CommonUtil{
   static hideStatusbarEasy(){
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
+
+
+///通过动画曲线创建界面  
+static Route createRoute(Tween<Offset> tween, Widget child) {
+  return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position:
+              animation.drive(tween.chain(CurveTween(curve: Curves.ease))),
+          child: child,
+        );
+      });
+}
+
+
+
+
 }
