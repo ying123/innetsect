@@ -19,7 +19,7 @@ void main() async {
   ///[ensureInitialized]确保初始化不出现异常
   WidgetsFlutterBinding.ensureInitialized();
   await AppConfig.init(); //初始化App配置文件
-  CommonUtil.hideStatusbarEasy();
+  //CommonUtil.hideStatusbarEasy();
   //获取camama列表
   // 获取camama列表
   try {
@@ -120,7 +120,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       onGenerateRoute: onGenerateRoute,
       home: App(),
 
-      navigatorKey: gNavKey,
+      //navigatorKey: gNavKey,
     );
   }
 }
