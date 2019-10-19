@@ -3,9 +3,10 @@ import 'package:innetsect/base/base.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
-import 'list_page.dart';
+import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/base/app_config.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class CommodityPage extends PageProvideNode{
   final CommodityProvode _provide = CommodityProvode();
@@ -31,6 +32,9 @@ class CommodityContent extends StatefulWidget {
 class _CommodityContentState extends State<CommodityContent> with SingleTickerProviderStateMixin{
 
   TabController _tabController;
+
+  EasyRefreshController _easyController;
+  int _count=20;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +80,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     super.initState();
 
     _tabController = new TabController(length: mallTabBarList.length, vsync: this);
+    _easyController= new EasyRefreshController();
   }
 
   @override
@@ -108,8 +113,46 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     return new TabBarView(
         controller: _tabController,
         children: [
-          new ListPage(),
-          new ListPage()
+          new ListWidgetPage(
+//            controller: _easyController,
+            onRefresh:() async{
+              await Future.delayed(Duration(seconds: 2), () {
+                print('onRefresh');
+                setState(() {
+                  _count = 20;
+                });
+//                _easyController.resetLoadState();
+              });
+            },
+            onLoad: () async{
+              await Future.delayed(Duration(seconds: 2), () {
+                print('onLoad');
+                setState(() {
+                  _count += 10;
+                });
+//                _easyController.finishLoad(noMore: _count >= 20);
+              });
+            },
+            child: <Widget>[
+              // 数据内容
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                    return Container(
+                      width: 60.0,
+                      height: 60.0,
+                      child: Center(
+                        child: Text('$index'),
+                      ),
+                      color: index%2==0 ? Colors.grey[300] : Colors.transparent,
+                    );
+                  },
+                  childCount: _count,
+                ),
+              ),
+            ],
+          ),
+          new ListWidgetPage()
         ]
     );
   }
