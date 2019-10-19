@@ -130,7 +130,7 @@ class _HomeContentPageState extends State<HomeContentPage>
             ],
           ),
           loadData: (isPullDown) async {
-//            await _loadData(isPullDown);
+            await _loadData(isPullDown);
           },
           scrollPhysicsChanged: (ScrollPhysics physics) {
             //这个不用改，照抄即可；This does not need to change，only copy it
