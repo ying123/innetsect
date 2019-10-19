@@ -37,7 +37,7 @@ class ListWidgetPage extends StatefulWidget {
     this.onLoad,
     this.child,
     this.controller
-  }):assert(onRefresh!=null || onLoad!=null);
+  });
 
   @override
   _ListWidgetPageState createState() => new _ListWidgetPageState();

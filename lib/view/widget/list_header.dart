@@ -52,7 +52,7 @@ class ListHeader extends Header{
     enableHapticFeedback = true,
     this.key,
     this.alignment,
-    this.refreshText: "下拉刷新",
+    this.refreshText: "释放以刷新",
     this.refreshReadyText: "准备刷新",
     this.refreshingText: "正在刷新",
     this.refreshedText: "刷新完成",
@@ -459,7 +459,7 @@ class _ListHeaderWidgetState extends State<ListHeaderWidget>
           child: _refreshState == RefreshMode.refresh ||
               _refreshState == RefreshMode.armed?
           new Center(
-            child: new Text("refresh",style: TextStyle(fontSize: _pulledExtent < _indicatorExtent
+            child: new Text(widget.listHeader.refreshingText,style: TextStyle(fontSize: _pulledExtent < _indicatorExtent
                 ? _indicatorExtent/10.5
                 : _pulledExtent/10.5),),
           ) :
@@ -474,7 +474,7 @@ class _ListHeaderWidgetState extends State<ListHeaderWidget>
                 : _pulledExtent/10.5)),
           ) :
           new Center(
-            child: new Text(widget.listHeader.refreshText,style: TextStyle(fontSize: _pulledExtent < _indicatorExtent
+            child: new Text(_pulledExtent>=_indicatorExtent?widget.listHeader.refreshText:"",style: TextStyle(fontSize: _pulledExtent < _indicatorExtent
                 ? _indicatorExtent/10.5
                 : _pulledExtent/10.5)),
           )
