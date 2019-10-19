@@ -5,7 +5,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/utils/animation_util.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/show_tickets/show_tickets.dart';
+import 'package:innetsect/view/venues_map/venues_map_page.dart';
 import 'package:innetsect/view/widget/pulltorefresh_flutter.dart';
 import 'package:innetsect/view_model/home/home_provide.dart';
 import 'package:provide/provide.dart';
@@ -206,36 +210,60 @@ class _HomeContentPageState extends State<HomeContentPage>
                             width: ScreenAdapter.width(10),
                           ),
                           Container(
-                          width: ScreenAdapter.width(85),
-                          height: ScreenAdapter.height(30),
-                          color: AppConfig.fontPrimaryColor,
-                          child: Center(
-                            child: Text(value['subTitle1'],style: TextStyle(color: Colors.white,fontSize: ScreenAdapter.size(21)),),
+                            width: ScreenAdapter.width(85),
+                            height: ScreenAdapter.height(30),
+                            color: AppConfig.fontPrimaryColor,
+                            child: Center(
+                              child: Text(
+                                value['subTitle1'],
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: ScreenAdapter.size(21)),
+                              ),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: ScreenAdapter.width(10),
-                        ),
-                        Container(
-                          width: ScreenAdapter.width(85),
-                          height: ScreenAdapter.height(30),
-                          color: AppConfig.fontPrimaryColor,
-                          child: Center(
-                            child: Text(value['subTitle2'],style: TextStyle(color: Colors.white,fontSize: ScreenAdapter.size(21)),),
-                          ),
-                        ),
                           SizedBox(
-                          width: ScreenAdapter.width(10),
-                        ),
-                        Text(value['time'],style: TextStyle(color: Color.fromRGBO(180, 180, 180, 1.0)),),
-                        Expanded(
-                          child: Container(),
-                        ),
-                        Image.asset('assets/images/关注.png',fit: BoxFit.cover,width: ScreenAdapter.width(30),height: ScreenAdapter.height(25),),
-
-                        SizedBox(width: ScreenAdapter.width(6),),
-                        Text(value['focusNuber'],style: TextStyle(color: Color.fromRGBO(180, 180, 180, 1.0))),
-                        SizedBox(width: ScreenAdapter.width(35),)
+                            width: ScreenAdapter.width(10),
+                          ),
+                          Container(
+                            width: ScreenAdapter.width(85),
+                            height: ScreenAdapter.height(30),
+                            color: AppConfig.fontPrimaryColor,
+                            child: Center(
+                              child: Text(
+                                value['subTitle2'],
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: ScreenAdapter.size(21)),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: ScreenAdapter.width(10),
+                          ),
+                          Text(
+                            value['time'],
+                            style: TextStyle(
+                                color: Color.fromRGBO(180, 180, 180, 1.0)),
+                          ),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          Image.asset(
+                            'assets/images/关注.png',
+                            fit: BoxFit.cover,
+                            width: ScreenAdapter.width(30),
+                            height: ScreenAdapter.height(25),
+                          ),
+                          SizedBox(
+                            width: ScreenAdapter.width(6),
+                          ),
+                          Text(value['focusNuber'],
+                              style: TextStyle(
+                                  color: Color.fromRGBO(180, 180, 180, 1.0))),
+                          SizedBox(
+                            width: ScreenAdapter.width(35),
+                          )
                         ],
                       ),
                     ),
@@ -286,6 +314,9 @@ class _HomeContentPageState extends State<HomeContentPage>
                     GestureDetector(
                       onTap: () {
                         print('够买门票被点击');
+                        Navigator.of(context).push(CommonUtil.createRoute(
+                            AnimationUtil.getBottominAnilmation(),
+                            ShowTicketsPage()));  
                       },
                       child: Container(
                           margin: EdgeInsets.fromLTRB(
@@ -332,7 +363,10 @@ class _HomeContentPageState extends State<HomeContentPage>
                     ),
                     GestureDetector(
                       onTap: () {
-                        print('够买门票被点击');
+                        print('场馆地图');
+                         Navigator.of(context).push(CommonUtil.createRoute(
+                            AnimationUtil.getBottominAnilmation(),
+                            VenuesMapPage()));  
                       },
                       child: Container(
                           margin: EdgeInsets.fromLTRB(
@@ -509,8 +543,8 @@ class _HomeContentPageState extends State<HomeContentPage>
         setState(() {
           rotationAngle = 0;
           if (refreshBoxDirectionStatus == RefreshBoxDirectionStatus.PULL) {
-             customRefreshBoxIconPath = "assets/images/icon_cry.png";
-             customHeaderTipText = "加载失败！请重试";
+            customRefreshBoxIconPath = "assets/images/icon_cry.png";
+            customHeaderTipText = "加载失败！请重试";
           } else if (refreshBoxDirectionStatus ==
               RefreshBoxDirectionStatus.PUSH) {
             defaultRefreshBoxTipText = "可提示用户加载成功Or失败";
