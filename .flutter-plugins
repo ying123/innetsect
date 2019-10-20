@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 camera=/Users/zl/Documents/flutter/flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/camera-0.5.6/
 fluttertoast=/Users/zl/Documents/flutter/flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/fluttertoast-3.1.3/
 path_provider=/Users/zl/Documents/flutter/flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.5.0+1/
@@ -5,3 +6,12 @@ shared_preferences=/Users/zl/Documents/flutter/flutterSDK/.pub-cache/hosted/pub.
 sqflite=/Users/zl/Documents/flutter/flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/sqflite-1.1.7+1/
 url_launcher=/Users/zl/Documents/flutter/flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/url_launcher-5.2.1/
 video_player=/Users/zl/Documents/flutter/flutterSDK/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.2+4/
+=======
+camera=/Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/camera-0.5.6/
+fluttertoast=/Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/fluttertoast-3.1.3/
+image_picker=/Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/
+path_provider=/Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.5.0+1/
+shared_preferences=/Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences-0.5.3+5/
+sqflite=/Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/sqflite-1.1.7+1/
+video_player=/Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/video_player-0.10.2+4/
+>>>>>>> 175fddd7534d89dd2fcf3576306f057107f7f8d0
