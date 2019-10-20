@@ -45,6 +45,8 @@ dependencies:
 
   # 下拉listview
   flutter_easyrefresh: ^2.0.4
+  # url_launcher
+  url_launcher: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -192,7 +194,12 @@ flutter:
     - assets/images/mall/minus.png
     - assets/images/mall/express.png
     - assets/images/mall/weibo_to_innersect.png
-
+    # 客服
+    - assets/images/mall/service_p_icon.png
+    # 心愿单
+    - assets/images/mall/wish_icon.png
+    # 购物车
+    - assets/images/mall/cart_icon.png
 
     # 动画
     - assets/images/sparkles.png
