@@ -59,26 +59,21 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage> {
                 fit: BoxFit.cover,
               ),
             ),
-            Container(
-              padding: EdgeInsets.only(left: ScreenAdapter.width(30)),
-              color: Colors.white,
-              alignment: Alignment.centerLeft,
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(80),
-              child: Text(
-                '展馆品牌分布情况',
-                style: TextStyle(
-                    color: AppConfig.fontPrimaryColor,
-                    fontSize: ScreenAdapter.size(30),
-                    fontWeight: FontWeight.w800),
-              ),
-            ),
-            Container(
+           _setupVenuesMapList(),
+          ],
+        ),
+      ),
+    );
+  }
+    Provide<VenuesMapProvide> _setupVenuesMapList(){
+    return Provide<VenuesMapProvide>(
+      builder: (BuildContext context, Widget child,VenuesMapProvide provide){
+        return  Container(
               height: ScreenAdapter.height(700),
-              //color: Colors.yellow,
+              color: Colors.white,
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
-                itemCount: 10,
+                itemCount: provide.venuesListmodel.length,
                 itemExtent: 100,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
@@ -102,23 +97,22 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage> {
                             width: ScreenAdapter.width(50),
                             height: ScreenAdapter.width(50),
                             color: Colors.black,
-                            child: Center(child: Text('E4',style: TextStyle(color: Colors.white),)),
+                            child: Center(child: Text(provide.venuesListmodel[index]['mapTitle'],style: TextStyle(color: Colors.white),)),
                           ),
                           ],
                         ),
                         SizedBox(
                               width: ScreenAdapter.height(20),
                             ),
-                        Text('sdfhjsdhfkjlsdfhgksjdfhgjdsfhgdkslfjh')
+                        Text(provide.venuesListmodel[index]['context']),
                       ],
                     ),
                   );
                 },
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+      }
     );
+      
   }
 }
