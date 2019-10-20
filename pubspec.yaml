@@ -38,6 +38,7 @@ dependencies:
   # 图片缓存
   cached_network_image: ^0.8.0
   flutter_swiper: ^1.1.6
+  image_picker: ^0.6.1+4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -111,6 +112,20 @@ flutter:
     - assets/images/展会门票.png
     - assets/images/xiangxia.png
     - assets/images/y场馆地图.png
+
+    #新个人中心icon
+    - assets/images/newpersonalcentre/购物车@2x.png
+    - assets/images/newpersonalcentre/我的卡券@2x.png
+    - assets/images/newpersonalcentre/我的售后@2x.png
+    - assets/images/newpersonalcentre/反馈意@2x.png
+    - assets/images/newpersonalcentre/联系客服@2x.png
+    - assets/images/newpersonalcentre/我的订单@2x.png
+    - assets/images/newpersonalcentre/展会@2x.png
+    - assets/images/newpersonalcentre/购买须知@2x.png
+    - assets/images/newpersonalcentre/地址管理@2x.png
+    - assets/images/newpersonalcentre/消息@1x.png
+
+    
 
 
     - assets/images/star.png
