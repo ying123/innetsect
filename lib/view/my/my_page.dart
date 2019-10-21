@@ -3,6 +3,9 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/animation_util.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/my_order/my_order_page.dart';
+
+
 import 'package:innetsect/view/personal_center/personal_center_page.dart';
 import 'package:innetsect/view_model/my/my_provide.dart';
 import 'package:provide/provide.dart';
@@ -79,6 +82,7 @@ class _MyContentPageState extends State<MyContentPage> {
                   GestureDetector(
                     onTap: () {
                       print('我的订单被点击');
+                      Navigator.of(context).push(CommonUtil.createRoute(AnimationUtil.getBottominAnilmation(), MyOrderPage()));
                     },
                     child: _setupBtn(
                         'assets/images/newpersonalcentre/我的订单@2x.png',

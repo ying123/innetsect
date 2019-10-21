@@ -24,7 +24,8 @@ dependencies:
     sdk: flutter
     # 存储
   shared_preferences: ^0.5.3+4
-  
+  #sqlite数据库 
+  sqflite: ^1.1.7+1
   provide: ^1.0.2
   dio: ^3.0.2
   rxdart: ^0.21.0
@@ -122,6 +123,9 @@ flutter:
     - assets/images/newpersonalcentre/购买须知@2x.png
     - assets/images/newpersonalcentre/地址管理@2x.png
     - assets/images/newpersonalcentre/消息@1x.png
+    - assets/images/yifi1.png
+    - assets/images/yifu2.png
+    
 
     
 
