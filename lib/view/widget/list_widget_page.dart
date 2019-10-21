@@ -49,7 +49,7 @@ class _ListWidgetPageState extends State<ListWidgetPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       body: new EasyRefresh.custom(
-        shrinkWrap:true,
+        shrinkWrap:false,
         header: ListHeader(),
         footer: ClassicalFooter(
             showInfo: false,

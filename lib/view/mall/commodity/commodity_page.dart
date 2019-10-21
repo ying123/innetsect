@@ -6,11 +6,11 @@ import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/base/app_config.dart';
-import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 
 class CommodityPage extends PageProvideNode{
   final CommodityProvide _provide = CommodityProvide();
-  MallPage(){
+  CommodityPage(){
     mProviders.provide(Provider<CommodityProvide>.value(_provide));
   }
   @override
@@ -21,9 +21,9 @@ class CommodityPage extends PageProvideNode{
 }
 
 class CommodityContent extends StatefulWidget {
-  final CommodityProvide _provide;
+  final CommodityProvide provide;
 
-  CommodityContent(this._provide);
+  CommodityContent(this.provide);
 
   @override
   _CommodityContentState createState() => new _CommodityContentState();
@@ -31,10 +31,8 @@ class CommodityContent extends StatefulWidget {
 
 class _CommodityContentState extends State<CommodityContent> with SingleTickerProviderStateMixin{
 
+  CommodityProvide provides;
   TabController _tabController;
-
-  EasyRefreshController _easyController;
-  int _count=20;
 
   @override
   Widget build(BuildContext context) {
@@ -49,28 +47,28 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         centerTitle: false,
       ),
       body: new Stack(
-        children: <Widget>[
-          new Padding(
-            padding: EdgeInsets.only(
-              top: ScreenAdapter.height(88.0)
+          children: <Widget>[
+            new Padding(
+              padding: EdgeInsets.only(
+                  top: ScreenAdapter.height(88.0)
+              ),
+              child: _tabBarView(provides.list),
             ),
-            child: _tabBarView(),
-          ),
-          //307pt*20pt
-          new Positioned(
-              top: 5,
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(20*ScreenAdapter.getPixelRatio()),
-              child: new InkWell(
-                onTap: (){
-                  // 跳转到搜索页面
-                  Navigator.pushNamed(context, "/mallSearchPage");
-                },
-                child: _searchWidget(),
-              )
-          )
-        ],
-      )
+            //307pt*20pt
+            new Positioned(
+                top: 5,
+                width: ScreenAdapter.width(750),
+                height: ScreenAdapter.height(20*ScreenAdapter.getPixelRatio()),
+                child: new InkWell(
+                  onTap: (){
+                    // 跳转到搜索页面
+                    Navigator.pushNamed(context, "/mallSearchPage");
+                  },
+                  child: _searchWidget(),
+                )
+            )
+          ],
+        )
     );
   }
 
@@ -80,7 +78,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     super.initState();
 
     _tabController = new TabController(length: mallTabBarList.length, vsync: this);
-    _easyController= new EasyRefreshController();
+    this.provides = widget.provide;
   }
 
   @override
@@ -109,52 +107,85 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   }
 
   /// tabbarview视图组件
-  Widget _tabBarView(){
+  Widget _tabBarView(List list){
+    // 计算商品列宽度
+    double itemWidth = (ScreenAdapter.getScreenWidth()-30)/2;
     return new TabBarView(
         controller: _tabController,
         children: [
-          new ListWidgetPage(
-//            controller: _easyController,
-            onRefresh:() async{
-              await Future.delayed(Duration(seconds: 2), () {
-                print('onRefresh');
-                setState(() {
-                  _count = 20;
-                });
-//                _easyController.resetLoadState();
-              });
-            },
-            onLoad: () async{
-              await Future.delayed(Duration(seconds: 2), () {
-                print('onLoad');
-                setState(() {
-                  _count += 10;
-                });
-//                _easyController.finishLoad(noMore: _count >= 20);
-              });
-            },
-            child: <Widget>[
-              // 数据内容
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                    return Container(
-                      width: 60.0,
-                      height: 60.0,
-                      child: Center(
-                        child: Text('$index'),
-                      ),
-                      color: index%2==0 ? Colors.grey[300] : Colors.transparent,
-                    );
-                  },
-                  childCount: _count,
-                ),
-              ),
-            ],
-          ),
-          new ListWidgetPage()
+          _listData(itemWidth,list),
+          _listData(itemWidth,list),
+//          new ListWidgetPage()
         ]
     );
+  }
+
+  /// 数据列表
+  Widget _listData(double itemWidth, List list){
+      return new ListWidgetPage(
+//            controller: _easyController,
+        onRefresh:() async{
+          await Future.delayed(Duration(seconds: 2), () {
+            print('onRefresh');
+            setState(() {
+            });
+//                _easyController.resetLoadState();
+          });
+        },
+        onLoad: () async{
+          await Future.delayed(Duration(seconds: 2), () {
+            print('onLoad');
+            setState(() {
+            });
+//                _easyController.finishLoad(noMore: _count >= 20);
+          });
+        },
+        child: <Widget>[
+          // 数据内容
+          SliverList(
+              delegate:
+              SliverChildListDelegate([
+                new Container(
+                  padding: EdgeInsets.all(10),
+                  child: new Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: list.map((item){
+                      print(item['Price'].toString());
+                      return new InkWell(
+                        onTap: (){
+                          /// 跳转详情
+                          Navigator.push(context, MaterialPageRoute(
+                              builder:(context){
+                                return new CommodityDetailPage();
+                              },
+                              settings: RouteSettings(arguments: {'id': item['id']})
+                            )
+                          );
+                        },
+                        child: new Container(
+                          width: itemWidth,
+                          color: Colors.grey,
+                          padding: EdgeInsets.all(5),
+                          child: new Column(
+                            children: <Widget>[
+                              // 商品图片
+                              _imageWidget(item['image']),
+                              // 价格 购物车图标
+                              _priceAndCartWidget(item['Price'].toString()),
+                              // 描述
+                              _textWidget(item['describe'])
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                )
+              ])
+          ),
+        ],
+      );
   }
 
   /// 搜索组件
@@ -172,6 +203,87 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
           new Image.asset("assets/images/search.png",width: 40,height: 40,),
           new Text("搜索商品、品牌、品类",style: TextStyle(color: AppConfig.assistFontColor),)
         ],
+      ),
+    );
+  }
+
+  /// 商品图片
+  Widget _imageWidget(String image){
+    return new Stack(
+      children: <Widget>[
+        new Positioned(
+          top:0,
+          right: 0,
+          child: new Container(
+            padding: EdgeInsets.all(5),
+            color: Colors.red,
+            child: new Text("标签栏",style: TextStyle(fontSize: ScreenAdapter.size(16.0)),),
+          )
+        ),
+        new Container(
+            width: double.infinity,
+            child: Image.asset(
+              image,
+              fit: BoxFit.fill,
+            )
+        )
+      ],
+    );
+  }
+
+  /// 价格和购物车
+  Widget _priceAndCartWidget(String price){
+    return new Container(
+      width: double.infinity,
+      color: Colors.red,
+      padding: EdgeInsets.all(10),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          new Container(
+            child: new Row(
+              children: <Widget>[
+                new Container(
+                  padding: EdgeInsets.only(top: 2),
+                  alignment: Alignment.center,
+                  child: new Text("¥ ",style: TextStyle(
+                      fontSize: ScreenAdapter.size(18.0),),
+                  ),
+                ),
+                new Container(
+                    alignment: Alignment.center,
+                  child: new Text(price, style: TextStyle(
+                        fontSize: ScreenAdapter.size(26.0),
+                        fontWeight: FontWeight.bold
+                    ),
+                  )
+                ),
+
+              ],
+            ),
+          ),
+          new Container(
+            width: ScreenAdapter.width(28),height: ScreenAdapter.height(28),
+            child: new InkWell(
+              onTap: (){
+                print("购物车");
+              },
+              child: new Image.asset("assets/images/mall/shop_bucket.png",
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  /// 描述
+  Widget _textWidget(String text){ 
+    return new Container(
+      padding: EdgeInsets.only(left: 6,right: 5,top: 5,bottom: 5),
+      child: new Text(text,softWrap: true,maxLines: 2,textAlign: TextAlign.left,
+        style: TextStyle(fontSize: ScreenAdapter.size(26)),
       ),
     );
   }

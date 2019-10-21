@@ -38,3 +38,9 @@ const List<PlatFormMenu> mallNavBarList = const <PlatFormMenu>[
   ),
 ];
 
+/// 商品详情导航栏
+const List<PlatFormMenu> detailTabBarList = const <PlatFormMenu>[
+  const PlatFormMenu( index: 0,title: "商品" ),
+  const PlatFormMenu( index: 1,title: "详情" )
+];
+

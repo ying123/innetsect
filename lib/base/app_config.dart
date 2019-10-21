@@ -20,17 +20,17 @@ class AppConfig{
   static final fontPrimaryColor = Color.fromRGBO(18, 18, 18, 1.0);
 
   /// 添加颜色色值
-  /// 主视觉颜色
+  /// 主视觉颜色,黄色
   static final primaryColor = Color.fromRGBO(247, 235, 68, 1.0);
-  /// 辅助线颜色
+  /// 辅助线颜色，灰色
   static final assistLineColor = Color.fromRGBO(234, 234, 234, 1.0);
-  /// 辅助颜色
+  /// 辅助颜色，红色
   static final assistColor = Color.fromRGBO(220, 67, 26, 1.0);
-  /// 主要文字
+  /// 主要文字，黑色
   static final fontBackColor = Color.fromRGBO(25, 25, 25, 1.0);
-  /// 辅助描述或未选中文字
+  /// 辅助描述或未选中文字，淡灰色
   static final assistFontColor = Color.fromRGBO(197, 197, 197, 1.0);
-  /// 背景色
+  /// 背景色，浅灰色
   static final backGroundColor = Color.fromRGBO(249, 249, 249, 1.0);
 
   static UserTools userTools;
