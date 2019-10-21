@@ -118,7 +118,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         children: [
           _contentWidget(),
           new Container(
-            child: ,
+            child: new Text("11"),
           ),
         ]
     );
