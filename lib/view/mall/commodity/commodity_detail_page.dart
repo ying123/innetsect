@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/view/widget/web_view_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class CommodityDetailPage extends PageProvideNode{
 
@@ -38,8 +39,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 
   @override
   Widget build(BuildContext context) {
+    ScreenAdapter.init(context);
     dynamic mapData = ModalRoute.of(context).settings.arguments;
-    print(mapData);
     return new Scaffold(
       appBar: new AppBar(
         leading: new InkWell(
@@ -55,7 +56,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           ),
         ),
         title: new Container(
-          width: ScreenAdapter.width(220),
+          width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-120),
           child: _topNavTabBar(),
         ),
         automaticallyImplyLeading: false,
@@ -103,7 +104,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         tabs: detailTabBarList.map((item){
           return new Container(
             height: ScreenAdapter.height(40),
-            width: ScreenAdapter.width(ScreenAdapter.getScreenPxWidth()/10),
+            width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()/6),
             alignment: Alignment.center,
             child: new Text(item.title),
           );
@@ -118,8 +119,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         children: [
           _contentWidget(),
           new Container(
-            child: new Text("11"),
-          ),
+            child: WebViewWidget(url: "https://www.baidu.com",),
+          )
         ]
     );
   }
@@ -232,12 +233,12 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             child: new Text("已选",style: TextStyle(fontSize: ScreenAdapter.size(28),fontWeight: FontWeight.w600),),
           ),
           new Container(
-            width: ScreenAdapter.width(590),
+            width: ScreenAdapter.getScreenWidth()-100,
             padding: EdgeInsets.only(left: 20,right: 20),
             child: new Text("劳斯莱斯 , M , 1件"),
           ),
           new Container(
-            width: ScreenAdapter.width(66),
+            width: ScreenAdapter.width(60),
             alignment: Alignment.centerRight,
             child: new Icon(Icons.more_horiz),
           )
@@ -300,7 +301,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       child: new Column(
         children: <Widget>[
           new Image.asset(icon,width: ScreenAdapter.width(40),height: ScreenAdapter.height(40),),
-          new Padding(padding: EdgeInsets.only(top: 2),child: new Text(title),)
+          new Text(title)
         ],
       ),
     );

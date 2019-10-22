@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/view/mall/home/mall_home_page.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/mall_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
@@ -7,9 +8,9 @@ import 'package:innetsect/view/mall/commodity/commodity_page.dart';
 
 ///商城页面
 class MallPage extends PageProvideNode{
- final MallProvode _provide = MallProvode();
+  final MallProvide _provide = MallProvide();
   MallPage(){
-    mProviders.provide(Provider<MallProvode>.value(_provide));
+    mProviders.provide(Provider<MallProvide>.value(_provide));
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -19,7 +20,7 @@ class MallPage extends PageProvideNode{
 }
 
 class MallContentPage extends StatefulWidget {
-  final MallProvode _provide;
+  final MallProvide _provide;
   MallContentPage(this._provide);
 
   @override
@@ -47,13 +48,17 @@ class _MallContentPageState extends State<MallContentPage> {
   }
 
   /// 切换页面
-  Provide<MallProvode>_initTabBarView(){
-    return Provide<MallProvode>(
-      builder: (BuildContext context, Widget child, MallProvode provide ){
+  Provide<MallProvide>_initTabBarView(){
+    return Provide<MallProvide>(
+      builder: (BuildContext context, Widget child, MallProvide provide ){
         return IndexedStack(
           index: widget._provide.currentIndex,
           children: [
-            CommodityPage()
+            new Text("11"),
+            new Text("22"),
+            MallHomePage(),
+            CommodityPage(),
+            new Text("我的")
           ],
         );
       },
@@ -61,9 +66,10 @@ class _MallContentPageState extends State<MallContentPage> {
   }
 
   /// 底部导航
-  Provide<MallProvode> _initBottomNavBar(){
-    return Provide<MallProvode>(
-      builder: (BuildContext context,Widget child,MallProvode mallProvode){
+  Provide<MallProvide> _initBottomNavBar(){
+    return Provide<MallProvide>(
+      // ignore: non_constant_identifier_names
+      builder: (BuildContext context,Widget child,MallProvide MallProvide){
         return Theme(
           data: new ThemeData(
             canvasColor:  Colors.white,
