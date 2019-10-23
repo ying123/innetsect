@@ -3,6 +3,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/animation_util.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
 
 
@@ -96,6 +97,7 @@ class _MyContentPageState extends State<MyContentPage> {
                   GestureDetector(
                     onTap: () {
                       print('地址管理被点击');
+                       Navigator.of(context).push(CommonUtil.createRoute(AnimationUtil.getBottominAnilmation(), AddressManagementPage()));
                     },
                     child: _setupBtn(
                         'assets/images/newpersonalcentre/地址管理@2x.png',
