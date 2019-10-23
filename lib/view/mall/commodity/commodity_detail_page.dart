@@ -2,31 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/view/widget/web_view_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
 
 class CommodityDetailPage extends PageProvideNode{
 
   final CommodityDetailProvide _provide = CommodityDetailProvide();
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide();
 
   CommodityDetailPage(){
     mProviders.provide(Provider<CommodityDetailProvide>.value(_provide));
+    mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return CommodityDetailContent(_provide);
+    return CommodityDetailContent(_provide,_cartProvide);
   }
   
 }
 
 class CommodityDetailContent extends StatefulWidget {
   final CommodityDetailProvide _provide;
-  CommodityDetailContent(this._provide);
+  final CommodityAndCartProvide _cartProvide;
+  CommodityDetailContent(this._provide,this._cartProvide);
   @override
   _CommodityDetailContentState createState() => new _CommodityDetailContentState();
 }
@@ -43,7 +47,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     dynamic mapData = ModalRoute.of(context).settings.arguments;
     return new Scaffold(
       appBar: new AppBar(
-        leading: new InkWell(
+        leading: new GestureDetector(
           onTap: (){
             // 返回
             Navigator.pop(context);
@@ -63,8 +67,17 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         elevation: 0,
         centerTitle: true,
       ),
-      body: _tabBarView(),
-      bottomNavigationBar: _bottomBar(),
+      body: new Stack(
+        children: <Widget>[
+          _tabBarView(),
+          new Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: _bottomBar()
+          )
+        ],
+      )
     );
   }
 
@@ -232,10 +245,15 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           new Container(
             child: new Text("已选",style: TextStyle(fontSize: ScreenAdapter.size(28),fontWeight: FontWeight.w600),),
           ),
-          new Container(
-            width: ScreenAdapter.getScreenWidth()-100,
-            padding: EdgeInsets.only(left: 20,right: 20),
-            child: new Text("劳斯莱斯 , M , 1件"),
+          new InkWell(
+            onTap: (){
+//              CommodityModalBottom.showBottomModal(context);
+            },
+            child: new Container(
+              width: ScreenAdapter.getScreenWidth()-100,
+              padding: EdgeInsets.only(left: 20,right: 20),
+              child: new Text("劳斯莱斯 , M , 1件"),
+            ),
           ),
           new Container(
             width: ScreenAdapter.width(60),
@@ -258,6 +276,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   /// 底部：客服、购物车、加入购物车、立即购买
   Widget _bottomBar(){
     return new Container(
+      color: Colors.white,
       height: ScreenAdapter.height(120),
       padding: EdgeInsets.only(left: 12,right: 12,top: 10,bottom: 12),
       child: new Row(
@@ -271,13 +290,19 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             child: _iconAndTextMerge(title:"购物车",icon: "assets/images/mall/cart_icon.png")
           ),
           new Padding(padding: EdgeInsets.only(left: 17),
-            child: new Container(
-              width: ScreenAdapter.width(230),
-              height: ScreenAdapter.height(90),
-              color: Colors.black,
-              alignment: Alignment.center,
-              child: new Text("加入购物车",style: TextStyle(color: Colors.white,
-                  fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+            child: new InkWell(
+              onTap: (){
+                print("点击购物车");
+                CommodityModalBottom.showBottomModal(context,widget._cartProvide);
+              },
+              child: new Container(
+                width: ScreenAdapter.width(230),
+                height: ScreenAdapter.height(90),
+                color: Colors.black,
+                alignment: Alignment.center,
+                child: new Text("加入购物车",style: TextStyle(color: Colors.white,
+                    fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+              )
             ),
           ),
           new Padding(padding: EdgeInsets.only(left: 15),
