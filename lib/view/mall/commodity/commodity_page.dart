@@ -36,10 +36,11 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    ScreenAdapter.init(context);
     return new Scaffold(
       appBar: AppBar(
         title: new Container(
-          width: ScreenAdapter.width(ScreenAdapter.getScreenPxWidth()/5),
+          width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-100),
           child: _tabBar(),
         ),
         automaticallyImplyLeading: false,
@@ -68,7 +69,10 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                 )
             )
           ],
-        )
+        ),
+      floatingActionButton: new Builder(builder: (context){
+        return _cartBtnWidget();
+      }),
     );
   }
 
@@ -285,6 +289,20 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
       child: new Text(text,softWrap: true,maxLines: 2,textAlign: TextAlign.left,
         style: TextStyle(fontSize: ScreenAdapter.size(26)),
       ),
+    );
+  }
+
+  /// 购物车悬浮按钮
+  Widget _cartBtnWidget(){
+    return FloatingActionButton(
+        child: new Image.asset("assets/images/mall/cart_icon.png",
+          width: 30,
+          fit:BoxFit.fitWidth ,
+        ),
+        elevation: 7.0,
+        onPressed:(){
+
+        }
     );
   }
 }

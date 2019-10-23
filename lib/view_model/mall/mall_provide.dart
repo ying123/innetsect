@@ -1,25 +1,25 @@
 
 import 'package:innetsect/base/base.dart';
 
-class MallProvode extends BaseProvide{
+class MallProvide extends BaseProvide{
 
   /// 工厂模式
-  factory MallProvode()=> _getInstance();
-  static MallProvode get instance => _getInstance();
-  static MallProvode _instance;
-  static MallProvode _getInstance(){
+  factory MallProvide()=> _getInstance();
+  static MallProvide get instance => _getInstance();
+  static MallProvide _instance;
+  static MallProvide _getInstance(){
     if (_instance == null) {
-      _instance = new MallProvode._internal();
+      _instance = new MallProvide._internal();
     }
     return _instance;
   }
 
-  MallProvode._internal() {
-    print('MallProvode init');
+  MallProvide._internal() {
+    print('MallProvide init');
   }
 
   /// 底部选中索引
-  int _currentIndex = 0;
+  int _currentIndex = 2;
   int get currentIndex => _currentIndex;
   set currentIndex(int currentIndex){
     _currentIndex = currentIndex;

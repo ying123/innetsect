@@ -8,21 +8,6 @@ import 'package:innetsect/view/widget/list_header.dart';
 typedef OnRefresh = Future<void> Function();
 typedef OnLoad = Future<void> Function();
 
-//class ListPage extends PageProvideNode{
-//  LoadData loadData;
-//  final ListProvide _provide = ListProvide();
-//  ListPage(){
-//    mProviders.provide(Provider<ListProvide>.value(_provide));
-//    loadData = null;
-//  }
-//
-//  @override
-//  Widget buildContent(BuildContext context) {
-//
-//    return ListContent(_provide,loadData);
-//  }
-//}
-
 class ListWidgetPage extends StatefulWidget {
   // 上拉刷新
   final OnRefresh onRefresh;
