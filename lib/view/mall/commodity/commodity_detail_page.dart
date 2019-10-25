@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/web_view_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
@@ -287,7 +288,20 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 //            child: _iconAndTextMerge(title:"心愿单",icon: "assets/images/mall/wish_icon.png")
 //          ),
           new Padding(padding: EdgeInsets.only(left: 24),
-            child: _iconAndTextMerge(title:"购物车",icon: "assets/images/mall/cart_icon.png")
+            child: InkWell(
+              onTap: (){
+                // 跳转到购物车
+                // 如果需要返回，设置isBack为true,
+                // 设置settings为传参
+                // 默认为false,不返回
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return CommodityCartPage();
+                  },settings: RouteSettings(arguments: {'isBack': true})
+                ));
+              },
+              child: _iconAndTextMerge(title:"购物车",icon: "assets/images/mall/cart_icon.png"),
+            )
           ),
           new Padding(padding: EdgeInsets.only(left: 17),
             child: new InkWell(

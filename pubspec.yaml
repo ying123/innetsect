@@ -190,7 +190,8 @@ flutter:
     - assets/images/mall/tab_mall_h.png
     - assets/images/mall/tab_me.png
     - assets/images/mall/tab_me_h.png
-    # ------------------
+    # -------购物车默认图-----------
+    - assets/images/mall/default_cart.png
     - assets/images/mall/msg.png
     - assets/images/mall/setting.png
     - assets/images/mall/me_header.png
@@ -202,20 +203,6 @@ flutter:
     - assets/images/mall/money.png
     - assets/images/mall/product1.png
     - assets/images/mall/product2.png
-    - assets/images/mall/ex/new1.png
-    - assets/images/mall/ex/new2.png
-    - assets/images/mall/ex/product1.png
-    - assets/images/mall/ex/product2.png
-    - assets/images/mall/ex/product3.png
-    - assets/images/mall/ex/product4.png
-    - assets/images/mall/ex/product5.png
-    - assets/images/mall/ex/product6.png
-    - assets/images/mall/ex/product7.png
-    - assets/images/mall/ex/product_list1.png
-    - assets/images/mall/ex/product_list2.png
-    - assets/images/mall/ex/product_list3.png
-    - assets/images/mall/ex/product_list4.png
-    - assets/images/mall/ex/product_header.png
     - assets/images/mall/find.png
     # 下拉刷新图---
     - assets/images/mall/fresh.png
