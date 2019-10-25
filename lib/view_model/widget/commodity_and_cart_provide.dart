@@ -88,4 +88,9 @@ class CommodityAndCartProvide extends BaseProvide{
     _commodityModelList.removeWhere((item)=>item.isSelected==true);
     notifyListeners();
   }
+  // 删除数量为0的商品
+  void onDelCountToZero(int idx){
+    _commodityModelList.removeAt(idx);
+    notifyListeners();
+  }
 }

@@ -247,7 +247,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                             flex: 1,
                                             child: new Container(
                                               alignment: Alignment.centerRight,
-                                              child: CounterWidget(provide: provide,idx: key ,count: list[key].count,),
+                                              child: CounterWidget(provide: provide,idx: key ),
                                             )
                                           )
 

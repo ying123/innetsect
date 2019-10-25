@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 
 class CounterWidget extends StatefulWidget {
   final CommodityAndCartProvide provide;
-  // 商品模型中的数量
-  final int count;
   // 数组下标
   final int idx;
-  CounterWidget({@required this.provide,this.idx,this.count});
+  CounterWidget({@required this.provide,this.idx});
 
   @override
   _CounterWidgetState createState() => new _CounterWidgetState();
@@ -35,11 +34,7 @@ class _CounterWidgetState extends State<CounterWidget> {
     // TODO: implement initState
     super.initState();
     this.provide = widget.provide;
-    if(this.provide.mode=="multiple"){
-      setState(() {
-        count = widget.count;
-      });
-    }else{
+    if(this.provide.mode!="multiple"){
       setState(() {
         count = this.provide.count;
       });
@@ -55,17 +50,19 @@ class _CounterWidgetState extends State<CounterWidget> {
     return new InkWell(
       onTap: (){
         this.provide.reduce(idx: widget.idx);
-        if(this.provide.mode=="multiple"){
-          if(widget.count>=0){
-            setState(() {
-              count = widget.count;
-            });
-          }
+        if(this.provide.mode!="multiple"){
+          setState(() {
+            count = this.provide.count;
+          });
         }else{
-          if(this.provide.count>=0){
-            setState(() {
-              count = this.provide.count;
-            });
+          // 如果商品减少到0，提示删除
+          if(this.provide.commodityModelList[widget.idx].count==0){
+            CustomsWidget().customShowDialog(context: context,
+              content: "是否删除该商品",
+              onPressed: (){
+                this.provide.onDelCountToZero(widget.idx);
+              }
+            );
           }
         }
       },
@@ -82,10 +79,12 @@ class _CounterWidgetState extends State<CounterWidget> {
     double size = 80.0;
     double fontSize = 38.0;
     double circular =8.0;
+    int count = this.count;
     if(this.provide.mode=="multiple"){
       size=40.0;
       fontSize=28.0;
       circular=4.0;
+      count=this.provide.commodityModelList[widget.idx].count;
     }
     return new Container(
       height: ScreenAdapter.height(size),
@@ -96,7 +95,7 @@ class _CounterWidgetState extends State<CounterWidget> {
         color: AppConfig.backGroundColor,
         borderRadius: BorderRadius.circular(circular)
       ),
-      child: new Text(this.count.toString(),style: TextStyle(
+      child: new Text(count.toString(),style: TextStyle(
         fontSize: ScreenAdapter.size(fontSize),
         fontWeight: FontWeight.w900
       ),),
@@ -112,11 +111,7 @@ class _CounterWidgetState extends State<CounterWidget> {
     return new InkWell(
       onTap: (){
         this.provide.increment(idx: widget.idx);
-        if(this.provide.mode=="multiple"){
-          setState(() {
-            count = widget.count;
-          });
-        }else{
+        if(this.provide.mode!="multiple"){
           setState(() {
             count = this.provide.count;
           });
