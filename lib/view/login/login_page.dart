@@ -38,24 +38,26 @@ class _LoginContentPageState extends State<LoginContentPage> {
               height: ScreenAdapter.width(38),
             )),
       ),
-      body: Column(
-        children: <Widget>[
-          _setupLogo(),
-          SizedBox(
-            height: ScreenAdapter.height(100),
-          ),
-          setupTextFields(),
-          _setupVerificationCodeBtn(),
-           SizedBox(
-            height: ScreenAdapter.height(20),
-          ),
-          _setupLoginBtn(),
-          _setupRegisteredBtn(),
-           SizedBox(
-            height: ScreenAdapter.height(60),
-          ),
-          _setupThirdPartyBtn(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            _setupLogo(),
+            SizedBox(
+              height: ScreenAdapter.height(100),
+            ),
+            setupTextFields(),
+            _setupVerificationCodeBtn(),
+             SizedBox(
+              height: ScreenAdapter.height(20),
+            ),
+            _setupLoginBtn(),
+            _setupRegisteredBtn(),
+             SizedBox(
+              height: ScreenAdapter.height(60),
+            ),
+            _setupThirdPartyBtn(),
+          ],
+        ),
       ),
     );
   }
