@@ -62,6 +62,7 @@ class _ActivityContextPageState extends State<ActivityContextPage> {
           leading: Container(),
           elevation: 0.0,
         ),
+        backgroundColor: Colors.white,
         body: Column(
           children: <Widget>[
             Container(

@@ -6,7 +6,6 @@ import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
 
-
 import 'package:innetsect/view/personal_center/personal_center_page.dart';
 import 'package:innetsect/view_model/my/my_provide.dart';
 import 'package:provide/provide.dart';
@@ -31,6 +30,16 @@ class MyContentPage extends StatefulWidget {
 }
 
 class _MyContentPageState extends State<MyContentPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future _loginPage() async {
+    print('_loginPage');
+    Navigator.pushNamed(context, '/loginPage');
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
@@ -83,7 +92,9 @@ class _MyContentPageState extends State<MyContentPage> {
                   GestureDetector(
                     onTap: () {
                       print('我的订单被点击');
-                      Navigator.of(context).push(CommonUtil.createRoute(AnimationUtil.getBottominAnilmation(), MyOrderPage()));
+                      Navigator.of(context).push(CommonUtil.createRoute(
+                          AnimationUtil.getBottominAnilmation(),
+                          MyOrderPage()));
                     },
                     child: _setupBtn(
                         'assets/images/newpersonalcentre/我的订单@2x.png',
@@ -97,7 +108,9 @@ class _MyContentPageState extends State<MyContentPage> {
                   GestureDetector(
                     onTap: () {
                       print('地址管理被点击');
-                       Navigator.of(context).push(CommonUtil.createRoute(AnimationUtil.getBottominAnilmation(), AddressManagementPage()));
+                      Navigator.of(context).push(CommonUtil.createRoute(
+                          AnimationUtil.getBottominAnilmation(),
+                          AddressManagementPage()));
                     },
                     child: _setupBtn(
                         'assets/images/newpersonalcentre/地址管理@2x.png',
@@ -219,7 +232,10 @@ class _MyContentPageState extends State<MyContentPage> {
                     child: Container(
                       width: ScreenAdapter.width(40),
                       height: ScreenAdapter.width(26),
-                      child: Image.asset('assets/images/newpersonalcentre/展会@2x.png',fit: BoxFit.fill,),
+                      child: Image.asset(
+                        'assets/images/newpersonalcentre/展会@2x.png',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -227,7 +243,7 @@ class _MyContentPageState extends State<MyContentPage> {
                   ),
                   Center(
                     child: Text(
-                     '展会',
+                      '展会',
                       style: TextStyle(
                         color: Color.fromRGBO(95, 95, 95, 1.0),
                         fontSize: ScreenAdapter.size(27),
@@ -250,12 +266,14 @@ class _MyContentPageState extends State<MyContentPage> {
                 ],
               ),
             ),
-           Container(
-             margin: EdgeInsets.only(left: ScreenAdapter.width(50),right: ScreenAdapter.width(50)),
-             width: ScreenAdapter.width(750),
-             height: ScreenAdapter.height(3),
-             color: Color.fromRGBO(249, 249, 249, 1.0),
-           ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: ScreenAdapter.width(50),
+                  right: ScreenAdapter.width(50)),
+              width: ScreenAdapter.width(750),
+              height: ScreenAdapter.height(3),
+              color: Color.fromRGBO(249, 249, 249, 1.0),
+            ),
             Container(
               width: ScreenAdapter.width(750),
               height: ScreenAdapter.height(125),
@@ -270,7 +288,8 @@ class _MyContentPageState extends State<MyContentPage> {
                     child: Container(
                       width: ScreenAdapter.width(43),
                       height: ScreenAdapter.height(33),
-                      child: Image.asset('assets/images/newpersonalcentre/购买须知@2x.png'),
+                      child: Image.asset(
+                          'assets/images/newpersonalcentre/购买须知@2x.png'),
                     ),
                   ),
                   SizedBox(
@@ -282,7 +301,6 @@ class _MyContentPageState extends State<MyContentPage> {
                       style: TextStyle(
                         color: Color.fromRGBO(95, 95, 95, 1.0),
                         fontSize: ScreenAdapter.size(27),
-              
                       ),
                     ),
                   ),
@@ -300,12 +318,14 @@ class _MyContentPageState extends State<MyContentPage> {
                 ],
               ),
             ),
-           Container(
-             margin: EdgeInsets.only(left: ScreenAdapter.width(50),right: ScreenAdapter.width(50)),
-             width: ScreenAdapter.width(750),
-             height: ScreenAdapter.height(3),
-             color: Color.fromRGBO(249, 249, 249, 1.0),
-           ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: ScreenAdapter.width(50),
+                  right: ScreenAdapter.width(50)),
+              width: ScreenAdapter.width(750),
+              height: ScreenAdapter.height(3),
+              color: Color.fromRGBO(249, 249, 249, 1.0),
+            ),
             Container(
               width: ScreenAdapter.width(750),
               height: ScreenAdapter.height(125),
@@ -320,7 +340,8 @@ class _MyContentPageState extends State<MyContentPage> {
                     child: Container(
                       width: ScreenAdapter.width(35),
                       height: ScreenAdapter.height(29),
-                      child: Image.asset('assets/images/newpersonalcentre/联系客服@2x.png'),
+                      child: Image.asset(
+                          'assets/images/newpersonalcentre/联系客服@2x.png'),
                     ),
                   ),
                   SizedBox(
@@ -328,11 +349,10 @@ class _MyContentPageState extends State<MyContentPage> {
                   ),
                   Center(
                     child: Text(
-                     '联系客服',
+                      '联系客服',
                       style: TextStyle(
                         color: Color.fromRGBO(95, 95, 95, 1.0),
                         fontSize: ScreenAdapter.size(27),
-                       
                       ),
                     ),
                   ),
@@ -350,12 +370,14 @@ class _MyContentPageState extends State<MyContentPage> {
                 ],
               ),
             ),
-           Container(
-             margin: EdgeInsets.only(left: ScreenAdapter.width(50),right: ScreenAdapter.width(50)),
-             width: ScreenAdapter.width(750),
-             height: ScreenAdapter.height(3),
-             color: Color.fromRGBO(249, 249, 249, 1.0),
-           ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: ScreenAdapter.width(50),
+                  right: ScreenAdapter.width(50)),
+              width: ScreenAdapter.width(750),
+              height: ScreenAdapter.height(3),
+              color: Color.fromRGBO(249, 249, 249, 1.0),
+            ),
             Container(
               width: ScreenAdapter.width(750),
               height: ScreenAdapter.height(125),
@@ -370,7 +392,8 @@ class _MyContentPageState extends State<MyContentPage> {
                     child: Container(
                       width: ScreenAdapter.width(37),
                       height: ScreenAdapter.height(29),
-                      child: Image.asset('assets/images/newpersonalcentre/反馈意@2x.png'),
+                      child: Image.asset(
+                          'assets/images/newpersonalcentre/反馈意@2x.png'),
                     ),
                   ),
                   SizedBox(
@@ -382,7 +405,6 @@ class _MyContentPageState extends State<MyContentPage> {
                       style: TextStyle(
                         color: Color.fromRGBO(95, 95, 95, 1.0),
                         fontSize: ScreenAdapter.size(27),
-                     
                       ),
                     ),
                   ),
@@ -400,13 +422,14 @@ class _MyContentPageState extends State<MyContentPage> {
                 ],
               ),
             ),
-           Container(
-             margin: EdgeInsets.only(left: ScreenAdapter.width(50),right: ScreenAdapter.width(50)),
-             width: ScreenAdapter.width(750),
-             height: ScreenAdapter.height(3),
-             color: Color.fromRGBO(249, 249, 249, 1.0),
-           ),
-          
+            Container(
+              margin: EdgeInsets.only(
+                  left: ScreenAdapter.width(50),
+                  right: ScreenAdapter.width(50)),
+              width: ScreenAdapter.width(750),
+              height: ScreenAdapter.height(3),
+              color: Color.fromRGBO(249, 249, 249, 1.0),
+            ),
           ],
         ));
       },
@@ -433,11 +456,20 @@ class _MyContentPageState extends State<MyContentPage> {
               padding: EdgeInsets.only(
                   top: ScreenAdapter.height(57),
                   left: ScreenAdapter.width(680)),
-              child: Image.asset(
-                'assets/images/mall/setting.png',
-                fit: BoxFit.cover,
-                width: ScreenAdapter.width(50),
-                height: ScreenAdapter.width(50),
+              child: InkWell(
+                onTap: () {
+                  print('设置按钮被点击');
+                  if (widget.provide.isLogin == false) {
+                    _loginPage();
+                   // widget.provide.isLogin = true;
+                  }
+                },
+                child: Image.asset(
+                  'assets/images/mall/setting.png',
+                  fit: BoxFit.cover,
+                  width: ScreenAdapter.width(50),
+                  height: ScreenAdapter.width(50),
+                ),
               ),
             ),
             Padding(
@@ -468,11 +500,11 @@ class _MyContentPageState extends State<MyContentPage> {
               padding: EdgeInsets.fromLTRB(0, ScreenAdapter.height(278), 0, 0),
               child: Center(
                 child: GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     print('个人中心被点击');
-                   Navigator.of(context).push(CommonUtil.createRoute(
-                            AnimationUtil.getBottominAnilmation(),
-                            PersonalCenterPage()));  
+                    Navigator.of(context).push(CommonUtil.createRoute(
+                        AnimationUtil.getBottominAnilmation(),
+                        PersonalCenterPage()));
                   },
                   child: Container(
                     width: ScreenAdapter.width(190),

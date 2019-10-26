@@ -13,6 +13,15 @@ class HomeProvide extends BaseProvide {
   get bannerImages {
     return _bannerImages;
   }
+///条形码
+  String _barcode = '';
+  get  barcode{
+    return _barcode; 
+  }
+  set barcode(String code){
+    _barcode = code;
+    notifyListeners();
+  }
 
 //广告内容
   String _advertising = '2019INNERSECT国际潮流文化体验展指南';
@@ -230,4 +239,8 @@ class HomeProvide extends BaseProvide {
     },
     
   ];
+
+
+
+
 }

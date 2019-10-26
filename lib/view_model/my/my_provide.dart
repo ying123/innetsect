@@ -13,6 +13,16 @@ class MyProvide extends BaseProvide{
 
   //List listModle =['我的订单','购物车','地址管理','展会','卡券','售后','购物需知','客服'];
 
+
+  bool _isLogin = false;
+  get isLogin{
+    return _isLogin;
+  }
+  set isLogin(bool isLogin){
+    _isLogin = isLogin;
+    notifyListeners();
+  }
+
 ///手机号码
   String _mobilePhoneNumber = '未登入';
   get mobilePhoneNumber{

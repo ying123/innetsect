@@ -14,6 +14,7 @@ import 'package:innetsect/view/widget/pulltorefresh_flutter.dart';
 import 'package:innetsect/view_model/home/home_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
 
 class HomePage extends PageProvideNode {
   final HomeProvide _provide = HomeProvide();
@@ -332,6 +333,7 @@ class _HomeContentPageState extends State<HomeContentPage>
                     GestureDetector(
                       onTap: () {
                         print('签到绑定被点击');
+                        Navigator.pushNamed(context, '/bindingSignIn');
                       },
                       child: Container(
                           margin: EdgeInsets.fromLTRB(
@@ -346,9 +348,7 @@ class _HomeContentPageState extends State<HomeContentPage>
                       child: Container(),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        print('排队扫码被点击');
-                      },
+                      onTap:scan,
                       child: Container(
                           margin: EdgeInsets.fromLTRB(
                               0, ScreenAdapter.height(45), 0, 0),
@@ -389,6 +389,26 @@ class _HomeContentPageState extends State<HomeContentPage>
       },
     );
   }
+///二维码扫描
+ Future scan() async {
+    try {
+      String barcode = await scanner.scan();
+      setState(() => _provide.barcode = barcode);
+    } on Exception catch (e) {
+      if (e == scanner.CameraAccessDenied) {
+        setState(() {
+          _provide.barcode = 'The user did not grant the camera permission!';
+        });
+      } else {
+        setState(() => _provide.barcode = 'Unknown error: $e');
+      }
+    } on FormatException {
+      setState(() => _provide.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
+    } catch (e) {
+      setState(() => _provide.barcode = 'Unknown error: $e');
+    }
+  }
+
 
   ///轮播图
   Provide<HomeProvide> _setupSwiperImage() {
