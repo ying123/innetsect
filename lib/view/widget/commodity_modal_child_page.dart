@@ -4,7 +4,6 @@ import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/widget/commodity_select_widget.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
-import 'package:provide/provide.dart';
 
 class CommodityModalChildPage extends StatefulWidget {
   final CommodityAndCartProvide _cartProvide;
@@ -78,11 +77,12 @@ class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
 
   /// 计数器
   Widget counterWidget(){
+    this._cartProvide.setMode();
     return new Container(
       width: double.infinity,
       height: ScreenAdapter.height(100),
       alignment: Alignment.center,
-      child: CounterWidget(this._cartProvide),
+      child: CounterWidget(provide: this._cartProvide,),
     );
   }
 
