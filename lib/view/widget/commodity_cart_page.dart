@@ -231,16 +231,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                           // 商品价格
                                           new Expanded(
                                             flex:1,
-                                            child: new Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                              children: <Widget>[
-                                                new Text("¥ ",style: TextStyle(fontSize: ScreenAdapter.size(22)),),
-                                                new Text(list[key].price.toString(),
-                                                  style: TextStyle(fontSize: ScreenAdapter.size(28),fontWeight: FontWeight.w900),
-                                                ),
-                                              ],
-                                            )
+                                            child: CustomsWidget().priceTitle(price: list[key].price.toString())
                                           ),
                                           // 计数器
                                           new Expanded(

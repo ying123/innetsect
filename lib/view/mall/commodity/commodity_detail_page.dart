@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/web_view_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
@@ -47,26 +49,9 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     ScreenAdapter.init(context);
     dynamic mapData = ModalRoute.of(context).settings.arguments;
     return new Scaffold(
-      appBar: new AppBar(
-        leading: new GestureDetector(
-          onTap: (){
-            // 返回
-            Navigator.pop(context);
-          },
-          child: new Container(
-            padding: EdgeInsets.all(20),
-            child: new Image.asset("assets/images/mall/arrow_down.png",
-              fit: BoxFit.fitWidth,
-            )
-          ),
-        ),
-        title: new Container(
-          width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-120),
-          child: _topNavTabBar(),
-        ),
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        centerTitle: true,
+      appBar: CustomsWidget().customNav(context: context,
+          widget: _topNavTabBar(),
+          width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-120)
       ),
       body: new Stack(
         children: <Widget>[
@@ -208,26 +193,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           ),),
           new Padding(padding: EdgeInsets.only(top: 10),
             child: new Container(
-              child: new Row(
-                children: <Widget>[
-                  new Container(
-                    padding: EdgeInsets.only(top: 2),
-                    alignment: Alignment.center,
-                    child: new Text("¥ ",style: TextStyle(
-                      fontSize: ScreenAdapter.size(24.0),),
-                    ),
-                  ),
-                  new Container(
-                      alignment: Alignment.center,
-                      child: new Text("1111", style: TextStyle(
-                          fontSize: ScreenAdapter.size(32.0),
-                          fontWeight: FontWeight.bold
-                        ),
-                      )
-                  ),
-
-                ],
-              ),
+              child: CustomsWidget().priceTitle(price: "1111.00"),
             ),
           )
         ],
@@ -244,7 +210,9 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       child: new Row(
         children: <Widget>[
           new Container(
-            child: new Text("已选",style: TextStyle(fontSize: ScreenAdapter.size(28),fontWeight: FontWeight.w600),),
+            child: CustomsWidget().subTitle(
+              title: "已选", color: AppConfig.primaryColor,
+            ),
           ),
           new InkWell(
             onTap: (){
@@ -271,6 +239,17 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     return Container(
       height: ScreenAdapter.height(300),
       color: Colors.cyanAccent,
+      child: new Column(
+        children: <Widget>[
+          new Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(10),
+            child: CustomsWidget().subTitle(
+              title: "商品推荐", color: AppConfig.primaryColor,
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -320,13 +299,23 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             ),
           ),
           new Padding(padding: EdgeInsets.only(left: 15),
-            child: new Container(
-              width: ScreenAdapter.width(230),
-              height: ScreenAdapter.height(90),
-              color: AppConfig.primaryColor,
-              alignment: Alignment.center,
-              child: new Text("立即购买",style: TextStyle(color: AppConfig.fontBackColor,
-                  fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+            child: InkWell(
+              onTap: (){
+                // 跳转订单详情
+                Navigator.push(context, new MaterialPageRoute(
+                    builder: (context){
+                      return new OrderDetailPage();
+                    })
+                );
+              },
+              child: new Container(
+                width: ScreenAdapter.width(230),
+                height: ScreenAdapter.height(90),
+                color: AppConfig.primaryColor,
+                alignment: Alignment.center,
+                child: new Text("立即购买",style: TextStyle(color: AppConfig.fontBackColor,
+                    fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+              ),
             ),
           )
         ],

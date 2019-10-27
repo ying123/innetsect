@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
@@ -246,26 +247,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           new Container(
-            child: new Row(
-              children: <Widget>[
-                new Container(
-                  padding: EdgeInsets.only(top: 2),
-                  alignment: Alignment.center,
-                  child: new Text("¥ ",style: TextStyle(
-                      fontSize: ScreenAdapter.size(18.0),),
-                  ),
-                ),
-                new Container(
-                    alignment: Alignment.center,
-                  child: new Text(price, style: TextStyle(
-                        fontSize: ScreenAdapter.size(26.0),
-                        fontWeight: FontWeight.bold
-                    ),
-                  )
-                ),
-
-              ],
-            ),
+            child: CustomsWidget().priceTitle(price: price),
           ),
           new Container(
             width: ScreenAdapter.width(28),height: ScreenAdapter.height(28),
