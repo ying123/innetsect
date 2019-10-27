@@ -42,7 +42,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
       appBar: CustomsWidget().customNav(context: context,
           widget: _tabBar(),
           width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-100),
-          isLeading: false,
+          leading: new Container(),
           centerTitle: false
       ),
       body: new Stack(

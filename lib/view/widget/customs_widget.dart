@@ -128,22 +128,26 @@ class CustomsWidget{
 
   /// 自定义头部导航栏
   /// *[centerTitle]是否居中，默认true
+  /// *[widget]中间title
+  /// *[width]中间title宽
+  /// *[isLeading]是否需要左侧返回导航
+  /// *[centerTitle]title是否居中
+  /// *[onTap] 左侧返回导航事件
   Widget customNav({
     @required BuildContext context,
     @required Widget widget,
     double width,
     double elevation = 0,
-    bool isLeading = true,
+    Widget leading,
     bool centerTitle = true,
     bool automaticallyImplyLeading = false,
-    bool isCustomOnTap = false,
     List<Widget> actions,
     Function() onTap
   }){
     return new AppBar(
-      leading: isLeading?new GestureDetector(
+      leading: leading == null?new GestureDetector(
         onTap: (){
-          !isCustomOnTap ?
+          onTap==null ?
             Navigator.pop(context) : onTap();
         },
         child: new Container(
@@ -152,7 +156,7 @@ class CustomsWidget{
               fit: BoxFit.fitWidth,
             )
         ),
-      ): null,
+      ): leading,
       title: new Container(
         width: width,
         child: widget,
