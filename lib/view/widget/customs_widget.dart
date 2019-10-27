@@ -131,14 +131,20 @@ class CustomsWidget{
   Widget customNav({
     @required BuildContext context,
     @required Widget widget,
+    double width,
+    double elevation = 0,
+    bool isLeading = true,
     bool centerTitle = true,
-    double width
+    bool automaticallyImplyLeading = false,
+    bool isCustomOnTap = false,
+    List<Widget> actions,
+    Function() onTap
   }){
     return new AppBar(
-      leading: new GestureDetector(
+      leading: isLeading?new GestureDetector(
         onTap: (){
-          // 返回
-          Navigator.pop(context);
+          !isCustomOnTap ?
+            Navigator.pop(context) : onTap();
         },
         child: new Container(
             padding: EdgeInsets.all(20),
@@ -146,13 +152,14 @@ class CustomsWidget{
               fit: BoxFit.fitWidth,
             )
         ),
-      ),
+      ): null,
       title: new Container(
         width: width,
         child: widget,
       ),
-      automaticallyImplyLeading: false,
-      elevation: 0,
+      actions: actions,
+      automaticallyImplyLeading: automaticallyImplyLeading,
+      elevation: elevation,
       centerTitle: centerTitle,
     );
   }

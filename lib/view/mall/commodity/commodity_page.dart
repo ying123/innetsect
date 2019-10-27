@@ -39,14 +39,11 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
     return new Scaffold(
-      appBar: AppBar(
-        title: new Container(
+      appBar: CustomsWidget().customNav(context: context,
+          widget: _tabBar(),
           width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-100),
-          child: _tabBar(),
-        ),
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        centerTitle: false,
+          isLeading: false,
+          centerTitle: false
       ),
       body: new Stack(
           children: <Widget>[

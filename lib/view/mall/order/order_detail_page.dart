@@ -37,7 +37,8 @@ class _OrderContentState extends State<OrderContent> {
       appBar: CustomsWidget().customNav(context: context,
         widget: new Text("订单详情",style: TextStyle(fontSize: ScreenAdapter.size((30)),
           fontWeight: FontWeight.w900
-        ),)
+          ),
+        )
       ),
       body: new Stack(
         children: <Widget>[
