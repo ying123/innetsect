@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view_model/shopping/shopping_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -23,10 +24,6 @@ class ShoppingContentPage extends StatefulWidget {
 class _ShoppingContentPageState extends State<ShoppingContentPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('购物车'),
-      ),
-    );
+    return CommodityCartPage();
   }
 }

@@ -55,8 +55,8 @@ class _ActivityContextPageState extends State<ActivityContextPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            '活动场次',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            '活动',
+           
           ),
           centerTitle: true,
           leading: Container(),

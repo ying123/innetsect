@@ -81,7 +81,7 @@ class _HomeContentPageState extends State<HomeContentPage>
             '展会',
             style: TextStyle(
                 fontSize: ScreenAdapter.size(40),
-                fontWeight: FontWeight.w600,
+               // fontWeight: FontWeight.w600,
                 color: AppConfig.fontPrimaryColor),
           ),
           centerTitle: true,

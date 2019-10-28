@@ -58,19 +58,21 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
               height: ScreenAdapter.width(38),
             )),
       ),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: ScreenAdapter.height(180),
-          ),
-          //注册
-          _setupTextFields(),
-          SizedBox(
-            height: ScreenAdapter.height(545),
-          ),
-          //勾选条款
-          _setupAgreeTerms(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: ScreenAdapter.height(180),
+            ),
+            //注册
+            _setupTextFields(),
+            SizedBox(
+              height: ScreenAdapter.height(545),
+            ),
+            //勾选条款
+            _setupAgreeTerms(),
+          ],
+        ),
       ),
       bottomNavigationBar: Container(
         width: ScreenAdapter.width(750),

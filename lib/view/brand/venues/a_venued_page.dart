@@ -180,6 +180,7 @@ class _AvenuedContentPageState extends State<AvenuedContentPage> {
         physics: BouncingScrollPhysics(),
         controller: _scrollController,
         itemBuilder: (BuildContext context, int index) {
+
           if (index < _functionButtons.length) {
             return _functionButtons[index];
           }
@@ -192,10 +193,15 @@ class _AvenuedContentPageState extends State<AvenuedContentPage> {
                   widget.provide.brands[_brandIndex - 1].nameIndex) {
             _isGroupTitle = false;
           }
-          return BrandItem(
-              avatar: _brand.avatar,
-              title: _brand.name,
-              groupTitle: _isGroupTitle ? _brand.nameIndex : null);
+          return GestureDetector(
+            onTap: (){
+              print('${widget.provide.brands[index].nameIndex}牌的${widget.provide.brands[index].name}被点击');
+            },
+            child: BrandItem(
+                avatar: _brand.avatar,
+                title: _brand.name,
+                groupTitle: _isGroupTitle ? _brand.nameIndex : null),
+          );
         },
         itemCount: widget.provide.brands.length + _functionButtons.length,
       ),
