@@ -1,24 +1,59 @@
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/model/exhibition_home_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 class HomeProvide extends BaseProvide {
-  List<String> _bannerImages = [
-    'https://aecpm.alicdn.com/simba/img/TB14ab1KpXXXXclXFXXSutbFXXX.jpg_q50.jpg',
-    'https://gw.alicdn.com/imgextra/i4/34/O1CN01Wz3LuY1C7bzPXexNf_!!34-0-lubanu.jpg',
-    'https://gw.alicdn.com/imgextra/i1/99/O1CN01MswjVp1CbNjd1qL0N_!!99-0-lubanu.jpg',
-    'https://aecpm.alicdn.com/tfscom/TB1jDYURMHqK1RjSZFgXXa7JXXa.jpg_q50.jpg',
-    'https://gw.alicdn.com/imgextra/i4/196/O1CN01GM2TCU1DJo9Q4paY5_!!196-0-lubanu.jpg',
-    'https://gw.alicdn.com/imgextra/i1/101/O1CN012LEy4Q1CcIWfvJWbw_!!101-0-lubanu.jpg'
-  ];
+  List<String> _bannerImages = [];
 
   get bannerImages {
     return _bannerImages;
   }
-///条形码
-  String _barcode = '';
-  get  barcode{
-    return _barcode; 
+
+  set banneImages(String bannerImage) {
+    _bannerImages.add(bannerImage);
+    notifyListeners();
   }
-  set barcode(String code){
+
+  ///首页portlets数据
+  List _portlets = [];
+
+  get portlets {
+    return _portlets;
+  }
+
+  set portlets(Map portlets) {
+    _portlets.add(portlets);
+    notifyListeners();
+  }
+
+  ///首页contents数据
+  List<dynamic> _contents = [];
+  get contents {
+    return _contents;
+  }
+
+  set contents(Map contents) {
+    _contents.add(contents);
+    notifyListeners();
+  }
+///内容项ID
+  int _contentID ;
+  get contentID{
+    return _contentID;
+  }
+  set contentID(int contentID){
+    _contentID = contentID;
+    notifyListeners();
+  }
+
+
+  ///条形码
+  String _barcode = '';
+  get barcode {
+    return _barcode;
+  }
+
+  set barcode(String code) {
     _barcode = code;
     notifyListeners();
   }
@@ -33,214 +68,19 @@ class HomeProvide extends BaseProvide {
     _advertising = advertising;
     notifyListeners();
   }
-//列表项数据
-  List listItems = [
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    
-  ];
-//列表项数据
-  List addListItems = [
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    
-  ];
 
 
+  final ExhibitionHomeRepo _repo = ExhibitionHomeRepo();
 
-
+  ///展会首页数据
+  Observable homeDatas() {
+    return _repo
+        .homeDatas()
+        .doOnData((result) {
+         
+        })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
 }

@@ -15,6 +15,7 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params}) async {
   await HttpUtil().dio.get(url, queryParameters: params).then((response){
      if (response.data is Map) {
     print('response是map类型');
+    print('responsr->${response.data}');
     //将json数据转换成BaseResponse实例
     res = BaseResponse.fromJson(response.data);
   } else if (response.data is List) {
