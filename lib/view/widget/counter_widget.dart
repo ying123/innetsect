@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
+import 'package:innetsect/data/commodity_model.dart';
+import 'package:innetsect/data/commodity_types_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
@@ -8,7 +10,9 @@ class CounterWidget extends StatefulWidget {
   final CommodityAndCartProvide provide;
   // 数组下标
   final int idx;
-  CounterWidget({@required this.provide,this.idx});
+  // 购物车商品列表
+  final CommodityModel model;
+  CounterWidget({this.provide,this.idx,this.model});
 
   @override
   _CounterWidgetState createState() => new _CounterWidgetState();
@@ -36,7 +40,7 @@ class _CounterWidgetState extends State<CounterWidget> {
     this.provide = widget.provide;
     if(this.provide.mode!="multiple"){
       setState(() {
-        count = this.provide.count;
+        count = widget.provide.count;
       });
     }
   }
@@ -49,21 +53,25 @@ class _CounterWidgetState extends State<CounterWidget> {
     }
     return new InkWell(
       onTap: (){
-        this.provide.reduce(idx: widget.idx);
+        this.provide.reduce(idx: widget.idx,model: widget.model);
         if(this.provide.mode!="multiple"){
           setState(() {
             count = this.provide.count;
           });
         }else{
           // 如果商品减少到0，提示删除
-          if(this.provide.commodityModelList[widget.idx].count==0){
-            CustomsWidget().customShowDialog(context: context,
-              content: "是否删除该商品",
-              onPressed: (){
-                this.provide.onDelCountToZero(widget.idx);
-              }
-            );
-          }
+          List<CommodityTypesModel> list = this.provide.commodityModelLists;
+          list.forEach((item){
+            if(item.types == widget.model.types
+              && item.commodityModelList[widget.idx].count==0){
+              CustomsWidget().customShowDialog(context: context,
+                  content: "是否删除该商品",
+                  onPressed: (){
+                    this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
+                  }
+              );
+            }
+          });
         }
       },
       child: new Container(
@@ -84,7 +92,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       size=40.0;
       fontSize=28.0;
       circular=4.0;
-      count=this.provide.commodityModelList[widget.idx].count;
+      count=widget.model.count;
     }
     return new Container(
       height: ScreenAdapter.height(size),
@@ -110,7 +118,7 @@ class _CounterWidgetState extends State<CounterWidget> {
     }
     return new InkWell(
       onTap: (){
-        this.provide.increment(idx: widget.idx);
+        this.provide.increment(idx: widget.idx,model: widget.model);
         if(this.provide.mode!="multiple"){
           setState(() {
             count = this.provide.count;

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
+import 'package:innetsect/data/commodity_feature_model.dart';
+import 'package:innetsect/data/commodity_models.dart';
+import 'package:innetsect/data/commodity_skus_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
-import 'package:provide/provide.dart';
 
 /// 单选
 class CommoditySelectWidget extends StatefulWidget {
   final CommodityAndCartProvide _cartProvide;
-  CommoditySelectWidget(this._cartProvide);
+  final CommodityDetailProvide _detailProvide;
+  CommoditySelectWidget(this._cartProvide,this._detailProvide);
 
   @override
   _CommoditySelectWidgetState createState() => new _CommoditySelectWidgetState();
@@ -15,28 +19,15 @@ class CommoditySelectWidget extends StatefulWidget {
 
 class _CommoditySelectWidgetState extends State<CommoditySelectWidget> {
   CommodityAndCartProvide _cartProvide;
-  List list = [{'id':1,'image':'assets/images/mall/product2.png','color':'白色',
-    'des':'描述描述描述描述描述描述描述述描述描述述描述描述','isSelected':true},
-    {'id':2,'image':'assets/images/mall/product2.png','color':'红色',
-      'des':'描述描述描述描述描述描述描述述描述描述述描述描述','isSelected':false}];
-
-  List listSize = [{"id":1,"size":"M",'isSelected':true},
-    {"id":2,"size":"L",'isSelected':false},
-    {"id":3,"size":"L",'isSelected':false},
-    {"id":4,"size":"L",'isSelected':false},
-    {"id":5,"size":"L",'isSelected':false},
-    {"id":6,"size":"X",'isSelected':false}];
-  String size="大号";
+  CommodityDetailProvide _detailProvide;
 
   @override
   Widget build(BuildContext context) {
-//    final obj = Provide.value<CommodityAndCartProvide>(context);
-    print(this._cartProvide.count);
     return new SingleChildScrollView(
       child: new Column(
         children: <Widget>[
-          _topContentWidget(),
-          _bottomContentWidget()
+          _topContentWidget(_detailProvide),
+          _bottomContentWidget(_detailProvide)
         ],
       ),
     );
@@ -46,21 +37,27 @@ class _CommoditySelectWidgetState extends State<CommoditySelectWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    this._cartProvide = widget._cartProvide;
+    setState(() {
+      this._cartProvide = widget._cartProvide;
+      this._detailProvide = widget._detailProvide;
+    });
+    this._detailProvide.setInitData();
   }
 
   /// 上半部分
-  Widget _topContentWidget(){
+  Widget _topContentWidget(CommodityDetailProvide provide){
+    CommodityModels model = provide.commodityModels;
+    CommoditySkusModel skusModel = provide.skusModel;
+    List<CommodityFeatureModel> features = model.features;
+    List<CommoditySkusModel> skuModelGroup = provide.skusList;
     return new Container(
       width: double.infinity,
       child: new Column(
-        children: this.list.map((item){
+        children: skuModelGroup.map((item){
           return new InkWell(
             onTap: (){
-              setState(() {
-                list.forEach((item)=> item['isSelected'] = false);
-                item['isSelected'] = true;
-              });
+              provide.setSelectColor(item);
+              setState(() {});
             },
             child: new Container(
               width: double.infinity,
@@ -83,16 +80,16 @@ class _CommoditySelectWidgetState extends State<CommoditySelectWidget> {
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                         color:Colors.white,
-                        border: new Border.all(width: 2,color:
-                        item['isSelected']?AppConfig.fontBackColor:Colors.white
+                        border: new Border.all(width: 2,
+                          color:skusModel.skuCode==item.skuCode?AppConfig.fontBackColor:Colors.white
                         )
                     ),
-                    child: Image.asset(item['image'],fit: BoxFit.fill,),
+                    child: Image.network(item.skuPic,fit: BoxFit.fill,),
                   ),
                   new Container(
                     width: ScreenAdapter.getScreenWidth()-100,
                     color: Colors.white,
-                    child: new Text("${item['des']} ${this.size} ${item['color']}",softWrap: true,
+                    child: new Text(item.skuName,softWrap: true,
                       style: TextStyle(
                           fontSize: ScreenAdapter.size(32)
                       ),
@@ -108,38 +105,39 @@ class _CommoditySelectWidgetState extends State<CommoditySelectWidget> {
   }
 
   /// 下半部分，尺寸的选择
-  Widget _bottomContentWidget(){
+  Widget _bottomContentWidget(CommodityDetailProvide provide){
+    CommodityModels model = provide.commodityModels;
+    CommoditySkusModel skusModel = provide.skusModel;
+    List<CommodityFeatureModel> features = model.features;
     return new Scrollbar(child: new SingleChildScrollView(
       scrollDirection:Axis.horizontal,
       child: new Center(
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: listSize.map((item){
+          children: features.map((CommodityFeatureModel item){
+            // 选中尺码
             return new InkWell(
               onTap: (){
-                setState(() {
-                  listSize.forEach((items)=>items['isSelected']=false);
-                  item['isSelected'] = true;
-                  size = item['size'];
-                });
+                provide.setSelectSku(item);
+                setState(() {});
               },
-              child: new Container(
+              child: item.featureGroup=="尺码" ?new Container(
                 width: ScreenAdapter.width(100),
                 height: ScreenAdapter.height(100),
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(width: 2,
-                        color: item['isSelected']?AppConfig.fontBackColor:Colors.white
+                      color: skusModel.features.any((items)=>items.featureCode==item.featureCode)?AppConfig.fontBackColor:Colors.white
                     )
                 ),
                 alignment: Alignment.center,
-                child: new Text(item['size'],style: TextStyle(
+                child: new Text(item.featureValue,style: TextStyle(
                     fontSize: ScreenAdapter.size(32),
                     fontWeight: FontWeight.w900
                 ),),
-              ),
+              ):new Text(""),
             );
           }).toList(),
         ),

@@ -58,6 +58,8 @@ dependencies:
   flutter_spinkit: "^4.0.0"
   #html解析
   flutter_html: ^0.11.0
+  # 支付宝支付
+  tobias: ^1.2.0
 
 dev_dependencies:
   flutter_test:

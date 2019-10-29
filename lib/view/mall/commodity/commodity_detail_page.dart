@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
-import 'package:innetsect/view/mall/order/order_detail_page.dart';
+import 'package:innetsect/data/commodity_models.dart';
+import 'package:innetsect/data/commodity_skus_model.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/web_view_widget.dart';
@@ -15,8 +16,8 @@ import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
 
 class CommodityDetailPage extends PageProvideNode{
 
-  final CommodityDetailProvide _provide = CommodityDetailProvide();
-  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide();
+  final CommodityDetailProvide _provide = CommodityDetailProvide.instance;
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
 
   CommodityDetailPage(){
     mProviders.provide(Provider<CommodityDetailProvide>.value(_provide));
@@ -43,11 +44,12 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 
   TabController _tabController;
   ScrollController _scrollController ;
+  CommodityDetailProvide _provide;
+  CommodityAndCartProvide _cartProvide;
 
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
-    dynamic mapData = ModalRoute.of(context).settings.arguments;
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
           widget: _topNavTabBar(),
@@ -79,6 +81,14 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       if(_scrollController.position.pixels==_scrollController.position.maxScrollExtent){
         _tabController.index=1;
       }
+    });
+    _provide = widget._provide;
+    _cartProvide = widget._cartProvide;
+
+    Future.delayed(Duration.zero,(){
+      // 运用未来获取context，初始化数据
+      Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
+      _loadData(mapData['id']) ;
     });
   }
 
@@ -164,73 +174,90 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   }
 
   /// _swiperWidget
-  Widget _swiperWidget(){
-    return Container(
-      width: ScreenAdapter.width(750),
-      height: ScreenAdapter.height(563),
-      color: Colors.white,
-      child:new Swiper(
-          itemBuilder: (BuildContext context,int index){
-            return new Image.network("http://via.placeholder.com/350x150",fit: BoxFit.fill,);
-          },
-          loop: true,
-          itemCount: 3,
-          pagination: new SwiperPagination(),
-        )
-      );
+  Provide<CommodityDetailProvide> _swiperWidget(){
+    return Provide<CommodityDetailProvide>(
+      builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
+        CommoditySkusModel skuModel = provide.skusModel;
+        return Container(
+            width: ScreenAdapter.width(750),
+            height: ScreenAdapter.height(563),
+            color: Colors.white,
+            child:new Swiper(
+              itemBuilder: (BuildContext context,int index){
+                return skuModel!=null?Image.network(skuModel.pics[index].skuPicUrl):new Container();
+              },
+              loop: true,
+              itemCount: skuModel!=null?skuModel.pics.length:1,
+              pagination: new SwiperPagination(),
+            )
+        );
+      },
+    );
   }
 
   /// 标题
-  Widget _comTitle(){
-    return new Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(10),
-      child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Text("1111",style: TextStyle(fontSize: ScreenAdapter.size(38),
-              fontWeight: FontWeight.w800
-          ),),
-          new Padding(padding: EdgeInsets.only(top: 10),
-            child: new Container(
-              child: CustomsWidget().priceTitle(price: "1111.00"),
-            ),
-          )
-        ],
-      ),
+  Provide<CommodityDetailProvide> _comTitle(){
+    return Provide<CommodityDetailProvide>(
+      builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
+        CommodityModels models = provide.commodityModels;
+        return new Container(
+          color: Colors.white,
+          padding: EdgeInsets.all(10),
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Text(models!=null?models.prodName:"",style: TextStyle(fontSize: ScreenAdapter.size(38),
+                  fontWeight: FontWeight.w800
+              ),),
+              new Padding(padding: EdgeInsets.only(top: 10),
+                child: new Container(
+                  child: CustomsWidget().priceTitle(price: models!=null?models.salesPriceRange:""),
+                ),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
   /// 已选栏目
-  Widget _selCol(){
-    return new Container(
-      height: ScreenAdapter.height(98),
-      color: Colors.white,
-      padding: EdgeInsets.all(10),
-      child: new Row(
-        children: <Widget>[
-          new Container(
-            child: CustomsWidget().subTitle(
-              title: "已选", color: AppConfig.primaryColor,
+  Provide<CommodityDetailProvide> _selCol(){
+    return Provide<CommodityDetailProvide>(
+        builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
+          CommoditySkusModel model = provide.skusModel;
+          return new Container(
+            height: ScreenAdapter.height(98),
+            color: Colors.white,
+            padding: EdgeInsets.all(10),
+            child: new Row(
+              children: <Widget>[
+                new Container(
+                  child: CustomsWidget().subTitle(
+                    title: "已选", color: AppConfig.primaryColor,
+                  ),
+                ),
+                new InkWell(
+                  onTap: (){
+                    /// 弹出颜色，尺码选择
+                    CommodityModalBottom.showBottomModal(context:context,
+                        detailProvide:provide,cartProvide: _cartProvide);
+                  },
+                  child: new Container(
+                    width: ScreenAdapter.getScreenWidth()-100,
+                    padding: EdgeInsets.only(left: 20,right: 20),
+                    child: new Text(model!=null?model.skuName:""),
+                  ),
+                ),
+                new Container(
+                  width: ScreenAdapter.width(60),
+                  alignment: Alignment.centerRight,
+                  child: new Icon(Icons.more_horiz),
+                )
+              ],
             ),
-          ),
-          new InkWell(
-            onTap: (){
-//              CommodityModalBottom.showBottomModal(context);
-            },
-            child: new Container(
-              width: ScreenAdapter.getScreenWidth()-100,
-              padding: EdgeInsets.only(left: 20,right: 20),
-              child: new Text("劳斯莱斯 , M , 1件"),
-            ),
-          ),
-          new Container(
-            width: ScreenAdapter.width(60),
-            alignment: Alignment.centerRight,
-            child: new Icon(Icons.more_horiz),
-          )
-        ],
-      ),
+          );
+        }
     );
   }
   
@@ -276,7 +303,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context){
                     return CommodityCartPage();
-                  },settings: RouteSettings(arguments: {'isBack': true})
+                  },settings: RouteSettings(arguments: {'isBack': true,'page':'mall'})
                 ));
               },
               child: _iconAndTextMerge(title:"购物车",icon: "assets/images/mall/cart_icon.png"),
@@ -286,7 +313,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             child: new InkWell(
               onTap: (){
                 print("点击购物车");
-                CommodityModalBottom.showBottomModal(context,widget._cartProvide);
+                CommodityModalBottom.showBottomModal(context:context,cartProvide:widget._cartProvide,
+                    detailProvide:_provide);
               },
               child: new Container(
                 width: ScreenAdapter.width(230),
@@ -301,12 +329,15 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           new Padding(padding: EdgeInsets.only(left: 15),
             child: InkWell(
               onTap: (){
+                // 存储当前商品信息
+                CommodityModalBottom.showBottomModal(context:context,
+                    detailProvide:_provide,cartProvide: _cartProvide);
                 // 跳转订单详情
-                Navigator.push(context, new MaterialPageRoute(
-                    builder: (context){
-                      return new OrderDetailPage();
-                    })
-                );
+//                Navigator.push(context, new MaterialPageRoute(
+//                    builder: (context){
+//                      return new OrderDetailPage();
+//                    })
+//                );
               },
               child: new Container(
                 width: ScreenAdapter.width(230),
@@ -333,5 +364,20 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         ],
       ),
     );
+  }
+
+  /// 加载数据
+  _loadData(int prodId){
+    _provide.detailData(prodId)
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      _provide.setCommodityModels(CommodityModels.fromJson(item.data));
+//      _provide
+    }, onError: (e) {});
   }
 }
