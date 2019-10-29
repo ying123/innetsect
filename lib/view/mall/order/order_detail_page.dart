@@ -76,9 +76,10 @@ class _OrderContentState extends State<OrderContent> {
                   })
                       .doOnCancel(() {})
                       .listen((item) {
-                  ///加载数据
                     print('listen data->$item');
                     if(item.data!=null){
+                      ///加载数据，存储订单号
+                      widget._detailProvide.setOrderId(item.data['orderID']);
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context){
                             return OrderPayPage();

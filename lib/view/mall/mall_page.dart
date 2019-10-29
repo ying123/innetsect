@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/view/mall/home/mall_home_page.dart';
+import 'package:innetsect/view/my/my_page.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/mall_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
@@ -58,7 +59,7 @@ class _MallContentPageState extends State<MallContentPage> {
             new Text("22"),
             MallHomePage(),
             CommodityPage(),
-            new Text("我的")
+            MyPage()
           ],
         );
       },

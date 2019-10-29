@@ -284,7 +284,6 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   Widget _bottomBar(){
     return new Container(
       color: Colors.white,
-      height: ScreenAdapter.height(120),
       padding: EdgeInsets.only(left: 12,right: 12,top: 10,bottom: 12),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.start,

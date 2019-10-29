@@ -61,7 +61,7 @@ dynamic getUserData(){
     var userData = this.getUserData();
     if (userData != null) {
      var user = userData as Map<String, dynamic>;
-     return user['accessToken'];
+     return user['access_token'];
     }else{
       return '';
     }
