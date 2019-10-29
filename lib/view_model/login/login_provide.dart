@@ -44,6 +44,7 @@ class LoginProvide extends BaseProvide {
   }
 
   _loginBtnCanClick() {
+    
     notifyListeners();
   }
 }
