@@ -9,11 +9,11 @@ import 'package:innetsect/res/const_defines.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
-import 'package:camera/camera.dart';
+
 
 
 GlobalKey<NavigatorState> gNavKey = GlobalKey();
-List<CameraDescription> gCameras;
+//List<CameraDescription> gCameras;
 
 void main() async {
   ///[ensureInitialized]确保初始化不出现异常
@@ -22,11 +22,11 @@ void main() async {
   //CommonUtil.hideStatusbarEasy();
   //获取camama列表
   // 获取camama列表
-  try {
-    gCameras = await availableCameras();
-  } on CameraException catch (e) {
-    //logError(e.code, e.description);
-  }
+  // try {
+  //   gCameras = await availableCameras();
+  // } on CameraException catch (e) {
+  //   //logError(e.code, e.description);
+  // }
   runApp(MyApp());
 }
 
