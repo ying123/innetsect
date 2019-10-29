@@ -30,6 +30,7 @@ class OrderPayContent extends StatefulWidget {
 }
 
 class _OrderPayContentState extends State<OrderPayContent> {
+  int payTypes=2;
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -72,6 +73,7 @@ class _OrderPayContentState extends State<OrderPayContent> {
                             CustomsWidget().customRoundedWidget(isSelected: true,
                                 onSelectedCallback: (){
                                   // 点击回调
+                                  payTypes = 2;
                                 })
                           ],
                         ),
@@ -107,6 +109,8 @@ class _OrderPayContentState extends State<OrderPayContent> {
                             color: AppConfig.primaryColor,
                             textColor: Colors.black,
                             onPressed: (){
+                              // 存储支付方式
+                              widget._provide.setPayTypes(payTypes);
                               // 提交付款
                               widget._provide.payShopping().doOnListen(() {
                                 print('doOnListen');

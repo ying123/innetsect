@@ -1,5 +1,6 @@
 import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
@@ -157,15 +158,32 @@ class _LoginContentPageState extends State<LoginContentPage> {
   Provide<LoginProvide> _setupLoginBtn() {
     return Provide<LoginProvide>(
       builder: (BuildContext context, Widget child, LoginProvide provide) {
-        return Container(
-          height: ScreenAdapter.height(95),
-          width: ScreenAdapter.width(595),
-          color: Colors.black,
-          child: Center(
-            child: Text(
-              '登录',
-              style: TextStyle(
-                  color: Colors.white, fontSize: ScreenAdapter.size(38)),
+        return InkWell(
+          onTap: (){
+            // 登录
+            provide.loginData()
+                .doOnListen(() {
+              print('doOnListen');
+            })
+                .doOnCancel(() {})
+                .listen((item) {
+              ///加载数据
+              UserTools().setUserData(item.data);
+              print('listen data->$item');
+              Navigator.pop(context);
+//      _provide
+            }, onError: (e) {});
+          },
+          child: Container(
+            height: ScreenAdapter.height(95),
+            width: ScreenAdapter.width(595),
+            color: Colors.black,
+            child: Center(
+              child: Text(
+                '登录',
+                style: TextStyle(
+                    color: Colors.white, fontSize: ScreenAdapter.size(38)),
+              ),
             ),
           ),
         );

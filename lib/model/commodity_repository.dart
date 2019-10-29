@@ -2,6 +2,7 @@ import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// 商城服务请求
@@ -29,7 +30,7 @@ class CommodityService {
       CommoditySkusModel skuModel,int counts){
     var url = '/api/eshop/salesorders/shoppingorder/create';
     var json = [{
-      "acctID":1,
+      "acctID": UserTools().getUserData()['id'],
       "shopID":models.shopID,
       "prodID":models.prodID,
       "presale":models.presale,
@@ -58,8 +59,8 @@ class CommodityService {
   }
 
   /// 订单支付
-  Observable<BaseResponse> payShopping(){
-    var url = '/api/eshop/pay/166824?billMode=2&clientType=3';
+  Observable<BaseResponse> payShopping(int orderId,int payTypes){
+    var url = '/api/eshop/pay/$orderId?billMode=$payTypes&clientType=3';
     var response = post(url);
     return response;
   }
@@ -98,7 +99,7 @@ class CommodityRepo {
   }
 
   /// 订单支付
-  Observable<BaseResponse> payShopping(){
-    return _remote.payShopping();
+  Observable<BaseResponse> payShopping(int orderId,int payTypes){
+    return _remote.payShopping(orderId,payTypes);
   }
 }

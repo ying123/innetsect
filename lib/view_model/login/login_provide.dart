@@ -1,4 +1,6 @@
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/model/login_respository.dart';
+import 'package:rxdart/rxdart.dart';
 
 class LoginProvide extends BaseProvide {
   List placeHoderText = [
@@ -45,5 +47,18 @@ class LoginProvide extends BaseProvide {
 
   _loginBtnCanClick() {
     notifyListeners();
+  }
+
+  final LoginRepo _repo = LoginRepo();
+
+  /// 详情数据
+  Observable loginData() {
+    return _repo.loginData(_userCode, _password)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
   }
 }

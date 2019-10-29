@@ -16,6 +16,10 @@ class CommodityDetailProvide extends BaseProvide {
   List<CommoditySkusModel> _skusList=[];
   /// 数组选中下标
   int _index=0;
+  /// 订单号
+  int _orderId;
+  /// 支付类型
+  int _payTypes;
 
   get commodityModels => _commodityModels;
 
@@ -23,6 +27,8 @@ class CommodityDetailProvide extends BaseProvide {
 
   List<CommoditySkusModel> get skusList => _skusList;
   get index=>_index;
+  get orderId=>_orderId;
+  get payTypes=>_payTypes;
 
   // 商品详情
   void setCommodityModels(CommodityModels models){
@@ -106,6 +112,18 @@ class CommodityDetailProvide extends BaseProvide {
     notifyListeners();
   }
 
+  // 设置订单号
+  void setOrderId(int orderId){
+    _orderId = orderId;
+    notifyListeners();
+  }
+
+  // 设置支付类型
+  void setPayTypes(int payTypes){
+    _payTypes = payTypes;
+    notifyListeners();
+  }
+
   final CommodityRepo _repo = CommodityRepo();
 
   /// 详情数据
@@ -146,7 +164,7 @@ class CommodityDetailProvide extends BaseProvide {
 
   /// 支付订单
   Observable payShopping() {
-    return _repo.payShopping()
+    return _repo.payShopping(_orderId,_payTypes)
         .doOnData((result) {
 
     })
