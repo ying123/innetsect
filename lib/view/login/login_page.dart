@@ -22,6 +22,8 @@ class LoginContentPage extends StatefulWidget {
 }
 
 class _LoginContentPageState extends State<LoginContentPage> {
+  String pages;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +32,11 @@ class _LoginContentPageState extends State<LoginContentPage> {
         elevation: 0.0,
         leading: InkWell(
             onTap: () {
+              // 返回按钮
               Navigator.pop(context);
+              if(pages == 'orderDetail'){
+                Navigator.pop(context);
+              }
             },
             child: Image.asset(
               'assets/images/xiangxia.png',
@@ -61,6 +67,17 @@ class _LoginContentPageState extends State<LoginContentPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState(){
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero,(){
+      // 运用未来获取context，初始化数据
+      Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
+      pages = mapData['pages'];
+    });
   }
 
   Provide<LoginProvide> _setupLogo() {
@@ -171,6 +188,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
               UserTools().setUserData(item.data);
               print('listen data->$item');
               Navigator.pop(context);
+              if(pages == 'orderDetail'){
+                Navigator.pop(context);
+              }
 //      _provide
             }, onError: (e) {});
           },

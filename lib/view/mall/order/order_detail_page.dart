@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/commodity_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/order/order_pay_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
@@ -37,6 +39,7 @@ class OrderContent extends StatefulWidget {
 }
 
 class _OrderContentState extends State<OrderContent> {
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -101,6 +104,7 @@ class _OrderContentState extends State<OrderContent> {
     super.initState();
 
     _loadData();
+
   }
 
   /// 地址栏
@@ -226,16 +230,27 @@ class _OrderContentState extends State<OrderContent> {
 
   /// 加载数据
   _loadData(){
-    widget._detailProvide.createShopping(widget._detailProvide.commodityModels,
-        widget._detailProvide.skusModel,widget._provide.count)
-        .doOnListen(() {
-      print('doOnListen');
-    })
-        .doOnCancel(() {})
-        .listen((item) {
-      ///加载数据
-      print('listen data->$item');
-//      _provide
-    }, onError: (e) {});
+    if(UserTools().getUserData()!=null){
+      widget._detailProvide.createShopping(widget._detailProvide.commodityModels,
+          widget._detailProvide.skusModel,widget._provide.count)
+          .doOnListen(() {
+        print('doOnListen');
+      })
+          .doOnCancel(() {})
+          .listen((item) {
+        ///加载数据
+        print('listen data->$item');
+  //      _provide
+      }, onError: (e) {});
+    }else{
+      // 跳转登录页面
+      Future.delayed(Duration.zero,(){
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context){
+            return new LoginPage();
+          },settings: RouteSettings(arguments: {'pages': 'orderDetail'})
+        ));
+      });
+    }
   }
 }
