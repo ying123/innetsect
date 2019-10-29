@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/app.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_model.dart';
+import 'package:innetsect/data/commodity_types_model.dart';
+import 'package:innetsect/enum/commodity_cart_types.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
@@ -84,7 +87,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
       ),
       body: new Container(
         width: double.infinity,
-        child: _cartContent(),
+        child: _cartContent(mapData['page']),
       ),
     );
   }
@@ -95,7 +98,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
     this.provide = widget._provide;
     // 设置多计数器模式
     this.provide.setMode(mode:"multiple");
-    for(int i=0;i<3;i++){
+    for(int i=0;i<6;i++){
       CommodityModel model = new CommodityModel();
       model.size = "M";
       model.describe= "描述描述描述描述描述描述描述描述描述描述描述";
@@ -105,16 +108,21 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
       model.colors = "白色";
       model.images = "assets/images/mall/product2.png";
       model.isSelected = false;
-      this.provide.addCommodityModelList(model);
+      if(i>3){
+        model.types = CommodityCartTypes.commodity.toString();
+      }else{
+        model.types = CommodityCartTypes.exhibition.toString();
+      }
+      this.provide.addCommodityModelLists(model);
     }
   }
 
   /// 购物车是否存在商品，构建视图
-  Provide<CommodityAndCartProvide> _cartContent(){
+  Provide<CommodityAndCartProvide> _cartContent(String page){
     return Provide<CommodityAndCartProvide>(
       builder: (BuildContext context,Widget widget,CommodityAndCartProvide provide){
-        if(provide.commodityModelList!=null
-            && provide.commodityModelList.length>0){
+        List<CommodityTypesModel> list = provide.commodityModelLists;
+        if(list!=null && list.length>0){
           return new Center(
             child: new Column(
               children: <Widget>[
@@ -124,9 +132,37 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                     child: new Container(
                       width: double.infinity,
                       height: ScreenAdapter.getScreenHeight()-100,
-                      child: new SingleChildScrollView(
-                        child: _cartList(),
-                      ),
+                      padding: EdgeInsets.all(10),
+                      child: new ListView.builder(
+                          itemCount: list.length,
+                          itemBuilder: (BuildContext context, int index){
+                            return new Container(
+                              width: double.infinity,
+                              margin: EdgeInsets.only(left: 5,right: 5,top: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white
+                              ),
+                              child: new Column(
+                                children: <Widget>[
+                                  new Container(
+                                    width: double.infinity,
+                                    height: ScreenAdapter.height(60),
+                                    alignment: Alignment.centerLeft,
+                                    margin: EdgeInsets.only(left: 10,right: 10),
+                                    decoration: BoxDecoration(
+                                      border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
+                                    ),
+                                    child: CustomsWidget().subTitle(
+                                      title: list[index].getTypes(list[index].types),
+                                      color: AppConfig.primaryColor
+                                    ),
+                                  ),
+                                  _cartList(list[index].commodityModelList)
+                                ],
+                              ),
+                            );
+                          }),
                     )
                 ),
                 // 底部操作栏区域
@@ -155,109 +191,103 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
           );
         }else{
           // 没有商品视图
-          return _cartNone();
+          return _cartNone(page);
         }
       },
     );
   }
 
   /// 购物车商品列表部件
-  Provide<CommodityAndCartProvide> _cartList(){
-    return Provide<CommodityAndCartProvide>(
-      builder: (BuildContext context,Widget widget,CommodityAndCartProvide provide){
-        List<CommodityModel> list = provide.commodityModelList;
-        return new Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(top: 10),
-          child: new Column(
-            children: list.asMap().keys.map((key){
-              return new Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(200),
-                margin: EdgeInsets.only(top: 1,left: 10,right: 10),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: AppConfig.assistLineColor))
-                ),
-                child: new InkWell(
-                  onTap: (){
-                    print("详情跳转");
-                  },
-                  child: new Row(
-                    children: <Widget>[
-                      // 选择部件
-                      new Expanded(
-                          flex:1,
-                          child: new Container(
-                            child: CustomsWidget().customRoundedWidget(
-                                isSelected: list[key].isSelected,
-                                onSelectedCallback: (){
-                                  provide.setSelected(key,list[key].isSelected);
-                                  setState(() {
-                                    this.isAllChecked = provide.isSelected;
-                                  });
-                                }
-                            ),
-                          )
-                      ),
-                      // 商品信息部件 及 计数器部件
-                      new Expanded(
-                          flex:10,
-                          child: new Container(
-                            child: new Row(
-                              children: <Widget>[
-                                // 商品信息 -- 图片
-                                new Expanded(
-                                    flex:1,
-                                    child: new Container(
-                                      padding:EdgeInsets.all(5),
-                                      child: new Image.asset(list[key].images,width: ScreenAdapter.width(120),),
-                                    )
-                                ),
-                                new Expanded(
-                                    flex: 3,
-                                    child: new Container(
-                                      margin: EdgeInsets.all(5),
-                                      child: new Column(
-                                        children: <Widget>[
-                                          // 商品描述
-                                          new Expanded(
-                                            flex:2,
-                                            child: new Container(
-                                              padding: EdgeInsets.only(top: 10),
-                                              child: new Text(list[key].describe,softWrap: true,
-                                                style: TextStyle(fontSize: ScreenAdapter.size(28)),
-                                              ),
-                                          )),
-                                          // 商品价格
-                                          new Expanded(
-                                            flex:1,
-                                            child: CustomsWidget().priceTitle(price: list[key].price.toString())
-                                          ),
-                                          // 计数器
-                                          new Expanded(
-                                            flex: 1,
-                                            child: new Container(
-                                              alignment: Alignment.centerRight,
-                                              child: CounterWidget(provide: provide,idx: key ),
-                                            )
-                                          )
-
-                                        ],
-                                      ),
-                                    )
-                                )
-                              ],
-                            ),
-                          )
+  Widget _cartList(List<CommodityModel> list){
+    return new Container(
+      width: double.infinity,
+      child: new Column(
+        children: list.asMap().keys.map((key){
+          return new Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(200),
+            margin: EdgeInsets.only(top: 1,left: 10,right: 10),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: AppConfig.assistLineColor))
+            ),
+            child: new InkWell(
+              onTap: (){
+                print("详情跳转");
+              },
+              child: new Row(
+                children: <Widget>[
+                  // 选择部件
+                  new Expanded(
+                      flex:1,
+                      child: new Container(
+                        child: CustomsWidget().customRoundedWidget(
+                            isSelected: list[key].isSelected,
+                            onSelectedCallback: (){
+                              provide.setSelected(key,list[key],list[key].isSelected);
+                              setState(() {
+                                this.isAllChecked = provide.isSelected;
+                              });
+                            }
+                        ),
                       )
-                    ],
                   ),
-                ),
-              );
-            }).toList(),
-          ),
-        );
-      },
+                  // 商品信息部件 及 计数器部件
+                  new Expanded(
+                      flex:10,
+                      child: new Container(
+                        child: new Row(
+                          children: <Widget>[
+                            // 商品信息 -- 图片
+                            new Expanded(
+                                flex:1,
+                                child: new Container(
+                                  padding:EdgeInsets.all(5),
+                                  child: new Image.asset(list[key].images,width: ScreenAdapter.width(120),),
+                                )
+                            ),
+                            new Expanded(
+                                flex: 3,
+                                child: new Container(
+                                  margin: EdgeInsets.all(5),
+                                  child: new Column(
+                                    children: <Widget>[
+                                      // 商品描述
+                                      new Expanded(
+                                        flex:2,
+                                        child: new Container(
+                                          padding: EdgeInsets.only(top: 10),
+                                          child: new Text(list[key].describe,softWrap: true,
+                                            style: TextStyle(fontSize: ScreenAdapter.size(28)),
+                                          ),
+                                      )),
+                                      // 商品价格
+                                      new Expanded(
+                                        flex:1,
+                                        child: CustomsWidget().priceTitle(price: list[key].price.toString())
+                                      ),
+                                      // 计数器
+                                      new Expanded(
+                                        flex: 1,
+                                        child: new Container(
+                                          alignment: Alignment.centerRight,
+                                          child: CounterWidget(provide: provide,model: list[key],idx: key ),
+                                        )
+                                      )
+
+                                    ],
+                                  ),
+                                )
+                            )
+                          ],
+                        ),
+                      )
+                  )
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 
@@ -337,7 +367,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
   }
 
   /// 没有商品
-  Widget _cartNone(){
+  Widget _cartNone(String page){
     return  new Center(
       child: new Column(
         children: <Widget>[
@@ -383,7 +413,12 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                 textColor: Colors.white,
                 color: AppConfig.fontBackColor,
                 onPressed: (){
-                  Navigator.pushNamedAndRemoveUntil(context, "/mallPage",(route) => route == null);
+                  ///TODO 判断是否展会进入
+                  if(page=="mall"){
+                    Navigator.pushNamedAndRemoveUntil(context, "/mallPage",(route) => route == null);
+                  } else {
+                    Navigator.pushNamedAndRemoveUntil(context, "/",(route) => route == null);
+                  }
                 },
                 child: new Text("去逛逛"),
               ),

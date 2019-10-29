@@ -23,6 +23,8 @@ class CommodityModel{
   CommoditySizeModel commoditySizeModel;
   // 是否选中
   bool isSelected;
+  // 商品类别
+  String types;
 
   CommodityModel({
     this.id,
@@ -34,7 +36,8 @@ class CommodityModel{
     this.count,
     this.commodityColorModel,
     this.commoditySizeModel,
-    this.isSelected
+    this.isSelected,
+    this.types
   });
 
   factory CommodityModel.formJson(Map<String,dynamic> json){
@@ -48,7 +51,8 @@ class CommodityModel{
       count: json['count'],
       commodityColorModel: json['commodityColorModel'],
       commoditySizeModel: json['commoditySizeModel'],
-        isSelected: json['isSelected']
+        isSelected: json['isSelected'],
+      types: json['types']
     );
   }
 
@@ -62,6 +66,7 @@ class CommodityModel{
     'count': count,
     'commodityColorModel': commodityColorModel,
     'commoditySizeModel': commoditySizeModel,
-    'isSelected': isSelected
+    'isSelected': isSelected,
+    'types': types
   };
 }

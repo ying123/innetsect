@@ -138,14 +138,14 @@ class CustomsWidget{
     @required Widget widget,
     double width,
     double elevation = 0,
-    Widget leading,
+    bool leading = true,
     bool centerTitle = true,
     bool automaticallyImplyLeading = false,
     List<Widget> actions,
     Function() onTap
   }){
     return new AppBar(
-      leading: leading == null?new GestureDetector(
+      leading: leading ?new GestureDetector(
         onTap: (){
           onTap==null ?
             Navigator.pop(context) : onTap();
@@ -156,7 +156,7 @@ class CustomsWidget{
               fit: BoxFit.fitWidth,
             )
         ),
-      ): leading,
+      ): null,
       title: new Container(
         width: width,
         child: widget,

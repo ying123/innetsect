@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/widget/commodity_select_widget.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 
 class CommodityModalChildPage extends StatefulWidget {
   final CommodityAndCartProvide _cartProvide;
+  final CommodityDetailProvide _detailProvide;
   final double _height;
-  CommodityModalChildPage(this._cartProvide,this._height);
+  CommodityModalChildPage(this._detailProvide,this._cartProvide,this._height);
 
   @override
   _CommodityModalChildPageState createState() => new _CommodityModalChildPageState();
@@ -16,6 +19,7 @@ class CommodityModalChildPage extends StatefulWidget {
 
 class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
   CommodityAndCartProvide _cartProvide;
+  CommodityDetailProvide _detailProvide;
   double _height;
 
   @override
@@ -38,7 +42,9 @@ class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
     // TODO: implement initState
     super.initState();
     this._cartProvide = widget._cartProvide;
+    this._detailProvide = widget._detailProvide;
     this._height = widget._height;
+    this._cartProvide.setMode();
   }
 
   /// 返回按钮
@@ -71,13 +77,12 @@ class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
       width: double.infinity,
       height: this._height-150,
       color: Colors.white,
-      child: new CommoditySelectWidget(this._cartProvide),
+      child: new CommoditySelectWidget(this._cartProvide,this._detailProvide),
     );
   }
 
   /// 计数器
   Widget counterWidget(){
-    this._cartProvide.setMode();
     return new Container(
       width: double.infinity,
       height: ScreenAdapter.height(100),
@@ -90,7 +95,7 @@ class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
   Widget bottomBtn(){
     return new Container(
       width: double.infinity,
-      height: this._height-476,
+//      height: this._height-476,
       color: Colors.white,
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,7 +120,14 @@ class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
             child: new RaisedButton(
               color: AppConfig.primaryColor,
               textColor: AppConfig.fontBackColor,
-              onPressed: (){},
+              onPressed: (){
+                // 跳转订单详情
+                Navigator.push(context, new MaterialPageRoute(
+                    builder: (context){
+                      return new OrderDetailPage();
+                    })
+                );
+              },
               child: new Text("立即购买",style: TextStyle(
                   fontSize: ScreenAdapter.size(30)
                 ),

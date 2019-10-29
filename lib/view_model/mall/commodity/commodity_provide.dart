@@ -1,73 +1,38 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/commodity_models.dart';
+import 'package:innetsect/model/commodity_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 class CommodityProvide extends BaseProvide{
 
-  List _list = [
-    {
-      "id":1,
-      "image": "assets/images/Logoy.png",
-      "describe": "描述描述描述描述描述描述描述",
-      "Price": 1000.00
-    },
-    {
-      "id":2,
-      "image": "assets/images/Logoy.png",
-      "describe": "描述描述描述描述描述描述描述",
-      "Price": 1000.00
-    },
-    {
-      "id":3,
-      "image": "assets/images/Logoy.png",
-      "describe": "描述描述描述描述描述描述描述",
-      "Price": 1000.00
-    },
-    {
-      "id":4,
-      "image": "assets/images/Logoy.png",
-      "describe": "描述描述描述描述描述描述描述",
-      "Price": 1000.00
-    },
-    {
-      "id":5,
-      "image": "assets/images/Logoy.png",
-      "describe": "描述描述描述描述描述描述描述",
-      "Price": 1000.00
-    },
-    {
-      "id":6,
-      "image": "assets/images/Logoy.png",
-      "describe": "描述描述描述描述描述描述描述",
-      "Price": 1000.00
-    },
-    {
-      "id":7,
-      "image": "assets/images/Logoy.png",
-      "describe": "描述描述描述描述描述描述描述",
-      "Price": 1000.00
-    },
-    {
-      "id":8,
-      "image": "assets/images/Logoy.png",
-      "describe": "描述描述描述描述描述描述描述",
-      "Price": 1000.00
-    },
-  ];
+  List<CommodityModels> _list=[];
 
-  get list => _list;
+  List<CommodityModels> get list => _list;
 
-  /// 工厂模式
-//  factory CommodityProvide()=> _getInstance();
-//  static CommodityProvide get instance => _getInstance();
-//  static CommodityProvide _instance;
-//  static CommodityProvide _getInstance(){
-//    if (_instance == null) {
-//      _instance = new CommodityProvide._internal();
-//    }
-//    return _instance;
-//  }
-//
-//  CommodityProvide._internal() {
-//    print('MallProvode init');
-//  }
+  void setList({@required  List<CommodityModels> lists,bool isReload = false}){
+    _list..addAll(lists);
+    notifyListeners();
+  }
+
+  void clearList(){
+    _list.clear();
+    notifyListeners();
+  }
+
+  final CommodityRepo _repo = CommodityRepo();
+
+  ///展会首页数据
+  Observable homeListData(int pageNo,String types) {
+    return _repo
+        .homeListData(pageNo,types)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
 }

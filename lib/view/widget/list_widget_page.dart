@@ -40,7 +40,8 @@ class _ListWidgetPageState extends State<ListWidgetPage> {
             showInfo: false,
             noMoreText: "已经全部加载完毕",
             loadingText:"正在加载更多数据",
-            textColor: Colors.grey
+            textColor: Colors.grey,
+            loadedText: "数据已加载",
         ),
         controller: widget.controller,
         onRefresh:()=>widget.onRefresh(),

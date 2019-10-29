@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
@@ -34,40 +35,45 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 
   CommodityProvide provides;
   TabController _tabController;
+  int pageNo = 1;
 
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
-          widget: _tabBar(),
-          width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-100),
-          leading: new Container(),
-          centerTitle: false
+        widget: _tabBar(),
+        width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-100),
+        centerTitle: false,
+        leading: false
       ),
-      body: new Stack(
-          children: <Widget>[
-            new Padding(
-              padding: EdgeInsets.only(
-                  top: ScreenAdapter.height(88.0)
+      body: Provide<CommodityProvide>(
+        builder: (BuildContext context,Widget widget,CommodityProvide provide){
+          return new Stack(
+            children: <Widget>[
+              new Padding(
+                padding: EdgeInsets.only(
+                    top: ScreenAdapter.height(88.0)
+                ),
+                child: _tabBarView(provides.list),
               ),
-              child: _tabBarView(provides.list),
-            ),
-            //307pt*20pt
-            new Positioned(
-                top: 5,
-                width: ScreenAdapter.width(750),
-                height: ScreenAdapter.height(20*ScreenAdapter.getPixelRatio()),
-                child: new InkWell(
-                  onTap: (){
-                    // 跳转到搜索页面
-                    Navigator.pushNamed(context, "/mallSearchPage");
-                  },
-                  child: _searchWidget(),
-                )
-            )
-          ],
-        ),
+              //307pt*20pt
+              new Positioned(
+                  top: 5,
+                  width: ScreenAdapter.width(750),
+                  height: ScreenAdapter.height(20*ScreenAdapter.getPixelRatio()),
+                  child: new InkWell(
+                    onTap: (){
+                      // 跳转到搜索页面
+                      Navigator.pushNamed(context, "/mallSearchPage");
+                    },
+                    child: _searchWidget(),
+                  )
+              )
+            ],
+          );
+        },
+      ),
       floatingActionButton: new Builder(builder: (context){
         return _cartBtnWidget();
       }),
@@ -79,8 +85,23 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     // TODO: implement initState
     super.initState();
 
-    _tabController = new TabController(length: mallTabBarList.length, vsync: this);
-    this.provides = widget.provide;
+    _tabController = new TabController(length: mallTabBarList.length, vsync: this)
+    ..addListener((){
+      this.pageNo = 1;
+      if(_tabController.index.toDouble() == _tabController.animation.value){
+        switch(_tabController.index){
+          case 0:
+            _loadList(pageNo: this.pageNo,types: "hotCom",isReload: true);
+            break;
+          case 1:
+            _loadList(pageNo: this.pageNo,types: "newCom",isReload: true);
+            break;
+        }
+      }
+      print(_tabController.index);
+    });
+    this.provides ??= widget.provide;
+    _loadList(pageNo: this.pageNo,types: "hotCom",isReload: true);
   }
 
   @override
@@ -109,36 +130,36 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   }
 
   /// tabbarview视图组件
-  Widget _tabBarView(List list){
+  Widget _tabBarView(List<CommodityModels> list){
     // 计算商品列宽度
     double itemWidth = (ScreenAdapter.getScreenWidth()-30)/2;
     return new TabBarView(
         controller: _tabController,
         children: [
-          _listData(itemWidth,list),
-          _listData(itemWidth,list),
+          _listData(itemWidth,list,"hotCom"),
+          _listData(itemWidth,list,"newCom"),
 //          new ListWidgetPage()
         ]
     );
   }
 
   /// 数据列表
-  Widget _listData(double itemWidth, List list){
+  Widget _listData(double itemWidth, List<CommodityModels> list,String types){
       return new ListWidgetPage(
 //            controller: _easyController,
         onRefresh:() async{
           await Future.delayed(Duration(seconds: 2), () {
             print('onRefresh');
-            setState(() {
-            });
+            this.pageNo = 1;
+            _loadList(pageNo: pageNo,types: types,isReload: true);
 //                _easyController.resetLoadState();
           });
         },
         onLoad: () async{
           await Future.delayed(Duration(seconds: 2), () {
             print('onLoad');
-            setState(() {
-            });
+
+            _loadList(pageNo: pageNo ++,types: types);
 //                _easyController.finishLoad(noMore: _count >= 20);
           });
         },
@@ -148,12 +169,12 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
               delegate:
               SliverChildListDelegate([
                 new Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.only(left: 10,right: 10),
                   child: new Wrap(
                     spacing: 10,
                     runSpacing: 10,
-                    children: list.map((item){
-                      print(item['Price'].toString());
+                    children: list!=null? list.map((item){
+                      print(item);
                       return new InkWell(
                         onTap: (){
                           /// 跳转详情
@@ -161,27 +182,27 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                               builder:(context){
                                 return new CommodityDetailPage();
                               },
-                              settings: RouteSettings(arguments: {'id': item['id']})
+                              settings: RouteSettings(arguments: {'id': item.prodID})
                             )
                           );
                         },
                         child: new Container(
                           width: itemWidth,
-                          color: Colors.grey,
+                          color: Colors.white,
                           padding: EdgeInsets.all(5),
                           child: new Column(
                             children: <Widget>[
                               // 商品图片
-                              _imageWidget(item['image']),
+                              _imageWidget(item.prodPic),
                               // 价格 购物车图标
-                              _priceAndCartWidget(item['Price'].toString()),
+                              _priceAndCartWidget(item.salesPriceRange.toString()),
                               // 描述
-                              _textWidget(item['describe'])
+                              _textWidget(item.prodName)
                             ],
                           ),
                         ),
                       );
-                    }).toList(),
+                    }).toList():[],
                   ),
                 )
               ])
@@ -193,7 +214,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   /// 搜索组件
   Widget _searchWidget(){
     return new Container(
-      margin: EdgeInsets.only(left: 20,right: 50),
+      margin: EdgeInsets.only(left: 10,right: 10),
       padding: EdgeInsets.all(5.0),
       decoration: BoxDecoration(
           color: AppConfig.assistLineColor,
@@ -218,15 +239,15 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
           right: 0,
           child: new Container(
             padding: EdgeInsets.all(5),
-            color: Colors.red,
             child: new Text("标签栏",style: TextStyle(fontSize: ScreenAdapter.size(16.0)),),
           )
         ),
         new Container(
             width: double.infinity,
-            child: Image.asset(
+            height: ScreenAdapter.height(320),
+            child: Image.network(
               image,
-              fit: BoxFit.fill,
+              fit: BoxFit.fitWidth,
             )
         )
       ],
@@ -237,8 +258,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   Widget _priceAndCartWidget(String price){
     return new Container(
       width: double.infinity,
-      color: Colors.red,
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.only(top: 10,left: 10,right: 10,bottom: 5),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -264,7 +284,9 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   /// 描述
   Widget _textWidget(String text){ 
     return new Container(
-      padding: EdgeInsets.only(left: 6,right: 5,top: 5,bottom: 5),
+      padding: EdgeInsets.only(left: 6,right: 5,bottom: 5),
+      height: ScreenAdapter.height(80),
+      alignment: Alignment.topLeft,
       child: new Text(text,softWrap: true,maxLines: 2,textAlign: TextAlign.left,
         style: TextStyle(fontSize: ScreenAdapter.size(26)),
       ),
@@ -283,5 +305,27 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 
         }
     );
+  }
+
+
+
+  _loadList({int pageNo=0,String types,bool isReload=false}){
+    if(isReload) provides.clearList();
+    provides
+        .homeListData(pageNo,types)
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      List<CommodityModels> list = new List();
+      if(item!=null&&item.data.length>0){
+        list = CommodityList.fromJson(item.data).list;
+      }
+      provides.setList(lists: list,isReload:isReload);
+//      _provide
+    }, onError: (e) {});
   }
 }
