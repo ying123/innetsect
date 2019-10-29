@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view_model/activity/activity_provide.dart';
@@ -46,12 +47,18 @@ class _ActivityContextPageState extends State<ActivityContextPage> {
     _items.add(Item('星期五', '4月', '24', false));
     _items.add(Item('星期六', '4月', '24', false));
     _items.add(Item('星期日', '4月', '24', false));
-
+    // Future.delayed(Duration(milliseconds: 2000),(){
+    //   AppConfig.userTools.getExhibitionID().then((value){
+    //   print('value>>>>>>>>$value');
+    // });
+    // });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    
+     
     return Scaffold(
         appBar: AppBar(
           title: Text(

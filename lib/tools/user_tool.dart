@@ -34,6 +34,7 @@ class UserTools{
     return false;
   }
 
+
 //存储用户数据
 Future<bool> setUserData(Map<String, dynamic>user){
   if (_beforCheck()) {
@@ -46,6 +47,7 @@ Future<bool> setUserData(Map<String, dynamic>user){
 ///获取用户数据
 dynamic getUserData(){
   var mapStr = _spf.getString(ConstConfig.CURRENT_USERDATA);
+  print('mapStr>>>>>>>$mapStr');
   if (mapStr != null) {
     var map = json.decode(mapStr);
     return map;
@@ -76,5 +78,24 @@ dynamic getUserData(){
     String language = _spf.getString(iniLanguage);
     return language;
   }
+
+///保存exhibitionID展会ID 到本地
+  Future<bool> setExhibitionID(String exhibitionID)async{
+    print('_spf<<<<<<<<<<<<<<<<<<$_spf <<<<<<$exhibitionID');
+    if (_beforCheck()) {
+      print('<<<<<<<<<<<<<<<<<<<<<<<<<<<<_beforCheck');
+      return null;
+    }
+    return _spf.setString(ConstConfig.EXHIBITION_ID, exhibitionID);
+  }
+
+  
+///获取exhibitionID展会ID
+  Future<String> getExhibitionID()async{
+    
+    return _spf.getString(ConstConfig.EXHIBITION_ID);
+  }
+
+
 
 }

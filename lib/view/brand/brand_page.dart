@@ -33,9 +33,9 @@ class _BrandContentPageState extends State<BrandContentPage>
     Tab(
       text: 'B馆',
     ),
-    Tab(
-      text: 'C馆',
-    ),
+    // Tab(
+    //   text: 'C馆',
+    // ),
   ];
 
   @override
@@ -49,7 +49,7 @@ class _BrandContentPageState extends State<BrandContentPage>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -76,7 +76,7 @@ class _BrandContentPageState extends State<BrandContentPage>
           children: <Widget>[
             AVenuedPage(),
             BVenuedPage(),
-            CVenuedPage()
+           // CVenuedPage()
           ],
         ),
       ),

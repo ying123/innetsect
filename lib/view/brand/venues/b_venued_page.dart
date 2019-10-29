@@ -4,6 +4,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/model/brand_model.dart';
 import 'package:innetsect/view_model/brand/venues/b_venues_provide.dart';
 import 'package:provide/provide.dart';
+import 'package:rxdart/rxdart.dart';
 
 const INDEX_BAR_WORDS = [
   "↑",
@@ -54,43 +55,83 @@ class BvenuedContentPage extends StatefulWidget {
   _BvenuedContentPageState createState() => _BvenuedContentPageState();
 }
 
-class _BvenuedContentPageState extends State<BvenuedContentPage> {
+class _BvenuedContentPageState extends State<BvenuedContentPage>  with AutomaticKeepAliveClientMixin{
   ScrollController _scrollController;
 
   final List<BrandItem> _functionButtons = [];
-
+var _subScription = CompositeSubscription();
   ///字母下索引的偏移
   final Map _letterPosMap = {INDEX_BAR_WORDS[0]: 0.0};
+  @override
 
+  bool get wantKeepAlive => true;
   @override
   void initState() {
-    widget.provide.brands
-      ..addAll(widget.provide.contacts);
-      //..addAll(widget.provide.contacts)
-     // ..addAll(widget.provide.contacts);
-    print('brands->${widget.provide.brands}');
-    widget.provide.brands.sort((Brand a, Brand b) {
-      return a.nameIndex.compareTo(b.nameIndex);
-    });
+    _loadBVenuedData();
+    // widget.provide.brands
+    //   ..addAll(widget.provide.contacts);
+    //   //..addAll(widget.provide.contacts)
+    //  // ..addAll(widget.provide.contacts);
+    // print('brands->${widget.provide.brands}');
+    // widget.provide.brands.sort((Brand a, Brand b) {
+    //   return a.nameIndex.compareTo(b.nameIndex);
+    // });
     _scrollController = new ScrollController();
 
-    //计算用于IndexBar 进行定位的关键通信录列表项的位置
-    var _totalPos = _functionButtons.length * BrandItem.height(false);
-    for (var i = 0; i < widget.provide.brands.length; i++) {
-      bool _hasGroupTitle = true;
-      if (i > 0 &&
-          widget.provide.brands[i].nameIndex
-                  .compareTo(widget.provide.brands[i - 1].nameIndex) ==
-              0) {
-        _hasGroupTitle = false;
+    
+    super.initState();
+  }
+  _loadBVenuedData() {
+    var s = widget.provide.loadBVenues().doOnData((data) {
+      // print('_loadAVenuedData--------->${data.data}');
+    }).listen((data) {
+      for (var item in data.data) {
+        String str = item['brandName'][0];
+        if (str == "1" ||
+            str == "2" ||
+            str == "3" ||
+            str == "4" ||
+            str == "5" ||
+            str == "6" ||
+            str == "7" ||
+            str == "8" ||
+            str == "9" ||
+            str == "0") {
+          str = '*';
+        }
+        print('str-------->$str');
+        Brand b = Brand(
+            avatar: item['poster'], name: item['brandName'], nameIndex: str);
+        setState(() {
+          widget.provide.contacts = b;
+        });
       }
 
-      if (_hasGroupTitle) {
-        _letterPosMap[widget.provide.brands[i].nameIndex] = _totalPos;
+      setState(() {
+        widget.provide.brands..addAll(widget.provide.contacts);
+      });
+
+      widget.provide.brands.sort((Brand a, Brand b) {
+        return a.nameIndex.compareTo(b.nameIndex);
+      });
+      //计算用于IndexBar 进行定位的关键通信录列表项的位置
+      var _totalPos = _functionButtons.length * BrandItem.height(false);
+      for (var i = 0; i < widget.provide.brands.length; i++) {
+        bool _hasGroupTitle = true;
+        if (i > 0 &&
+            widget.provide.brands[i].nameIndex
+                    .compareTo(widget.provide.brands[i - 1].nameIndex) ==
+                0) {
+          _hasGroupTitle = false;
+        }
+
+        if (_hasGroupTitle) {
+          _letterPosMap[widget.provide.brands[i].nameIndex] = _totalPos;
+        }
+        _totalPos += BrandItem.height(_hasGroupTitle);
       }
-      _totalPos += BrandItem.height(_hasGroupTitle);
-    }
-    super.initState();
+    }, onError: (e) {});
+    _subScription.add(s);
   }
 
   @override
@@ -175,6 +216,7 @@ class _BvenuedContentPageState extends State<BvenuedContentPage> {
 
   @override
   Widget build(BuildContext context) {
+     super.build(context);
     final List<Widget> _body = [
       ListView.builder(
         physics: BouncingScrollPhysics(),

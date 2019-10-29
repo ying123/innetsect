@@ -7,9 +7,9 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/animation_util.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/advisory_details/advisory_details_page.dart';
 import 'package:innetsect/view/show_tickets/show_tickets.dart';
 import 'package:innetsect/view/venues_map/venues_map_page.dart';
-import 'package:innetsect/view/widget/pulltorefresh_flutter.dart';
 import 'package:innetsect/view_model/home/home_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -56,6 +56,7 @@ class _HomeContentPageState extends State<HomeContentPage>
         })
         .doOnCancel(() {})
         .listen((data) {
+          AppConfig.userTools.setExhibitionID(data.data['exhibitionID'].toString());
           ///加载展会首页数据
           print('listen data->$data');
           for (var item in data.data['banners']) {
@@ -70,6 +71,7 @@ class _HomeContentPageState extends State<HomeContentPage>
               //  print('item countents====>$item');
               widget._provide.contents = item;
             }
+            
           }
           print('widget_provide.contents${widget._provide.contents}');
         }, onError: (e) {});
@@ -150,6 +152,9 @@ class _HomeContentPageState extends State<HomeContentPage>
               onTap: (){
                 print('${provide.contents[index]['title']}被点击');
                 provide.contentID = provide.contents[index]['contentID'];
+                 Navigator.of(context).push(CommonUtil.createRoute(
+                            AnimationUtil.getBottominAnilmation(),
+                            AdvisoryDetailsPage(provide.contentID)));
                 
               },
               child: Wrap(
