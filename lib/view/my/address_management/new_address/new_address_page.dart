@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/city_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view_model/my/address_management/new_address/new_address_provide.dart';
 import 'package:provide/provide.dart';
+import 'package:city_pickers/city_pickers.dart';
 
 class NewAddressPage extends PageProvideNode {
   final NewAddressProvide _provide = NewAddressProvide();
@@ -59,6 +61,14 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     );
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // 获取国家
+    _getCountries();
+  }
+
   Provide<NewAddressProvide> _setupNewGoodsAddress() {
     return Provide<NewAddressProvide>(
       builder: (BuildContext context, Widget child, NewAddressProvide provide) {
@@ -98,22 +108,28 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       ],
                     )
             ),
-            Container(
-              width: ScreenAdapter.width(700),
-              height: ScreenAdapter.height(100),
-              // color: Colors.yellow,
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
-                      top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
-                      ),
-                    child: Row(
-                      children: <Widget>[
-                        Center(
-                          child: Text('所在国家',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
-                        )
-                      ],
-                    )
+            InkWell(
+              onTap: () async{
+                //弹出国家
+                Result tempResult = await CityPickers.showCitiesSelector(context: context,citiesData: widget.provide.cityJson);
+              },
+              child: Container(
+                  width: ScreenAdapter.width(700),
+                  height: ScreenAdapter.height(100),
+                  // color: Colors.yellow,
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
+                          top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Center(
+                        child: Text('所在国家',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                      )
+                    ],
+                  )
+              ),
             ),
             Container(
               width: ScreenAdapter.width(700),
@@ -198,5 +214,13 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
         );
       },
     );
+  }
+
+  ///获取国家
+  void _getCountries(){
+    widget.provide.getCity().doOnListen(() {}).doOnCancel(() {}).listen((items) {
+      print('listen data->$items');
+      widget.provide.parseMap(CityModelList.fromJson(items.data).list);
+    }, onError: (e) {});
   }
 }

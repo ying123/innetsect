@@ -238,8 +238,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                 new InkWell(
                   onTap: (){
                     /// 弹出颜色，尺码选择
-                    CommodityModalBottom.showBottomModal(context:context,
-                        detailProvide:provide,cartProvide: _cartProvide);
+                    CommodityModalBottom.showBottomModal(context:context);
                   },
                   child: new Container(
                     width: ScreenAdapter.getScreenWidth()-100,
@@ -310,8 +309,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             child: new InkWell(
               onTap: (){
                 print("点击购物车");
-                CommodityModalBottom.showBottomModal(context:context,cartProvide:_cartProvide,
-                    detailProvide:_provide);
+                CommodityModalBottom.showBottomModal(context:context);
               },
               child: new Container(
                 width: ScreenAdapter.width(230),
@@ -327,8 +325,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             child: InkWell(
               onTap: (){
                 // 存储当前商品信息
-                CommodityModalBottom.showBottomModal(context:context,
-                    detailProvide:_provide,cartProvide: _cartProvide);
+                CommodityModalBottom.showBottomModal(context:context);
               },
               child: new Container(
                 width: ScreenAdapter.width(230),

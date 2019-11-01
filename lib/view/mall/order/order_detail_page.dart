@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/commodity_model.dart';
+import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/order/order_pay_page.dart';
+import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/base/base.dart';
@@ -15,31 +18,34 @@ class OrderDetailPage extends PageProvideNode{
 
   final CommodityAndCartProvide _provide = CommodityAndCartProvide.instance;
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
 
   OrderDetailPage(){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+    mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return OrderContent(_provide,_detailProvide);
+    return OrderContent(_provide,_detailProvide,_orderDetailProvide);
   }
 }
 
 class OrderContent extends StatefulWidget {
   final CommodityAndCartProvide _provide;
   final CommodityDetailProvide _detailProvide;
+  final OrderDetailProvide _orderDetailProvide;
 
-  OrderContent(this._provide,this._detailProvide);
+  OrderContent(this._provide,this._detailProvide,this._orderDetailProvide);
 
   @override
   _OrderContentState createState() => new _OrderContentState();
 }
 
 class _OrderContentState extends State<OrderContent> {
-
+  OrderDetailProvide _orderDetailProvide;
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -102,15 +108,17 @@ class _OrderContentState extends State<OrderContent> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _orderDetailProvide = widget._orderDetailProvide;
 
 //    _loadData();
 
   }
 
   /// 地址栏
-  Provide<CommodityAndCartProvide> _addressWidget(){
-    return Provide<CommodityAndCartProvide>(
-      builder: (BuildContext context,Widget widget, CommodityAndCartProvide provide){
+  Provide<OrderDetailProvide> _addressWidget(){
+    return Provide<OrderDetailProvide>(
+      builder: (BuildContext context,Widget widget, OrderDetailProvide provide){
+        OrderDetailModel model = provide.orderDetailModel;
         return new Container(
           width: double.infinity,
           color: AppConfig.backGroundColor,
@@ -121,18 +129,25 @@ class _OrderContentState extends State<OrderContent> {
                   children: <Widget>[
                     new Expanded(
                       flex:1,
-                      child: new Container(
-                        padding: EdgeInsets.all(20),
-                        child: new Row(
-                          children: <Widget>[
-                            new Image.asset("assets/images/mall/express.png",width: ScreenAdapter.width(40),),
-                            new Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: new Text("添加购物地址",style: TextStyle(fontSize: ScreenAdapter.size(28),
-                                color: AppConfig.assistFontColor
-                              ),),
-                            )
-                          ],
+                      child:  new InkWell(
+                        onTap: (){
+                          // 点击跳转地址管理页面
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (BuildContext context){
+                              return AddressManagementPage();
+                            },
+                            settings: RouteSettings(arguments: {'pages': 'orderDetail'})
+                          ));
+                        },
+                        child: new Container(
+                          padding: EdgeInsets.all(20),
+                          child:  model.addressModel!=null?
+                          new Column(
+                            children: <Widget>[
+                              new Container(),
+                              new Container()
+                            ],
+                          ) :_addAddress(),
                         ),
                       )
                     ),
@@ -225,6 +240,21 @@ class _OrderContentState extends State<OrderContent> {
           ),
         );
       }
+    );
+  }
+
+  /// 添加购物车地址
+  Widget _addAddress(){
+    return new Row(
+      children: <Widget>[
+        new Image.asset("assets/images/mall/express.png",width: ScreenAdapter.width(40),),
+        new Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: new Text("添加购物地址",style: TextStyle(fontSize: ScreenAdapter.size(28),
+              color: AppConfig.assistFontColor
+          ),),
+        )
+      ],
     );
   }
 

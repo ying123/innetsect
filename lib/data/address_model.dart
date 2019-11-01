@@ -1,6 +1,7 @@
+// 地址model
 class AddressModel{
   int addressID;
-  String acctID;
+  int acctID;
   String name;
   String telPrefix;
   String tel;
@@ -33,7 +34,7 @@ class AddressModel{
     this.isDefault
   });
 
-  factory AddressModel.formJson(Map<String,dynamic> json){
+  factory AddressModel.fromJson(Map<String,dynamic> json){
     return AddressModel(
         addressID: json['addressID'],
         acctID: json['acctID'],
@@ -71,4 +72,18 @@ class AddressModel{
     'lastUsed': lastUsed,
     'isDefault': isDefault
   };
+}
+
+class AddressModelList{
+  List<AddressModel> list;
+
+  AddressModelList(this.list);
+
+  factory AddressModelList.fromJson(List json){
+    return AddressModelList(
+        json.map(
+                (item)=>AddressModel.fromJson((item))
+        ).toList()
+    );
+  }
 }

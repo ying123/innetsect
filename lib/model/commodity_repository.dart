@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
@@ -30,7 +30,7 @@ class CommodityService {
   Observable<BaseResponse> createShopping(CommodityModels models,
       CommoditySkusModel skuModel,int counts,BuildContext context){
     var url = '/api/eshop/salesorders/shoppingorder/create';
-    var json = [{
+    List json = [{
       "acctID": UserTools().getUserData()['id'],
       "shopID":models.shopID,
       "prodID":models.prodID,
@@ -48,6 +48,7 @@ class CommodityService {
 //      promotionID
 //      remark
     }];
+    print(json);
     var response = post(url,body: json,context: context);
     return response;
   }

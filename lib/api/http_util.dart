@@ -26,8 +26,7 @@ class HttpUtil {
       
         )
         ..interceptors.add(HeaderInterceptor());
-    
-        
+
   }
 }
 

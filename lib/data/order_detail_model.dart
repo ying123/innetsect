@@ -38,25 +38,25 @@ class OrderDetailModel{
   // 成本
   double totalCost;
   // 数量
-  double totalCount;
+  int totalCount;
   // 合计
   double totalAmount;
   // 运费
-  double freight;
+  int freight;
   // 优惠
-  double totalDiscount;
+  int totalDiscount;
   // 预售定金
-  double totalDeposit;
+  int totalDeposit;
   // 允许使用积分数量
   double allowPoint;
   // 积分支付
-  double payPoint;
+  int payPoint;
   // 卡券抵用
   int payCoupon;
   // 实际支付,未支付
   double payableAmount;
   // 实际支付,已支付
-  double payAmount;
+  int payAmount;
   // 发票类型，0：不需要，1：个人普票，2：专票
   int invoiceType;
   // 支付方式, 0：现金，1：微信，2：支付宝，3：visa
@@ -106,7 +106,7 @@ class OrderDetailModel{
 
   factory OrderDetailModel.formJson(Map<String,dynamic> json) {
     return OrderDetailModel(
-        addressModel: AddressModel.formJson(json['addressModel']) ,
+        addressModel: json['addressModel']!=null?AddressModel.fromJson(json['addressModel']):null ,
         areaCode: json['areaCode'],
         tel: json['tel'],
         acctID: json['acctID'],

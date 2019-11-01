@@ -60,6 +60,8 @@ dependencies:
   flutter_html: ^0.11.0
   # 支付宝支付
   tobias: ^1.2.0
+  #城市选择器
+  city_pickers: ^0.1.28
 
 dev_dependencies:
   flutter_test:

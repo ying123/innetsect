@@ -11,7 +11,8 @@ class CustomsWidget{
   /// * [onSelectedCallback] 回调函数
   Widget customRoundedWidget({
     @required isSelected,
-    @required onSelectedCallback
+    @required onSelectedCallback,
+    double iconSize = 25.0
   }){
     return GestureDetector(
       onTap: (){
@@ -20,10 +21,10 @@ class CustomsWidget{
       child: new Container(
         child: isSelected? new Icon(
           Icons.check_circle,
-          size: 25.0,
+          size: iconSize,
           color: AppConfig.fontBackColor,
         ) : new Icon(Icons.panorama_fish_eye,
-          size: 25.0,
+          size: iconSize,
         ),
       ),
     );
