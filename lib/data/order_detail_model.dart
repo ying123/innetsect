@@ -65,7 +65,81 @@ class OrderDetailModel{
   String payDate;
   // 备注
   String remark;
-  // 发货状态
+  // 发货状态，按3来判断是否发货
   int syncStatus;
+
+  OrderDetailModel({
+    this.addressModel,
+    this.areaCode,
+    this.tel,
+    this.acctID,
+    this.addressID,
+    this.channel,
+    this.shopID,
+    this.acctName,
+    this.allowPoint,
+    this.freight,
+    this.invoiceType,
+    this.ladingMode,
+    this.orderDate,
+    this.orderID,
+    this.orderNo,
+    this.orderSummary,
+    this.orderType,
+    this.payableAmount,
+    this.payAmount,
+    this.payCoupon,
+    this.payDate,
+    this.payMode,
+    this.payPoint,
+    this.prodType,
+    this.receipient,
+    this.remark,
+    this.shipTo,
+    this.syncStatus,
+    this.totalAmount,
+    this.totalCost,
+    this.totalCount,
+    this.totalDeposit,
+    this.totalDiscount
+  });
+
+  factory OrderDetailModel.formJson(Map<String,dynamic> json) {
+    return OrderDetailModel(
+        addressModel: AddressModel.formJson(json['addressModel']) ,
+        areaCode: json['areaCode'],
+        tel: json['tel'],
+        acctID: json['acctID'],
+        addressID: json['addressID'],
+        channel: json['channel'],
+        shopID: json['shopID'],
+        acctName: json['acctName'],
+        allowPoint: json['allowPoint'],
+        freight: json['freight'],
+        invoiceType: json['invoiceType'],
+        ladingMode: json['ladingMode'],
+        orderDate: json['orderDate'],
+        orderID: json['orderID'],
+        orderNo: json['orderNo'],
+        orderSummary: json['orderSummary'],
+        orderType: json['orderType'],
+        payableAmount: json['payableAmount'],
+        payAmount: json['payAmount'],
+        payCoupon: json['payCoupon'],
+        payDate: json['payDate'],
+        payMode: json['payMode'],
+        payPoint: json['payPoint'],
+        prodType: json['prodType'],
+        receipient: json['receipient'],
+        remark: json['remark'],
+        shipTo: json['shipTo'],
+        syncStatus: json['syncStatus'],
+        totalAmount: json['totalAmount'],
+        totalCost: json['totalCost'],
+        totalCount: json['totalCount'],
+        totalDeposit: json['totalDeposit'],
+        totalDiscount: json['totalDiscount']
+    );
+  }
 
 }
