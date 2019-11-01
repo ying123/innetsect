@@ -17,7 +17,7 @@ class CommodityModalBottom {
           return new Container(
             height: height,
             color: Colors.white,
-            child: new CommodityModalChildPage(detailProvide,cartProvide,height),
+            child: new CommodityModalChildPage(),
           );
       },
       isScrollControlled: true

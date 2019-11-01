@@ -6,18 +6,33 @@ import 'package:innetsect/data/commodity_skus_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
+import 'package:innetsect/base/base.dart';
+import 'package:provide/provide.dart';
 
-/// 单选
-class CommoditySelectWidget extends StatefulWidget {
-  final CommodityAndCartProvide _cartProvide;
-  final CommodityDetailProvide _detailProvide;
-  CommoditySelectWidget(this._cartProvide,this._detailProvide);
+class CommoditySelectWidget extends PageProvideNode{
+  final CommodityAndCartProvide _cartProvide=CommodityAndCartProvide();
+  final CommodityDetailProvide _detailProvide=CommodityDetailProvide();
+
+  CommoditySelectWidget(){
+    mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+  }
 
   @override
-  _CommoditySelectWidgetState createState() => new _CommoditySelectWidgetState();
+  Widget buildContent(BuildContext context) {
+    // TODO: implement buildContent
+    return CommoditySelectContentWidget();
+  }
 }
 
-class _CommoditySelectWidgetState extends State<CommoditySelectWidget> {
+/// 单选
+class CommoditySelectContentWidget extends StatefulWidget {
+
+  @override
+  _CommoditySelectContentWidgetState createState() => new _CommoditySelectContentWidgetState();
+}
+
+class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWidget> {
   CommodityAndCartProvide _cartProvide;
   CommodityDetailProvide _detailProvide;
 
@@ -38,8 +53,8 @@ class _CommoditySelectWidgetState extends State<CommoditySelectWidget> {
     // TODO: implement initState
     super.initState();
     setState(() {
-      this._cartProvide = widget._cartProvide;
-      this._detailProvide = widget._detailProvide;
+      this._cartProvide = CommodityAndCartProvide.instance;
+      this._detailProvide = CommodityDetailProvide.instance;
     });
     this._detailProvide.setInitData();
   }

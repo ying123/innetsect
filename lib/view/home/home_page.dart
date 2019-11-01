@@ -427,7 +427,7 @@ class _HomeContentPageState extends State<HomeContentPage>
               width: ScreenAdapter.width(750),
               height: ScreenAdapter.height(420),
               color: Colors.white,
-              child: Swiper(
+              child: provide.bannerImages.length>0?Swiper(
                 index: 0,
                 loop: true,
                 itemBuilder: (context, index) {
@@ -443,7 +443,7 @@ class _HomeContentPageState extends State<HomeContentPage>
                             height: ScreenAdapter.height(420),
                             child: CachedNetworkImage(
                               fadeOutDuration:
-                                  const Duration(milliseconds: 300),
+                              const Duration(milliseconds: 300),
                               fadeInDuration: const Duration(milliseconds: 700),
                               fit: BoxFit.fill,
                               imageUrl: provide.bannerImages[index],
@@ -462,7 +462,7 @@ class _HomeContentPageState extends State<HomeContentPage>
                 autoplay: true,
                 duration: 300,
                 scrollDirection: Axis.horizontal,
-              ),
+              ):new Container(),
             ),
           ),
         );

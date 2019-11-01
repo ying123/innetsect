@@ -28,7 +28,7 @@ class CommodityService {
 
   /// 立即下单
   Observable<BaseResponse> createShopping(CommodityModels models,
-      CommoditySkusModel skuModel,int counts){
+      CommoditySkusModel skuModel,int counts,BuildContext context){
     var url = '/api/eshop/salesorders/shoppingorder/create';
     var json = [{
       "acctID": UserTools().getUserData()['id'],
@@ -48,7 +48,7 @@ class CommodityService {
 //      promotionID
 //      remark
     }];
-    var response = post(url,body: json);
+    var response = post(url,body: json,context: context);
     return response;
   }
 
@@ -90,8 +90,8 @@ class CommodityRepo {
 
   /// 立即下单
   Observable<BaseResponse> createShopping(CommodityModels models,
-      CommoditySkusModel skuModel,int counts){
-    return _remote.createShopping(models,skuModel,counts);
+      CommoditySkusModel skuModel,int counts,BuildContext context){
+    return _remote.createShopping(models,skuModel,counts,context);
   }
 
   /// 提交订单

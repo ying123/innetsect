@@ -120,7 +120,7 @@ class CommodityAndCartProvide extends BaseProvide{
   // 设置计数器模式, 默认为单计数
   void setMode({String mode="single"}){
     _mode = mode;
-    notifyListeners();
+//    notifyListeners();
   }
 
   // 是否选中

@@ -1,4 +1,5 @@
 
+import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_feature_model.dart';
 import 'package:innetsect/data/commodity_models.dart';
@@ -80,35 +81,36 @@ class CommodityDetailProvide extends BaseProvide {
         // 是否相同的特征code
         if(featureModel.featureCode==feaItem.featureCode){
           _skusList.add(item);
-          // 判断选中sku是否存在
-//          if(_index!=null&&_index > keys){
-            _skusModel = item;
-            _skusModel.features = item.features;
-//          }else{
-//            _skusModel = _commodityModels.skus[keys];
-//            _index = keys;
-//          }
         }
       });
     });
+
+    // 选中的sku特征值
+    if(_skusList.length>0){
+      _skusModel.features.forEach((feaItem){
+        if(feaItem.featureGroup=="颜色"){
+          _skusList.forEach((item){
+            bool flag = false;
+            item.features.forEach((feItem){
+              if(feItem.featureGroup==feaItem.featureGroup
+               && feItem.featureCode == feaItem.featureCode){
+                flag = true;
+              }
+            });
+            if(flag){
+              _skusModel = item;
+            }
+          });
+        }
+      });
+
+    }
     notifyListeners();
   }
 
   // 选择颜色
   void setSelectColor(CommoditySkusModel models){
-    List<CommodityFeatureModel> list = _skusModel.features;
-    models.features = list;
     _skusModel = models;
-    _commodityModels.skus.asMap().keys.forEach((keys){
-      if(models.skuCode==_commodityModels.skus[keys].skuCode){
-        // 判断选中sku是否存在
-        if(_index!=null&&_index>keys){
-          _index = 0;
-        }else{
-          _index = keys;
-        }
-      }
-    });
     notifyListeners();
   }
 
@@ -140,9 +142,9 @@ class CommodityDetailProvide extends BaseProvide {
 
   /// 创建订单
   Observable createShopping(CommodityModels models,
-      CommoditySkusModel skuModel,int counts) {
+      CommoditySkusModel skuModel,int counts,BuildContext context) {
     return _repo
-        .createShopping(models,skuModel,counts)
+        .createShopping(models,skuModel,counts, context)
         .doOnData((result) {
 
     })

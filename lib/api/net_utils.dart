@@ -1,16 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:rxdart/rxdart.dart';
 import '../data/base.dart';
 import 'http_util.dart';
 
-Observable<BaseResponse> get(String url, {Map<String, dynamic> params}) {
+Observable<BaseResponse> get(String url, {Map<String, dynamic> params,BuildContext context}) {
   print('get url:->$url params:->$params');
-  return Observable.fromFuture(_get(url, params: params))
+  return Observable.fromFuture(_get(url, params: params,context: context))
       .delay(Duration(milliseconds: 500))
       .asBroadcastStream();
 }
 
-Future<BaseResponse> _get(String url, {Map<String, dynamic> params}) async {
+Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext context}) async {
   var res;
   await HttpUtil().dio.get(url, queryParameters: params).then((response){
      if (response.data is Map) {
@@ -23,10 +25,17 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params}) async {
     res = BaseResponse.fromlist(response.data);
   }
   }).catchError((error){
-    Fluttertoast.showToast(
-      msg: error.toString(),
-      gravity: ToastGravity.CENTER
-    );
+    if(error.response.data['path']=="/accounts/me"){
+
+      Future.delayed(Duration.zero,(){
+        Navigator.pushNamed(context, '/loginPage');
+      });
+    }else{
+      Fluttertoast.showToast(
+          msg: error.toString(),
+          gravity: ToastGravity.CENTER
+      );
+    }
   });
  
  
@@ -44,19 +53,60 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params}) async {
 
 ///post请求
 Observable<BaseResponse> post(String url,
-    {dynamic body, Map<String, dynamic> qureyParameters}) {
+    {dynamic body, Map<String, dynamic> qureyParameters,BuildContext context}) {
   print('post url:->$url body:->$body qureyParameters:->$qureyParameters');
   return Observable.fromFuture(
-          _post(url, body, queryParameters: qureyParameters))
+          _post(url, body, queryParameters: qureyParameters,context: context))
       .asBroadcastStream();
 }
 
 Future<BaseResponse> _post(String url, dynamic body,
+    {Map<String, dynamic> queryParameters,BuildContext context}) async {
+  var response;
+  await HttpUtil()
+      .dio
+      .post(url, data: body, queryParameters: queryParameters).then((res){
+    response = BaseResponse.fromJson(res.data);
+    print('response _post:->$response');
+  }).catchError((error){
+    print(error);
+
+    if(error.response.data['path']=="/salesorders/shoppingorder/create"){
+      Future.delayed(Duration.zero,(){
+        Navigator.push(context, MaterialPageRoute(
+          builder: (BuildContext context){
+            return LoginPage();
+          },settings: RouteSettings(arguments: {'pages': 'orderDetail'})
+        ));
+      });
+    }
+  });
+  //加json数据转换成BaseResponse实例
+//  var res = BaseResponse.fromJson(response.data);
+  //  if (res.success == false) {
+  //    Fluttertoast.showToast(
+  //      msg: res.message,
+  //      gravity: ToastGravity.CENTER
+  //    );
+  //  }
+  return response;
+}
+
+/// patch请求
+Observable<BaseResponse> patch(String url,
+    {dynamic body, Map<String, dynamic> qureyParameters}) {
+  print('patch url:->$url body:->$body qureyParameters:->$qureyParameters');
+  return Observable.fromFuture(
+      _patch(url, body, queryParameters: qureyParameters))
+      .asBroadcastStream();
+}
+
+Future<BaseResponse> _patch(String url, dynamic body,
     {Map<String, dynamic> queryParameters}) async {
   var response = await HttpUtil()
       .dio
-      .post(url, data: body, queryParameters: queryParameters);
-  print('response _post:->$response');
+      .patch(url, data: body, queryParameters: queryParameters);
+  print('response _patch:->$response');
   //加json数据转换成BaseResponse实例
   var res = BaseResponse.fromJson(response.data);
   //  if (res.success == false) {

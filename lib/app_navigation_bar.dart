@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/user_info_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/view/activity/activity_page.dart';
 import 'package:innetsect/view/brand/brand_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view/shopping/shopping_page.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
 
 class AppNavigationBar extends PageProvideNode {
   final AppNavigationBarProvide _provide = AppNavigationBarProvide();
+  final LoginProvide _loginProvide = LoginProvide();
   AppNavigationBar() {
     mProviders.provide(Provider<AppNavigationBarProvide>.value(_provide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -28,6 +33,7 @@ class AppNavigationContentBar extends StatefulWidget {
 class _AppNavigationContentBarState extends State<AppNavigationContentBar>
     with TickerProviderStateMixin<AppNavigationContentBar> {
   AppNavigationBarProvide _provide;
+  LoginProvide _loginProvide;
   TabController controller;
 
   //首页
@@ -48,7 +54,23 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
   void initState() {
     super.initState();
     _provide = AppNavigationBarProvide.instance;
-    controller = new TabController(length: 5, vsync: this);
+    _loginProvide = LoginProvide.instance;
+    controller = new TabController(length: 5, vsync: this)..addListener((){
+      if(controller.index.toDouble() == controller.animation.value){
+        if(controller.index==4){
+          // 获取用户信息，如果请求错误弹出登录页面
+          /// 获取用户信息
+          Future.delayed(Duration.zero,(){
+            _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
+              if(userItem.data!=null){
+                _loginProvide.userInfoModel = UserInfoModel.fromJson(userItem.data);
+              }
+            },onError: (e){
+            });
+          });
+        }
+      }
+    });
     _animationController = new AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,

@@ -1,4 +1,5 @@
 import 'package:innetsect/base/const_config.dart';
+import 'package:innetsect/data/user_info_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 ///用户工具类
@@ -51,6 +52,27 @@ dynamic getUserData(){
   if (mapStr != null) {
     var map = json.decode(mapStr);
     return map;
+  }else{
+    return null;
+  }
+}
+
+///存储用户详情数据
+Future<bool> setUserInfo(Map<String,dynamic> userInfo){
+  if (_beforCheck()) {
+    return null;
+  }
+  var jsonStr =  json.encode(userInfo);
+  return _spf.setString(ConstConfig.LOGIN_USERINFO, jsonStr);
+}
+
+///获取用户详情
+UserInfoModel getUserInfo(){
+  var mapStr = _spf.getString(ConstConfig.LOGIN_USERINFO);
+  print('mapStr>>>>>LOGIN_USERINFO--->>$mapStr');
+  if (mapStr != null) {
+    var map = json.decode(mapStr);
+    return UserInfoModel.fromJson(map);
   }else{
     return null;
   }

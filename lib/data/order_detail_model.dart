@@ -1,0 +1,71 @@
+import 'package:innetsect/data/address_model.dart';
+
+class OrderDetailModel{
+  // 收货地址
+  AddressModel addressModel;
+  // 订单id
+  int orderID;
+  // 订单日期
+  String orderDate;
+  // 订单类型：0普通，1预售
+  int orderType;
+  // 订单编号
+  String orderNo;
+  // 账户id
+  int acctID;
+  // 账户名称
+  String acctName;
+  // 订单概要
+  String orderSummary;
+  // 渠道
+  String channel;
+  // 商店id
+  int shopID;
+  // 商品类型
+  int prodType;
+  // 0，代发 1：自提
+  int ladingMode;
+  // 发货地址ID
+  int addressID;
+  // 收货人
+  String receipient;
+  // 联系电话
+  String tel;
+  // 发货地址
+  String shipTo;
+  // 区域编码
+  String areaCode;
+  // 成本
+  double totalCost;
+  // 数量
+  double totalCount;
+  // 合计
+  double totalAmount;
+  // 运费
+  double freight;
+  // 优惠
+  double totalDiscount;
+  // 预售定金
+  double totalDeposit;
+  // 允许使用积分数量
+  double allowPoint;
+  // 积分支付
+  double payPoint;
+  // 卡券抵用
+  int payCoupon;
+  // 实际支付,未支付
+  double payableAmount;
+  // 实际支付,已支付
+  double payAmount;
+  // 发票类型，0：不需要，1：个人普票，2：专票
+  int invoiceType;
+  // 支付方式, 0：现金，1：微信，2：支付宝，3：visa
+  int payMode;
+  // 支付时间
+  String payDate;
+  // 备注
+  String remark;
+  // 发货状态
+  int syncStatus;
+
+}

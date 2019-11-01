@@ -9,7 +9,7 @@ class CommodityModels{
   int prodID;
   int shopID;
   // 是否预售
-  int presale;
+  bool presale;
   String unit;
   double allowPointRate;
   //产品首页url
@@ -38,6 +38,16 @@ class CommodityModels{
   List<CommoditySkusModel> skus;
   // feature
   List<CommodityFeatureModel> features;
+
+  ///订单详情
+  int itemID;
+  int orderID;
+  String skuCode;
+  String skuName;
+  String skuPic;
+  int quantity;
+  double salesPrice;
+  double amount;
 
   CommodityModels({
     this.prodID,

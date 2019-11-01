@@ -103,7 +103,7 @@ class _OrderContentState extends State<OrderContent> {
     // TODO: implement initState
     super.initState();
 
-    _loadData();
+//    _loadData();
 
   }
 
@@ -230,27 +230,29 @@ class _OrderContentState extends State<OrderContent> {
 
   /// 加载数据
   _loadData(){
-    if(UserTools().getUserData()!=null){
-      widget._detailProvide.createShopping(widget._detailProvide.commodityModels,
-          widget._detailProvide.skusModel,widget._provide.count)
-          .doOnListen(() {
-        print('doOnListen');
-      })
-          .doOnCancel(() {})
-          .listen((item) {
-        ///加载数据
-        print('listen data->$item');
-  //      _provide
-      }, onError: (e) {});
-    }else{
-      // 跳转登录页面
-      Future.delayed(Duration.zero,(){
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context){
-            return new LoginPage();
-          },settings: RouteSettings(arguments: {'pages': 'orderDetail'})
-        ));
-      });
-    }
+    Future.delayed(Duration.zero,(){
+//      if(UserTools().getUserData()!=null){
+          widget._detailProvide.createShopping(widget._detailProvide.commodityModels,
+              widget._detailProvide.skusModel,widget._provide.count,context)
+              .doOnListen(() {
+            print('doOnListen');
+          })
+              .doOnCancel(() {})
+              .listen((item) {
+            ///加载数据
+            print('listen data->$item');
+            //      _provide
+          }, onError: (e) {
+            print(e);
+          });
+//      }else{
+//        // 跳转登录页面
+//          Navigator.push(context, MaterialPageRoute(
+//            builder: (context){
+//              return new LoginPage();
+//            },settings: RouteSettings(arguments: {'pages': 'orderDetail'})
+//          ));
+//      }
+    });
   }
 }

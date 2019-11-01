@@ -4,6 +4,7 @@ import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
+import 'dart:async';
 
 class LoginPage extends PageProvideNode {
   final LoginProvide _provide = LoginProvide();
@@ -23,6 +24,14 @@ class LoginContentPage extends StatefulWidget {
 
 class _LoginContentPageState extends State<LoginContentPage> {
   String pages;
+  // 是否验证码登录
+  bool isPhone = false;
+  // 验证码
+  bool isButtonEnable = true;
+  ///倒计时定时器
+  Timer timer;
+  int count = 60;
+  String buttonText="获取验证码";
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +85,17 @@ class _LoginContentPageState extends State<LoginContentPage> {
     Future.delayed(Duration.zero,(){
       // 运用未来获取context，初始化数据
       Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
-      pages = mapData['pages'];
+      if(mapData!=null){
+        pages = mapData['pages'];
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    timer = null;
+    super.dispose();
   }
 
   Provide<LoginProvide> _setupLogo() {
@@ -115,27 +133,72 @@ class _LoginContentPageState extends State<LoginContentPage> {
               new Row(
                 children: <Widget>[
                   new Expanded(
-                    child: new TextField(
-                      enabled: true,
-                      obscureText:
+                    child: new Stack(
+                      children: <Widget>[
+                        isPhone ?
+                        new TextField(
+                          enabled: true,
+                          style: new TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            hintText: provide.placePhoneText[index],
+                            hintStyle: new TextStyle(color: Colors.grey),
+                            focusedBorder: InputBorder.none,
+                          ),
+                          onChanged: (str) {
+                            if (index == 0) {
+                              provide.userCode = str;
+                            }
+                            if (index == 1) {
+                              provide.vaildCode = str;
+                            }
+                          },
+                        ):new TextField(
+                          enabled: true,
+                          obscureText:
                           (index == 1 && provide.passwordVisiable == false)
                               ? true
                               : false,
-                      style: new TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        hintText: provide.placeHoderText[index],
-                        hintStyle: new TextStyle(color: Colors.grey),
-                        focusedBorder: InputBorder.none,
-                      ),
-                      onChanged: (str) {
-                        if (index == 0) {
-                          provide.userCode = str;
-                        }
-                        if (index == 1) {
-                          provide.passwordVisiable = false;
-                          provide.password = str;
-                        }
-                      },
+                          style: new TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            hintText: provide.placeHoderText[index],
+                            hintStyle: new TextStyle(color: Colors.grey),
+                            focusedBorder: InputBorder.none,
+                          ),
+                          onChanged: (str) {
+                            if (index == 0) {
+                              provide.userCode = str;
+                            }
+                            if (index == 1) {
+                              provide.passwordVisiable = false;
+                              provide.password = str;
+                            }
+                          },
+                        ),
+                        isPhone && index ==1?
+                            new Positioned(
+                              top: 10,
+                              right: 10,
+                              child: Container(
+                                width: ScreenAdapter.width(220),
+                                height: ScreenAdapter.height(60),
+                                child: FlatButton(
+                                  disabledColor: Colors.grey.withOpacity(0.1),
+                                  disabledTextColor: Colors.white,
+                                  textColor: isButtonEnable ? Colors.white : Colors.white,
+                                  color: isButtonEnable
+                                      ? Colors.black
+                                      : Colors.grey.withOpacity(0.8),
+                                  onPressed: () {
+                                    _buttonClickListen(provide);
+                                  },
+                                  child: Text(
+                                    buttonText,
+                                    style: TextStyle(fontSize: ScreenAdapter.size(22)),
+                                  ),
+                                ),
+                              ))
+                            :new Text("")
+                      ],
                     ),
                   ),
                 ],
@@ -151,20 +214,67 @@ class _LoginContentPageState extends State<LoginContentPage> {
     );
   }
 
+  void  _buttonClickListen(LoginProvide provide) {
+    if (isButtonEnable) {
+      print('获取验证码');
+      provide.getVaildCode().doOnListen(() {
+        print('doOnListen');
+      })
+          .doOnCancel(() {})
+          .listen((item) {
+        ///加载数据
+        print('listen data->$item');
+//      _provide
+      }, onError: (e) {});
+
+      setState(() {
+        isButtonEnable = false;
+      });
+      _initTimer();
+      return null;
+    } else {
+      return null;
+    }
+  }
+
+  void _initTimer() {
+    timer = new Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      count--;
+
+      if (count == 0) {
+        timer.cancel();
+        setState(() {
+          isButtonEnable = true;
+          count = 60;
+          buttonText = '获取验证码';
+        });
+      } else {
+        setState(() {
+          buttonText = '重新发送(${count})';
+        });
+      }
+    });
+  }
+
   ///设置验证码按钮
   Provide<LoginProvide> _setupVerificationCodeBtn() {
     return Provide<LoginProvide>(
       builder: (BuildContext context, Widget child, LoginProvide provide) {
-        return Container(
-          alignment: Alignment.centerRight,
-          height: ScreenAdapter.height(95),
-          width: ScreenAdapter.width(595),
-          //color: Colors.black,
-
-          child: Text(
-            '验证码登录',
-            style: TextStyle(
-                color: Colors.black, fontSize: ScreenAdapter.size(30)),
+        return InkWell(
+          onTap: (){
+            setState(() {
+              isPhone = !isPhone;
+            });
+          },
+          child: Container(
+            alignment: Alignment.centerRight,
+            height: ScreenAdapter.height(95),
+            width: ScreenAdapter.width(595),
+            child: Text(
+              !isPhone?'验证码登录':'密码登录',
+              style: TextStyle(
+                  color: Colors.black, fontSize: ScreenAdapter.size(30)),
+            ),
           ),
         );
       },
@@ -184,9 +294,17 @@ class _LoginContentPageState extends State<LoginContentPage> {
             })
                 .doOnCancel(() {})
                 .listen((item) {
-              ///加载数据
-              UserTools().setUserData(item.data);
               print('listen data->$item');
+              ///加载数据
+              if(item.data!=null){
+                /// 获取用户信息
+                provide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
+                  if(userItem.data!=null){
+                    UserTools().setUserInfo(userItem.data);
+                  }
+                },onError: (e){});
+                UserTools().setUserData(item.data);
+              }
               Navigator.pop(context);
               if(pages == 'orderDetail'){
                 Navigator.pop(context);

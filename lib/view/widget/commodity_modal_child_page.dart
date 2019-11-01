@@ -6,21 +6,33 @@ import 'package:innetsect/view/widget/commodity_select_widget.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
+import 'package:innetsect/base/base.dart';
+import 'package:provide/provide.dart';
 
-class CommodityModalChildPage extends StatefulWidget {
-  final CommodityAndCartProvide _cartProvide;
-  final CommodityDetailProvide _detailProvide;
-  final double _height;
-  CommodityModalChildPage(this._detailProvide,this._cartProvide,this._height);
+class CommodityModalChildPage extends PageProvideNode{
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide();
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide();
 
+  CommodityModalChildPage(){
+    mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+  }
   @override
-  _CommodityModalChildPageState createState() => new _CommodityModalChildPageState();
+  Widget buildContent(BuildContext context) {
+    // TODO: implement buildContent
+    return CommodityModalChildContent();
+  }
 }
 
-class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
+class CommodityModalChildContent extends StatefulWidget {
+
+  @override
+  _CommodityModalChildContentState createState() => new _CommodityModalChildContentState();
+}
+
+class _CommodityModalChildContentState extends State<CommodityModalChildContent> {
   CommodityAndCartProvide _cartProvide;
   CommodityDetailProvide _detailProvide;
-  double _height;
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +53,8 @@ class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    this._cartProvide = widget._cartProvide;
-    this._detailProvide = widget._detailProvide;
-    this._height = widget._height;
+    this._cartProvide = CommodityAndCartProvide.instance;
+    this._detailProvide = CommodityDetailProvide.instance;
     this._cartProvide.setMode();
   }
 
@@ -75,9 +86,9 @@ class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
   Widget contentWidget(){
     return new Container(
       width: double.infinity,
-      height: this._height-150,
+      height: ScreenAdapter.getScreenHeight()-250,
       color: Colors.white,
-      child: new CommoditySelectWidget(this._cartProvide,this._detailProvide),
+      child: new CommoditySelectWidget(),
     );
   }
 
@@ -122,11 +133,24 @@ class _CommodityModalChildPageState extends State<CommodityModalChildPage> {
               textColor: AppConfig.fontBackColor,
               onPressed: (){
                 // 跳转订单详情
-                Navigator.push(context, new MaterialPageRoute(
-                    builder: (context){
-                      return new OrderDetailPage();
-                    })
-                );
+                _detailProvide.createShopping(_detailProvide.commodityModels,
+                    _detailProvide.skusModel,_cartProvide.count,context)
+                    .doOnListen(() {
+                  print('doOnListen');
+                })
+                    .doOnCancel(() {})
+                    .listen((item) {
+                  ///加载数据
+                  print('listen data->$item');
+                  Navigator.push(context, new MaterialPageRoute(
+                      builder: (context){
+                        return new OrderDetailPage();
+                      })
+                  );
+                  //      _provide
+                }, onError: (e) {
+                  print(e);
+                });
               },
               child: new Text("立即购买",style: TextStyle(
                   fontSize: ScreenAdapter.size(30)
