@@ -104,7 +104,8 @@ class CustomsWidget{
   /// 自定义价格文本
   /// [price] 价格
   Widget priceTitle({
-    @required price
+    @required price,
+    Color color
   }){
     return new Row(
       children: <Widget>[
@@ -112,13 +113,13 @@ class CustomsWidget{
           padding: EdgeInsets.only(top: 2),
           alignment: Alignment.center,
           child: new Text("¥ ",style: TextStyle(
-            fontSize: ScreenAdapter.size(18.0),),
+            fontSize: ScreenAdapter.size(18.0),color: color),
           ),
         ),
         new Container(
             alignment: Alignment.center,
             child: new Text(price, style: TextStyle(
-                fontSize: ScreenAdapter.size(28),fontWeight: FontWeight.w900
+                fontSize: ScreenAdapter.size(28),fontWeight: FontWeight.w900,color: color
             ),
             )
         ),

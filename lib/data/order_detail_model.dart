@@ -1,4 +1,5 @@
 import 'package:innetsect/data/address_model.dart';
+import 'package:innetsect/data/commodity_models.dart';
 
 class OrderDetailModel{
   // 收货地址
@@ -42,7 +43,7 @@ class OrderDetailModel{
   // 合计
   double totalAmount;
   // 运费
-  int freight;
+  double freight;
   // 优惠
   int totalDiscount;
   // 预售定金
@@ -67,6 +68,9 @@ class OrderDetailModel{
   String remark;
   // 发货状态，按3来判断是否发货
   int syncStatus;
+
+  // sku
+  List<CommodityModels> skuModels;
 
   OrderDetailModel({
     this.addressModel,
@@ -101,12 +105,13 @@ class OrderDetailModel{
     this.totalCost,
     this.totalCount,
     this.totalDeposit,
-    this.totalDiscount
+    this.totalDiscount,
+    this.skuModels
   });
 
   factory OrderDetailModel.formJson(Map<String,dynamic> json) {
     return OrderDetailModel(
-        addressModel: json['addressModel']!=null?AddressModel.fromJson(json['addressModel']):null ,
+        addressModel: json['address']!=null?AddressModel.fromJson(json['address']):null ,
         areaCode: json['areaCode'],
         tel: json['tel'],
         acctID: json['acctID'],
@@ -138,7 +143,8 @@ class OrderDetailModel{
         totalCost: json['totalCost'],
         totalCount: json['totalCount'],
         totalDeposit: json['totalDeposit'],
-        totalDiscount: json['totalDiscount']
+        totalDiscount: json['totalDiscount'],
+        skuModels: json['items']!=null?CommodityList.fromJson(json['items']).list:null
     );
   }
 

@@ -67,7 +67,15 @@ class CommodityModels{
     this.salesPriceRange,
     this.defSkuCode,
     this.skus,
-    this.features
+    this.features,
+    this.amount,
+    this.itemID,
+    this.orderID,
+    this.quantity,
+    this.salesPrice,
+    this.skuCode,
+    this.skuName,
+    this.skuPic
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -89,7 +97,15 @@ class CommodityModels{
         salesPriceRange: json['salesPriceRange'],
         defSkuCode: json['defSkuCode'],
         skus: json['skus']!=null?CommoditySkusList.fromJson(json['skus']).list:json['skus'],
-        features: json['features']!=null?CommodityFeatureList.fromJson(json['features']).list:json['features']
+        features: json['features']!=null?CommodityFeatureList.fromJson(json['features']).list:json['features'],
+        itemID: json['itemID'],
+        orderID: json['orderID'],
+        skuCode: json['skuCode'],
+        skuName: json['skuName'],
+        skuPic: json['skuPic'],
+        quantity: json['quantity'],
+        salesPrice: json['salesPrice'],
+        amount: json['amount']
     );
   }
 
