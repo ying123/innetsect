@@ -17,8 +17,20 @@ class AddressService{
     return response;
   }
   /// 获取国家
-  Observable<BaseResponse> getCity (){
+  Observable<BaseResponse> getCountriess (){
     var url = '/api/geo/countries';
+    var response = getCountries(url);
+    return response;
+  }
+  /// 获取省
+  Observable<BaseResponse> getProvices (String code){
+    var url = '/api/geo/provinces?countryCode=$code';
+    var response = getCountries(url);
+    return response;
+  }
+  /// 获取市
+  Observable<BaseResponse> getCitys (String code){
+    var url = '/api/geo/cities?countryCode=$code';
     var response = getCountries(url);
     return response;
   }
@@ -37,7 +49,15 @@ class AddressRepo {
     return _remote.editData(model);
   }
   /// 获取国家
-  Observable<BaseResponse> getCity() {
-    return _remote.getCity();
+  Observable<BaseResponse> getCountriess() {
+    return _remote.getCountriess();
+  }
+  /// 获取省
+  Observable<BaseResponse> getProvices (String code){
+    return _remote.getProvices(code);
+  }
+  /// 获取市
+  Observable<BaseResponse> getCitys (String code){
+    return _remote.getCitys(code);
   }
 }

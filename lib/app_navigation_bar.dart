@@ -61,7 +61,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
           /// 获取用户信息
           Future.delayed(Duration.zero,(){
             _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
-              if(userItem.data!=null){
+              if(userItem!=null&&userItem.data!=null){
                 _loginProvide.userInfoModel = UserInfoModel.fromJson(userItem.data);
               }
             },onError: (e){

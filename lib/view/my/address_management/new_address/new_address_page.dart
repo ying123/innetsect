@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
-import 'package:innetsect/data/city_model.dart';
+import 'package:innetsect/data/country_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/city/country_page.dart';
 import 'package:innetsect/view_model/my/address_management/new_address/new_address_provide.dart';
@@ -223,9 +223,9 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
 
   ///获取国家
   void _getCountries(){
-    widget.provide.getCity().doOnListen(() {}).doOnCancel(() {}).listen((items) {
+    widget.provide.getCountriess().doOnListen(() {}).doOnCancel(() {}).listen((items) {
       print('listen data->$items');
-      widget.provide.addCityList(CityModelList.fromJson(items.data).list);
+      widget.provide.addCityList(CountryModelList.fromJson(items.data).list);
     }, onError: (e) {});
   }
 }

@@ -521,7 +521,7 @@ class _MyContentPageState extends State<MyContentPage> {
                           Radius.circular(ScreenAdapter.width(100))),
                       //border: Border.all(color: Colors.black12),
                     ),
-                    child: userModel!=null? Image.network(userModel.portrait,fit: BoxFit.cover):Image.asset(
+                    child: userModel!=null&&userModel.portrait!=null? Image.network(userModel.portrait,fit: BoxFit.cover):Image.asset(
                       provide.headPortrait,
                       fit: BoxFit.cover,
                     ),
