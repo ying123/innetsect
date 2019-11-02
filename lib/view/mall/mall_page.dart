@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/view/mall/home/mall_home_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/mall_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
@@ -10,8 +12,10 @@ import 'package:innetsect/view/mall/commodity/commodity_page.dart';
 ///商城页面
 class MallPage extends PageProvideNode{
   final MallProvide _provide = MallProvide();
+  final LoginProvide _loginProvide = LoginProvide();
   MallPage(){
     mProviders.provide(Provider<MallProvide>.value(_provide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -29,11 +33,12 @@ class MallContentPage extends StatefulWidget {
 }
 
 class _MallContentPageState extends State<MallContentPage> {
-
+  LoginProvide _loginProvide;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _loginProvide=LoginProvide.instance;
   }
 
   @override
@@ -108,5 +113,13 @@ class _MallContentPageState extends State<MallContentPage> {
   /// 底部点击导航
   void _onBottomTap(int index){
     widget._provide.currentIndex = index;
+      if(index==4){
+        this._loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
+          if(userItem.data!=null){
+            this._loginProvide.userInfoModel = UserInfoModel.fromJson(userItem.data);
+          }
+        },onError: (e){
+        });
+      }
   }
 }

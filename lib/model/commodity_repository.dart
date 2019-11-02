@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
@@ -28,9 +28,9 @@ class CommodityService {
 
   /// 立即下单
   Observable<BaseResponse> createShopping(CommodityModels models,
-      CommoditySkusModel skuModel,int counts){
+      CommoditySkusModel skuModel,int counts,BuildContext context){
     var url = '/api/eshop/salesorders/shoppingorder/create';
-    var json = [{
+    List json = [{
       "acctID": UserTools().getUserData()['id'],
       "shopID":models.shopID,
       "prodID":models.prodID,
@@ -48,7 +48,8 @@ class CommodityService {
 //      promotionID
 //      remark
     }];
-    var response = post(url,body: json);
+    print(json);
+    var response = post(url,body: json,context: context);
     return response;
   }
 
@@ -90,8 +91,8 @@ class CommodityRepo {
 
   /// 立即下单
   Observable<BaseResponse> createShopping(CommodityModels models,
-      CommoditySkusModel skuModel,int counts){
-    return _remote.createShopping(models,skuModel,counts);
+      CommoditySkusModel skuModel,int counts,BuildContext context){
+    return _remote.createShopping(models,skuModel,counts,context);
   }
 
   /// 提交订单

@@ -16,8 +16,8 @@ import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
 
 class CommodityDetailPage extends PageProvideNode{
 
-  final CommodityDetailProvide _provide = CommodityDetailProvide.instance;
-  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final CommodityDetailProvide _provide = CommodityDetailProvide();
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide();
 
   CommodityDetailPage(){
     mProviders.provide(Provider<CommodityDetailProvide>.value(_provide));
@@ -26,15 +26,13 @@ class CommodityDetailPage extends PageProvideNode{
 
   @override
   Widget buildContent(BuildContext context) {
-    return CommodityDetailContent(_provide,_cartProvide);
+    return CommodityDetailContent();
   }
   
 }
 
 class CommodityDetailContent extends StatefulWidget {
-  final CommodityDetailProvide _provide;
-  final CommodityAndCartProvide _cartProvide;
-  CommodityDetailContent(this._provide,this._cartProvide);
+  CommodityDetailContent();
   @override
   _CommodityDetailContentState createState() => new _CommodityDetailContentState();
 }
@@ -62,7 +60,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             left: 0,
             right: 0,
             bottom: 0,
-            child: _bottomBar()
+            child: _bottomBar(context)
           )
         ],
       )
@@ -82,8 +80,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         _tabController.index=1;
       }
     });
-    _provide = widget._provide;
-    _cartProvide = widget._cartProvide;
+    _provide = CommodityDetailProvide.instance;
+    _cartProvide = CommodityAndCartProvide.instance;
 
     Future.delayed(Duration.zero,(){
       // 运用未来获取context，初始化数据
@@ -240,8 +238,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                 new InkWell(
                   onTap: (){
                     /// 弹出颜色，尺码选择
-                    CommodityModalBottom.showBottomModal(context:context,
-                        detailProvide:provide,cartProvide: _cartProvide);
+                    CommodityModalBottom.showBottomModal(context:context);
                   },
                   child: new Container(
                     width: ScreenAdapter.getScreenWidth()-100,
@@ -281,7 +278,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   }
 
   /// 底部：客服、购物车、加入购物车、立即购买
-  Widget _bottomBar(){
+  Widget _bottomBar(BuildContext context){
     return new Container(
       color: Colors.white,
       padding: EdgeInsets.only(left: 12,right: 12,top: 10,bottom: 12),
@@ -312,8 +309,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             child: new InkWell(
               onTap: (){
                 print("点击购物车");
-                CommodityModalBottom.showBottomModal(context:context,cartProvide:widget._cartProvide,
-                    detailProvide:_provide);
+                CommodityModalBottom.showBottomModal(context:context);
               },
               child: new Container(
                 width: ScreenAdapter.width(230),
@@ -329,14 +325,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             child: InkWell(
               onTap: (){
                 // 存储当前商品信息
-                CommodityModalBottom.showBottomModal(context:context,
-                    detailProvide:_provide,cartProvide: _cartProvide);
-                // 跳转订单详情
-//                Navigator.push(context, new MaterialPageRoute(
-//                    builder: (context){
-//                      return new OrderDetailPage();
-//                    })
-//                );
+                CommodityModalBottom.showBottomModal(context:context);
               },
               child: new Container(
                 width: ScreenAdapter.width(230),

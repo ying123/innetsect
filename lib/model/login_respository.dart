@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/base.dart';
 import 'package:rxdart/rxdart.dart';
@@ -12,9 +13,16 @@ class LoginService {
   }
 
   /// 个人信息
-  Observable<BaseResponse> getUserInfo(){
+  Observable<BaseResponse> getUserInfo({BuildContext context}){
     var url = '/api/accounts/me';
-    var response = post(url);
+    var response = get(url,context: context);
+    return response;
+  }
+
+  /// 获取验证码
+  Observable<BaseResponse> getVaildCode(String phone){
+    var url = '/sms/vcode/$phone';
+    var response = patch(url);
     return response;
   }
 }
@@ -30,7 +38,12 @@ class LoginRepo {
   }
 
   /// 个人信息
-  Observable<BaseResponse> getUserInfo(){
-    return _remote.getUserInfo();
+  Observable<BaseResponse> getUserInfo({BuildContext context}){
+    return _remote.getUserInfo(context: context);
+  }
+
+  /// 获取验证码
+  Observable<BaseResponse> getVaildCode(String phone){
+    return _remote.getVaildCode(phone);
   }
 }

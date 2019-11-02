@@ -7,7 +7,7 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 
 class CounterWidget extends StatefulWidget {
-  final CommodityAndCartProvide provide;
+  final CommodityAndCartProvide provide ;
   // 数组下标
   final int idx;
   // 购物车商品列表

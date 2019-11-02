@@ -1,12 +1,27 @@
+import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/model/login_respository.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:innetsect/data/user_info_model.dart';
 
 class LoginProvide extends BaseProvide {
   List placeHoderText = [
     '手机号/邮箱/昵称',
     '密码',
   ];
+
+  List placePhoneText = [
+    '手机号',
+    '验证码'
+  ];
+
+  ///用户信息
+  UserInfoModel _userInfoModel;
+  get userInfoModel => _userInfoModel;
+  set userInfoModel(UserInfoModel userInfoModel){
+    _userInfoModel = userInfoModel;
+    notifyListeners();
+  }
 
   String _loginImage;
   get loginImage {
@@ -18,6 +33,14 @@ class LoginProvide extends BaseProvide {
 
   set loginImage(String image) {
     _loginImage = image;
+    notifyListeners();
+  }
+
+  /// 验证码
+  String _vaildCode = "";
+  get vaildCode => _vaildCode;
+  set vaildCode(String vaild){
+    _vaildCode = vaild;
     notifyListeners();
   }
 
@@ -50,11 +73,49 @@ class LoginProvide extends BaseProvide {
     notifyListeners();
   }
 
+  ///工厂模式
+  factory LoginProvide()=> _getInstance();
+  static LoginProvide get instance => _getInstance();
+  static LoginProvide _instance;
+  static LoginProvide _getInstance(){
+    if (_instance == null) {
+      _instance = new LoginProvide._internal();
+    }
+    return _instance;
+  }
+
+  LoginProvide._internal() {
+    print('MainProvide初始化');
+    // 初始化
+  }
+
   final LoginRepo _repo = LoginRepo();
 
   /// 详情数据
   Observable loginData() {
     return _repo.loginData(_userCode, _password)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 用户数据
+  Observable getUserInfo({BuildContext context}) {
+    return _repo.getUserInfo(context:context)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+  
+  /// 获取验证码
+  Observable getVaildCode() {
+    return _repo.getVaildCode(userCode)
         .doOnData((result) {
 
     })
