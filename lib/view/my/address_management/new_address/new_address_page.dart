@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/country_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/city/country_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/my/address_management/new_address/new_address_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:city_pickers/city_pickers.dart';
@@ -26,6 +29,9 @@ class NewAddressContentPage extends StatefulWidget {
 }
 
 class _NewAddressContentPageState extends State<NewAddressContentPage> {
+
+  bool isSelected = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +94,18 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       children: <Widget>[
                         Center(
                           child: Text('收货人姓名',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                        ),
+                        Container(
+                          width: ScreenAdapter.width(500),
+                          margin: EdgeInsets.only(left: 20),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              border: InputBorder.none
+                            ),
+                            onChanged: (text){
+                              provide.name = text;
+                            },
+                          ),
                         )
                       ],
                     )
@@ -105,6 +123,18 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       children: <Widget>[
                         Center(
                           child: Text('手机号码',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                        ),
+                        Container(
+                          width: ScreenAdapter.width(500),
+                          margin: EdgeInsets.only(left: 20),
+                          child: TextField(
+                            decoration: InputDecoration(
+                                border: InputBorder.none
+                            ),
+                            onChanged: (text){
+                              provide.tel=text;
+                            },
+                          ),
                         )
                       ],
                     )
@@ -131,6 +161,10 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                     children: <Widget>[
                       Center(
                         child: Text('所在国家',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 40),
+                        child: Text(provide.countryModel!=null?provide.countryModel.briefName:""),
                       )
                     ],
                   )
@@ -149,7 +183,12 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       children: <Widget>[
                         Center(
                           child: Text('所在地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
-                        )
+                        ),
+                        provide.provincesModel!=null&&provide.cityModel!=null&&provide.countyModel!=null?
+                        Padding(
+                          padding: EdgeInsets.only(left: 40),
+                          child: Text("${provide.provincesModel.regionName}、${provide.cityModel.regionName}、${provide.countyModel.regionName}"),
+                        ):new Container()
                       ],
                     )
             ),
@@ -166,6 +205,18 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       children: <Widget>[
                         Center(
                           child: Text('详细地址',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                        ),
+                        Container(
+                          width: ScreenAdapter.width(500),
+                          margin: EdgeInsets.only(left: 20),
+                          child: TextField(
+                            decoration: InputDecoration(
+                                border: InputBorder.none
+                            ),
+                            onChanged: (text){
+                              provide.addressDetail=text;
+                            },
+                          ),
                         )
                       ],
                     )
@@ -181,8 +232,15 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       ),
                     child: Row(
                       children: <Widget>[
-                        Center(
-                          child: Text('设置为默认',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                        CustomsWidget().customRoundedWidget(isSelected: isSelected,iconSize: 20, onSelectedCallback: (){
+                          setState(() {
+                            isSelected = !isSelected;
+                          });
+                          provide.isDefault=isSelected;
+                        }),
+                        Padding(
+                          padding: EdgeInsets.only(left:10),
+                          child: Text('设为默认',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                         )
                       ],
                     )
@@ -199,7 +257,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
         return Center(
           child: InkWell(
             onTap: () {
-              print('保存被点击');
+              /// 保存地址
+              print(provide);
             },
             child: Container(
               width: ScreenAdapter.width(705),
@@ -225,7 +284,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
   void _getCountries(){
     widget.provide.getCountriess().doOnListen(() {}).doOnCancel(() {}).listen((items) {
       print('listen data->$items');
-      widget.provide.addCityList(CountryModelList.fromJson(items.data).list);
+      widget.provide.addCountryList(CountryModelList.fromJson(items.data).list);
     }, onError: (e) {});
   }
 }

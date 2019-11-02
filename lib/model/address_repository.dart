@@ -29,8 +29,8 @@ class AddressService{
     return response;
   }
   /// 获取市
-  Observable<BaseResponse> getCitys (String code){
-    var url = '/api/geo/cities?countryCode=$code';
+  Observable<BaseResponse> getCitys (String countryCode,String parentCode){
+    var url = '/api/geo/subregions?countryCode=$countryCode&parentCode=$parentCode';
     var response = getCountries(url);
     return response;
   }
@@ -57,7 +57,7 @@ class AddressRepo {
     return _remote.getProvices(code);
   }
   /// 获取市
-  Observable<BaseResponse> getCitys (String code){
-    return _remote.getCitys(code);
+  Observable<BaseResponse> getCitys (String countryCode,String parentCode){
+    return _remote.getCitys(countryCode,parentCode);
   }
 }

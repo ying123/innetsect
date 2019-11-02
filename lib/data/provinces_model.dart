@@ -1,3 +1,4 @@
+/// 省份
 class ProvincesModel{
   String localeCode;
   String countryCode;

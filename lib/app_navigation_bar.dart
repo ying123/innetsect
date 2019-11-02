@@ -5,6 +5,7 @@ import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/view/activity/activity_page.dart';
 import 'package:innetsect/view/brand/brand_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view/shopping/shopping_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
@@ -62,7 +63,13 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
           Future.delayed(Duration.zero,(){
             _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
               if(userItem!=null&&userItem.data!=null){
-                _loginProvide.userInfoModel = UserInfoModel.fromJson(userItem.data);
+                _loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
+              }else{
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (BuildContext context){
+                    return new LoginPage();
+                  }
+                ));
               }
             },onError: (e){
             });

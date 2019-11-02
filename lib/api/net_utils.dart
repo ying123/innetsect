@@ -27,7 +27,7 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
     res = BaseResponse.fromlist(response.data);
   }
   }).catchError((error){
-    if(error.response.data['path']=="/accounts/me"){
+    if(error.response.data['path']=="/accounts/me" || error.response.statusCode==401){
 
       Future.delayed(Duration.zero,(){
         Navigator.pushNamed(context, '/loginPage');

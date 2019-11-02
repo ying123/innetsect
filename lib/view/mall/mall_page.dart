@@ -116,7 +116,7 @@ class _MallContentPageState extends State<MallContentPage> {
       if(index==4){
         this._loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
           if(userItem.data!=null){
-            this._loginProvide.userInfoModel = UserInfoModel.fromJson(userItem.data);
+            this._loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
           }
         },onError: (e){
         });

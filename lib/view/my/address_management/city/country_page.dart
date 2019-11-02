@@ -46,19 +46,19 @@ class _CountryContentPageState extends State<CountryContentPage> {
           return Container(
             color: Colors.white,
             child: ListView.builder(
-                itemCount: provide.cityList.length,
+                itemCount: provide.countryList.length,
                 itemBuilder:(BuildContext context, int index){
                   return new InkWell(
                     onTap: (){
                       // 选中国家
-                      provide.selectCity(provide.cityList[index]);
-                      provide.getProvices(provide.cityList[index].countryCode)
+                      provide.selectCountry(provide.countryList[index]);
+                      provide.getProvices(provide.countryList[index].countryCode)
                           .doOnListen(() {}).doOnCancel(() {})
                           .listen((items) {
                             if(items.data!=null&&items.data.length>0){
                               // 跳转到省份界面
                               provide.addProvincesList(ProvincesModelList.fromJson(items.data).list);
-                              Navigator.push(context, MaterialPageRoute(
+                              Navigator.pushReplacement(context, MaterialPageRoute(
                                 builder: (BuildContext context){
                                   return ProvincesPage();
                                 }
@@ -74,7 +74,7 @@ class _CountryContentPageState extends State<CountryContentPage> {
                           border: Border(bottom: BorderSide(width: 1,color:AppConfig.assistLineColor))
                       ),
                       padding: EdgeInsets.all(10),
-                      child: new Text(provide.cityList[index].briefName),
+                      child: new Text(provide.countryList[index].briefName),
                     ),
                   );
                 }

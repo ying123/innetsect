@@ -32,7 +32,9 @@ class AddressModel{
     this.email,
     this.lastUsed,
     this.isDefault
-  });
+  }){
+    this.isDefault = false;
+  }
 
   factory AddressModel.fromJson(Map<String,dynamic> json){
     return AddressModel(

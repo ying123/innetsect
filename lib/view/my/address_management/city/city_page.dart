@@ -4,40 +4,40 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/country_model.dart';
 import 'package:innetsect/data/provinces_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/my/address_management/city/city_page.dart';
+import 'package:innetsect/view/my/address_management/city/county_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/my/address_management/new_address/new_address_provide.dart';
 import 'package:provide/provide.dart';
 
-class ProvincesPage extends PageProvideNode{
+class CityPage extends PageProvideNode{
 
   final NewAddressProvide _provide = NewAddressProvide.instance;
 
-  ProvincesPage(){
+  CityPage(){
     mProviders.provide(Provider<NewAddressProvide>.value(_provide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return ProvincesContentPage(_provide);
+    return CityContentPage(_provide);
   }
 }
 
-class ProvincesContentPage extends StatefulWidget {
+class CityContentPage extends StatefulWidget {
   final NewAddressProvide _provide;
-  ProvincesContentPage(this._provide);
+  CityContentPage(this._provide);
 
   @override
-  _ProvincesContentPageState createState() => _ProvincesContentPageState();
+  _CityContentPageState createState() => _CityContentPageState();
 }
 
-class _ProvincesContentPageState extends State<ProvincesContentPage> {
+class _CityContentPageState extends State<CityContentPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
-          widget: new Text("选择省份",style: TextStyle(fontSize: ScreenAdapter.size((30)),
+          widget: new Text("选择市",style: TextStyle(fontSize: ScreenAdapter.size((30)),
               fontWeight: FontWeight.w900
           ),
           )
@@ -48,21 +48,21 @@ class _ProvincesContentPageState extends State<ProvincesContentPage> {
           return Container(
             color: Colors.white,
             child: ListView.builder(
-                itemCount: provide.provincesList.length,
+                itemCount: provide.cityList.length,
                 itemBuilder:(BuildContext context, int index){
                   return new InkWell(
                     onTap: (){
-                      // 选中省份
-                      provide.selectProvinces(provide.provincesList[index]);
-                      provide.getCitys(countryModel.countryCode,provide.provincesList[index].regionCode)
+                      // 选中市
+                      provide.selectCity(provide.cityList[index]);
+                      provide.getCitys(countryModel.countryCode,provide.cityList[index].regionCode)
                           .doOnListen(() {}).doOnCancel(() {})
                           .listen((items) {
                         if(items.data!=null&&items.data.length>0){
-                          // 跳转到市界面
-                          provide.addCityList(ProvincesModelList.fromJson(items.data).list);
+                          provide.addCountyList(ProvincesModelList.fromJson(items.data).list);
+                          // 跳转到区县界面
                           Navigator.pushReplacement(context, MaterialPageRoute(
                               builder: (BuildContext context){
-                                return CityPage();
+                                return CountyPage();
                               }
                           ));
                         }else{
@@ -76,7 +76,7 @@ class _ProvincesContentPageState extends State<ProvincesContentPage> {
                           border: Border(bottom: BorderSide(width: 1,color:AppConfig.assistLineColor))
                       ),
                       padding: EdgeInsets.all(10),
-                      child: new Text(provide.provincesList[index].regionName),
+                      child: new Text(provide.cityList[index].regionName),
                     ),
                   );
                 }

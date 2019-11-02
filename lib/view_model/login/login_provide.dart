@@ -18,7 +18,7 @@ class LoginProvide extends BaseProvide {
   ///用户信息
   UserInfoModel _userInfoModel;
   get userInfoModel => _userInfoModel;
-  set userInfoModel(UserInfoModel userInfoModel){
+  void setUserInfoModel(UserInfoModel userInfoModel){
     _userInfoModel = userInfoModel;
     notifyListeners();
   }

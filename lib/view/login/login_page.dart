@@ -301,7 +301,7 @@ class _LoginContentPageState extends State<LoginContentPage> {
                 /// 获取用户信息
                 provide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
                   if(userItem.data!=null){
-                    provide.userInfoModel = UserInfoModel.fromJson(userItem.data);
+                    provide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
                   }
                 },onError: (e){});
                 UserTools().setUserData(item.data);
