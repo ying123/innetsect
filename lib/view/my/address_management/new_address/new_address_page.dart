@@ -258,7 +258,14 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
           child: InkWell(
             onTap: () {
               /// 保存地址
-              print(provide);
+              provide.createAddresses(context)
+                  .doOnListen(() {}).doOnCancel(() {})
+                  .listen((items) {
+                if(items.data!=null){
+                  Navigator.pop(context);
+                }
+                print('listen data->$items');
+              }, onError: (e) {});
             },
             child: Container(
               width: ScreenAdapter.width(705),

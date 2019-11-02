@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/base.dart';
@@ -34,8 +35,15 @@ class AddressService{
     var response = getCountries(url);
     return response;
   }
+
+  /// 创建地址
+  Observable<BaseResponse> createAddresses(Map<String,dynamic> json,BuildContext context){
+    var url = '/api/eshop/addresses';
+    var response = post(url,body: json,context: context);
+    return response;
+  }
 }
-///商城数据请求响应
+///地址数据请求响应
 class AddressRepo {
   final AddressService _remote = AddressService();
 
@@ -60,4 +68,9 @@ class AddressRepo {
   Observable<BaseResponse> getCitys (String countryCode,String parentCode){
     return _remote.getCitys(countryCode,parentCode);
   }
+  /// 创建地址
+  Observable<BaseResponse> createAddresses(Map<String,dynamic> json,BuildContext context){
+    return _remote.createAddresses(json, context);
+  }
+
 }

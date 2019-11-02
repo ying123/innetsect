@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/country_model.dart';
 import 'package:innetsect/data/provinces_model.dart';
 import 'package:innetsect/model/address_repository.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:rxdart/rxdart.dart';
 
 class  NewAddressProvide extends BaseProvide{
@@ -131,6 +133,28 @@ class  NewAddressProvide extends BaseProvide{
         .doOnDone(() {});
   }
 
+  /// 创建地址
+  Observable createAddresses(BuildContext context) {
+    Map<String,dynamic> json = AddressModel().toJson();
+    json['name'] = _name;
+    json['addressDetail'] = _addressDetail;
+    json['tel'] = _tel;
+    json['isDefault'] = _isDefault;
+    json['province'] = _provincesModel.regionName;
+    json['countryCode'] = _countryModel.countryCode;
+    json['city'] = _cityModel.regionName;
+    json['county'] = _countyModel.regionName;
+    json['areaCode'] = _countyModel.regionCode;
+    json["acctID"] = UserTools().getUserData()['id'];
+    return _repo
+        .createAddresses(json, context)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
   ///工厂模式
   factory NewAddressProvide()=> _getInstance();
   static NewAddressProvide get instance => _getInstance();

@@ -45,7 +45,6 @@ class _CountyContentPageState extends State<CountyContentPage> {
       ),
       body: Provide<NewAddressProvide>(
         builder: (BuildContext context,Widget widget,NewAddressProvide provide){
-          CountryModel countryModel = provide.countryModel;
           return Container(
             color: Colors.white,
             child: ListView.builder(
