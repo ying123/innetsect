@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
-import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/view/activity/activity_page.dart';
 import 'package:innetsect/view/brand/brand_page.dart';
 import 'package:innetsect/view/home/home_page.dart';

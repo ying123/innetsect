@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/utils/animation_util.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -7,24 +8,28 @@ import 'package:innetsect/view/my/address_management/address_management_page.dar
 import 'package:innetsect/view/my_order/my_order_page.dart';
 
 import 'package:innetsect/view/personal_center/personal_center_page.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/my/my_provide.dart';
 import 'package:provide/provide.dart';
 
 ///我的页面
 class MyPage extends PageProvideNode {
   final MyProvide _provide = MyProvide();
+  final LoginProvide _loginProvide = LoginProvide.instance;
   MyPage() {
     mProviders.provide(Provider<MyProvide>.value(_provide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return MyContentPage(_provide);
+    return MyContentPage(_provide,_loginProvide);
   }
 }
 
 class MyContentPage extends StatefulWidget {
   final MyProvide provide;
-  MyContentPage(this.provide);
+  final LoginProvide _loginProvide;
+  MyContentPage(this.provide,this._loginProvide);
   @override
   _MyContentPageState createState() => _MyContentPageState();
 }
@@ -439,6 +444,7 @@ class _MyContentPageState extends State<MyContentPage> {
   Provide<MyProvide> _setupHeader() {
     return Provide<MyProvide>(
       builder: (BuildContext context, Widget child, MyProvide provide) {
+        UserInfoModel userModel = widget._loginProvide.userInfoModel;
         return Stack(
           children: <Widget>[
             Container(
@@ -488,7 +494,7 @@ class _MyContentPageState extends State<MyContentPage> {
               padding: EdgeInsets.only(top: ScreenAdapter.height(170)),
               child: Center(
                 child: Text(
-                  provide.mobilePhoneNumber,
+                  userModel!=null?userModel.mobile:'',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: ScreenAdapter.size(35),
@@ -515,7 +521,7 @@ class _MyContentPageState extends State<MyContentPage> {
                           Radius.circular(ScreenAdapter.width(100))),
                       //border: Border.all(color: Colors.black12),
                     ),
-                    child: Image.asset(
+                    child: userModel!=null? Image.network(userModel.portrait,fit: BoxFit.cover):Image.asset(
                       provide.headPortrait,
                       fit: BoxFit.cover,
                     ),

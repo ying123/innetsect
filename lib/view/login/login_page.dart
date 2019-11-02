@@ -1,5 +1,6 @@
 import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
@@ -300,7 +301,7 @@ class _LoginContentPageState extends State<LoginContentPage> {
                 /// 获取用户信息
                 provide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
                   if(userItem.data!=null){
-                    UserTools().setUserInfo(userItem.data);
+                    provide.userInfoModel = UserInfoModel.fromJson(userItem.data);
                   }
                 },onError: (e){});
                 UserTools().setUserData(item.data);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/city_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/my/address_management/city/country_page.dart';
 import 'package:innetsect/view_model/my/address_management/new_address/new_address_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:city_pickers/city_pickers.dart';
@@ -109,9 +110,13 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                     )
             ),
             InkWell(
-              onTap: () async{
+              onTap: () {
                 //弹出国家
-                Result tempResult = await CityPickers.showCitiesSelector(context: context,citiesData: widget.provide.cityJson);
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (BuildContext context){
+                    return CountryPage();
+                  }
+                ));
               },
               child: Container(
                   width: ScreenAdapter.width(700),
@@ -220,7 +225,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
   void _getCountries(){
     widget.provide.getCity().doOnListen(() {}).doOnCancel(() {}).listen((items) {
       print('listen data->$items');
-      widget.provide.parseMap(CityModelList.fromJson(items.data).list);
+      widget.provide.addCityList(CityModelList.fromJson(items.data).list);
     }, onError: (e) {});
   }
 }

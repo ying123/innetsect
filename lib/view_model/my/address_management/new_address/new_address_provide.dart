@@ -6,25 +6,15 @@ import 'package:rxdart/rxdart.dart';
 class  NewAddressProvide extends BaseProvide{
 
   List<CityModel> _cityList=[];
-  Map<String,dynamic> _cityJson=new Map();
 
   List<CityModel> get cityList => _cityList;
 
-  get cityJson => _cityJson;
 
   void addCityList(List<CityModel> list){
     _cityList = list;
     notifyListeners();
   }
   
-  void parseMap(List<CityModel> list){
-    list.forEach((item){
-      _cityJson..addAll({item.countryCode: item.briefName});
-      print(_cityJson);
-    });
-    notifyListeners();
-  }
-
 
   final AddressRepo _repo = AddressRepo();
   ///获取国家
@@ -33,5 +23,21 @@ class  NewAddressProvide extends BaseProvide{
         .doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
+  }
+
+  ///工厂模式
+  factory NewAddressProvide()=> _getInstance();
+  static NewAddressProvide get instance => _getInstance();
+  static NewAddressProvide _instance;
+  static NewAddressProvide _getInstance(){
+    if (_instance == null) {
+      _instance = new NewAddressProvide._internal();
+    }
+    return _instance;
+  }
+
+  NewAddressProvide._internal() {
+    print('NewAddressProvide初始化');
+    // 初始化
   }
 }
