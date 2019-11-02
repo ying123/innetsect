@@ -3,6 +3,8 @@ import 'package:innetsect/model/exhibition_home_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class HomeProvide extends BaseProvide {
+
+  
   List<String> _bannerImages = [];
 
   get bannerImages {

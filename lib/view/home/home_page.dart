@@ -106,7 +106,7 @@ class _HomeContentPageState extends State<HomeContentPage>
             child: Container(
               margin: EdgeInsets.fromLTRB(0, ScreenAdapter.height(38), 0, 0),
               child: Text(
-                '进入商城',
+                '去商城',
                 textAlign: TextAlign.end,
                 style: TextStyle(
                   fontSize: ScreenAdapter.size(30),

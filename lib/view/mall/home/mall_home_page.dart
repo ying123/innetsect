@@ -55,7 +55,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
             child: Container(
               margin: EdgeInsets.fromLTRB(0, ScreenAdapter.height(38), 0, 0),
               child: Text(
-                '进入展会',
+                '去展会',
                 textAlign: TextAlign.end,
                 style: TextStyle(
                   fontSize: ScreenAdapter.size(30),
