@@ -159,7 +159,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                     ///加载数据,订单详情
                     print('listen data->$item');
                     if(item.data!=null){
-                      OrderDetailModel model = OrderDetailModel.formJson(item.data);
+                      OrderDetailModel model = OrderDetailModel.fromJson(item.data);
                       _orderDetailProvide.orderDetailModel = model;
                     }
                     Navigator.push(context, new MaterialPageRoute(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/view/mall/home/mall_home_page.dart';
@@ -83,7 +84,7 @@ class _MallContentPageState extends State<MallContentPage> {
           ),
           child: new BottomNavigationBar(
               elevation: 0.0,
-              fixedColor: Color.fromRGBO(58, 130, 240, 1.0),
+              fixedColor: AppConfig.fontBackColor,
               currentIndex: widget._provide.currentIndex,
               type: BottomNavigationBarType.fixed,
               onTap: _onBottomTap,
@@ -103,7 +104,7 @@ class _MallContentPageState extends State<MallContentPage> {
               width: 30.0, height: 30.0,),
             activeIcon: Image.asset(menu.selIcon,
               width: 30.0, height: 30.0,),
-            title: Container(),
+            title: Text(menu.title),
           )
       );
     });

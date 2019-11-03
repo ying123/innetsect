@@ -1,16 +1,18 @@
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/mall/banners_model.dart';
+import 'package:innetsect/model/mall/home_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 class MallHomeProvide extends BaseProvide{
 
-  List<String> _bannerImages = [
-    'https://aecpm.alicdn.com/simba/img/TB14ab1KpXXXXclXFXXSutbFXXX.jpg_q50.jpg',
-    'https://gw.alicdn.com/imgextra/i4/34/O1CN01Wz3LuY1C7bzPXexNf_!!34-0-lubanu.jpg',
-    'https://gw.alicdn.com/imgextra/i1/99/O1CN01MswjVp1CbNjd1qL0N_!!99-0-lubanu.jpg',
-    'https://aecpm.alicdn.com/tfscom/TB1jDYURMHqK1RjSZFgXXa7JXXa.jpg_q50.jpg',
-    'https://gw.alicdn.com/imgextra/i4/196/O1CN01GM2TCU1DJo9Q4paY5_!!196-0-lubanu.jpg',
-    'https://gw.alicdn.com/imgextra/i1/101/O1CN012LEy4Q1CcIWfvJWbw_!!101-0-lubanu.jpg'
-  ];
+  List<BannersModel> _bannersList=[];
 
+  List<BannersModel> get bannersList=>_bannersList;
+
+  void addBannersModel(List<BannersModel> list){
+    _bannersList = list;
+    notifyListeners();
+  }
 
   //列表项数据
   List listItems = [
@@ -90,5 +92,16 @@ class MallHomeProvide extends BaseProvide{
   ];
 
 
-  get bannerImages => _bannerImages;
+  /// 请求
+  final MallHomeRepo _repo = MallHomeRepo();
+
+  ///展会首页数据
+  Observable bannerData() {
+    return _repo.bannerData()
+        .doOnData((result) {
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
 }

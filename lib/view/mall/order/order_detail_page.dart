@@ -230,7 +230,7 @@ class _OrderContentState extends State<OrderContent> {
               CustomsWidget().subTitle(title: "订单详情",color: AppConfig.primaryColor),
               new Container(
                 width: double.infinity,
-                height: ScreenAdapter.height(120),
+                height: ScreenAdapter.height(140),
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(10),
                 child: new Column(

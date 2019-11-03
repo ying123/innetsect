@@ -9,16 +9,22 @@ import 'package:rxdart/rxdart.dart';
 
 class  NewAddressProvide extends BaseProvide{
 
+  int _addressID;
   String _name;
   String _tel;
   String _addressDetail;
-  bool _isDefault;
+  bool _isDefault = false;
 
+  get addressID=>_addressID;
   get name=>_name;
   get tel=>_tel;
   get addressDetail=>_addressDetail;
   get isDefault=>_isDefault;
 
+  set addressID(int addressID){
+    _addressID = addressID;
+    notifyListeners();
+  }
   set name(String name){
     _name = name;
     notifyListeners();
@@ -83,16 +89,22 @@ class  NewAddressProvide extends BaseProvide{
 
   void selectCountry(CountryModel model){
     _countryModel = model;
+    _provincesModel = null;
+    _cityModel = null;
+    _countyModel = null;
     notifyListeners();
   }
 
   void selectProvinces(ProvincesModel model){
     _provincesModel = model;
+    _cityModel = null;
+    _countyModel = null;
     notifyListeners();
   }
 
   void selectCity(ProvincesModel model){
     _cityModel = model;
+    _countyModel = null;
     notifyListeners();
   }
 
@@ -134,26 +146,39 @@ class  NewAddressProvide extends BaseProvide{
   }
 
   /// 创建地址
-  Observable createAddresses(BuildContext context) {
+  Observable createAndEditAddresses(BuildContext context,{bool isEdit = false}) {
     Map<String,dynamic> json = AddressModel().toJson();
     json['name'] = _name;
     json['addressDetail'] = _addressDetail;
     json['tel'] = _tel;
-    json['isDefault'] = _isDefault;
-    json['province'] = _provincesModel.regionName;
+    json['lastUsed'] = _isDefault==null?false:_isDefault;
+    json['province'] = _provincesModel!=null?_provincesModel.regionName:"";
     json['countryCode'] = _countryModel.countryCode;
-    json['city'] = _cityModel.regionName;
-    json['county'] = _countyModel.regionName;
-    json['areaCode'] = _countyModel.regionCode;
+    json['city'] = _cityModel!=null?_cityModel.regionName:"";
+    json['county'] = _countyModel!=null?_countyModel.regionName:"";
+    json['areaCode'] =_countyModel!=null?_countyModel.regionCode:"";
     json["acctID"] = UserTools().getUserData()['id'];
-    return _repo
-        .createAddresses(json, context)
-        .doOnData((result) {
+    json['telPrefix'] = _countryModel.telPrefix;
+    if(isEdit){
+      json['addressID'] = _addressID;
+      return _repo
+          .editAddresses(json, context)
+          .doOnData((result) {
 
-    })
-        .doOnError((e, stacktrace) {})
-        .doOnListen(() {})
-        .doOnDone(() {});
+      })
+          .doOnError((e, stacktrace) {})
+          .doOnListen(() {})
+          .doOnDone(() {});
+    }else{
+      return _repo
+          .createAddresses(json, context)
+          .doOnData((result) {
+
+      })
+          .doOnError((e, stacktrace) {})
+          .doOnListen(() {})
+          .doOnDone(() {});
+    }
   }
   ///工厂模式
   factory NewAddressProvide()=> _getInstance();

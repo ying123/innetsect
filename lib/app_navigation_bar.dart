@@ -65,11 +65,11 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
               if(userItem!=null&&userItem.data!=null){
                 _loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
               }else{
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (BuildContext context){
-                    return new LoginPage();
-                  }
-                ));
+//                Navigator.push(context, MaterialPageRoute(
+//                  builder: (BuildContext context){
+//                    return new LoginPage();
+//                  }
+//                ));
               }
             },onError: (e){
             });

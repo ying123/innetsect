@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/address_model.dart';
@@ -6,8 +7,8 @@ import 'package:rxdart/rxdart.dart';
 
 class AddressService{
   /// 地址列表
-  Observable<BaseResponse> listData (int pageNo){
-    var url = '/api/eshop/addresses?pageNo=$pageNo';
+  Observable<BaseResponse> listData (){
+    var url = '/api/eshop/addresses';
     var response = get(url);
     return response;
   }
@@ -42,6 +43,19 @@ class AddressService{
     var response = post(url,body: json,context: context);
     return response;
   }
+
+  /// 修改地址
+  Observable<BaseResponse> editAddresses(Map<String,dynamic> json,BuildContext context){
+    var url = '/api/eshop/addresses';
+    var response = put(url,body: json,context: context);
+    return response;
+  }
+
+  /// 删除地址
+  Future deleteAddresses(int addressID){
+    var url = '/api/eshop/addresses/$addressID';
+    return delete(url);
+  }
 }
 ///地址数据请求响应
 class AddressRepo {
@@ -49,8 +63,8 @@ class AddressRepo {
 
   /// 列表请求
   /// *[pageNo] page页
-  Observable<BaseResponse> listData(int pageNo) {
-    return _remote.listData(pageNo);
+  Observable<BaseResponse> listData() {
+    return _remote.listData();
   }
   /// 编辑
   Observable<BaseResponse> editData(AddressModel model) {
@@ -71,6 +85,14 @@ class AddressRepo {
   /// 创建地址
   Observable<BaseResponse> createAddresses(Map<String,dynamic> json,BuildContext context){
     return _remote.createAddresses(json, context);
+  }
+  /// 修改地址
+  Observable<BaseResponse> editAddresses(Map<String,dynamic> json,BuildContext context){
+    return _remote.editAddresses(json, context);
+  }
+  /// 删除地址
+  Future deleteAddresses(int addressID){
+    return _remote.deleteAddresses(addressID);
   }
 
 }

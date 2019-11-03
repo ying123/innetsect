@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/home/mall_home_provide.dart';
 import 'package:provide/provide.dart';
@@ -93,6 +94,8 @@ class _MallHomeContentState extends State<MallHomeContent> {
     // TODO: implement initState
     super.initState();
     _controller = new EasyRefreshController();
+    // 加载首页数据
+    _loadBannerData();
   }
 
   ///轮播图
@@ -108,7 +111,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
               width: ScreenAdapter.width(750),
               height: ScreenAdapter.height(420),
               color: Colors.white,
-              child: Swiper(
+              child: provide.bannersList.length>0?Swiper(
                 index: 0,
                 loop: true,
                 itemBuilder: (context, index) {
@@ -127,7 +130,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
                               const Duration(milliseconds: 300),
                               fadeInDuration: const Duration(milliseconds: 700),
                               fit: BoxFit.fill,
-                              imageUrl: provide.bannerImages[index],
+                              imageUrl: provide.bannersList[index].bannerPic,
                               errorWidget: (context, url, error) {
                                 return Icon(Icons.error);
                               },
@@ -138,12 +141,12 @@ class _MallHomeContentState extends State<MallHomeContent> {
                     ),
                   );
                 },
-                itemCount: provide.bannerImages.length,
+                itemCount: provide.bannersList.length,
                 // pagination: SwiperPagination(),
                 autoplay: true,
                 duration: 300,
                 scrollDirection: Axis.horizontal,
-              ),
+              ):new Container(),
             ),
           ),
         );
@@ -284,5 +287,23 @@ class _MallHomeContentState extends State<MallHomeContent> {
         );
       },
     );
+  }
+
+  _loadBannerData(){
+    widget._provide.bannerData()
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      if(item.data!=null){
+        widget._provide.addBannersModel(
+          BannersModelList.fromJson(item.data['banners']).list
+        );
+      }
+      print('listen data->$item');
+//      _provide
+    }, onError: (e) {});
   }
 }

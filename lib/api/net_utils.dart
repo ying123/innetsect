@@ -178,3 +178,23 @@ Future<BaseResponse> _getCountries(String url, {Map<String, dynamic> params,Buil
   });
   return res;
 }
+
+///delete请求
+Future delete(String url,
+    {dynamic body, Map<String, dynamic> qureyParameters,BuildContext context}) {
+  return _delete(url, body, queryParameters: qureyParameters,context: context);
+}
+
+Future _delete(String url, dynamic body,
+    {Map<String, dynamic> queryParameters,BuildContext context}) async {
+  Response response;
+  await HttpUtil()
+      .dio
+      .delete(url, data: body, queryParameters: queryParameters).then((res){
+    response = res;
+    print('response _post:->$response');
+  }).catchError((error) {
+    print(error);
+  });
+  return response;
+}

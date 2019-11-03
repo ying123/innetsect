@@ -13,9 +13,6 @@ class MallHomeService {
   }
 }
 
-
-
-
 ///商城首页请求响应
 class MallHomeRepo {
   final MallHomeService _remote = MallHomeService();

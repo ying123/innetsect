@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:innetsect/base/base.dart';
-import 'package:provide/provide.dart';
-import 'package:innetsect/view_model/mall/commodity/list_provide.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/view/widget/list_header.dart';
 

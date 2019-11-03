@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/country_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/city/country_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/my/address_management/address_management_provide.dart';
 import 'package:innetsect/view_model/my/address_management/new_address/new_address_provide.dart';
 import 'package:provide/provide.dart';
-import 'package:city_pickers/city_pickers.dart';
 
 class NewAddressPage extends PageProvideNode {
   final NewAddressProvide _provide = NewAddressProvide();
+  final AddressManagementProvide _addressManagementProvide = AddressManagementProvide.instance;
   NewAddressPage() {
     mProviders.provide(Provider<NewAddressProvide>.value(_provide));
+    mProviders.provide(Provider<AddressManagementProvide>.value(_addressManagementProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return NewAddressContentPage(_provide);
+    return NewAddressContentPage(_provide,_addressManagementProvide);
   }
 }
 
 class NewAddressContentPage extends StatefulWidget {
   final NewAddressProvide provide;
-  NewAddressContentPage(this.provide);
+  final AddressManagementProvide _addressManagementProvide;
+  NewAddressContentPage(this.provide,this._addressManagementProvide);
   @override
   _NewAddressContentPageState createState() => _NewAddressContentPageState();
 }
@@ -38,7 +41,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
-        title: Text('新建收货地址'),
+        title: Text(widget._addressManagementProvide.addressModel!=null?'修改收货地址':'新建收货地址'),
         centerTitle: true,
         leading: InkWell(
             onTap: () {
@@ -74,7 +77,15 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     super.initState();
     // 获取国家
     _getCountries();
+    // 编辑时
+    if(widget._addressManagementProvide.addressModel!=null){
+      widget.provide.addressID = widget._addressManagementProvide.addressModel.addressID;
+      setState(() {
+        isSelected = widget._addressManagementProvide.addressModel.isDefault;
+      });
+    }
   }
+
 
   Provide<NewAddressProvide> _setupNewGoodsAddress() {
     return Provide<NewAddressProvide>(
@@ -100,7 +111,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           margin: EdgeInsets.only(left: 20),
                           child: TextField(
                             decoration: InputDecoration(
-                              border: InputBorder.none
+                              border: InputBorder.none,
+                              hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.name:"请输入收货人姓名"
                             ),
                             onChanged: (text){
                               provide.name = text;
@@ -129,7 +141,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           margin: EdgeInsets.only(left: 20),
                           child: TextField(
                             decoration: InputDecoration(
-                                border: InputBorder.none
+                              border: InputBorder.none,
+                              hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.tel:"请输入收货人手机号"
                             ),
                             onChanged: (text){
                               provide.tel=text;
@@ -164,7 +177,10 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 40),
-                        child: Text(provide.countryModel!=null?provide.countryModel.briefName:""),
+                        child: Text(provide.countryModel!=null?provide.countryModel.briefName:
+//                        widget._addressManagementProvide.addressModel!=null?
+//                        widget._addressManagementProvide.addressModel.:
+                            ""),
                       )
                     ],
                   )
@@ -173,7 +189,6 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
             Container(
               width: ScreenAdapter.width(700),
               height: ScreenAdapter.height(100),
-              // color: Colors.yellow,
               decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
@@ -187,8 +202,14 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                         provide.provincesModel!=null&&provide.cityModel!=null&&provide.countyModel!=null?
                         Padding(
                           padding: EdgeInsets.only(left: 40),
-                          child: Text("${provide.provincesModel.regionName}、${provide.cityModel.regionName}、${provide.countyModel.regionName}"),
-                        ):new Container()
+                          child: Text("${provide.provincesModel.regionName} ${provide.cityModel.regionName} ${provide.countyModel.regionName}"),
+                        ):widget._addressManagementProvide.addressModel!=null?
+                          Padding(
+                            padding: EdgeInsets.only(left: 40),
+                            child: Text("${widget._addressManagementProvide.addressModel.province} ${widget._addressManagementProvide.addressModel.city} "
+                                "${widget._addressManagementProvide.addressModel.county}"),
+                          )
+                        :new Container()
                       ],
                     )
             ),
@@ -211,7 +232,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           margin: EdgeInsets.only(left: 20),
                           child: TextField(
                             decoration: InputDecoration(
-                                border: InputBorder.none
+                              border: InputBorder.none,
+                              hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.addressDetail:"请输入收货地址"
                             ),
                             onChanged: (text){
                               provide.addressDetail=text;
@@ -251,6 +273,15 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     );
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    /// 清空选中国家城市
+    widget.provide.clearSelect();
+    widget._addressManagementProvide.addressModel = null;
+  }
+
   Provide<NewAddressProvide> _setupBottomBtn() {
     return Provide<NewAddressProvide>(
       builder: (BuildContext context, Widget child, NewAddressProvide provide) {
@@ -258,14 +289,34 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
           child: InkWell(
             onTap: () {
               /// 保存地址
-              provide.createAddresses(context)
-                  .doOnListen(() {}).doOnCancel(() {})
-                  .listen((items) {
-                if(items.data!=null){
-                  Navigator.pop(context);
-                }
-                print('listen data->$items');
-              }, onError: (e) {});
+              if(widget._addressManagementProvide.addressModel!=null){
+                provide.createAndEditAddresses(context,isEdit: true)
+                    .doOnListen(() {}).doOnCancel(() {})
+                    .listen((items) {
+                  print(items.data);
+                  if(items.data!=null){
+                    /// 列表数据
+                    widget._addressManagementProvide.addAddresses(
+                        AddressModel.fromJson(items.data));
+                    Fluttertoast.showToast(msg: "修改成功",gravity: ToastGravity.CENTER);
+
+                    Navigator.pop(context);
+                  }
+                }, onError: (e) {});
+              }else{
+                provide.createAndEditAddresses(context)
+                    .doOnListen(() {}).doOnCancel(() {})
+                    .listen((items) {
+                  print(items.data);
+                  if(items.data!=null){
+                    /// 列表数据
+                    widget._addressManagementProvide.addAddresses(
+                        AddressModel.fromJson(items.data));
+                    Fluttertoast.showToast(msg: "保存成功",gravity: ToastGravity.CENTER);
+                    Navigator.pop(context);
+                  }
+                }, onError: (e) {});
+              }
             },
             child: Container(
               width: ScreenAdapter.width(705),
@@ -273,7 +324,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
               color: Colors.black,
               child: Center(
                 child: Text(
-                  '保存',
+                  widget._addressManagementProvide.addressModel!=null?'修改':'保存',
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

@@ -51,17 +51,22 @@ class _MyContentPageState extends State<MyContentPage> {
     return Scaffold(
         body: Container(
       color: Colors.white,
-      child: ListView(
+      child: ListView.builder(
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-        children: <Widget>[
-          _setupHeader(),
-          SizedBox(
-            height: ScreenAdapter.height(40),
-          ),
-          _setupCenter(),
-          _setupBoady(),
-        ],
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index){
+          return new Column(
+            children: <Widget>[
+              _setupHeader(),
+              SizedBox(
+                height: ScreenAdapter.height(40),
+              ),
+              _setupCenter(),
+              _setupBoady(),
+            ],
+          );
+        },
       ),
     ));
   }

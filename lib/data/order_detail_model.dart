@@ -45,19 +45,19 @@ class OrderDetailModel{
   // 运费
   double freight;
   // 优惠
-  int totalDiscount;
+  double totalDiscount;
   // 预售定金
-  int totalDeposit;
+  double totalDeposit;
   // 允许使用积分数量
   double allowPoint;
   // 积分支付
-  int payPoint;
+  double payPoint;
   // 卡券抵用
-  int payCoupon;
+  double payCoupon;
   // 实际支付,未支付
   double payableAmount;
   // 实际支付,已支付
-  int payAmount;
+  double payAmount;
   // 发票类型，0：不需要，1：个人普票，2：专票
   int invoiceType;
   // 支付方式, 0：现金，1：微信，2：支付宝，3：visa
@@ -109,7 +109,7 @@ class OrderDetailModel{
     this.skuModels
   });
 
-  factory OrderDetailModel.formJson(Map<String,dynamic> json) {
+  factory OrderDetailModel.fromJson(Map<String,dynamic> json) {
     return OrderDetailModel(
         addressModel: json['address']!=null?AddressModel.fromJson(json['address']):null ,
         areaCode: json['areaCode'],
@@ -148,4 +148,18 @@ class OrderDetailModel{
     );
   }
 
+}
+
+class OrderDetailModelList{
+  List<OrderDetailModel> list;
+
+  OrderDetailModelList(this.list);
+
+  factory OrderDetailModelList.fromJson(List json){
+    return OrderDetailModelList(
+        json.map(
+                (item)=>OrderDetailModel.fromJson((item))
+        ).toList()
+    );
+  }
 }

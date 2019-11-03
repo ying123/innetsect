@@ -203,6 +203,8 @@ flutter:
     - assets/images/mall/tab_mall_h.png
     - assets/images/mall/tab_me.png
     - assets/images/mall/tab_me_h.png
+    - assets/images/mall/brand@3x.png
+    - assets/images/mall/sel_brand@3x.png
     # -------购物车默认图-----------
     - assets/images/mall/default_cart.png
     - assets/images/mall/msg.png
