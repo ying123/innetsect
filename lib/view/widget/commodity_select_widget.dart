@@ -63,7 +63,6 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
   Widget _topContentWidget(CommodityDetailProvide provide){
     CommodityModels model = provide.commodityModels;
     CommoditySkusModel skusModel = provide.skusModel;
-    List<CommodityFeatureModel> features = model.features;
     List<CommoditySkusModel> skuModelGroup = provide.skusList;
     return new Container(
       width: double.infinity,
@@ -101,14 +100,16 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                     ),
                     child: Image.network(item.skuPic,fit: BoxFit.fill,),
                   ),
-                  new Container(
-                    width: ScreenAdapter.getScreenWidth()-100,
-                    color: Colors.white,
-                    child: new Text(item.skuName,softWrap: true,
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(32)
+                  new Expanded(
+                    flex:1,
+                    child: new Container(
+                      color: Colors.white,
+                      child: new Text(item.skuName,softWrap: true,
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(32)
+                        ),
                       ),
-                    ),
+                    )
                   ),
                 ],
               ),

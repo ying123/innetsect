@@ -241,14 +241,13 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                     CommodityModalBottom.showBottomModal(context:context);
                   },
                   child: new Container(
-                    width: ScreenAdapter.getScreenWidth()-100,
+                    width: ScreenAdapter.getScreenWidth()-150,
                     padding: EdgeInsets.only(left: 20,right: 20),
                     child: new Text(model!=null?model.skuName:""),
                   ),
                 ),
-                new Container(
-                  width: ScreenAdapter.width(60),
-                  alignment: Alignment.centerRight,
+                new Expanded(
+                  flex:1,
                   child: new Icon(Icons.more_horiz),
                 )
               ],

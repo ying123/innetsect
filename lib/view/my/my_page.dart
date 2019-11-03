@@ -5,6 +5,7 @@ import 'package:innetsect/utils/animation_util.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
+import 'package:innetsect/view/my/settings/my_settings_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
 
 import 'package:innetsect/view/personal_center/personal_center_page.dart';
@@ -470,10 +471,11 @@ class _MyContentPageState extends State<MyContentPage> {
               child: InkWell(
                 onTap: () {
                   print('设置按钮被点击');
-                  if (widget.provide.isLogin == false) {
-                    _loginPage();
-                   // widget.provide.isLogin = true;
-                  }
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (BuildContext context){
+                      return MySettingsPage();
+                    }
+                  ));
                 },
                 child: Image.asset(
                   'assets/images/mall/setting.png',

@@ -32,8 +32,6 @@ class AddressManagementProvide extends BaseProvide{
     _listAddressModel.forEach((item){
       if(item.addressID==model.addressID){
         item.lastUsed = model.lastUsed;
-      }else{
-        item.lastUsed = !model.lastUsed;
       }
     });
     notifyListeners();
