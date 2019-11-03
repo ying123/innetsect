@@ -14,7 +14,6 @@ class AddressModel{
   String postalCode;
   String email;
   bool lastUsed;
-  bool isDefault;
 
   AddressModel({
     this.addressID,
@@ -31,9 +30,8 @@ class AddressModel{
     this.postalCode,
     this.email,
     this.lastUsed,
-    this.isDefault
   }){
-    this.isDefault = false;
+    lastUsed = false;
   }
 
   factory AddressModel.fromJson(Map<String,dynamic> json){
@@ -51,8 +49,7 @@ class AddressModel{
         addressDetail: json['addressDetail'],
         postalCode: json['postalCode'],
         email: json['email'],
-        lastUsed: json['lastUsed'],
-        isDefault: json['isDefault']
+        lastUsed: json['lastUsed']
     );
   }
 
@@ -71,8 +68,7 @@ class AddressModel{
     'addressDetail': addressDetail,
     'postalCode': postalCode,
     'email': email,
-    'lastUsed': lastUsed,
-    'isDefault': isDefault
+    'lastUsed': lastUsed
   };
 }
 

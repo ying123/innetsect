@@ -13,13 +13,13 @@ class  NewAddressProvide extends BaseProvide{
   String _name;
   String _tel;
   String _addressDetail;
-  bool _isDefault = false;
+  bool _lastUsed = false;
 
   get addressID=>_addressID;
   get name=>_name;
   get tel=>_tel;
   get addressDetail=>_addressDetail;
-  get isDefault=>_isDefault;
+  bool get lastUsed=>_lastUsed;
 
   set addressID(int addressID){
     _addressID = addressID;
@@ -37,8 +37,8 @@ class  NewAddressProvide extends BaseProvide{
     _addressDetail = addressDetail;
     notifyListeners();
   }
-  set isDefault(bool isDefault){
-    _isDefault = isDefault;
+  set lastUsed(bool lastUsed){
+    _lastUsed = lastUsed;
     notifyListeners();
   }
 
@@ -146,12 +146,13 @@ class  NewAddressProvide extends BaseProvide{
   }
 
   /// 创建地址
-  Observable createAndEditAddresses(BuildContext context,{bool isEdit = false}) {
+  Observable createAndEditAddresses(BuildContext context,{bool isEdit = false,
+  AddressModel addressModel}) {
     Map<String,dynamic> json = AddressModel().toJson();
     json['name'] = _name;
     json['addressDetail'] = _addressDetail;
     json['tel'] = _tel;
-    json['lastUsed'] = _isDefault==null?false:_isDefault;
+    json['lastUsed'] = _lastUsed==null?false:_lastUsed;
     json['province'] = _provincesModel!=null?_provincesModel.regionName:"";
     json['countryCode'] = _countryModel.countryCode;
     json['city'] = _cityModel!=null?_cityModel.regionName:"";

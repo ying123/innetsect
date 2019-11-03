@@ -80,8 +80,42 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     // 编辑时
     if(widget._addressManagementProvide.addressModel!=null){
       widget.provide.addressID = widget._addressManagementProvide.addressModel.addressID;
+      // 国家
+      widget.provide.countryList.forEach((item){
+        if(item.countryCode == widget._addressManagementProvide.addressModel.countryCode){
+          widget.provide.selectCountry(item);
+        }
+      });
+      // 城市
+      if(widget.provide.provincesList.length>0){
+        widget.provide.provincesList.forEach((item){
+          if(item.regionName==widget._addressManagementProvide.addressModel.province){
+            widget.provide.selectProvinces(item);
+          }
+        });
+      }
+      // 省
+      if(widget.provide.cityList.length>0){
+        widget.provide.cityList.forEach((item){
+          if(item.regionName==widget._addressManagementProvide.addressModel.city){
+            widget.provide.selectCity(item);
+          }
+        });
+      }
+      // 区
+      if(widget.provide.countyList.length>0){
+        widget.provide.countyList.forEach((item){
+          if(item.regionCode==widget._addressManagementProvide.addressModel.areaCode){
+            widget.provide.selectCounty(item);
+          }
+        });
+      }
+      widget.provide.name = widget._addressManagementProvide.addressModel.name;
+      widget.provide.tel = widget._addressManagementProvide.addressModel.tel;
+      widget.provide.addressDetail = widget._addressManagementProvide.addressModel.addressDetail;
+      widget.provide.lastUsed = widget._addressManagementProvide.addressModel.lastUsed;
       setState(() {
-        isSelected = widget._addressManagementProvide.addressModel.isDefault;
+        isSelected = widget._addressManagementProvide.addressModel.lastUsed;
       });
     }
   }
@@ -203,13 +237,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                         Padding(
                           padding: EdgeInsets.only(left: 40),
                           child: Text("${provide.provincesModel.regionName} ${provide.cityModel.regionName} ${provide.countyModel.regionName}"),
-                        ):widget._addressManagementProvide.addressModel!=null?
-                          Padding(
-                            padding: EdgeInsets.only(left: 40),
-                            child: Text("${widget._addressManagementProvide.addressModel.province} ${widget._addressManagementProvide.addressModel.city} "
-                                "${widget._addressManagementProvide.addressModel.county}"),
-                          )
-                        :new Container()
+                        ):new Container()
                       ],
                     )
             ),
@@ -254,11 +282,12 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       ),
                     child: Row(
                       children: <Widget>[
-                        CustomsWidget().customRoundedWidget(isSelected: isSelected,iconSize: 20, onSelectedCallback: (){
-                          setState(() {
-                            isSelected = !isSelected;
-                          });
-                          provide.isDefault=isSelected;
+                        CustomsWidget().customRoundedWidget(isSelected: isSelected,iconSize: 20,
+                            onSelectedCallback: (){
+                              setState(() {
+                                isSelected = !isSelected;
+                              });
+                              provide.lastUsed = isSelected;
                         }),
                         Padding(
                           padding: EdgeInsets.only(left:10),
@@ -280,6 +309,16 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     /// 清空选中国家城市
     widget.provide.clearSelect();
     widget._addressManagementProvide.addressModel = null;
+    widget._addressManagementProvide.listData().doOnListen(() {
+      print('doOnListen');
+    }).doOnCancel(() {}).listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      List<AddressModel> list = AddressModelList
+          .fromJson(item.data)
+          .list;
+      widget._addressManagementProvide.addListAddress(list);
+    }, onError: (e) {});
   }
 
   Provide<NewAddressProvide> _setupBottomBtn() {
@@ -290,16 +329,14 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
             onTap: () {
               /// 保存地址
               if(widget._addressManagementProvide.addressModel!=null){
-                provide.createAndEditAddresses(context,isEdit: true)
+                provide.createAndEditAddresses(context,isEdit: true,
+                addressModel:widget._addressManagementProvide.addressModel)
                     .doOnListen(() {}).doOnCancel(() {})
                     .listen((items) {
                   print(items.data);
                   if(items.data!=null){
                     /// 列表数据
-                    widget._addressManagementProvide.addAddresses(
-                        AddressModel.fromJson(items.data));
                     Fluttertoast.showToast(msg: "修改成功",gravity: ToastGravity.CENTER);
-
                     Navigator.pop(context);
                   }
                 }, onError: (e) {});
@@ -310,8 +347,6 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                   print(items.data);
                   if(items.data!=null){
                     /// 列表数据
-                    widget._addressManagementProvide.addAddresses(
-                        AddressModel.fromJson(items.data));
                     Fluttertoast.showToast(msg: "保存成功",gravity: ToastGravity.CENTER);
                     Navigator.pop(context);
                   }

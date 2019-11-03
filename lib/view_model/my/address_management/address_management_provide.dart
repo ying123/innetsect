@@ -31,9 +31,9 @@ class AddressManagementProvide extends BaseProvide{
   void setIsDefault(AddressModel model){
     _listAddressModel.forEach((item){
       if(item.addressID==model.addressID){
-        item.isDefault = model.isDefault;
+        item.lastUsed = model.lastUsed;
       }else{
-        item.isDefault = !model.isDefault;
+        item.lastUsed = !model.lastUsed;
       }
     });
     notifyListeners();
@@ -41,8 +41,8 @@ class AddressManagementProvide extends BaseProvide{
 
   /// 新建地址添加到list中
   void addAddresses(AddressModel model){
-    if(model.isDefault){
-      _listAddressModel.forEach((item)=>item.isDefault = false);
+    if(model.lastUsed){
+      _listAddressModel.forEach((item)=>item.lastUsed = false);
     }
     _listAddressModel.add(model);
     notifyListeners();

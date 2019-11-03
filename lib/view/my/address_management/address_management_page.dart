@@ -131,9 +131,9 @@ class _AddressManagementContentPageState
                                     child: new Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
-                                        new CustomsWidget().customRoundedWidget(isSelected: item.isDefault,iconSize: 18, onSelectedCallback: (){
+                                        new CustomsWidget().customRoundedWidget(isSelected: item.lastUsed,iconSize: 18, onSelectedCallback: (){
                                           //设置默认地址请求
-                                          item.isDefault = !item.isDefault;
+                                          item.lastUsed = !item.lastUsed;
                                           addressProvide.editDatas(item).doOnListen(() {}).doOnCancel(() {}).listen((items) {
                                             print('listen data->$items');
                                             addressProvide.setIsDefault(item);

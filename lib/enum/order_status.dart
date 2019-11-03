@@ -5,3 +5,16 @@ enum OrderStatus{
   two,
   minusOne
 }
+
+class OrderStatusEnum{
+
+  String getStatusTitle(int index){
+    String str="";
+    switch(index){
+      case 0:
+        str = "待支付";
+        break;
+    }
+    return str;
+  }
+}
