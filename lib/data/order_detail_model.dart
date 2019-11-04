@@ -37,27 +37,27 @@ class OrderDetailModel{
   // 区域编码
   String areaCode;
   // 成本
-  double totalCost;
+  dynamic totalCost;
   // 数量
   int totalCount;
   // 合计
-  double totalAmount;
+  dynamic totalAmount;
   // 运费
-  double freight;
+  dynamic freight;
   // 优惠
-  double totalDiscount;
+  dynamic totalDiscount;
   // 预售定金
-  double totalDeposit;
+  dynamic totalDeposit;
   // 允许使用积分数量
-  double allowPoint;
+  dynamic allowPoint;
   // 积分支付
-  double payPoint;
+  dynamic payPoint;
   // 卡券抵用
-  double payCoupon;
+  dynamic payCoupon;
   // 实际支付,未支付
-  double payableAmount;
+  dynamic payableAmount;
   // 实际支付,已支付
-  double payAmount;
+  dynamic payAmount;
   // 发票类型，0：不需要，1：个人普票，2：专票
   int invoiceType;
   // 支付方式, 0：现金，1：微信，2：支付宝，3：visa
@@ -68,6 +68,8 @@ class OrderDetailModel{
   String remark;
   // 发货状态，按3来判断是否发货
   int syncStatus;
+  // 订单状态
+  int status;
 
   // sku
   List<CommodityModels> skuModels;
@@ -106,7 +108,8 @@ class OrderDetailModel{
     this.totalCount,
     this.totalDeposit,
     this.totalDiscount,
-    this.skuModels
+    this.skuModels,
+    this.status
   });
 
   factory OrderDetailModel.fromJson(Map<String,dynamic> json) {
@@ -144,7 +147,8 @@ class OrderDetailModel{
         totalCount: json['totalCount'],
         totalDeposit: json['totalDeposit'],
         totalDiscount: json['totalDiscount'],
-        skuModels: json['items']!=null?CommodityList.fromJson(json['items']).list:null
+        skuModels: json['items']!=null?CommodityList.fromJson(json['items']).list:null,
+        status: json['status']
     );
   }
 

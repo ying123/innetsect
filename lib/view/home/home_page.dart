@@ -104,9 +104,9 @@ class _HomeContentPageState extends State<HomeContentPage>
         actions: <Widget>[
           GestureDetector(
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, ScreenAdapter.height(38), 0, 0),
+              alignment: Alignment.center,
               child: Text(
-                '进入商城',
+                '去商城',
                 textAlign: TextAlign.end,
                 style: TextStyle(
                   fontSize: ScreenAdapter.size(30),

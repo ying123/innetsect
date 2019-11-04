@@ -154,8 +154,9 @@ class CommodityDetailProvide extends BaseProvide {
   }
 
   /// 提交订单
-  Observable submitShopping() {
-    return _repo.submitShopping()
+  Observable submitShopping(int addrID) {
+
+    return _repo.submitShopping(addrID)
         .doOnData((result) {
 
     })

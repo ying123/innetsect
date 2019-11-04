@@ -14,6 +14,15 @@ class OrderStatusEnum{
       case 0:
         str = "待支付";
         break;
+      case 1:
+        str = "待收货";
+        break;
+      case 2:
+        str = "已完成";
+        break;
+      case -1:
+        str = "已取消";
+        break;
     }
     return str;
   }

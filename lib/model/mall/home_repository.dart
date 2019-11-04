@@ -11,6 +11,13 @@ class MallHomeService {
     var response = get(url);
     return response;
   }
+
+  /// 首页列表
+  Observable<BaseResponse> listData (int pageNo){
+    var url = '/api/society/portals/home/portlets?$pageNo';
+    var response = get(url);
+    return response;
+  }
 }
 
 ///商城首页请求响应
@@ -20,5 +27,10 @@ class MallHomeRepo {
   /// banner请求
   Observable<BaseResponse> bannerData(){
     return _remote.bannerData();
+  }
+
+  /// list请求
+  Observable<BaseResponse> listData(int pageNo){
+    return _remote.listData(pageNo);
   }
 }

@@ -55,7 +55,7 @@ class _EditPwdContentState extends State<EditPwdContent> {
                   new Container(
                     width: double.infinity,
                     height: ScreenAdapter.height(80),
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.only(left: 20,right: 20),
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: "请输入新密码"
@@ -70,7 +70,7 @@ class _EditPwdContentState extends State<EditPwdContent> {
                   new Container(
                     width: double.infinity,
                     height: ScreenAdapter.height(80),
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.only(left: 20,right: 20),
                     child: TextField(
                       decoration: InputDecoration(
                           hintText: "请再次输入新密码"
@@ -99,7 +99,9 @@ class _EditPwdContentState extends State<EditPwdContent> {
                   // 修改密码请求
                   _loginProvide.editLogingPwd(newPwd).then((item){
                     print(item);
-                    if(item==null){
+                    if(item.data){
+                      Navigator.pop(context);
+                    } else {
                       Navigator.pushNamed(context, "/loginPage");
                     }
                   });

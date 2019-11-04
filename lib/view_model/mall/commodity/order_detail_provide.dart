@@ -7,7 +7,7 @@ class OrderDetailProvide extends BaseProvide {
 
   OrderDetailModel _orderDetailModel;
 
-  get orderDetailModel => _orderDetailModel;
+  OrderDetailModel get orderDetailModel => _orderDetailModel;
 
   set orderDetailModel(OrderDetailModel model){
     _orderDetailModel = model;

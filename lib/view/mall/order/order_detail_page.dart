@@ -84,8 +84,9 @@ class _OrderContentState extends State<OrderContent> {
                 color: AppConfig.primaryColor,
                 textColor: AppConfig.fontBackColor,
                 onPressed: (){
+
                   //提交订单
-                  widget._detailProvide.submitShopping()
+                  widget._detailProvide.submitShopping(widget._orderDetailProvide.orderDetailModel.addressID)
                       .doOnListen(() {
                   print('doOnListen');
                   })

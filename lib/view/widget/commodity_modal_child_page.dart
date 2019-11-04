@@ -94,7 +94,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
   Widget contentWidget(){
     return new Container(
       width: double.infinity,
-      height: ScreenAdapter.getScreenHeight()/1.4,
+      height: ScreenAdapter.getScreenHeight()/1.5,
       color: Colors.white,
       child: new CommoditySelectWidget(),
     );

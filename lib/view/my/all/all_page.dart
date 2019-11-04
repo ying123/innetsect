@@ -63,7 +63,7 @@ class _AllContentPageState extends State<AllContentPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               new Text('订单号: ${item.orderNo}'),
-                              new Text(OrderStatusEnum().getStatusTitle(item.syncStatus))
+                              new Text(OrderStatusEnum().getStatusTitle(item.status))
                             ],
                           ),
                         ),
@@ -73,7 +73,7 @@ class _AllContentPageState extends State<AllContentPage> {
                         //底部操作按钮
                         new Container(
                           padding:EdgeInsets.only(bottom: 10,top: 10),
-                          child: _bottomAction(item.syncStatus),
+                          child: _bottomAction(item.status),
                         )
                       ],
                     ),
@@ -187,22 +187,34 @@ class _AllContentPageState extends State<AllContentPage> {
                       fontSize: ScreenAdapter.size(24),color: Colors.white),),
                 )
             ),
-            new Container(
-              height: ScreenAdapter.height(60),
-              width: ScreenAdapter.width(180),
-              padding:EdgeInsets.only(left: 10,) ,
-              child: new RaisedButton(
-                color: AppConfig.primaryColor,
-                onPressed: (){},
-                child: new Text("删除订单",style: TextStyle(
-                    fontSize: ScreenAdapter.size(24),color: AppConfig.fontBackColor),),
-              ),
-            )
+            _delOrderWidget()
+          ],
+        );
+        break;
+      case -1:
+        widget = new Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            _delOrderWidget()
           ],
         );
         break;
     }
     return widget;
+  }
+
+  Widget _delOrderWidget(){
+    return new Container(
+      height: ScreenAdapter.height(60),
+      width: ScreenAdapter.width(180),
+      padding:EdgeInsets.only(left: 10,) ,
+      child: new RaisedButton(
+        color: AppConfig.primaryColor,
+        onPressed: (){},
+        child: new Text("删除订单",style: TextStyle(
+            fontSize: ScreenAdapter.size(24),color: AppConfig.fontBackColor),),
+      ),
+    );
   }
 
   _listData({int pageNo=0,bool isReload = false}){

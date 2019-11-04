@@ -54,8 +54,8 @@ class CommodityService {
   }
 
   /// 提交订单
-  Observable<BaseResponse> submitShopping(){
-    var url = '/api/eshop/salesorders/submit?addrID=138373&channel=Android';
+  Observable<BaseResponse> submitShopping(int addrID){
+    var url = '/api/eshop/salesorders/submit?addrID=$addrID&channel=Android';
     var response = post(url);
     return response;
   }
@@ -96,8 +96,8 @@ class CommodityRepo {
   }
 
   /// 提交订单
-  Observable<BaseResponse> submitShopping(){
-    return _remote.submitShopping();
+  Observable<BaseResponse> submitShopping(int addrID){
+    return _remote.submitShopping(addrID);
   }
 
   /// 订单支付

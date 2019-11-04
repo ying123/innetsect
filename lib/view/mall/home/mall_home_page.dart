@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/mall/banners_model.dart';
+import 'package:innetsect/data/mall/portlets_model.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/home/mall_home_provide.dart';
 import 'package:provide/provide.dart';
@@ -37,6 +38,9 @@ class _MallHomeContentState extends State<MallHomeContent> {
 
   // 控制器
   EasyRefreshController _controller;
+  // 分页
+  int pageNo = 1;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -54,9 +58,9 @@ class _MallHomeContentState extends State<MallHomeContent> {
         actions: <Widget>[
           GestureDetector(
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, ScreenAdapter.height(38), 0, 0),
+              alignment: Alignment.center,
               child: Text(
-                '进入展会',
+                '去展会',
                 textAlign: TextAlign.end,
                 style: TextStyle(
                   fontSize: ScreenAdapter.size(30),
@@ -75,6 +79,14 @@ class _MallHomeContentState extends State<MallHomeContent> {
       ),
       body: new ListWidgetPage(
         controller: _controller,
+        onRefresh: () async{
+          pageNo = 1;
+          widget._provide.clearList();
+          await _loadBannerData();
+        },
+        onLoad: () async{
+          await _loadListData();
+        },
         child: <Widget>[
             // 数据内容
             SliverList(
@@ -157,136 +169,90 @@ class _MallHomeContentState extends State<MallHomeContent> {
   Provide<MallHomeProvide> _setupListItemsContent() {
     return Provide<MallHomeProvide>(
       builder: (BuildContext context, Widget child, MallHomeProvide provide) {
-        var itemWith = (ScreenAdapter.getScreenWidth()) / 1;
         return Container(
-          child: Wrap(
-            runSpacing: 0,
-            spacing: 0,
-            children: provide.listItems.map((value) {
-              return Container(
-                // padding: EdgeInsets.all(10),
-
-                width: itemWith,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: double.infinity,
-                      child: AspectRatio(
-                        //防止服务器返回的图片大小不一致导致高度不一致问题
-                        aspectRatio: 2 / 1,
-                        child: Image.asset(
-                          value['image'],
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          top: ScreenAdapter.height(20),
-                          left: ScreenAdapter.width(20)),
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          value['title'],
-                          softWrap: true,
-                          style: TextStyle(fontSize: ScreenAdapter.size(30)),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          top: ScreenAdapter.height(20),
-                          left: ScreenAdapter.width(20)),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            width: ScreenAdapter.width(85),
-                            height: ScreenAdapter.height(30),
-                            color: AppConfig.fontPrimaryColor,
-                            child: Center(
-                              child: Text(
-                                value['subTitle'],
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: ScreenAdapter.size(21)),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: ScreenAdapter.width(10),
-                          ),
-                          Container(
-                            width: ScreenAdapter.width(85),
-                            height: ScreenAdapter.height(30),
-                            color: AppConfig.fontPrimaryColor,
-                            child: Center(
-                              child: Text(
-                                value['subTitle1'],
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: ScreenAdapter.size(21)),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: ScreenAdapter.width(10),
-                          ),
-                          Container(
-                            width: ScreenAdapter.width(85),
-                            height: ScreenAdapter.height(30),
-                            color: AppConfig.fontPrimaryColor,
-                            child: Center(
-                              child: Text(
-                                value['subTitle2'],
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: ScreenAdapter.size(21)),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: ScreenAdapter.width(10),
-                          ),
-                          Text(
-                            value['time'],
-                            style: TextStyle(
-                                color: Color.fromRGBO(180, 180, 180, 1.0)),
-                          ),
-                          Expanded(
-                            child: Container(),
-                          ),
-                          Image.asset(
-                            'assets/images/关注.png',
-                            fit: BoxFit.cover,
-                            width: ScreenAdapter.width(30),
-                            height: ScreenAdapter.height(25),
-                          ),
-                          SizedBox(
-                            width: ScreenAdapter.width(6),
-                          ),
-                          Text(value['focusNuber'],
-                              style: TextStyle(
-                                  color: Color.fromRGBO(180, 180, 180, 1.0))),
-                          SizedBox(
-                            width: ScreenAdapter.width(35),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: ScreenAdapter.height(38),
-                    )
-                  ],
-                ),
-              );
+          width: double.infinity,
+          child: provide.portletsModelList.length>0?new Column(
+            children: provide.portletsModelList.map((item){
+              return _contentList(item);
             }).toList(),
-          ),
+          ):new Container(),
         );
       },
     );
+  }
+
+  Widget _contentList(PortletsModel model){
+    Widget widget;
+    switch(model.contents.length) {
+      case 1:
+        widget = new Container(
+          width: double.infinity,
+          color: Colors.white,
+          child: new Column(
+            children: <Widget>[
+              new Image.network(model.contents[0].mediaFiles,
+                width: double.infinity,
+                height:ScreenAdapter.height(420),fit:BoxFit.fitWidth,),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  new ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: 20),
+                    child: new Container(
+                      color: Colors.black,
+                      padding: EdgeInsets.all(5),
+                      margin: EdgeInsets.all(10),
+                      child: new Text(model.contents[0].tags,style: TextStyle(color:Colors.white),),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        );
+        break;
+      case 2:
+        widget = new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: model.contents.map((res){
+            return new Container(
+              width: ScreenAdapter.getScreenWidth()/2-20 ,
+              height: ScreenAdapter.height(480),
+              color: Colors.white,
+              margin: EdgeInsets.only(top: 10,bottom: 10),
+              child: new Column(
+                children: <Widget>[
+                  new Image.network(res.poster,fit: BoxFit.fitHeight,
+                  height: ScreenAdapter.height(360),),
+                  new Text(res.title,maxLines: 1,style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                  new Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      new ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: 20),
+                        child: new Container(
+                          color: Colors.black,
+                          margin: EdgeInsets.only(left: 10,top: 15),
+                          padding: EdgeInsets.all(5),
+                          alignment: Alignment.center,
+                          child: new Text(res.tags,style: TextStyle(color:Colors.white,
+                              fontSize: ScreenAdapter.size(18)),),
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            );
+          }).toList(),
+        );
+        break;
+      default:
+        widget = new Container();
+        break;
+    }
+    return widget;
   }
 
   _loadBannerData(){
@@ -301,9 +267,19 @@ class _MallHomeContentState extends State<MallHomeContent> {
         widget._provide.addBannersModel(
           BannersModelList.fromJson(item.data['banners']).list
         );
+        widget._provide.addListData(
+          PortletsModelList.fromJson(item.data['portlets']).list
+        );
       }
       print('listen data->$item');
 //      _provide
     }, onError: (e) {});
+  }
+
+  _loadListData(){
+    widget._provide.listData(pageNo++).doOnListen((){}).doOnCancel((){})
+        .listen((item){
+
+    },onError: (e){});
   }
 }
