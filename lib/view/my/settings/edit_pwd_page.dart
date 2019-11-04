@@ -3,27 +3,31 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/mall/user/user_provide.dart';
 import 'package:provide/provide.dart';
 
 class EditPwdPage extends PageProvideNode{
   final UserProvide _provide = UserProvide();
+  final LoginProvide _loginProvide = LoginProvide.instance;
 
   EditPwdPage(){
     mProviders.provide(Provider<UserProvide>.value(_provide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return EditPwdContent(_provide);
+    return EditPwdContent(_provide,_loginProvide);
   }
 
 }
 
 class EditPwdContent extends StatefulWidget {
   final UserProvide _provide;
-  EditPwdContent(this._provide);
+  final LoginProvide _loginProvide;
+  EditPwdContent(this._provide,this._loginProvide);
 
   @override
   _EditPwdContentState createState() => new _EditPwdContentState();
@@ -33,6 +37,7 @@ class _EditPwdContentState extends State<EditPwdContent> {
 
   String newPwd;
   String reNewPwd;
+  LoginProvide _loginProvide;
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +97,12 @@ class _EditPwdContentState extends State<EditPwdContent> {
                     return;
                   }
                   // 修改密码请求
+                  _loginProvide.editLogingPwd(newPwd).then((item){
+                    print(item);
+                    if(item==null){
+                      Navigator.pushNamed(context, "/loginPage");
+                    }
+                  });
                 },
                 child: new Container(
                   height: ScreenAdapter.height(60),
@@ -111,6 +122,7 @@ class _EditPwdContentState extends State<EditPwdContent> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _loginProvide = widget._loginProvide;
   }
 
   @override

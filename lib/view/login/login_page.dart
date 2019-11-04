@@ -217,16 +217,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
 
   void  _buttonClickListen(LoginProvide provide) {
     if (isButtonEnable) {
-      print('获取验证码');
-      provide.getVaildCode().doOnListen(() {
-        print('doOnListen');
-      })
-          .doOnCancel(() {})
-          .listen((item) {
-        ///加载数据
-        print('listen data->$item');
-//      _provide
-      }, onError: (e) {});
+      provide.getVaildCode().then((item){
+        print('获取验证码-----$item');
+      });
 
       setState(() {
         isButtonEnable = false;

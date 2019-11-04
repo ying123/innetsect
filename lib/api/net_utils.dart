@@ -95,29 +95,21 @@ Future<BaseResponse> _post(String url, dynamic body,
 }
 
 /// patch请求
-Observable<BaseResponse> patch(String url,
+Future patch(String url,
     {dynamic body, Map<String, dynamic> qureyParameters}) {
   print('patch url:->$url body:->$body qureyParameters:->$qureyParameters');
-  return Observable.fromFuture(
-      _patch(url, body, queryParameters: qureyParameters))
-      .asBroadcastStream();
+  return _patch(url, body, queryParameters: qureyParameters);
 }
 
-Future<BaseResponse> _patch(String url, dynamic body,
-    {Map<String, dynamic> queryParameters}) async {
-  var response = await HttpUtil()
+Future _patch(String url, dynamic body,
+    {Map<String, dynamic> queryParameters}) async{
+  Response response;
+  await HttpUtil()
       .dio
-      .patch(url, data: body, queryParameters: queryParameters);
-  print('response _patch:->$response');
-  //加json数据转换成BaseResponse实例
-  var res = BaseResponse.fromJson(response.data);
-  //  if (res.success == false) {
-  //    Fluttertoast.showToast(
-  //      msg: res.message,
-  //      gravity: ToastGravity.CENTER
-  //    );
-  //  }
-  return res;
+      .patch(url, data: body, queryParameters: queryParameters).then((item){
+    response = item;
+  });
+  return response;
 }
 
 ///put请求

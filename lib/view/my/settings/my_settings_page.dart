@@ -1,31 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/my/settings/edit_pwd_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/mall/user/user_provide.dart';
 import 'package:provide/provide.dart';
 
 class MySettingsPage extends PageProvideNode{
   final UserProvide _provide = UserProvide();
+  final LoginProvide _loginProvide = LoginProvide.instance;
   MySettingsPage(){
     mProviders.provide(Provider<UserProvide>.value(_provide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return MySettingsContent();
+    return MySettingsContent(_loginProvide);
   }
 }
 
 class MySettingsContent extends StatefulWidget {
+  final LoginProvide _loginProvide;
+  MySettingsContent(this._loginProvide);
   @override
   _MySettingsContentState createState() => new _MySettingsContentState();
 }
 
 class _MySettingsContentState extends State<MySettingsContent> {
+  LoginProvide _loginProvide;
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -58,6 +66,7 @@ class _MySettingsContentState extends State<MySettingsContent> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _loginProvide = widget._loginProvide;
   }
 
   @override
@@ -104,9 +113,44 @@ class _MySettingsContentState extends State<MySettingsContent> {
   Widget _loginOutWidget(){
     return new InkWell(
       onTap: (){
-        CustomsWidget().customShowDialog(context: context,content: "是否退出当前账户",
-            onPressed: (){
-              //退出登录
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context){
+              return new AlertDialog(
+                content: new Container(
+                  child: new Text("是否确认退出当前账户"),
+                ),
+                actions: <Widget>[
+                  new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      new FlatButton(
+                        color:Colors.white,
+                        textColor: Colors.blue,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: new Text("取消"),
+                      ),
+                      new FlatButton(
+                        color:Colors.white,
+                        textColor: Colors.blue,
+                        onPressed: () {
+                          UserTools().clearUserInfo();
+                          _loginProvide.clearUserInfoModel();
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(context, MaterialPageRoute(
+                            builder: (context)=> LoginPage()
+                          ));
+                        },
+                        child: new Text("确认"),
+                      )
+                    ],
+                  )
+                ],
+              );
             }
         );
       },

@@ -23,6 +23,11 @@ class LoginProvide extends BaseProvide {
     notifyListeners();
   }
 
+  void clearUserInfoModel(){
+    _userInfoModel = null;
+    notifyListeners();
+  }
+
   String _loginImage;
   get loginImage {
     if (_loginImage == null) {
@@ -114,13 +119,12 @@ class LoginProvide extends BaseProvide {
   }
   
   /// 获取验证码
-  Observable getVaildCode() {
-    return _repo.getVaildCode(userCode)
-        .doOnData((result) {
+  Future getVaildCode() {
+    return _repo.getVaildCode(userCode);
+  }
 
-    })
-        .doOnError((e, stacktrace) {})
-        .doOnListen(() {})
-        .doOnDone(() {});
+  /// 修改密码
+  Future editLogingPwd(String pwd){
+    return _repo.editPwdSetting(pwd);
   }
 }
