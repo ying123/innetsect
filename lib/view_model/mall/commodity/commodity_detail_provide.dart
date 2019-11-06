@@ -15,24 +15,30 @@ class CommodityDetailProvide extends BaseProvide {
   CommoditySkusModel _skusModel;
   /// 过滤的sku
   List<CommoditySkusModel> _skusList=[];
-  /// 推荐商品
-  List<List<CommodityModels>> _recommendedList=[];
   /// 数组选中下标
   int _index=0;
   /// 订单号
   int _orderId;
   /// 支付类型
   int _payTypes;
+  /// 是否立即购买
+  bool _isBuy;
 
   CommodityModels get commodityModels => _commodityModels;
 
   CommoditySkusModel get skusModel =>_skusModel;
 
   List<CommoditySkusModel> get skusList => _skusList;
-  List<List<CommodityModels>> get recommendedList=>_recommendedList;
+
   get index=>_index;
   get orderId=>_orderId;
   get payTypes=>_payTypes;
+  bool get isBuy=>_isBuy;
+
+  set isBuy(bool flag){
+    _isBuy = flag;
+    notifyListeners();
+  }
 
   // 商品详情
   void setCommodityModels(CommodityModels models){
@@ -70,6 +76,14 @@ class CommodityDetailProvide extends BaseProvide {
           _skusList.add(item);
         }
       });
+      //默认选中赋值
+      if(item.skuCode==_commodityModels.defSkuCode){
+        _commodityModels.skuCode = item.skuCode;
+        _commodityModels.salesPrice = item.salesPrice;
+        _commodityModels.skuName = item.skuName;
+        _commodityModels.skuPic = item.skuPic;
+        _commodityModels.originalPrice = item.originalPrice;
+      }
     });
 
     notifyListeners();
@@ -114,6 +128,11 @@ class CommodityDetailProvide extends BaseProvide {
   // 选择颜色
   void setSelectColor(CommoditySkusModel models){
     _skusModel = models;
+    _commodityModels.skuCode = models.skuCode;
+    _commodityModels.salesPrice = models.salesPrice;
+    _commodityModels.skuName = models.skuName;
+    _commodityModels.skuPic = models.skuPic;
+    _commodityModels.originalPrice = models.originalPrice;
     notifyListeners();
   }
 
@@ -128,24 +147,6 @@ class CommodityDetailProvide extends BaseProvide {
     _payTypes = payTypes;
     notifyListeners();
   }
-
-  // 商品推荐
-  void addRecommedList(List<CommodityModels> list){
-    List<CommodityModels> lists = [];
-    list.asMap().keys.forEach((keys){
-      if((keys+1)%4==0){
-        lists.add(list[keys]);
-        _recommendedList.add(lists);
-        lists=[];
-      }else{
-        lists.add(list[keys]);
-      }
-    });
-//    _recommendedList = list;
-    notifyListeners();
-  }
-
-
 
   final CommodityRepo _repo = CommodityRepo();
 

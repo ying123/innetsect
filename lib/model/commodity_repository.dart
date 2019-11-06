@@ -73,6 +73,42 @@ class CommodityService {
     var response = get(url);
     return response;
   }
+
+  /// 加入购物车
+  Observable<BaseResponse> addCarts (CommodityModels model){
+    var url = '/api/eshop/shoppingcart/add';
+    var json = {
+      "salesPrice": model.salesPrice,
+      "promotionCode": "",
+      "skuName": model.skuName,
+      "skuPic": model.skuPic,
+      "shopID": model.shopID,
+      "checked": model.isChecked,
+      "status": model.status,
+      "discountDesc": "",
+      "allowPointRate": model.allowPointRate,
+      "prodType": model.prodType,
+      "prodID": model.prodID,
+      "prodCode": model.prodCode,
+      "originalPrice": model.originalPrice,
+      "remark": "",
+      "presale": model.presale,
+      "acctID":  UserTools().getUserData()==null?0: UserTools().getUserData()['id'],
+      "unit": "件",
+      "quantity":model.quantity,
+      "discountPrice": "",
+      "skuCode": model.skuCode
+    };
+    var response = post(url,body: json);
+    return response;
+  }
+
+  /// 购物车请求
+  Observable<BaseResponse> getMyCarts (){
+    var url = '/api/eshop/shoppingcart/my';
+    var response = get(url);
+    return response;
+  }
 }
 
 
@@ -116,4 +152,14 @@ class CommodityRepo {
   Observable<BaseResponse> recommendedListData(int pageNo,int types,int prodID){
     return _remote.recommendedListData(pageNo, types, prodID);
   }
+
+  /// 加入购物车
+  Observable<BaseResponse> addCarts (CommodityModels model){
+    return _remote.addCarts(model);
+  }
+  /// 购物车列表
+  Observable<BaseResponse> getMyCarts (){
+    return _remote.getMyCarts();
+  }
+
 }

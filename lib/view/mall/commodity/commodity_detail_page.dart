@@ -46,8 +46,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   CommodityAndCartProvide _cartProvide;
 
   int pageNo = 1;
-
-  List recommedList = new List();
+  /// 推荐商品
+  List<List<CommodityModels>> recommedList = new List();
 
   @override
   Widget build(BuildContext context) {
@@ -283,7 +283,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             height: childHeight,
             color: Colors.white,
             child: new Swiper(
-              itemCount: _provide.recommendedList.length>0?_provide.recommendedList.length:1,
+              itemCount: recommedList.length>0?recommedList.length:1,
               index: 0,
               loop: false,
               scrollDirection: Axis.horizontal,
@@ -298,11 +298,11 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                 return new Container(
                   width: double.infinity,
                   alignment: Alignment.center,
-                  child: _provide.recommendedList.length>0 ?
+                  child: recommedList.length>0 ?
                       new Wrap(
                         spacing: 10,
                         runSpacing: 5,
-                        children: _provide.recommendedList[index].map((item){
+                        children: recommedList[index].map((item){
                           return new Container(
                             width: ScreenAdapter.getScreenWidth()/2-10,
                             height: childHeight/2-15,
@@ -374,7 +374,9 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           new Padding(padding: EdgeInsets.only(left: 17),
             child: new InkWell(
               onTap: (){
-                print("点击购物车");
+                _provide.setInitData();
+                _cartProvide.setInitCount();
+                _provide.isBuy = false;
                 CommodityModalBottom.showBottomModal(context:context);
               },
               child: new Container(
@@ -390,6 +392,9 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           new Padding(padding: EdgeInsets.only(left: 15),
             child: InkWell(
               onTap: (){
+                _provide.setInitData();
+                _cartProvide.setInitCount();
+                _provide.isBuy = true;
                 // 存储当前商品信息
                 CommodityModalBottom.showBottomModal(context:context);
               },
@@ -440,9 +445,19 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     _provide.recommendedListData(pageNo, types, prodID).doOnListen((){}).doOnCancel((){})
         .listen((item){
           if(item.data!=null){
-            _provide.recommendedList.clear();
             List<CommodityModels> list = CommodityList.fromJson(item.data).list;
-            _provide.addRecommedList(list);
+            List<CommodityModels> lists = [];
+            list.asMap().keys.forEach((keys){
+              if((keys+1)%4==0){
+                lists.add(list[keys]);
+                setState(() {
+                  recommedList.add(lists);
+                });
+                lists=[];
+              }else{
+                lists.add(list[keys]);
+              }
+            });
           }
     },onError: (e){});
   }

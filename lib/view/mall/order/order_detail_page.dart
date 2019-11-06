@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
-import 'package:innetsect/data/commodity_model.dart';
 import 'package:innetsect/data/order_detail_model.dart';
-import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/order/order_pay_page.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';

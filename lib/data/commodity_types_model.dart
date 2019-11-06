@@ -1,10 +1,10 @@
-import 'package:innetsect/data/commodity_model.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/enum/commodity_cart_types.dart';
 
 class CommodityTypesModel{
 
   String types;
-  List<CommodityModel> commodityModelList;
+  List<CommodityModels> commodityModelList;
 
   CommodityTypesModel({
     this.types,

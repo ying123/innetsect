@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/order_detail_model.dart';
+import 'package:innetsect/enum/commodity_cart_types.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/widget/commodity_select_widget.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
@@ -14,9 +17,9 @@ import 'package:innetsect/base/base.dart';
 import 'package:provide/provide.dart';
 
 class CommodityModalChildPage extends PageProvideNode{
-  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide();
-  final CommodityDetailProvide _detailProvide = CommodityDetailProvide();
-  final OrderDetailProvide _orderDetailProvide = OrderDetailProvide();
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
 
   CommodityModalChildPage(){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
@@ -26,12 +29,15 @@ class CommodityModalChildPage extends PageProvideNode{
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return CommodityModalChildContent();
+    return CommodityModalChildContent(_cartProvide,_detailProvide,_orderDetailProvide);
   }
 }
 
 class CommodityModalChildContent extends StatefulWidget {
-
+  final CommodityAndCartProvide _cartProvide ;
+  final CommodityDetailProvide _detailProvide ;
+  final OrderDetailProvide _orderDetailProvide ;
+  CommodityModalChildContent(this._cartProvide,this._detailProvide,this._orderDetailProvide);
   @override
   _CommodityModalChildContentState createState() => new _CommodityModalChildContentState();
 }
@@ -60,9 +66,9 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
   void initState() {
     // TODO: implement initState
     super.initState();
-    this._cartProvide = CommodityAndCartProvide.instance;
-    this._detailProvide = CommodityDetailProvide.instance;
-    this._orderDetailProvide = OrderDetailProvide.instance;
+    this._cartProvide = widget._cartProvide;
+    this._detailProvide = widget._detailProvide;
+    this._orderDetailProvide = widget._orderDetailProvide;
     this._cartProvide.setMode();
   }
 
@@ -120,13 +126,34 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          new Container(
+          _detailProvide.isBuy?new Container():new Container(
             width: ScreenAdapter.getScreenWidth()/2-10,
             padding: EdgeInsets.only(left: 10,right: 10),
             child: new RaisedButton(
               color: AppConfig.fontBackColor,
               textColor: Colors.white,
-              onPressed: (){},
+              onPressed: (){
+                //加入购物车
+                if(!isLogin()){
+                  this._detailProvide.commodityModels.types = CommodityCartTypes.commodity.toString();
+                  this._detailProvide.commodityModels.isChecked = false;
+                  // 请求
+                  this._cartProvide.addCartsRequest(this._detailProvide.commodityModels)
+                      .doOnListen(() {
+                    print('doOnListen');
+                  })
+                      .doOnCancel(() {})
+                      .listen((item) {
+                    ///加载数据
+                    print('listen data->$item');
+                    if(item.data!=null){
+                      CustomsWidget().showToast(title: "添加成功");
+                      Navigator.pop(context);
+                    }
+                  }, onError: (e) {});
+                }
+                
+              },
               child: new Text("加入购物车",style: TextStyle(
                   fontSize: ScreenAdapter.size(30)
                 ),
@@ -134,20 +161,14 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
             ),
           ),
           new Container(
-            width: ScreenAdapter.getScreenWidth()/2-10,
-            padding: EdgeInsets.only(right: 5),
+            width: _detailProvide.isBuy?ScreenAdapter.getScreenWidth():ScreenAdapter.getScreenWidth()/2-10,
+            padding: _detailProvide.isBuy?EdgeInsets.only(right: 10,left: 10):EdgeInsets.only(right: 5),
             child: new RaisedButton(
               color: AppConfig.primaryColor,
               textColor: AppConfig.fontBackColor,
               onPressed: (){
                 // 检测本地是否存在token
-                if(UserTools().getUserData()==null){
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (BuildContext context){
-                        return LoginPage();
-                      }
-                  ));
-                }else{
+                if(!isLogin()){
                   // 跳转订单详情
                   _detailProvide.createShopping(_detailProvide.commodityModels,
                       _detailProvide.skusModel,_cartProvide.count,context)
@@ -182,5 +203,18 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
         ],
       ),
     );
+  }
+
+  bool isLogin(){
+    bool flag = false;
+    if(UserTools().getUserData()==null){
+      flag = true;
+      Navigator.push(context, MaterialPageRoute(
+          builder: (BuildContext context){
+            return LoginPage();
+          }
+      ));
+    }
+    return flag;
   }
 }

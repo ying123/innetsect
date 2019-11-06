@@ -8,10 +8,12 @@ class CommodityModels{
   // 产品id
   int prodID;
   int shopID;
+  int prodType;
+  String prodCode;
   // 是否预售
   bool presale;
   String unit;
-  double allowPointRate;
+  dynamic allowPointRate;
   //产品首页url
   String prodPic;
   //产品名称
@@ -29,7 +31,7 @@ class CommodityModels{
   //标签
   int status;
   // 价格
-  double defSalesPrice;
+  dynamic defSalesPrice;
   // 列表价格
   String salesPriceRange;
   // 默认sku
@@ -45,9 +47,16 @@ class CommodityModels{
   String skuCode;
   String skuName;
   String skuPic;
+  dynamic originalPrice;
+  //数量
   int quantity;
-  double salesPrice;
-  double amount;
+  dynamic salesPrice;
+  dynamic amount;
+
+  //购物车使用
+  String types;
+  bool isChecked;
+  bool isDisable;
 
   CommodityModels({
     this.prodID,
@@ -75,7 +84,13 @@ class CommodityModels{
     this.salesPrice,
     this.skuCode,
     this.skuName,
-    this.skuPic
+    this.skuPic,
+    this.types,
+    this.isChecked,
+    this.prodType,
+    this.prodCode,
+    this.originalPrice,
+    this.isDisable
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -105,7 +120,13 @@ class CommodityModels{
         skuPic: json['skuPic'],
         quantity: json['quantity'],
         salesPrice: json['salesPrice'],
-        amount: json['amount']
+        amount: json['amount'],
+        types: json['types'],
+        isChecked: json['isChecked'],
+        prodType: json['prodType'],
+        prodCode: json['prodCode'],
+        originalPrice: json['originalPrice'],
+        isDisable: json['isDisable']
     );
   }
 
@@ -127,7 +148,13 @@ class CommodityModels{
     'salesPriceRange': salesPriceRange,
     'defSkuCode': defSkuCode,
     'skus': skus.map((item)=>item.toJson()),
-    'features': features.map((item)=>item.toJson())
+    'features': features.map((item)=>item.toJson()),
+    'types': types,
+    'isChecked': isChecked,
+    'prodType': prodType,
+    'prodCode': prodCode,
+    'originalPrice': originalPrice,
+    'isDisable':isDisable
   };
 
 }

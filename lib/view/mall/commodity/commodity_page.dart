@@ -122,8 +122,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         labelStyle: new TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),
         tabs: mallTabBarList.map((item){
           return new Container(
-            width: ScreenAdapter.getScreenPxWidth()/10,
-            child: new Text(item.title),
+            child: new Text(item.title,maxLines: 1,),
           );
         }).toList()
     );
