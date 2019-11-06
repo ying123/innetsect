@@ -90,7 +90,7 @@ class CommodityModels{
     this.prodType,
     this.prodCode,
     this.originalPrice,
-    this.isDisable
+    this.isDisable,
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -126,7 +126,7 @@ class CommodityModels{
         prodType: json['prodType'],
         prodCode: json['prodCode'],
         originalPrice: json['originalPrice'],
-        isDisable: json['isDisable']
+        isDisable: json['isDisable'],
     );
   }
 
@@ -154,7 +154,7 @@ class CommodityModels{
     'prodType': prodType,
     'prodCode': prodCode,
     'originalPrice': originalPrice,
-    'isDisable':isDisable
+    'isDisable':isDisable,
   };
 
 }

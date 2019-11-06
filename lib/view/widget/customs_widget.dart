@@ -36,7 +36,8 @@ class CustomsWidget{
     @required BuildContext context,
     String title,
     String content,
-    VoidCallback onPressed
+    VoidCallback onPressed,
+    VoidCallback onCancel
   }){
     return showDialog(
       context: context,
@@ -56,6 +57,7 @@ class CustomsWidget{
                   color:Colors.white,
                   textColor: Colors.blue,
                   onPressed: () {
+                    onCancel();
                     Navigator.of(context).pop();
                   },
                   child: new Text("取消"),

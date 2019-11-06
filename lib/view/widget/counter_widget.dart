@@ -71,8 +71,17 @@ class _CounterWidgetState extends State<CounterWidget> {
               && item.commodityModelList[widget.idx].quantity==0){
               CustomsWidget().customShowDialog(context: context,
                   content: "是否删除该商品",
+                  onCancel:(){
+                    this.provide.setQuantity(item.commodityModelList[widget.idx], widget.idx);
+                  },
                   onPressed: (){
-                    this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
+                    this.provide.removeCarts(item.commodityModelList[widget.idx]).doOnListen((){}).doOnCancel((){})
+                        .listen((res){
+                      if(res.data!=null){
+                        this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
+                        CustomsWidget().showToast(title: "删除成功");
+                      }
+                    },onError: (e){});
                   }
               );
             }

@@ -77,6 +77,8 @@ class CommodityAndCartProvide extends BaseProvide{
           if(item.commodityModelList[idx].isChecked){
             _sum+=item.commodityModelList[idx].salesPrice;
           }
+
+          this.reAndIcRequest(item,idx);
         }
       });
     }
@@ -97,9 +99,29 @@ class CommodityAndCartProvide extends BaseProvide{
           if(item.commodityModelList[idx].isChecked){
             _sum-=item.commodityModelList[idx].salesPrice;
           }
+          if(item.commodityModelList[idx].quantity>0){
+            this.reAndIcRequest(item,idx);
+          }
         }
       });
     }
+    notifyListeners();
+  }
+
+  void reAndIcRequest(CommodityTypesModel item,int idx){
+    this.reAndIcCarts(item.commodityModelList[idx]).doOnListen((){}).doOnCancel((){})
+        .listen((res){
+
+    },onError: (e){});
+  }
+
+  void setQuantity(CommodityModels models,int idx){
+    String types = models.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+    _commodityTypesModelLists.forEach((item){
+      if(item.types==types){
+        item.commodityModelList[idx].quantity = 1;
+      }
+    });
     notifyListeners();
   }
 
@@ -238,6 +260,27 @@ class CommodityAndCartProvide extends BaseProvide{
   /// 购物车列表
   Observable getMyCarts() {
     return _repo.getMyCarts()
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 购物车加减
+  Observable reAndIcCarts(CommodityModels model) {
+    return _repo.reAndIcCarts(model)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+  /// 购物车删除
+  Observable removeCarts(CommodityModels model) {
+    return _repo.removeCarts(model)
         .doOnData((result) {
 
     })

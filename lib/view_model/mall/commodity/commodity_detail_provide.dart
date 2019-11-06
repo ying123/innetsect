@@ -116,6 +116,11 @@ class CommodityDetailProvide extends BaseProvide {
             });
             if(flag){
               _skusModel = item;
+              _commodityModels.skuCode = item.skuCode;
+              _commodityModels.salesPrice = item.salesPrice;
+              _commodityModels.skuName = item.skuName;
+              _commodityModels.skuPic = item.skuPic;
+              _commodityModels.originalPrice = item.originalPrice;
             }
           });
         }

@@ -77,7 +77,35 @@ class CommodityService {
   /// 加入购物车
   Observable<BaseResponse> addCarts (CommodityModels model){
     var url = '/api/eshop/shoppingcart/add';
-    var json = {
+    var json = this.cartJson(model);
+    var response = post(url,body: json);
+    return response;
+  }
+
+  /// 购物车请求
+  Observable<BaseResponse> getMyCarts (){
+    var url = '/api/eshop/shoppingcart/my';
+    var response = get(url);
+    return response;
+  }
+  /// 购物车加减请求
+  Observable<BaseResponse> reAndIcCarts (CommodityModels model){
+    var url = '/api/eshop/shoppingcart/update';
+    var json = this.cartJson(model);
+    var response = post(url,body: json);
+    return response;
+  }
+
+  /// 购物车删除
+  Observable<BaseResponse> removeCarts (CommodityModels model){
+    var url = '/api/eshop/shoppingcart/remove';
+    var json = this.cartJson(model);
+    var response = post(url,body: json);
+    return response;
+  }
+
+  dynamic cartJson(CommodityModels model){
+    return {
       "salesPrice": model.salesPrice,
       "promotionCode": "",
       "skuName": model.skuName,
@@ -99,15 +127,6 @@ class CommodityService {
       "discountPrice": "",
       "skuCode": model.skuCode
     };
-    var response = post(url,body: json);
-    return response;
-  }
-
-  /// 购物车请求
-  Observable<BaseResponse> getMyCarts (){
-    var url = '/api/eshop/shoppingcart/my';
-    var response = get(url);
-    return response;
   }
 }
 
@@ -161,5 +180,12 @@ class CommodityRepo {
   Observable<BaseResponse> getMyCarts (){
     return _remote.getMyCarts();
   }
-
+  /// 购物车加减
+  Observable<BaseResponse> reAndIcCarts (CommodityModels model){
+    return _remote.reAndIcCarts(model);
+  }
+  /// 购物车删除
+  Observable<BaseResponse> removeCarts (CommodityModels model){
+    return _remote.removeCarts(model);
+  }
 }
