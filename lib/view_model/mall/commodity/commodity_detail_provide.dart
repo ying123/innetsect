@@ -15,6 +15,8 @@ class CommodityDetailProvide extends BaseProvide {
   CommoditySkusModel _skusModel;
   /// 过滤的sku
   List<CommoditySkusModel> _skusList=[];
+  /// 推荐商品
+  List<List<CommodityModels>> _recommendedList=[];
   /// 数组选中下标
   int _index=0;
   /// 订单号
@@ -22,11 +24,12 @@ class CommodityDetailProvide extends BaseProvide {
   /// 支付类型
   int _payTypes;
 
-  get commodityModels => _commodityModels;
+  CommodityModels get commodityModels => _commodityModels;
 
-  get skusModel =>_skusModel;
+  CommoditySkusModel get skusModel =>_skusModel;
 
   List<CommoditySkusModel> get skusList => _skusList;
+  List<List<CommodityModels>> get recommendedList=>_recommendedList;
   get index=>_index;
   get orderId=>_orderId;
   get payTypes=>_payTypes;
@@ -126,6 +129,24 @@ class CommodityDetailProvide extends BaseProvide {
     notifyListeners();
   }
 
+  // 商品推荐
+  void addRecommedList(List<CommodityModels> list){
+    List<CommodityModels> lists = [];
+    list.asMap().keys.forEach((keys){
+      if((keys+1)%4==0){
+        lists.add(list[keys]);
+        _recommendedList.add(lists);
+        lists=[];
+      }else{
+        lists.add(list[keys]);
+      }
+    });
+//    _recommendedList = list;
+    notifyListeners();
+  }
+
+
+
   final CommodityRepo _repo = CommodityRepo();
 
   /// 详情数据
@@ -172,6 +193,14 @@ class CommodityDetailProvide extends BaseProvide {
 
     })
         .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 商品推荐
+  Observable recommendedListData(int pageNo,int types,int prodID){
+    return _repo.recommendedListData(pageNo, types, prodID).doOnData((res){
+    }).doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
   }

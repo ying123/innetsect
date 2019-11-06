@@ -9,6 +9,9 @@ class ContentModel{
   String tags;
   int status;
   int portletID;
+  int commentCount;
+  int praiseCount;
+  int hitCount;
 
   ContentModel({
     this.portletID,
@@ -20,7 +23,10 @@ class ContentModel{
     this.poster,
     this.subtitle,
     this.tags,
-    this.title
+    this.title,
+    this.commentCount,
+    this.praiseCount,
+    this.hitCount
   });
 
   factory ContentModel.fromJson(Map<String,dynamic> json){
@@ -35,6 +41,9 @@ class ContentModel{
       tags: json['tags'],
       status: json['status'],
       portletID: json['portletID'],
+      commentCount: json['commentCount'],
+      praiseCount: json['praiseCount'],
+        hitCount: json['hitCount']
     );
   }
 

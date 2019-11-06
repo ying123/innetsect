@@ -121,8 +121,8 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           new Container(
-            width: ScreenAdapter.getScreenWidth()/2,
-            padding: EdgeInsets.only(left: 10,right: 5),
+            width: ScreenAdapter.getScreenWidth()/2-10,
+            padding: EdgeInsets.only(left: 10,right: 10),
             child: new RaisedButton(
               color: AppConfig.fontBackColor,
               textColor: Colors.white,
@@ -134,8 +134,8 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
             ),
           ),
           new Container(
-            width: ScreenAdapter.getScreenWidth()/2,
-            padding: EdgeInsets.only(left: 5,right: 10),
+            width: ScreenAdapter.getScreenWidth()/2-10,
+            padding: EdgeInsets.only(right: 5),
             child: new RaisedButton(
               color: AppConfig.primaryColor,
               textColor: AppConfig.fontBackColor,

@@ -66,6 +66,13 @@ class CommodityService {
     var response = post(url);
     return response;
   }
+
+  /// 商品推荐
+  Observable<BaseResponse> recommendedListData (int pageNo,int types,int prodID ){
+    var url = '/api/eshop/$types/products/$prodID/recommended?pageNo=$pageNo';
+    var response = get(url);
+    return response;
+  }
 }
 
 
@@ -103,5 +110,10 @@ class CommodityRepo {
   /// 订单支付
   Observable<BaseResponse> payShopping(int orderId,int payTypes){
     return _remote.payShopping(orderId,payTypes);
+  }
+
+  /// 商品推荐
+  Observable<BaseResponse> recommendedListData(int pageNo,int types,int prodID){
+    return _remote.recommendedListData(pageNo, types, prodID);
   }
 }

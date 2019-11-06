@@ -45,6 +45,10 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   CommodityDetailProvide _provide;
   CommodityAndCartProvide _cartProvide;
 
+  int pageNo = 1;
+
+  List recommedList = new List();
+
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
@@ -87,6 +91,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       // 运用未来获取context，初始化数据
       Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
       _loadData(mapData['id']) ;
+      _loadRemData(pageNo,37,mapData['id']);
     });
   }
 
@@ -163,7 +168,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
               )
             ),
             new Container(
-              height: ScreenAdapter.height(100),
+              height: ScreenAdapter.height(200),
               color: Colors.white,
             )
           ],
@@ -225,7 +230,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
           CommoditySkusModel model = provide.skusModel;
           return new Container(
-            height: ScreenAdapter.height(98),
+            height: ScreenAdapter.height(110),
             color: Colors.white,
             padding: EdgeInsets.all(10),
             child: new Row(
@@ -259,9 +264,11 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   
   /// 推荐
   Widget _recommendWidget(){
+    double childHeight = ScreenAdapter.getScreenHeight()/1.5;
     return Container(
-      height: ScreenAdapter.height(300),
-      color: Colors.cyanAccent,
+      width: double.infinity,
+      height: ScreenAdapter.height(1100),
+      color: Colors.white,
       child: new Column(
         children: <Widget>[
           new Container(
@@ -269,6 +276,66 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             padding: EdgeInsets.all(10),
             child: CustomsWidget().subTitle(
               title: "商品推荐", color: AppConfig.primaryColor,
+            ),
+          ),
+          new Container(
+            width: double.infinity,
+            height: childHeight,
+            color: Colors.white,
+            child: new Swiper(
+              itemCount: _provide.recommendedList.length>0?_provide.recommendedList.length:1,
+              index: 0,
+              loop: false,
+              scrollDirection: Axis.horizontal,
+              pagination: new SwiperPagination(
+                margin: EdgeInsets.only(top: 20),
+                builder: DotSwiperPaginationBuilder(
+                  activeColor: AppConfig.primaryColor,
+                  color: AppConfig.assistLineColor
+                )
+              ),
+              itemBuilder: (BuildContext context,int index) {
+                return new Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: _provide.recommendedList.length>0 ?
+                      new Wrap(
+                        spacing: 10,
+                        runSpacing: 5,
+                        children: _provide.recommendedList[index].map((item){
+                          return new Container(
+                            width: ScreenAdapter.getScreenWidth()/2-10,
+                            height: childHeight/2-15,
+                            alignment: Alignment.topCenter,
+                            child: new Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                new Image.network(item.prodPic,height: ScreenAdapter.height(280),),
+                                new Container(
+                                  width: ScreenAdapter.getScreenWidth()/2-10,
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.only(top: 10,bottom: 5),
+                                  child: new Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      new CustomsWidget().priceTitle(price: item.defSalesPrice.toString())
+                                    ],
+                                  )
+                                ),
+                                new Container(
+                                  width: ScreenAdapter.getScreenWidth()/2-10,
+                                  alignment: Alignment.center,
+                                  child: new Text(item.prodName,style: TextStyle(fontSize: ScreenAdapter.size(24)),
+                                    maxLines: 2,),
+                                )
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      )
+                      :new Container(),
+                );
+              },
             ),
           )
         ],
@@ -366,5 +433,17 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       _provide.setCommodityModels(CommodityModels.fromJson(item.data));
 //      _provide
     }, onError: (e) {});
+  }
+
+  /// 商品推荐
+  _loadRemData(int pageNo,int types,int prodID){
+    _provide.recommendedListData(pageNo, types, prodID).doOnListen((){}).doOnCancel((){})
+        .listen((item){
+          if(item.data!=null){
+            _provide.recommendedList.clear();
+            List<CommodityModels> list = CommodityList.fromJson(item.data).list;
+            _provide.addRecommedList(list);
+          }
+    },onError: (e){});
   }
 }
