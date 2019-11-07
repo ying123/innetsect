@@ -90,7 +90,7 @@ class CommodityDetailProvide extends BaseProvide {
   }
 
   // 设置选中的sku，动态变化
-  void setSelectSku(CommodityFeatureModel featureModel){
+  void setSelectSku(CommodityFeatureModel featureModel,int count){
     //
     _skusList.clear();
     _commodityModels.skus.forEach((item){
@@ -121,6 +121,7 @@ class CommodityDetailProvide extends BaseProvide {
               _commodityModels.skuName = item.skuName;
               _commodityModels.skuPic = item.skuPic;
               _commodityModels.originalPrice = item.originalPrice;
+              _commodityModels.quantity = count;
             }
           });
         }
@@ -131,13 +132,14 @@ class CommodityDetailProvide extends BaseProvide {
   }
 
   // 选择颜色
-  void setSelectColor(CommoditySkusModel models){
+  void setSelectColor(CommoditySkusModel models,int count){
     _skusModel = models;
     _commodityModels.skuCode = models.skuCode;
     _commodityModels.salesPrice = models.salesPrice;
     _commodityModels.skuName = models.skuName;
     _commodityModels.skuPic = models.skuPic;
     _commodityModels.originalPrice = models.originalPrice;
+    _commodityModels.quantity = count;
     notifyListeners();
   }
 

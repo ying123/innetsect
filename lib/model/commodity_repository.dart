@@ -104,7 +104,19 @@ class CommodityService {
     return response;
   }
 
-  dynamic cartJson(CommodityModels model){
+  /// 删除所选
+  Observable<BaseResponse> removeCartsList (List<CommodityModels> model){
+    var url = '/api/eshop/shoppingcart/remove/list';
+    List<Map<String,dynamic>> array = new List<Map<String,dynamic>>();
+    model.forEach((item){
+      array..add(this.cartJson(item));
+    });
+//    var json = this.cartJson(model);
+    var response = post(url,body: array);
+    return response;
+  }
+
+  Map<String,dynamic> cartJson(CommodityModels model){
     return {
       "salesPrice": model.salesPrice,
       "promotionCode": "",
@@ -187,5 +199,9 @@ class CommodityRepo {
   /// 购物车删除
   Observable<BaseResponse> removeCarts (CommodityModels model){
     return _remote.removeCarts(model);
+  }
+  /// 删除所选
+  Observable<BaseResponse> removeCartsList (List<CommodityModels> model){
+    return _remote.removeCartsList(model);
   }
 }

@@ -70,7 +70,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
             children: skuModelGroup.map((item){
               return new InkWell(
                 onTap: (){
-                  provide.setSelectColor(item);
+                  provide.setSelectColor(item,_cartProvide.count);
                   setState(() {});
                 },
                 child: new Container(
@@ -139,7 +139,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                   // 选中尺码
                   return new InkWell(
                     onTap: (){
-                      provide.setSelectSku(item);
+                      provide.setSelectSku(item,_cartProvide.count);
                       setState(() {});
                     },
                     child: item.featureGroup=="尺码" ?new Container(

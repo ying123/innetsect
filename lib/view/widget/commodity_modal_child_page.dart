@@ -137,6 +137,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                 if(!isLogin()){
                   this._detailProvide.commodityModels.types = CommodityCartTypes.commodity.toString();
                   this._detailProvide.commodityModels.isChecked = false;
+                  this._detailProvide.commodityModels.quantity = this._cartProvide.count;
                   // 请求
                   this._cartProvide.addCartsRequest(this._detailProvide.commodityModels)
                       .doOnListen(() {

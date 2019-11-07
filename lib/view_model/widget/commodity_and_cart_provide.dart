@@ -164,7 +164,6 @@ class CommodityAndCartProvide extends BaseProvide{
       isSel = item.commodityModelList.every((item)=>item.isChecked==true);
     });
     _isSelected = isSel;
-//    _commodityModelList[idx].isSelected = !isSelected;
     notifyListeners();
   }
 
@@ -173,7 +172,6 @@ class CommodityAndCartProvide extends BaseProvide{
     for(CommodityTypesModel item in _commodityTypesModelLists){
       // 查找是否有选中项
       List<CommodityModels> modelsList = item.commodityModelList.where((res)=>res.isChecked==true).toList();
-      print(modelsList);
       if(modelsList.length==0){
         CommodityModels models = item.commodityModelList[0];
         this.selAllSum(item,models,isSelected);
@@ -204,12 +202,14 @@ class CommodityAndCartProvide extends BaseProvide{
 
   // 删除所选
   void onDelSelect(){
-    _commodityTypesModelLists.forEach((item){
+    _commodityTypesModelLists.forEach((item) {
       item.commodityModelList.removeWhere((res)=>res.isChecked==true);
     });
+
     notifyListeners();
   }
-//  // 删除数量为0的商品
+
+  // 删除数量为0的商品
   void onDelCountToZero({int idx,CommodityModels model,String mode="single"}){
     String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
     if(mode=="single"){
@@ -289,4 +289,13 @@ class CommodityAndCartProvide extends BaseProvide{
         .doOnDone(() {});
   }
 
+  /// 删除所选
+  Observable removeCartsList(List<CommodityModels> model) {
+    return _repo.removeCartsList(model)
+        .doOnData((result) {
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
 }

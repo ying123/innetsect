@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
+import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
@@ -301,7 +302,11 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         ),
         elevation: 7.0,
         onPressed:(){
-
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context){
+                return CommodityCartPage();
+              },settings: RouteSettings(arguments: {'isBack': true})
+          ));
         }
     );
   }

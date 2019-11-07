@@ -112,7 +112,8 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
     return Provide<CommodityAndCartProvide>(
       builder: (BuildContext context,Widget widget,CommodityAndCartProvide provide){
         List<CommodityTypesModel> list = provide.commodityTypesModelLists;
-        if(list!=null && list.length>0){
+        if(list!=null && list.length>0&& (list[0].commodityModelList.length>0
+            || (list.length>1&&list[1].commodityModelList.length>0))){
           return new Center(
             child: new Column(
               children: <Widget>[
@@ -133,7 +134,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white
                               ),
-                              child: new Column(
+                              child: list[index].commodityModelList.length>0? new Column(
                                 children: <Widget>[
                                   new Container(
                                     width: double.infinity,
@@ -150,7 +151,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                   ),
                                   _cartList(list[index].commodityModelList)
                                 ],
-                              ),
+                              ):new Container(),
                             );
                           }),
                     )
@@ -317,7 +318,28 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
               ) : _bottomDyAction(text: "删除所选",
                 callback: (){
                   // 删除所选
-                  this.provide.onDelSelect();
+//                  this.provide.onDelSelect();
+                  List<CommodityModels> list = [];
+                  this.provide.commodityTypesModelLists.forEach((item){
+                    item.commodityModelList.forEach((res){
+                      if(res.isChecked==true){
+                        list.add(res);
+                      }
+                    });
+                  });
+                  //请求删除
+                  this.provide.removeCartsList(list).doOnListen(() {
+                    print('doOnListen');
+                  })
+                      .doOnCancel(() {})
+                      .listen((item) {
+                    ///加载数据
+                    print('listen data->$item');
+                    if(item.data!=null){
+                      this.provide.onDelSelect();
+                      CustomsWidget().showToast(title: "删除成功");
+                    }
+                  }, onError: (e) {});
                 }
               )
 

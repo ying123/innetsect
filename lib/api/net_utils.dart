@@ -68,7 +68,11 @@ Future<BaseResponse> _post(String url, dynamic body,
   await HttpUtil()
       .dio
       .post(url, data: body, queryParameters: queryParameters).then((res){
-    response = BaseResponse.fromJson(res.data);
+        if(res.data is Map){
+          response = BaseResponse.fromJson(res.data);
+        }else if(res.data is List){
+          response = BaseResponse.fromlist(res.data);
+        }
     print('response _post:->$response');
   }).catchError((error){
     print(error);
