@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
-import 'package:innetsect/data/commodity_model.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_types_model.dart';
+import 'package:innetsect/enum/commodity_cart_types.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
@@ -11,7 +12,7 @@ class CounterWidget extends StatefulWidget {
   // 数组下标
   final int idx;
   // 购物车商品列表
-  final CommodityModel model;
+  final CommodityModels model;
   CounterWidget({this.provide,this.idx,this.model});
 
   @override
@@ -20,6 +21,7 @@ class CounterWidget extends StatefulWidget {
 
 class _CounterWidgetState extends State<CounterWidget> {
   CommodityAndCartProvide provide;
+  CommodityModels model;
   int count;
 
   @override
@@ -38,6 +40,7 @@ class _CounterWidgetState extends State<CounterWidget> {
     // TODO: implement initState
     super.initState();
     this.provide = widget.provide;
+    this.model = widget.model;
     if(this.provide.mode!="multiple"){
       setState(() {
         count = widget.provide.count;
@@ -60,14 +63,25 @@ class _CounterWidgetState extends State<CounterWidget> {
           });
         }else{
           // 如果商品减少到0，提示删除
-          List<CommodityTypesModel> list = this.provide.commodityModelLists;
+
+          List<CommodityTypesModel> list = this.provide.commodityTypesModelLists;
+          String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
           list.forEach((item){
-            if(item.types == widget.model.types
-              && item.commodityModelList[widget.idx].count==0){
+            if(item.types == types
+              && item.commodityModelList[widget.idx].quantity==0){
               CustomsWidget().customShowDialog(context: context,
                   content: "是否删除该商品",
+                  onCancel:(){
+                    this.provide.setQuantity(item.commodityModelList[widget.idx], widget.idx);
+                  },
                   onPressed: (){
-                    this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
+                    this.provide.removeCarts(item.commodityModelList[widget.idx]).doOnListen((){}).doOnCancel((){})
+                        .listen((res){
+                      if(res.data!=null){
+                        this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
+                        CustomsWidget().showToast(title: "删除成功");
+                      }
+                    },onError: (e){});
                   }
               );
             }
@@ -92,7 +106,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       size=40.0;
       fontSize=28.0;
       circular=4.0;
-      count=widget.model.count;
+      count=widget.model.quantity;
     }
     return new Container(
       height: ScreenAdapter.height(size),

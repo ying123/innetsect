@@ -18,8 +18,13 @@ class LoginProvide extends BaseProvide {
   ///用户信息
   UserInfoModel _userInfoModel;
   get userInfoModel => _userInfoModel;
-  set userInfoModel(UserInfoModel userInfoModel){
+  void setUserInfoModel(UserInfoModel userInfoModel){
     _userInfoModel = userInfoModel;
+    notifyListeners();
+  }
+
+  void clearUserInfoModel(){
+    _userInfoModel = null;
     notifyListeners();
   }
 
@@ -114,13 +119,12 @@ class LoginProvide extends BaseProvide {
   }
   
   /// 获取验证码
-  Observable getVaildCode() {
-    return _repo.getVaildCode(userCode)
-        .doOnData((result) {
+  Future getVaildCode() {
+    return _repo.getVaildCode(userCode);
+  }
 
-    })
-        .doOnError((e, stacktrace) {})
-        .doOnListen(() {})
-        .doOnDone(() {});
+  /// 修改密码
+  Future editLogingPwd(String pwd){
+    return _repo.editPwdSetting(pwd);
   }
 }

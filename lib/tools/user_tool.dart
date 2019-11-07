@@ -78,6 +78,12 @@ UserInfoModel getUserInfo(){
   }
 }
 
+/// 清除本地用户详情
+void clearUserInfo(){
+    _spf.remove(ConstConfig.CURRENT_USERDATA);
+    _spf.remove(ConstConfig.LOGIN_USERINFO);
+}
+
 ///获取用户token
   String getUserToken(){
     var userData = this.getUserData();

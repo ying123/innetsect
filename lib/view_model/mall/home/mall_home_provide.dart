@@ -1,94 +1,54 @@
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/mall/banners_model.dart';
+import 'package:innetsect/data/mall/portlets_model.dart';
+import 'package:innetsect/model/mall/home_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 class MallHomeProvide extends BaseProvide{
 
-  List<String> _bannerImages = [
-    'https://aecpm.alicdn.com/simba/img/TB14ab1KpXXXXclXFXXSutbFXXX.jpg_q50.jpg',
-    'https://gw.alicdn.com/imgextra/i4/34/O1CN01Wz3LuY1C7bzPXexNf_!!34-0-lubanu.jpg',
-    'https://gw.alicdn.com/imgextra/i1/99/O1CN01MswjVp1CbNjd1qL0N_!!99-0-lubanu.jpg',
-    'https://aecpm.alicdn.com/tfscom/TB1jDYURMHqK1RjSZFgXXa7JXXa.jpg_q50.jpg',
-    'https://gw.alicdn.com/imgextra/i4/196/O1CN01GM2TCU1DJo9Q4paY5_!!196-0-lubanu.jpg',
-    'https://gw.alicdn.com/imgextra/i1/101/O1CN012LEy4Q1CcIWfvJWbw_!!101-0-lubanu.jpg'
-  ];
+  List<BannersModel> _bannersList=[];
+
+  List<PortletsModel> _portletsModelList = [];
+
+  List<BannersModel> get bannersList=>_bannersList;
+  List<PortletsModel> get portletsModelList=>_portletsModelList;
 
 
-  //列表项数据
-  List listItems = [
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l1.png',
-      'title': "全新联名鞋款发售详情公布",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
-    {
-      'image': 'assets/images/l2.png',
-      'title': "Nike 2019 N7专属系列鞋款正式亮相,是否还是地区限定?",
-      'subTitle': "# 潮流",
-      'subTitle1': "# 潮牌",
-      'subTitle2': "# 联名",
-      'time':"1小时",
-      'focusNuber': '1063'
-    },
+  void addBannersModel(List<BannersModel> list){
+    _bannersList = list;
+    notifyListeners();
+  }
 
-  ];
+  void addListData(List<PortletsModel> list){
+    _portletsModelList..addAll(list);
+    notifyListeners();
+  }
 
+  void clearList(){
+    _bannersList.clear();
+    _portletsModelList.clear();
+  }
 
-  get bannerImages => _bannerImages;
+  /// 请求
+  final MallHomeRepo _repo = MallHomeRepo();
+
+  ///商城首页数据
+  Observable bannerData() {
+    return _repo.bannerData()
+        .doOnData((result) {
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  ///商城首页列表数据
+  Observable listData(int pageNo) {
+    return _repo.listData(pageNo)
+        .doOnData((result) {
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
 }

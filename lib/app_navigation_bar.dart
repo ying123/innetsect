@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
-import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/view/activity/activity_page.dart';
 import 'package:innetsect/view/brand/brand_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view/shopping/shopping_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
@@ -62,8 +62,14 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
           /// 获取用户信息
           Future.delayed(Duration.zero,(){
             _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
-              if(userItem.data!=null){
-                _loginProvide.userInfoModel = UserInfoModel.fromJson(userItem.data);
+              if(userItem!=null&&userItem.data!=null){
+                _loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
+              }else{
+//                Navigator.push(context, MaterialPageRoute(
+//                  builder: (BuildContext context){
+//                    return new LoginPage();
+//                  }
+//                ));
               }
             },onError: (e){
             });

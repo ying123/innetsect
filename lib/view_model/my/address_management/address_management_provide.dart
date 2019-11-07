@@ -5,12 +5,20 @@ import 'package:rxdart/rxdart.dart';
 
 class AddressManagementProvide extends BaseProvide{
 
+  AddressModel _addressModel;
+  AddressModel get addressModel=>_addressModel;
+
+  set addressModel(AddressModel model){
+    _addressModel= model;
+    notifyListeners();
+  }
+
   List<AddressModel> _listAddressModel=[];
 
   List<AddressModel> get listAddressModel => _listAddressModel;
 
   void addListAddress(List<AddressModel> list){
-    _listAddressModel..addAll(list);
+    _listAddressModel=list;
     notifyListeners();
   }
 
@@ -23,20 +31,27 @@ class AddressManagementProvide extends BaseProvide{
   void setIsDefault(AddressModel model){
     _listAddressModel.forEach((item){
       if(item.addressID==model.addressID){
-        item.isDefault = model.isDefault;
-      }else{
-        item.isDefault = !model.isDefault;
+        item.lastUsed = model.lastUsed;
       }
     });
+    notifyListeners();
+  }
+
+  /// 新建地址添加到list中
+  void addAddresses(AddressModel model){
+    if(model.lastUsed){
+      _listAddressModel.forEach((item)=>item.lastUsed = false);
+    }
+    _listAddressModel.add(model);
     notifyListeners();
   }
 
   final AddressRepo _repo = AddressRepo();
 
   ///地址管理列表数据
-  Observable listData(int pageNo) {
+  Observable listData() {
     return _repo
-        .listData(pageNo)
+        .listData()
         .doOnData((result) {
 
     })
@@ -55,6 +70,27 @@ class AddressManagementProvide extends BaseProvide{
         .doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
+  }
+  ///删除地址
+  Future delDatas(AddressModel model) {
+   return  _repo
+       .deleteAddresses(model.addressID);
+  }
+
+  ///工厂模式
+  factory AddressManagementProvide()=> _getInstance();
+  static AddressManagementProvide get instance => _getInstance();
+  static AddressManagementProvide _instance;
+  static AddressManagementProvide _getInstance(){
+    if (_instance == null) {
+      _instance = new AddressManagementProvide._internal();
+    }
+    return _instance;
+  }
+
+  AddressManagementProvide._internal() {
+    print('AddressManagementProvide初始化');
+    // 初始化
   }
 
 }

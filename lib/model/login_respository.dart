@@ -20,8 +20,15 @@ class LoginService {
   }
 
   /// 获取验证码
-  Observable<BaseResponse> getVaildCode(String phone){
+  Future getVaildCode(String phone){
     var url = '/sms/vcode/$phone';
+    var response = patch(url);
+    return response;
+  }
+
+  /// 修改密码
+  Future editPwdSetting(String pwd){
+    var url = '/api/accounts/change/mypwd?newPwd=$pwd';
     var response = patch(url);
     return response;
   }
@@ -43,7 +50,12 @@ class LoginRepo {
   }
 
   /// 获取验证码
-  Observable<BaseResponse> getVaildCode(String phone){
+  Future getVaildCode(String phone){
     return _remote.getVaildCode(phone);
+  }
+
+  /// 修改密码
+  Future editPwdSetting(String pwd){
+    return _remote.editPwdSetting(pwd);
   }
 }

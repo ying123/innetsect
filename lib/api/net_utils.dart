@@ -27,7 +27,7 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
     res = BaseResponse.fromlist(response.data);
   }
   }).catchError((error){
-    if(error.response.data['path']=="/accounts/me"){
+    if(error.response.data['path']=="/accounts/me" || error.response.statusCode==401){
 
       Future.delayed(Duration.zero,(){
         Navigator.pushNamed(context, '/loginPage');
@@ -95,29 +95,21 @@ Future<BaseResponse> _post(String url, dynamic body,
 }
 
 /// patch请求
-Observable<BaseResponse> patch(String url,
+Future patch(String url,
     {dynamic body, Map<String, dynamic> qureyParameters}) {
   print('patch url:->$url body:->$body qureyParameters:->$qureyParameters');
-  return Observable.fromFuture(
-      _patch(url, body, queryParameters: qureyParameters))
-      .asBroadcastStream();
+  return _patch(url, body, queryParameters: qureyParameters);
 }
 
-Future<BaseResponse> _patch(String url, dynamic body,
-    {Map<String, dynamic> queryParameters}) async {
-  var response = await HttpUtil()
+Future _patch(String url, dynamic body,
+    {Map<String, dynamic> queryParameters}) async{
+  Response response;
+  await HttpUtil()
       .dio
-      .patch(url, data: body, queryParameters: queryParameters);
-  print('response _patch:->$response');
-  //加json数据转换成BaseResponse实例
-  var res = BaseResponse.fromJson(response.data);
-  //  if (res.success == false) {
-  //    Fluttertoast.showToast(
-  //      msg: res.message,
-  //      gravity: ToastGravity.CENTER
-  //    );
-  //  }
-  return res;
+      .patch(url, data: body, queryParameters: queryParameters).then((item){
+    response = item;
+  });
+  return response;
 }
 
 ///put请求
@@ -177,4 +169,24 @@ Future<BaseResponse> _getCountries(String url, {Map<String, dynamic> params,Buil
   }).catchError((error){
   });
   return res;
+}
+
+///delete请求
+Future delete(String url,
+    {dynamic body, Map<String, dynamic> qureyParameters,BuildContext context}) {
+  return _delete(url, body, queryParameters: qureyParameters,context: context);
+}
+
+Future _delete(String url, dynamic body,
+    {Map<String, dynamic> queryParameters,BuildContext context}) async {
+  Response response;
+  await HttpUtil()
+      .dio
+      .delete(url, data: body, queryParameters: queryParameters).then((res){
+    response = res;
+    print('response _post:->$response');
+  }).catchError((error) {
+    print(error);
+  });
+  return response;
 }

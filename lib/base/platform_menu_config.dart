@@ -16,13 +16,13 @@ const List<PlatFormMenu> mallTabBarList = const <PlatFormMenu>[
 
 /// 商城底部导航
 const List<PlatFormMenu> mallNavBarList = const <PlatFormMenu>[
-  const PlatFormMenu(index: 0,title: "热卖",
+  const PlatFormMenu(index: 0,title: "资讯",
     icon: "assets/images/mall/tab_news.png",
     selIcon: "assets/images/mall/tab_news_h.png",
   ),
-  const PlatFormMenu(index:1,title: "潮人",
-    icon: "assets/images/mall/tab_star.png",
-    selIcon: "assets/images/mall/tab_star_h.png",
+  const PlatFormMenu(index:1,title: "品牌",
+    icon: "assets/images/mall/brand@3x.png",
+    selIcon: "assets/images/mall/brand@3x.png",
   ),
   const PlatFormMenu(index:1,title: "首页",
     icon: "assets/images/mall/tab_home.png",
@@ -32,7 +32,7 @@ const List<PlatFormMenu> mallNavBarList = const <PlatFormMenu>[
     icon: "assets/images/mall/tab_mall.png",
     selIcon: "assets/images/mall/tab_mall_h.png",
   ),
-  const PlatFormMenu(index:1,title: "我的",
+  const PlatFormMenu(index:1,title: "我",
     icon: "assets/images/mall/tab_me.png",
     selIcon: "assets/images/mall/tab_me_h.png",
   ),

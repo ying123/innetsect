@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
-import 'package:innetsect/data/commodity_model.dart';
 import 'package:innetsect/data/order_detail_model.dart';
-import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/order/order_pay_page.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
@@ -84,8 +81,9 @@ class _OrderContentState extends State<OrderContent> {
                 color: AppConfig.primaryColor,
                 textColor: AppConfig.fontBackColor,
                 onPressed: (){
+
                   //提交订单
-                  widget._detailProvide.submitShopping()
+                  widget._detailProvide.submitShopping(widget._orderDetailProvide.orderDetailModel.addressID)
                       .doOnListen(() {
                   print('doOnListen');
                   })
@@ -135,7 +133,7 @@ class _OrderContentState extends State<OrderContent> {
                 child: new Row(
                   children: <Widget>[
                     new Expanded(
-                      flex:10,
+                      flex:9,
                       child:  new InkWell(
                         onTap: (){
                           // 点击跳转地址管理页面
@@ -157,14 +155,14 @@ class _OrderContentState extends State<OrderContent> {
                                 child: new Row(
                                   children: <Widget>[
                                     new Expanded(
-                                      flex:1,
+                                      flex:2,
                                       child: new Padding(
                                         padding: EdgeInsets.only(left: 10),
                                         child: new Row(
                                           children: <Widget>[
                                             new Image.asset("assets/images/mall/location.png",fit: BoxFit.fill,width: ScreenAdapter.width(25),),
                                             new Padding(padding: EdgeInsets.only(left: 5),
-                                            child: new Text("收货人: ${model.addressModel.name}"),)
+                                            child: new Text("收货人: ${model.addressModel.name}",maxLines: 1,),)
                                           ],
                                         ),
                                       )
@@ -188,16 +186,7 @@ class _OrderContentState extends State<OrderContent> {
                       flex:1,
                       child: new Container(
                         alignment: Alignment.topLeft,
-                        child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            new Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: new Icon(Icons.chevron_right,color: AppConfig.fontBackColor,),
-                            )
-                          ],
-                        ),
+                        child: new Icon(Icons.chevron_right,color: AppConfig.fontBackColor,),
                       )
                     )
                   ],
@@ -230,9 +219,9 @@ class _OrderContentState extends State<OrderContent> {
               CustomsWidget().subTitle(title: "订单详情",color: AppConfig.primaryColor),
               new Container(
                 width: double.infinity,
-                height: ScreenAdapter.height(120),
+                height: ScreenAdapter.height(150),
                 alignment: Alignment.center,
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.only(top: 10,left: 10,right: 10,bottom: 5),
                 child: new Column(
                   children: model.skuModels.map((item){
                     return new Row(

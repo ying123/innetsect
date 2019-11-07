@@ -21,15 +21,24 @@ class CommodityDetailProvide extends BaseProvide {
   int _orderId;
   /// 支付类型
   int _payTypes;
+  /// 是否立即购买
+  bool _isBuy;
 
-  get commodityModels => _commodityModels;
+  CommodityModels get commodityModels => _commodityModels;
 
-  get skusModel =>_skusModel;
+  CommoditySkusModel get skusModel =>_skusModel;
 
   List<CommoditySkusModel> get skusList => _skusList;
+
   get index=>_index;
   get orderId=>_orderId;
   get payTypes=>_payTypes;
+  bool get isBuy=>_isBuy;
+
+  set isBuy(bool flag){
+    _isBuy = flag;
+    notifyListeners();
+  }
 
   // 商品详情
   void setCommodityModels(CommodityModels models){
@@ -67,6 +76,14 @@ class CommodityDetailProvide extends BaseProvide {
           _skusList.add(item);
         }
       });
+      //默认选中赋值
+      if(item.skuCode==_commodityModels.defSkuCode){
+        _commodityModels.skuCode = item.skuCode;
+        _commodityModels.salesPrice = item.salesPrice;
+        _commodityModels.skuName = item.skuName;
+        _commodityModels.skuPic = item.skuPic;
+        _commodityModels.originalPrice = item.originalPrice;
+      }
     });
 
     notifyListeners();
@@ -99,6 +116,11 @@ class CommodityDetailProvide extends BaseProvide {
             });
             if(flag){
               _skusModel = item;
+              _commodityModels.skuCode = item.skuCode;
+              _commodityModels.salesPrice = item.salesPrice;
+              _commodityModels.skuName = item.skuName;
+              _commodityModels.skuPic = item.skuPic;
+              _commodityModels.originalPrice = item.originalPrice;
             }
           });
         }
@@ -111,6 +133,11 @@ class CommodityDetailProvide extends BaseProvide {
   // 选择颜色
   void setSelectColor(CommoditySkusModel models){
     _skusModel = models;
+    _commodityModels.skuCode = models.skuCode;
+    _commodityModels.salesPrice = models.salesPrice;
+    _commodityModels.skuName = models.skuName;
+    _commodityModels.skuPic = models.skuPic;
+    _commodityModels.originalPrice = models.originalPrice;
     notifyListeners();
   }
 
@@ -154,8 +181,9 @@ class CommodityDetailProvide extends BaseProvide {
   }
 
   /// 提交订单
-  Observable submitShopping() {
-    return _repo.submitShopping()
+  Observable submitShopping(int addrID) {
+
+    return _repo.submitShopping(addrID)
         .doOnData((result) {
 
     })
@@ -171,6 +199,14 @@ class CommodityDetailProvide extends BaseProvide {
 
     })
         .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 商品推荐
+  Observable recommendedListData(int pageNo,int types,int prodID){
+    return _repo.recommendedListData(pageNo, types, prodID).doOnData((res){
+    }).doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
   }

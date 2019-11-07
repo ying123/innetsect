@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:innetsect/app.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
-import 'package:innetsect/data/commodity_model.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_types_model.dart';
-import 'package:innetsect/enum/commodity_cart_types.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 
 /// 购物车
 class CommodityCartPage extends PageProvideNode{
-  final CommodityAndCartProvide _provide = CommodityAndCartProvide();
+  final CommodityAndCartProvide _provide = CommodityAndCartProvide.instance;
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
 
   CommodityCartPage(){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_provide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
   }
   
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return CommodityCartContent(_provide);
+    return CommodityCartContent(_provide,_detailProvide);
   }
 }
 
 class CommodityCartContent extends StatefulWidget {
   final CommodityAndCartProvide _provide;
-  CommodityCartContent(this._provide);
+  final CommodityDetailProvide _detailProvide;
+  CommodityCartContent(this._provide,this._detailProvide);
   @override
   _CommodityCartContentState createState() => new _CommodityCartContentState();
 }
@@ -36,6 +38,7 @@ class CommodityCartContent extends StatefulWidget {
 class _CommodityCartContentState extends State<CommodityCartContent> {
 
   CommodityAndCartProvide provide;
+  CommodityDetailProvide _detailProvide;
   // 全选
   bool isAllChecked = false;
   // 是否编辑
@@ -96,32 +99,19 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
   void initState(){
     super.initState();
     this.provide = widget._provide;
+    this._detailProvide = widget._detailProvide;
     // 设置多计数器模式
     this.provide.setMode(mode:"multiple");
-    for(int i=0;i<6;i++){
-      CommodityModel model = new CommodityModel();
-      model.size = "M";
-      model.describe= "描述描述描述描述描述描述描述描述描述描述描述";
-      model.count = 2;
-      model.id = i+1;
-      model.price = 100.00;
-      model.colors = "白色";
-      model.images = "assets/images/mall/product2.png";
-      model.isSelected = false;
-      if(i>3){
-        model.types = CommodityCartTypes.commodity.toString();
-      }else{
-        model.types = CommodityCartTypes.exhibition.toString();
-      }
-      this.provide.addCommodityModelLists(model);
-    }
+    this.provide.sum = 0.00;
+    // 初始化数据
+    _loadList();
   }
 
   /// 购物车是否存在商品，构建视图
   Provide<CommodityAndCartProvide> _cartContent(String page){
     return Provide<CommodityAndCartProvide>(
       builder: (BuildContext context,Widget widget,CommodityAndCartProvide provide){
-        List<CommodityTypesModel> list = provide.commodityModelLists;
+        List<CommodityTypesModel> list = provide.commodityTypesModelLists;
         if(list!=null && list.length>0){
           return new Center(
             child: new Column(
@@ -198,7 +188,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
   }
 
   /// 购物车商品列表部件
-  Widget _cartList(List<CommodityModel> list){
+  Widget _cartList(List<CommodityModels> list){
     return new Container(
       width: double.infinity,
       child: new Column(
@@ -221,13 +211,14 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                       flex:1,
                       child: new Container(
                         child: CustomsWidget().customRoundedWidget(
-                            isSelected: list[key].isSelected,
+                            isSelected: list[key].isChecked,
                             onSelectedCallback: (){
-                              provide.setSelected(key,list[key],list[key].isSelected);
+                              provide.setSelected(key,list[key],list[key].isChecked);
                               setState(() {
                                 this.isAllChecked = provide.isSelected;
                               });
-                            }
+                            },
+                            isDisable: list[key].isDisable
                         ),
                       )
                   ),
@@ -242,7 +233,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                 flex:1,
                                 child: new Container(
                                   padding:EdgeInsets.all(5),
-                                  child: new Image.asset(list[key].images,width: ScreenAdapter.width(120),),
+                                  child: new Image.network(list[key].skuPic,width: ScreenAdapter.width(120),),
                                 )
                             ),
                             new Expanded(
@@ -256,14 +247,14 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                         flex:2,
                                         child: new Container(
                                           padding: EdgeInsets.only(top: 10),
-                                          child: new Text(list[key].describe,softWrap: true,
+                                          child: new Text(list[key].skuName,softWrap: true,
                                             style: TextStyle(fontSize: ScreenAdapter.size(28)),
                                           ),
                                       )),
                                       // 商品价格
                                       new Expanded(
                                         flex:1,
-                                        child: CustomsWidget().priceTitle(price: list[key].price.toString())
+                                        child: CustomsWidget().priceTitle(price: list[key].salesPrice.toString())
                                       ),
                                       // 计数器
                                       new Expanded(
@@ -317,7 +308,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               this.isEdited? new Text("总计: "): new Container(),
-              this.isEdited? new Text("¥ 0.00",style: TextStyle(fontWeight: FontWeight.w800),)
+              this.isEdited? new Text("¥ ${provide.sum.toString()}",style: TextStyle(fontWeight: FontWeight.w800),)
                   : new Container(),
               this.isEdited?_bottomDyAction(text: "去结算",
                 callback: (){
@@ -427,5 +418,23 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
         ],
       ),
     );
+  }
+
+  void _loadList(){
+    provide.getMyCarts().doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item.data!=null){
+        List<CommodityModels> list = CommodityList.fromJson(item.data).list;
+        provide.commodityTypesModelLists.clear();
+        list.forEach((res){
+          provide.addCarts(res);
+        });
+      }
+    }, onError: (e) {});
   }
 }

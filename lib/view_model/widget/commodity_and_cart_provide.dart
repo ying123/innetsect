@@ -1,24 +1,20 @@
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/commodity_color_model.dart';
-import 'package:innetsect/data/commodity_model.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_size_model.dart';
 import 'package:innetsect/data/commodity_types_model.dart';
 import 'package:innetsect/enum/commodity_cart_types.dart';
+import 'package:innetsect/model/commodity_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 /// 商品、购物车、计数器 provide
 class CommodityAndCartProvide extends BaseProvide{
 
-  // 商品对象
-  CommodityModel _commodityModel;
   // 购物地址
   AddressModel _addressModel;
-  // 订单详情，商品购买对象
-  List<CommodityModel> _buyCommodityModelList= new List();
-  ///TODO 商品List数组对象(可能会废弃）
-  List<CommodityModel> _commodityModelList = new List();
   ///TODO 按类别的商品List数组(即将使用）
-  List<CommodityTypesModel> _commodityModelLists = new List();
+  List<CommodityTypesModel> _commodityTypesModelLists = new List();
   // 颜色对象list
   List<CommodityColorModel> commodityColorModelList= new List();
   // 尺寸对象list
@@ -29,72 +25,60 @@ class CommodityAndCartProvide extends BaseProvide{
   String _mode = "single";
   // 是否全选
   bool _isSelected = false;
+  double _sum=0.00;
 
-  get commodityModel => _commodityModel;
   get addressModel => _addressModel;
-  get buyCommodityModelList => _buyCommodityModelList;
   get count => _count;
-  get commodityModelList => _commodityModelList;
-  get commodityModelLists =>_commodityModelLists;
+  List<CommodityTypesModel> get commodityTypesModelLists =>_commodityTypesModelLists;
   get mode => _mode;
   get isSelected => _isSelected;
+  get sum=>_sum;
 
-  // 缓存单个商品
-  void setCommodityModel(CommodityModel model){
-    _commodityModel = model;
+  set sum(double pay){
+    _sum = pay;
     notifyListeners();
   }
 
-  // 添加商品到订单详情中
-  void addBuyCommodityModelList(CommodityModel model){
-    _buyCommodityModelList = new List();
-    _buyCommodityModelList.add(model);
-    notifyListeners();
-  }
-
-  ///TODO 将商品添加到购物车list(即将废弃）
-  void addCommodityModelList(CommodityModel model){
-    _commodityModelList.add(model);
-    notifyListeners();
-  }
-
-  ///TODO 将商品添加到购物车list(即将使用）
-  void addCommodityModelLists(CommodityModel model){
-    // 初始化数据结构
-    if(_commodityModelLists.length==0){
-      for(var i=0;i<=1;i++){
-        CommodityTypesModel typesModel= new CommodityTypesModel();
-        if(i==0){
-          typesModel.types=CommodityCartTypes.exhibition.toString();
-        }else{
-          typesModel.types=CommodityCartTypes.commodity.toString();
-        }
-        _commodityModelLists.add(typesModel);
-      }
-      print(_commodityModelLists);
+  /// 购物车请求后将商品添加到购物车list
+  void addCarts(CommodityModels model){
+    String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+    model.isDisable = false;
+    if(_commodityTypesModelLists.length==0){
+      CommodityTypesModel typesModel = new CommodityTypesModel();
+      typesModel.types = types;
+      typesModel.commodityModelList = new List();
+      typesModel.commodityModelList.add(model);
+      _commodityTypesModelLists.add(typesModel);
     }else{
-      // 判断是否存在类别是否存在
-      for(CommodityTypesModel item in _commodityModelLists){
-        if(item.types==model.types){
-          if(item.commodityModelList==null){
-            item.commodityModelList = new List();
-          }
+      for(CommodityTypesModel item in _commodityTypesModelLists){
+        if(item.types==types){
           item.commodityModelList.add(model);
         }
       }
     }
-//    _commodityModelLists.add(model);
+    notifyListeners();
+  }
+
+  // 初始化数量
+  void setInitCount(){
+    _count = 1;
     notifyListeners();
   }
 
   // 增加
-  void increment({int idx, CommodityModel model}) {
+  void increment({int idx, CommodityModels model}) {
     if(_mode=="single"){
       _count ++;
     } else {
-      _commodityModelLists.forEach((item){
-        if(item.types == model.types ){
-          item.commodityModelList[idx].count ++;
+      String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+      _commodityTypesModelLists.forEach((item){
+        if(item.types == types ){
+          item.commodityModelList[idx].quantity ++;
+          if(item.commodityModelList[idx].isChecked){
+            _sum+=item.commodityModelList[idx].salesPrice;
+          }
+
+          this.reAndIcRequest(item,idx);
         }
       });
     }
@@ -102,18 +86,42 @@ class CommodityAndCartProvide extends BaseProvide{
   }
 
   // 减少
-  void reduce({int idx,CommodityModel model}) {
+  void reduce({int idx,CommodityModels model}) {
     if(_mode=="single"){
       if(_count>0 ){
         _count --;
       }
     } else {
-      _commodityModelLists.forEach((item){
-        if(item.types == model.types && item.commodityModelList[idx].count>0){
-          item.commodityModelList[idx].count --;
+      String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+      _commodityTypesModelLists.forEach((item){
+        if(item.types == types ){
+          item.commodityModelList[idx].quantity --;
+          if(item.commodityModelList[idx].isChecked){
+            _sum-=item.commodityModelList[idx].salesPrice;
+          }
+          if(item.commodityModelList[idx].quantity>0){
+            this.reAndIcRequest(item,idx);
+          }
         }
       });
     }
+    notifyListeners();
+  }
+
+  void reAndIcRequest(CommodityTypesModel item,int idx){
+    this.reAndIcCarts(item.commodityModelList[idx]).doOnListen((){}).doOnCancel((){})
+        .listen((res){
+
+    },onError: (e){});
+  }
+
+  void setQuantity(CommodityModels models,int idx){
+    String types = models.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+    _commodityTypesModelLists.forEach((item){
+      if(item.types==types){
+        item.commodityModelList[idx].quantity = 1;
+      }
+    });
     notifyListeners();
   }
 
@@ -124,16 +132,36 @@ class CommodityAndCartProvide extends BaseProvide{
   }
 
   // 是否选中
-  void setSelected(int idx,CommodityModel model,bool isSelected){
+  void setSelected(int idx,CommodityModels model,bool isSelected){
     bool isSel = true;
-    _commodityModelLists.forEach((item){
-      if(item.types == model.types ){
-        item.commodityModelList[idx].isSelected = !isSelected;
+    String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+    _commodityTypesModelLists.forEach((item){
+      if(item.types == types ){
+
+        //已选中的和现在选的进行对比，如果预售相同则选中，否则不可选
+        item.commodityModelList.forEach((res){
+          if(res.presale==model.presale){
+            res.isDisable = false;
+          }else{
+            res.isDisable = true;
+          }
+        });
+
+        item.commodityModelList[idx].isChecked = !isSelected;
+
+        double price =  (item.commodityModelList[idx].salesPrice * item.commodityModelList[idx].quantity).toDouble();
+        // 结算计算
+        if(item.commodityModelList[idx].isChecked){
+          _sum += price;
+        }else{
+          _sum -= price;
+        }
+      }else{
+
       }
 
       // 判断是否全选
-
-      isSel = item.commodityModelList.every((item)=>item.isSelected==true);
+      isSel = item.commodityModelList.every((item)=>item.isChecked==true);
     });
     _isSelected = isSel;
 //    _commodityModelList[idx].isSelected = !isSelected;
@@ -142,24 +170,53 @@ class CommodityAndCartProvide extends BaseProvide{
 
   // 所有选中的商品选中或取消
   void setValSelected(bool isSelected){
-    _commodityModelLists.forEach((item){
-      item.commodityModelList.forEach((items)=>items.isSelected=isSelected);
-    });
+    for(CommodityTypesModel item in _commodityTypesModelLists){
+      // 查找是否有选中项
+      List<CommodityModels> modelsList = item.commodityModelList.where((res)=>res.isChecked==true).toList();
+      print(modelsList);
+      if(modelsList.length==0){
+        CommodityModels models = item.commodityModelList[0];
+        this.selAllSum(item,models,isSelected);
+        break;
+      }else{
+        CommodityModels models = modelsList[0];
+        this.selAllSum(item,models,isSelected);
+        break;
+      }
+    }
+    if(!isSelected){
+      _sum -=_sum;
+    }
     notifyListeners();
+  }
+
+  void selAllSum(CommodityTypesModel item,CommodityModels models,bool isSelected){
+    String types = models.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+    if(item.types == types){
+      _sum = 0.00;
+      item.commodityModelList.forEach((items){
+        items.isChecked=isSelected;
+        double price =  (items.salesPrice * items.quantity).toDouble();
+        _sum +=price;
+      });
+    }
   }
 
   // 删除所选
   void onDelSelect(){
-    _commodityModelList.removeWhere((item)=>item.isSelected==true);
+    _commodityTypesModelLists.forEach((item){
+      item.commodityModelList.removeWhere((res)=>res.isChecked==true);
+    });
     notifyListeners();
   }
-  // 删除数量为0的商品
-  void onDelCountToZero({int idx,CommodityModel model,String mode="single"}){
+//  // 删除数量为0的商品
+  void onDelCountToZero({int idx,CommodityModels model,String mode="single"}){
+    String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
     if(mode=="single"){
-      _commodityModelList.removeAt(idx);
+//      _commodityModelList.removeAt(idx);
     }else{
-      _commodityModelLists.forEach((item){
-        if(item.types == model.types ){
+      _commodityTypesModelLists.forEach((item){
+        if(item.types == types ){
           item.commodityModelList.removeAt(idx);
         }
       });
@@ -185,6 +242,51 @@ class CommodityAndCartProvide extends BaseProvide{
   CommodityAndCartProvide._internal() {
     print('MainProvide初始化');
     // 初始化
+  }
+
+  final CommodityRepo _repo = CommodityRepo();
+
+  /// 详情数据
+  Observable addCartsRequest(CommodityModels model) {
+    return _repo.addCarts(model)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 购物车列表
+  Observable getMyCarts() {
+    return _repo.getMyCarts()
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 购物车加减
+  Observable reAndIcCarts(CommodityModels model) {
+    return _repo.reAndIcCarts(model)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+  /// 购物车删除
+  Observable removeCarts(CommodityModels model) {
+    return _repo.removeCarts(model)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
   }
 
 }

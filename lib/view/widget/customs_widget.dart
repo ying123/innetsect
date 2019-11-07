@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:rxdart/rxdart.dart';
 
 /// 自定义通用小部件类
 class CustomsWidget{
@@ -12,10 +12,11 @@ class CustomsWidget{
   Widget customRoundedWidget({
     @required isSelected,
     @required onSelectedCallback,
-    double iconSize = 25.0
+    double iconSize = 25.0,
+    bool isDisable = false
   }){
     return GestureDetector(
-      onTap: (){
+      onTap: isDisable?null:(){
         onSelectedCallback();
       },
       child: new Container(
@@ -35,7 +36,8 @@ class CustomsWidget{
     @required BuildContext context,
     String title,
     String content,
-    VoidCallback onPressed
+    VoidCallback onPressed,
+    VoidCallback onCancel
   }){
     return showDialog(
       context: context,
@@ -55,6 +57,7 @@ class CustomsWidget{
                   color:Colors.white,
                   textColor: Colors.blue,
                   onPressed: () {
+                    onCancel();
                     Navigator.of(context).pop();
                   },
                   child: new Text("取消"),
@@ -169,4 +172,13 @@ class CustomsWidget{
       centerTitle: centerTitle,
     );
   }
+
+  /// 显示提示
+  void showToast({
+    @required String title
+  }){
+    Fluttertoast.showToast(msg: title,gravity: ToastGravity.CENTER,
+      toastLength: Toast.LENGTH_SHORT,backgroundColor: Colors.black54,textColor: Colors.white);
+  }
+
 }
