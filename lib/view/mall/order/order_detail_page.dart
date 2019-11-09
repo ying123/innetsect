@@ -84,7 +84,7 @@ class _OrderContentState extends State<OrderContent> {
               bottom: 10,
               left: 20,
               right: 20,
-              child: this.payBtn()
+              child: widget._orderDetailProvide.orderDetailModel!=null?this.logisticsBtn():this.payBtn()
           )
         ],
       ),
@@ -115,6 +115,17 @@ class _OrderContentState extends State<OrderContent> {
       }
     });
 
+  }
+
+  /// 查询物流信息
+  Widget logisticsBtn(){
+    return  new RaisedButton(
+      color: AppConfig.fontBackColor,
+      textColor: Colors.white,
+      onPressed: (){
+        // 跳转物流信息
+      },child: new Text("物流信息"),
+    );
   }
 
   /// 支付按钮
