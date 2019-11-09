@@ -88,7 +88,9 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 
     _tabController = new TabController(length: mallTabBarList.length, vsync: this)
     ..addListener((){
-      this.pageNo = 1;
+      setState(() {
+        pageNo = 1;
+      });
       if(_tabController.index.toDouble() == _tabController.animation.value){
         switch(_tabController.index){
           case 0:
@@ -156,10 +158,13 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
           });
         },
         onLoad: () async{
+          setState(() {
+            pageNo+=1;
+          });
           await Future.delayed(Duration(seconds: 2), () {
             print('onLoad');
 
-            _loadList(pageNo: pageNo ++,types: types);
+            _loadList(pageNo: pageNo ,types: types);
 //                _easyController.finishLoad(noMore: _count >= 20);
           });
         },

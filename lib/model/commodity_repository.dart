@@ -40,6 +40,7 @@ class CommodityService {
       "skuPic":skuModel.skuPic,
       "quantity":counts,
       "unit": models.unit,
+      "prodCode": models.prodCode,
 //      "salesPrice":skuModel.salesPrice,
       "salesPrice":0.01,
       "allowPointRate":models.allowPointRate
@@ -140,6 +141,17 @@ class CommodityService {
       "skuCode": model.skuCode
     };
   }
+
+  /// 支付后的订单详情
+  Observable<BaseResponse> getOrderPayDetails ({@required int orderID,int payMode,int queryStatus}){
+    String url = '/api/eshop/salesorders/$orderID';
+    if(payMode!=null&&queryStatus!=null){
+      url +="?payMode=$payMode&queryStatus=$queryStatus";
+    }
+    var response = get(url);
+    return response;
+  }
+
 }
 
 
@@ -203,5 +215,9 @@ class CommodityRepo {
   /// 删除所选
   Observable<BaseResponse> removeCartsList (List<CommodityModels> model){
     return _remote.removeCartsList(model);
+  }
+  /// 支付后的订单详情
+  Observable<BaseResponse> getOrderPayDetails ({@required int orderID,int payMode,int queryStatus}){
+    return _remote.getOrderPayDetails(orderID:orderID,payMode:payMode,queryStatus:queryStatus);
   }
 }

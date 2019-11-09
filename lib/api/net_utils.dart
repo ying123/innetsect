@@ -65,28 +65,33 @@ Observable<BaseResponse> post(String url,
 Future<BaseResponse> _post(String url, dynamic body,
     {Map<String, dynamic> queryParameters,BuildContext context}) async {
   var response;
-  await HttpUtil()
-      .dio
-      .post(url, data: body, queryParameters: queryParameters).then((res){
-        if(res.data is Map){
-          response = BaseResponse.fromJson(res.data);
-        }else if(res.data is List){
-          response = BaseResponse.fromlist(res.data);
-        }
-    print('response _post:->$response');
-  }).catchError((error){
-    print(error);
+  try{
+    await HttpUtil()
+        .dio
+        .post(url, data: body, queryParameters: queryParameters).then((res){
+      if(res.data is Map){
+        response = BaseResponse.fromJson(res.data);
+      }else if(res.data is List){
+        response = BaseResponse.fromlist(res.data);
+      }
+      print('response _post:->$response');
+    }).catchError((error){
+      print(error);
 
-    if(error.response.data['path']=="/salesorders/shoppingorder/create"){
-      Future.delayed(Duration.zero,(){
-        Navigator.push(context, MaterialPageRoute(
-          builder: (BuildContext context){
-            return LoginPage();
-          },settings: RouteSettings(arguments: {'pages': 'orderDetail'})
-        ));
-      });
-    }
-  });
+      if(error.response.data['path']=="/salesorders/shoppingorder/create"){
+        Future.delayed(Duration.zero,(){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (BuildContext context){
+                return LoginPage();
+              },settings: RouteSettings(arguments: {'pages': 'orderDetail'})
+          ));
+        });
+      }
+    });
+  }on DioError catch(e){
+    print(e);
+  }
+
   //加json数据转换成BaseResponse实例
 //  var res = BaseResponse.fromJson(response.data);
   //  if (res.success == false) {

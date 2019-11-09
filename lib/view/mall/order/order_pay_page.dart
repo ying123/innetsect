@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/order/order_pay_result_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:provide/provide.dart';
-import 'package:tobias/tobias.dart' as tobias;
 
 class OrderPayPage extends PageProvideNode{
 
@@ -30,7 +31,6 @@ class OrderPayContent extends StatefulWidget {
 }
 
 class _OrderPayContentState extends State<OrderPayContent> {
-  int payTypes=2;
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -73,7 +73,7 @@ class _OrderPayContentState extends State<OrderPayContent> {
                             CustomsWidget().customRoundedWidget(isSelected: true,
                                 onSelectedCallback: (){
                                   // 点击回调
-                                  payTypes = 2;
+                                  widget._provide.setPayModel(2);
                                 })
                           ],
                         ),
@@ -109,8 +109,6 @@ class _OrderPayContentState extends State<OrderPayContent> {
                             color: AppConfig.primaryColor,
                             textColor: Colors.black,
                             onPressed: (){
-                              // 存储支付方式
-                              widget._provide.setPayTypes(payTypes);
                               // 提交付款
                               widget._provide.payShopping().doOnListen(() {
                                 print('doOnListen');
@@ -118,7 +116,19 @@ class _OrderPayContentState extends State<OrderPayContent> {
                                 ///加载数据
                                 print('listen data->$item');
                                 if(item.data!=null){
-                                  _callAlipay(item.data['orderString']);
+                                  PayUtils().aliPay(item.data['orderString']).then((result){
+                                    if(result['resultStatus']=="9000"){
+                                      widget._provide.resultStatus = true;
+                                      // 支付成功
+                                      Navigator.pushReplacement(context, MaterialPageRoute(
+                                        builder: (context){
+                                          return OrderPayResultPage();
+                                        }
+                                      ));
+                                    }else{
+                                      // 支付异常
+                                    }
+                                  });
                                 }
                               }, onError: (e) {});
 
@@ -135,10 +145,10 @@ class _OrderPayContentState extends State<OrderPayContent> {
     );
   }
 
-  _callAlipay(String orderInfo) async{
-    try{
-      Map map = await tobias.aliPay(orderInfo);
-      print(map);
-    }catch(e){}
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/enum/commodity_cart_types.dart';
@@ -170,29 +169,33 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
               onPressed: (){
                 // 检测本地是否存在token
                 if(!isLogin()){
-                  // 跳转订单详情
-                  _detailProvide.createShopping(_detailProvide.commodityModels,
-                      _detailProvide.skusModel,_cartProvide.count,context)
-                      .doOnListen(() {
-                    print('doOnListen');
-                  })
-                      .doOnCancel(() {})
-                      .listen((item) {
-                    ///加载数据,订单详情
-                    print('listen data->$item');
-                    if(item.data!=null){
-                      OrderDetailModel model = OrderDetailModel.fromJson(item.data);
-                      _orderDetailProvide.orderDetailModel = model;
-                    }
-                    Navigator.push(context, new MaterialPageRoute(
-                        builder: (context){
-                          return new OrderDetailPage();
-                        })
-                    );
-                    //      _provide
-                  }, onError: (e) {
-                    print(e);
-                  });
+                  if(_detailProvide.skusModel.qtyInHand ==0){
+                    CustomsWidget().showToast(title: "没有库存");
+                  }else{
+                    // 跳转订单详情
+                    _detailProvide.createShopping(_detailProvide.commodityModels,
+                        _detailProvide.skusModel,_cartProvide.count,context)
+                        .doOnListen(() {
+                      print('doOnListen');
+                    })
+                        .doOnCancel(() {})
+                        .listen((item) {
+                      ///加载数据,订单详情
+                      print('listen data->$item');
+                      if(item.data!=null){
+                        OrderDetailModel model = OrderDetailModel.fromJson(item.data);
+                        _orderDetailProvide.orderDetailModel = model;
+                      }
+                      Navigator.push(context, new MaterialPageRoute(
+                          builder: (context){
+                            return new OrderDetailPage();
+                          })
+                      );
+                      //      _provide
+                    }, onError: (e) {
+                      print(e);
+                    });
+                  }
                 }
               },
               child: new Text("立即购买",style: TextStyle(

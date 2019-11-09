@@ -14,6 +14,8 @@ class CommoditySkusModel{
   List<CommodityPicModel> pics;
   List<CommodityFeatureModel> features;
   bool isSelected = false;
+  // 库存
+  int qtyInHand;
 
   CommoditySkusModel({
     this.prodID,
@@ -27,7 +29,8 @@ class CommoditySkusModel{
     this.status,
     this.pics,
     this.features,
-    this.isSelected
+    this.isSelected,
+    this.qtyInHand
   });
 
   factory CommoditySkusModel.fromJson(Map<String,dynamic> json){
@@ -43,7 +46,8 @@ class CommoditySkusModel{
         status: json['status'],
         pics: CommodityPicList.fromJson(json['pics']).list,
         features: CommodityFeatureList.fromJson(json['features']).list,
-        isSelected: json['isSelected']
+        isSelected: json['isSelected'],
+        qtyInHand: json['qtyInHand']
     );
   }
 
@@ -59,7 +63,8 @@ class CommoditySkusModel{
     'status': status,
     'pics': pics.map((item)=>item.toJson()),
     'features': features.map((item)=>item.toJson()),
-    'isSelected': isSelected
+    'isSelected': isSelected,
+    'qtyInHand': qtyInHand
   };
 
 }

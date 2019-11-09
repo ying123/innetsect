@@ -101,15 +101,16 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                         child: Image.network(item.skuPic,fit: BoxFit.fill,),
                       ),
                       new Expanded(
-                          flex:1,
-                          child: new Container(
-                            color: Colors.white,
-                            child: new Text(item.skuName,softWrap: true,
-                              style: TextStyle(
-                                  fontSize: ScreenAdapter.size(32)
-                              ),
+                        flex:1,
+                        child: new Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.only(left: 10),
+                          child: new Text(this.getName(item.features),softWrap: true,
+                            style: TextStyle(
+                                fontSize: ScreenAdapter.size(32)
                             ),
                           )
+                        ),
                       ),
                     ],
                   ),
@@ -120,6 +121,16 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
         );
       },
     );
+  }
+  
+  String getName(List<CommodityFeatureModel> res){
+    String str ;
+    res.forEach((item){
+      if(item.featureGroup=="颜色"){
+        str = item.featureValue;
+      }
+    });
+    return str;
   }
 
   /// 下半部分，尺寸的选择

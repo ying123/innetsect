@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -54,54 +55,36 @@ class _OrderContentState extends State<OrderContent> {
       ),
       body: new Stack(
         children: <Widget>[
-          new Container(
-            width: double.infinity,
-            color: Colors.white,
-            height: ScreenAdapter.getScreenHeight(),
-            child: new Column(
-              children: <Widget>[
-                // 地址栏
-                _addressWidget(),
-                // 订单详情
-                _orderDetailWidget(),
-                new Divider(height: ScreenAdapter.height(20),indent:12,endIndent:12,color: Colors.grey,),
-                // 商品总价
-                _orderCountWidget(),
-                new Divider(height: ScreenAdapter.height(20),indent:12,endIndent:12,color: Colors.grey,),
-                // 底部
-                _orderBottomWidget()
-              ],
-            ),
+          new Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: new Container(
+                width: double.infinity,
+                height: ScreenAdapter.getScreenHeight()-140,
+                color: Colors.white,
+                child: new ListView(
+                  children: <Widget>[
+                    // 地址栏
+                    _addressWidget(),
+                    // 订单详情
+                    _orderDetailWidget(),
+                    new Divider(height: ScreenAdapter.height(20),indent:12,endIndent:12,color: Colors.grey,),
+                    // 商品总价
+                    _orderCountWidget(),
+                    new Divider(height: ScreenAdapter.height(20),indent:12,endIndent:12,color: Colors.grey,),
+                    // 底部
+                    _orderBottomWidget(),
+                    widget._orderDetailProvide.orderDetailModel!=null? this._orderNoWidget() :new Container(),
+                  ],
+                ),
+              ),
           ),
           new Positioned(
-              bottom: 0,
+              bottom: 10,
               left: 20,
               right: 20,
-              child: new RaisedButton(
-                color: AppConfig.primaryColor,
-                textColor: AppConfig.fontBackColor,
-                onPressed: (){
-
-                  //提交订单
-                  widget._detailProvide.submitShopping(widget._orderDetailProvide.orderDetailModel.addressID)
-                      .doOnListen(() {
-                  print('doOnListen');
-                  })
-                      .doOnCancel(() {})
-                      .listen((item) {
-                    print('listen data->$item');
-                    if(item.data!=null){
-                      ///加载数据，存储订单号
-                      widget._detailProvide.setOrderId(item.data['orderID']);
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context){
-                            return OrderPayPage();
-                          },
-                      ));
-                    }
-                  }, onError: (e) {});
-                },child: new Text("支付"),
-              )
+              child: this.payBtn()
           )
         ],
       ),
@@ -114,8 +97,54 @@ class _OrderContentState extends State<OrderContent> {
     super.initState();
     _orderDetailProvide = widget._orderDetailProvide;
 
-//    _loadData();
+    Future.delayed(Duration.zero,(){
+      Map<dynamic,dynamic> map = ModalRoute.of(context).settings.arguments;
+      if(map['orderID']!=null){
+        /// 订单详情请求
+        widget._detailProvide.getOrderPayDetails(
+          orderID: map['orderID'],
+        ).doOnListen(() {
+          print('doOnListen');
+        }).doOnCancel(() {}).listen((items) {
+          ///加载数据
+          print('listen data->$items');
+          if(items.data!=null){
+            widget._orderDetailProvide.orderDetailModel = OrderDetailModel.fromJson(items.data);
+          }
+        }, onError: (e) {});
+      }
+    });
 
+  }
+
+  /// 支付按钮
+  Widget payBtn(){
+    return  new RaisedButton(
+      color: AppConfig.primaryColor,
+      textColor: AppConfig.fontBackColor,
+      onPressed: (){
+        //提交订单
+        widget._detailProvide.submitShopping(widget._orderDetailProvide.orderDetailModel.addressID)
+            .doOnListen(() {
+          print('doOnListen');
+        })
+            .doOnCancel(() {})
+            .listen((item) {
+          print('listen data->$item');
+          if(item.data!=null){
+            ///默认支付宝
+            widget._detailProvide.setPayModel(2);
+            ///加载数据，存储订单号
+            widget._detailProvide.setOrderId(item.data['orderID']);
+            Navigator.push(context, MaterialPageRoute(
+              builder: (context){
+                return OrderPayPage();
+              },
+            ));
+          }
+        }, onError: (e) {});
+      },child: new Text("支付"),
+    );
   }
 
   /// 地址栏
@@ -136,72 +165,92 @@ class _OrderContentState extends State<OrderContent> {
                       flex:9,
                       child:  new InkWell(
                         onTap: (){
-                          // 点击跳转地址管理页面
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (BuildContext context){
-                              return AddressManagementPage();
-                            },
-                            settings: RouteSettings(arguments: {'pages': 'orderDetail'})
-                          ));
+                          if(model.addressModel!=null){
+                            // 点击跳转地址管理页面
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (BuildContext context){
+                                  return AddressManagementPage();
+                                },
+                                settings: RouteSettings(arguments: {'pages': 'orderDetail'})
+                            ));
+                          } else {
+                            return null;
+                          }
                         },
                         child: new Container(
                           width: double.infinity,
                           padding: EdgeInsets.all(10),
                           child:  model.addressModel!=null?
-                          new Column(
-                            children: <Widget>[
-                              new Container(
-                                width: double.infinity,
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Expanded(
-                                      flex:2,
-                                      child: new Padding(
-                                        padding: EdgeInsets.only(left: 10),
-                                        child: new Row(
-                                          children: <Widget>[
-                                            new Image.asset("assets/images/mall/location.png",fit: BoxFit.fill,width: ScreenAdapter.width(25),),
-                                            new Padding(padding: EdgeInsets.only(left: 5),
-                                            child: new Text("收货人: ${model.addressModel.name}",maxLines: 1,),)
-                                          ],
-                                        ),
-                                      )
-                                    ),
-                                    new Expanded(
-                                      flex:1,
-                                      child: new Container(
-                                        alignment: Alignment.centerRight,
-                                        child: new Text(model.addressModel.tel),
-                                      ))
-                                  ],
-                                ),
-                              ),
-
-                            ],
-                          ) :_addAddress(),
+                            this.getAddressWidget(name: model.addressModel.name,tel: model.addressModel.tel)
+                            :model.tel!=null?this.getAddressWidget(name: model.receipient,tel: model.tel):_addAddress(),
                         ),
                       )
                     ),
-                    new Expanded(
+                    model.addressModel!=null?new Expanded(
                       flex:1,
                       child: new Container(
                         alignment: Alignment.topLeft,
                         child: new Icon(Icons.chevron_right,color: AppConfig.fontBackColor,),
                       )
-                    )
+                    ):new Container()
                   ],
                 ),
               ),
-              model.addressModel==null?new Container():new Container(
-                width: double.infinity,
-                padding: EdgeInsets.only(left: 40,bottom: 10),
-                child:  new Text(model.addressModel.province+model.addressModel.city+model.addressModel.addressDetail,
-                  style: TextStyle(color: Colors.grey),),
-              )
+              model.addressModel==null?model.shipTo!=null?
+                this.getAddressDetailWidget(addressDetail: model.shipTo)
+                  : new Container()
+                    : this.getAddressDetailWidget(
+                      province: model.addressModel.province,
+                      city: model.addressModel.city,
+                      addressDetail: model.addressModel.addressDetail
+                    )
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget getAddressDetailWidget({String province="",String city="",String addressDetail}){
+    return new Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(left: 40,bottom: 10),
+      child:  new Text(province+city+addressDetail,
+        style: TextStyle(color: Colors.grey),),
+    );
+  }
+
+  Widget getAddressWidget({String name,String tel}){
+    return new Column(
+      children: <Widget>[
+        new Container(
+          width: double.infinity,
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                  flex:2,
+                  child: new Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: new Row(
+                      children: <Widget>[
+                        new Image.asset("assets/images/mall/location.png",fit: BoxFit.fill,width: ScreenAdapter.width(25),),
+                        new Padding(padding: EdgeInsets.only(left: 5),
+                          child: new Text("收货人: $name",maxLines: 1,),)
+                      ],
+                    ),
+                  )
+              ),
+              new Expanded(
+                  flex:1,
+                  child: new Container(
+                    alignment: Alignment.centerRight,
+                    child: new Text(tel),
+                  ))
+            ],
+          ),
+        ),
+
+      ],
     );
   }
 
@@ -386,6 +435,107 @@ class _OrderContentState extends State<OrderContent> {
     });
   }
 
+  /// 订单详情底部订单号等信息
+  Provide<OrderDetailProvide> _orderNoWidget() {
+    return Provide<OrderDetailProvide>(
+        builder: (BuildContext context, Widget widget,
+            OrderDetailProvide provide) {
+          OrderDetailModel model = provide.orderDetailModel;
+          return new Container(
+            width: double.infinity,
+            padding: EdgeInsets.only(left:10,right:20,top: 5),
+            child: new Column(
+              children: <Widget>[
+                new Divider(height: ScreenAdapter.height(20),color: Colors.grey,),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("支付方式:"),
+                    new Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: new Row(
+                        children: <Widget>[
+                          new Text(PayUtils().payMode(model.payMode)),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("支付时间:"),
+                    new Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: new Row(
+                        children: <Widget>[
+                          new Text(model.payDate),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("发货状态:"),
+                    new Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: new Row(
+                        children: <Widget>[
+                          new Text(PayUtils().deliverMode(model.syncStatus)),
+                        ],
+                      ),
+                    )
+                  ],
+                ),new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("订单编号:"),
+                    new Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: new Row(
+                        children: <Widget>[
+                          new Text(model.orderNo),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("下单时间:"),
+                    new Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: new Row(
+                        children: <Widget>[
+                          new Text(model.orderDate),
+                        ],
+                      ),
+                    )
+                  ],
+                ),new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("下单备注:"),
+                    new Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: new Row(
+                        children: <Widget>[
+                          new Text(model.remark==null?"":model.remark),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+    );
+  }
+
   /// 添加购物车地址
   Widget _addAddress(){
     return new Row(
@@ -399,34 +549,6 @@ class _OrderContentState extends State<OrderContent> {
         )
       ],
     );
-  }
-
-  /// 加载数据
-  _loadData(){
-    Future.delayed(Duration.zero,(){
-//      if(UserTools().getUserData()!=null){
-          widget._detailProvide.createShopping(widget._detailProvide.commodityModels,
-              widget._detailProvide.skusModel,widget._provide.count,context)
-              .doOnListen(() {
-            print('doOnListen');
-          })
-              .doOnCancel(() {})
-              .listen((item) {
-            ///加载数据
-            print('listen data->$item');
-            //      _provide
-          }, onError: (e) {
-            print(e);
-          });
-//      }else{
-//        // 跳转登录页面
-//          Navigator.push(context, MaterialPageRoute(
-//            builder: (context){
-//              return new LoginPage();
-//            },settings: RouteSettings(arguments: {'pages': 'orderDetail'})
-//          ));
-//      }
-    });
   }
 
   String getType(int types){

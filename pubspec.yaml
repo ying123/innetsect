@@ -221,7 +221,10 @@ flutter:
     - assets/images/mall/find.png
     # 下拉刷新图---
     - assets/images/mall/fresh.png
-    # ---
+    # ---支付成功、失败--
+    - assets/images/mall/pay_success.png
+    - assets/images/mall/pay_fail.png
+    # ----
     - assets/images/mall/del.png
     - assets/images/mall/edit.png
     - assets/images/mall/share.png

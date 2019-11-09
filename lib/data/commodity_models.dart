@@ -47,6 +47,18 @@ class CommodityModels{
   String skuCode;
   String skuName;
   String skuPic;
+  // 订单备注
+  String remark;
+  // 订单编号
+  String orderNo;
+  // 发货状态
+  int syncStatus;
+  //支付时间
+  String payDate;
+  // 支付方式
+  int payMode;
+  // 下单时间
+  String orderDate;
   dynamic originalPrice;
   //数量
   int quantity;
@@ -91,6 +103,12 @@ class CommodityModels{
     this.prodCode,
     this.originalPrice,
     this.isDisable,
+    this.payMode,
+    this.payDate,
+    this.syncStatus,
+    this.orderNo,
+    this.orderDate,
+    this.remark
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -127,6 +145,12 @@ class CommodityModels{
         prodCode: json['prodCode'],
         originalPrice: json['originalPrice'],
         isDisable: json['isDisable'],
+        payMode: json['payMode'],
+        payDate: json['payDate'],
+        syncStatus: json['syncStatus'],
+        orderNo: json['orderNo'],
+        orderDate: json['orderDate'],
+        remark: json['remark']
     );
   }
 
@@ -154,7 +178,13 @@ class CommodityModels{
     'prodType': prodType,
     'prodCode': prodCode,
     'originalPrice': originalPrice,
-    'isDisable':isDisable,
+    'isDisable': isDisable,
+    'payMode': payMode,
+    'payDate': payDate,
+    'syncStatus': syncStatus,
+    'orderNo': orderNo,
+    'orderDate': orderDate,
+    'remark': remark
   };
 
 }

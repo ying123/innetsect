@@ -19,10 +19,10 @@ class CommodityDetailProvide extends BaseProvide {
   int _index=0;
   /// 订单号
   int _orderId;
-  /// 支付类型
-  int _payTypes;
   /// 是否立即购买
   bool _isBuy;
+  /// 支付状态
+  bool _resultStatus = false;
 
   CommodityModels get commodityModels => _commodityModels;
 
@@ -30,13 +30,25 @@ class CommodityDetailProvide extends BaseProvide {
 
   List<CommoditySkusModel> get skusList => _skusList;
 
-  get index=>_index;
-  get orderId=>_orderId;
-  get payTypes=>_payTypes;
+  int get index=>_index;
+  int get orderId=>_orderId;
   bool get isBuy=>_isBuy;
+  bool get resultStatus=>_resultStatus;
 
   set isBuy(bool flag){
     _isBuy = flag;
+    notifyListeners();
+  }
+
+  set resultStatus(bool success){
+    _resultStatus = success;
+    notifyListeners();
+  }
+
+  // 设置支付类型
+  void setPayModel(int payModel){
+    CommodityModels models = _commodityModels;
+    models.payMode = payModel;
     notifyListeners();
   }
 
@@ -61,6 +73,7 @@ class CommodityDetailProvide extends BaseProvide {
 
   // 初始化数据
   void setInitData(){
+    if(_orderId!=null) _orderId = null;
     if(_skusList.length>0)_skusList.clear();
     // 获取选中size
     String code="";
@@ -149,12 +162,6 @@ class CommodityDetailProvide extends BaseProvide {
     notifyListeners();
   }
 
-  // 设置支付类型
-  void setPayTypes(int payTypes){
-    _payTypes = payTypes;
-    notifyListeners();
-  }
-
   final CommodityRepo _repo = CommodityRepo();
 
   /// 详情数据
@@ -175,9 +182,11 @@ class CommodityDetailProvide extends BaseProvide {
     return _repo
         .createShopping(models,skuModel,counts, context)
         .doOnData((result) {
-
+      print(result);
     })
-        .doOnError((e, stacktrace) {})
+        .doOnError((e, stacktrace) {
+          print(e);
+    })
         .doOnListen(() {})
         .doOnDone(() {});
   }
@@ -196,7 +205,7 @@ class CommodityDetailProvide extends BaseProvide {
 
   /// 支付订单
   Observable payShopping() {
-    return _repo.payShopping(_orderId,_payTypes)
+    return _repo.payShopping(_orderId,_commodityModels.payMode)
         .doOnData((result) {
 
     })
@@ -208,6 +217,14 @@ class CommodityDetailProvide extends BaseProvide {
   /// 商品推荐
   Observable recommendedListData(int pageNo,int types,int prodID){
     return _repo.recommendedListData(pageNo, types, prodID).doOnData((res){
+    }).doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 支付后商品详情
+  Observable getOrderPayDetails({@required int orderID,int payMode,int queryStatus}){
+    return _repo.getOrderPayDetails(orderID:orderID, payMode:payMode, queryStatus:queryStatus).doOnData((res){
     }).doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});

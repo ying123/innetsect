@@ -5,32 +5,44 @@ import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/enum/order_status.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/my/all/all_provide.dart';
 import 'package:provide/provide.dart';
 
 class AllPage extends PageProvideNode{
-  final AllProvide _provide = AllProvide();
+  final AllProvide _provide = AllProvide.instance;
+  final OrderDetailProvide _detailProvide = OrderDetailProvide.instance;
+  final CommodityDetailProvide _commodityDetailProvide = CommodityDetailProvide();
   AllPage(){
-    mProviders.provide(Provider.value(_provide));
+    mProviders.provide(Provider<AllProvide>.value(_provide));
+    mProviders.provide(Provider<OrderDetailProvide>.value(_detailProvide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_commodityDetailProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
    
-    return AllContentPage(_provide);
+    return AllContentPage(_provide,_detailProvide,_commodityDetailProvide);
   }
 }
 
 class AllContentPage extends StatefulWidget {
   final AllProvide _provide;
-  AllContentPage(this._provide);
+  final OrderDetailProvide _detailProvide;
+  final CommodityDetailProvide _commodityDetailProvide;
+  AllContentPage(this._provide,this._detailProvide,this._commodityDetailProvide);
   @override
   _AllContentPageState createState() => _AllContentPageState();
 }
 
 class _AllContentPageState extends State<AllContentPage> {
   AllProvide _provide;
+  OrderDetailProvide _detailProvide;
+  CommodityDetailProvide _commodityDetailProvide;
+
   int pageNo=1;
   @override
   Widget build(BuildContext context) {
@@ -52,30 +64,41 @@ class _AllContentPageState extends State<AllContentPage> {
               // 数据内容
               SliverList(
                 delegate: SliverChildListDelegate(_provide.orderDetailList.map((item){
-                  return new Container(
-                    color: Colors.white,
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.only(top: 10,left: 10,right: 10),
-                    child: new Column(
-                      children: <Widget>[
-                        new Container(
-                          child: new Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              new Text('订单号: ${item.orderNo}'),
-                              new Text(OrderStatusEnum().getStatusTitle(item.status))
-                            ],
+                  return new InkWell(
+                    onTap: () {
+                      /// 订单详情请求
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context){
+                            return OrderDetailPage();
+                          },
+                          settings: RouteSettings(arguments: {"orderID": item.orderID})
+                      ));
+                    },
+                    child: new Container(
+                      color: Colors.white,
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.only(top: 10,left: 10,right: 10),
+                      child: new Column(
+                        children: <Widget>[
+                          new Container(
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                new Text('订单号: ${item.orderNo}'),
+                                new Text(OrderStatusEnum().getStatusTitle(item.status))
+                              ],
+                            ),
                           ),
-                        ),
-                        // 商品展示
-                        _commodityContent(item),
-                        new Divider(height: 1,color: AppConfig.assistLineColor,),
-                        //底部操作按钮
-                        new Container(
-                          padding:EdgeInsets.only(bottom: 10,top: 10),
-                          child: _bottomAction(item.status),
-                        )
-                      ],
+                          // 商品展示
+                          _commodityContent(item),
+                          new Divider(height: 1,color: AppConfig.assistLineColor,),
+                          //底部操作按钮
+                          new Container(
+                            padding:EdgeInsets.only(bottom: 10,top: 10),
+                            child: _bottomAction(item.status),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 }).toList()),
@@ -91,6 +114,8 @@ class _AllContentPageState extends State<AllContentPage> {
     // TODO: implement initState
     super.initState();
     _provide ??= widget._provide;
+    _detailProvide??=widget._detailProvide;
+    _commodityDetailProvide??=_commodityDetailProvide;
     _listData(pageNo: pageNo,isReload: true);
   }
 
