@@ -27,29 +27,8 @@ class CommodityService {
   }
 
   /// 立即下单
-  Observable<BaseResponse> createShopping(CommodityModels models,
-      CommoditySkusModel skuModel,int counts,BuildContext context){
+  Observable<BaseResponse> createShopping(List json,BuildContext context){
     var url = '/api/eshop/salesorders/shoppingorder/create';
-    List json = [{
-      "acctID": UserTools().getUserData()['id'],
-      "shopID":models.shopID,
-      "prodID":models.prodID,
-      "presale":models.presale,
-      "skuCode":skuModel.skuCode,
-      "skuName":skuModel.skuName,
-      "skuPic":skuModel.skuPic,
-      "quantity":counts,
-      "unit": models.unit,
-      "prodCode": models.prodCode,
-//      "salesPrice":skuModel.salesPrice,
-      "salesPrice":0.01,
-      "allowPointRate":models.allowPointRate
-//      discountPrice
-//      discountDesc
-//      promotionID
-//      remark
-    }];
-    print(json);
     var response = post(url,body: json,context: context);
     return response;
   }
@@ -176,9 +155,8 @@ class CommodityRepo {
   }
 
   /// 立即下单
-  Observable<BaseResponse> createShopping(CommodityModels models,
-      CommoditySkusModel skuModel,int counts,BuildContext context){
-    return _remote.createShopping(models,skuModel,counts,context);
+  Observable<BaseResponse> createShopping(List json,BuildContext context){
+    return _remote.createShopping(json,context);
   }
 
   /// 提交订单

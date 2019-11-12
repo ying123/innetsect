@@ -173,8 +173,21 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                     CustomsWidget().showToast(title: "没有库存");
                   }else{
                     // 跳转订单详情
-                    _detailProvide.createShopping(_detailProvide.commodityModels,
-                        _detailProvide.skusModel,_cartProvide.count,context)
+                    List json = [{
+                      "acctID": UserTools().getUserData()['id'],
+                      "shopID":_detailProvide.commodityModels.shopID,
+                      "prodID":_detailProvide.commodityModels.prodID,
+                      "presale":_detailProvide.commodityModels.presale,
+                      "skuCode":_detailProvide.skusModel.skuCode,
+                      "skuName":_detailProvide.skusModel.skuName,
+                      "skuPic":_detailProvide.skusModel.skuPic,
+                      "quantity":_cartProvide.count,
+                      "unit": _detailProvide.commodityModels.unit,
+                      "prodCode": _detailProvide.commodityModels.prodCode,
+                      "salesPrice":0.01,
+                      "allowPointRate":_detailProvide.commodityModels.allowPointRate
+                    }];
+                    _detailProvide.createShopping(json,context)
                         .doOnListen(() {
                       print('doOnListen');
                     })

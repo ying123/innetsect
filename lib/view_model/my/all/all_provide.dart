@@ -18,6 +18,15 @@ class  AllProvide  extends BaseProvide{
     notifyListeners();
   }
 
+  void delDetailList(int orderID){
+    _orderDetailList.asMap().keys.forEach((keys){
+      if(orderID==_orderDetailList[keys].orderID){
+        _orderDetailList.remove(_orderDetailList[keys]);
+      }
+    });
+    notifyListeners();
+  }
+
   void addOrderList(List<OrderDetailModel> list){
     _orderDetailList..addAll(list);
     notifyListeners();
@@ -26,12 +35,22 @@ class  AllProvide  extends BaseProvide{
   final AllOrderRepo _repo = AllOrderRepo();
 
   ///获取订单全部列表
-  Observable getOrderList({int pageNo,bool isReload = false}){
+  Observable getOrderList({bool isReload = false,String method}){
     if(isReload) _orderDetailList.clear();
-    return _repo.listData(pageNo).doOnData((result){})
+    return _repo.listData(method).doOnData((result){})
         .doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
+  }
+
+  /// 取消订单
+  Future cancelOrder(int orderID) {
+    return _repo.cancelOrder(orderID);
+  }
+
+  /// 删除订单
+  Future delOrder(int orderID){
+    return _repo.delOrder(orderID);
   }
 
   ///工厂模式

@@ -290,7 +290,7 @@ class _LoginContentPageState extends State<LoginContentPage> {
                 .listen((item) {
               print('listen data->$item');
               ///加载数据
-              if(item.data!=null){
+              if(item!=null&&item.data!=null){
                 /// 获取用户信息
                 provide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
                   if(userItem.data!=null){

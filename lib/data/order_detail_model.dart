@@ -12,6 +12,10 @@ class OrderDetailModel{
   int orderType;
   // 订单编号
   String orderNo;
+  // 快递编码
+  String shipperCode;
+  // 物流单号
+  String waybillNo;
   // 账户id
   int acctID;
   // 账户名称
@@ -68,6 +72,8 @@ class OrderDetailModel{
   String remark;
   // 发货状态，按3来判断是否发货
   int syncStatus;
+  // 配送方式
+  String shipperName;
   // 订单状态
   int status;
 
@@ -109,7 +115,10 @@ class OrderDetailModel{
     this.totalDeposit,
     this.totalDiscount,
     this.skuModels,
-    this.status
+    this.status,
+    this.shipperName,
+    this.shipperCode,
+    this.waybillNo
   });
 
   factory OrderDetailModel.fromJson(Map<String,dynamic> json) {
@@ -148,7 +157,10 @@ class OrderDetailModel{
         totalDeposit: json['totalDeposit'],
         totalDiscount: json['totalDiscount'],
         skuModels: json['items']!=null?CommodityList.fromJson(json['items']).list:null,
-        status: json['status']
+        status: json['status'],
+        shipperName: json['shipperName'],
+        shipperCode: json['shipperCode'],
+        waybillNo: json['waybillNo']
     );
   }
 

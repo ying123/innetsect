@@ -53,7 +53,7 @@ class PayUtils{
 
   /// 发货状态
   String deliverMode(int mode){
-    String str;
+    String str="已发货";
     if(mode<3){
       str = "未发货";
     }

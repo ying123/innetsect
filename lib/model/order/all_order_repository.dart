@@ -6,10 +6,21 @@ import 'package:rxdart/rxdart.dart';
 class AllOrderService {
 
   /// 全部列表
-  Observable<BaseResponse> listData (int pageNo){
-    var url = '/api/eshop/salesorders/list?pageNo=$pageNo&pageSize=8';
-    var response = get(url);
+  Observable<BaseResponse> listData (String method){
+    var response = get(method);
     return response;
+  }
+
+  /// 取消订单
+  Future cancelOrder (int orderID){
+    var url = '/api/eshop/salesorders/cancel/$orderID';
+    return patch(url);
+  }
+
+  /// 删除订单
+  Future delOrder(int orderID){
+    var url = '/api/eshop/salesorders/$orderID';
+    return delete(url);
   }
 }
 
@@ -18,7 +29,17 @@ class AllOrderRepo {
   final AllOrderService _remote = AllOrderService();
 
   /// banner请求
-  Observable<BaseResponse> listData(int pageNo){
-    return _remote.listData(pageNo);
+  Observable<BaseResponse> listData(String method){
+    return _remote.listData(method);
+  }
+
+  /// 取消订单
+  Future cancelOrder(int orderID){
+    return _remote.cancelOrder(orderID);
+  }
+
+  /// 删除订单
+  Future delOrder(int orderID){
+    return _remote.delOrder(orderID);
   }
 }

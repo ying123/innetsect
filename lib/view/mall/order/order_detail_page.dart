@@ -49,8 +49,7 @@ class _OrderContentState extends State<OrderContent> {
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
         widget: new Text("订单详情",style: TextStyle(fontSize: ScreenAdapter.size((30)),
-          fontWeight: FontWeight.w900
-          ),
+          fontWeight: FontWeight.w900 ),
         )
       ),
       body: new Stack(
@@ -62,20 +61,19 @@ class _OrderContentState extends State<OrderContent> {
               child: new Container(
                 width: double.infinity,
                 height: ScreenAdapter.getScreenHeight()-140,
-                color: Colors.white,
+                color: AppConfig.assistLineColor,
                 child: new ListView(
                   children: <Widget>[
                     // 地址栏
                     _addressWidget(),
                     // 订单详情
                     _orderDetailWidget(),
-                    new Divider(height: ScreenAdapter.height(20),indent:12,endIndent:12,color: Colors.grey,),
                     // 商品总价
                     _orderCountWidget(),
-                    new Divider(height: ScreenAdapter.height(20),indent:12,endIndent:12,color: Colors.grey,),
                     // 底部
                     _orderBottomWidget(),
-                    widget._orderDetailProvide.orderDetailModel!=null? this._orderNoWidget() :new Container(),
+                    // 已支付订单显示
+                    this._orderNoWidget(),
                   ],
                 ),
               ),
@@ -84,7 +82,15 @@ class _OrderContentState extends State<OrderContent> {
               bottom: 10,
               left: 20,
               right: 20,
-              child: widget._orderDetailProvide.orderDetailModel!=null?this.logisticsBtn():this.payBtn()
+              child: Provide<OrderDetailProvide>(
+                  builder: (BuildContext context,Widget widget, OrderDetailProvide provide){
+                    if(provide.orderDetailModel!=null&&provide.orderDetailModel.status==0){
+                      return this.payBtn();
+                    }else {
+                      return this.logisticsBtn();
+                    }
+                  }
+              )
           )
         ],
       ),
@@ -99,7 +105,7 @@ class _OrderContentState extends State<OrderContent> {
 
     Future.delayed(Duration.zero,(){
       Map<dynamic,dynamic> map = ModalRoute.of(context).settings.arguments;
-      if(map['orderID']!=null){
+      if(map!=null&&map['orderID']!=null){
         /// 订单详情请求
         widget._detailProvide.getOrderPayDetails(
           orderID: map['orderID'],
@@ -108,7 +114,7 @@ class _OrderContentState extends State<OrderContent> {
         }).doOnCancel(() {}).listen((items) {
           ///加载数据
           print('listen data->$items');
-          if(items.data!=null){
+          if(items!=null&&items.data!=null){
             widget._orderDetailProvide.orderDetailModel = OrderDetailModel.fromJson(items.data);
           }
         }, onError: (e) {});
@@ -142,7 +148,7 @@ class _OrderContentState extends State<OrderContent> {
             .doOnCancel(() {})
             .listen((item) {
           print('listen data->$item');
-          if(item.data!=null){
+          if(item!=null&&item.data!=null){
             ///默认支付宝
             widget._detailProvide.setPayModel(2);
             ///加载数据，存储订单号
@@ -191,13 +197,11 @@ class _OrderContentState extends State<OrderContent> {
                         child: new Container(
                           width: double.infinity,
                           padding: EdgeInsets.all(10),
-                          child:  model.addressModel!=null?
-                            this.getAddressWidget(name: model.addressModel.name,tel: model.addressModel.tel)
-                            :model.tel!=null?this.getAddressWidget(name: model.receipient,tel: model.tel):_addAddress(),
+                          child:  this.getAddress(model),
                         ),
                       )
                     ),
-                    model.addressModel!=null?new Expanded(
+                    model!=null&&model.addressModel!=null?new Expanded(
                       flex:1,
                       child: new Container(
                         alignment: Alignment.topLeft,
@@ -207,6 +211,7 @@ class _OrderContentState extends State<OrderContent> {
                   ],
                 ),
               ),
+              model==null?new Container():
               model.addressModel==null?model.shipTo!=null?
                 this.getAddressDetailWidget(addressDetail: model.shipTo)
                   : new Container()
@@ -220,6 +225,19 @@ class _OrderContentState extends State<OrderContent> {
         );
       },
     );
+  }
+
+  Widget getAddress(OrderDetailModel model){
+    Widget widget;
+    if(model==null) return new Container();
+    if(model.addressModel!=null){
+      widget = this.getAddressWidget(name: model.addressModel.name,tel: model.addressModel.tel);
+    }else if(model.tel!=null){
+      widget = this.getAddressWidget(name: model.receipient,tel: model.tel);
+    }else {
+      widget = _addAddress();
+    }
+    return widget;
   }
 
   Widget getAddressDetailWidget({String province="",String city="",String addressDetail}){
@@ -272,6 +290,7 @@ class _OrderContentState extends State<OrderContent> {
 //        List<CommodityModel> list = provide.buyCommodityModelList;
         OrderDetailModel model = provide.orderDetailModel;
         return new Container(
+          color: Colors.white,
           padding: EdgeInsets.only(left:20,top: 10,right:20),
           width: double.infinity,
           child: new Column(
@@ -279,49 +298,54 @@ class _OrderContentState extends State<OrderContent> {
               CustomsWidget().subTitle(title: "订单详情",color: AppConfig.primaryColor),
               new Container(
                 width: double.infinity,
-                height: ScreenAdapter.height(150),
                 alignment: Alignment.center,
-                padding: EdgeInsets.only(top: 10,left: 10,right: 10,bottom: 5),
-                child: new Column(
+                padding: EdgeInsets.only(top: 10,left: 10,right: 10),
+                child: model!=null? new Column(
                   children: model.skuModels.map((item){
-                    return new Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        new Expanded(
-                            flex: 1,
-                            child: new Container(
-                              width: ScreenAdapter.width(80),
-                              height: ScreenAdapter.height(80),
-                              child: new Image.network(item.skuPic,fit: BoxFit.fill,),
-                            )
-                        ),
-                        new Expanded(
-                          flex:6,
-                          child: new Container(
-                            width: double.infinity,
-                            child: new Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                new Padding(padding: EdgeInsets.only(left: 10,bottom: 10),
-                                  child: new Text(item.skuName,softWrap: true,),
-                                ),
-                                new Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    return new Container(
+                      padding:EdgeInsets.only(top: 10,bottom: 20),
+                      decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(color: AppConfig.assistLineColor))
+                      ),
+                      child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          new Expanded(
+                              flex: 1,
+                              child: new Container(
+                                width: ScreenAdapter.width(80),
+                                height: ScreenAdapter.height(80),
+                                child: new Image.network(item.skuPic,fit: BoxFit.fill,),
+                              )
+                          ),
+                          new Expanded(
+                              flex:6,
+                              child: new Container(
+                                width: double.infinity,
+                                child: new Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    new Padding(padding: EdgeInsets.only(left:10),
-                                      child: new Text("数量 x ${item.quantity} 件"),),
-                                    CustomsWidget().priceTitle(price: item.amount.toString())
+                                    new Padding(padding: EdgeInsets.only(left: 10,bottom: 10),
+                                      child: new Text(item.skuName,softWrap: true,),
+                                    ),
+                                    new Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        new Padding(padding: EdgeInsets.only(left:10),
+                                          child: new Text("数量 x ${item.quantity} 件"),),
+                                        CustomsWidget().priceTitle(price: item.amount.toString())
+                                      ],
+                                    )
                                   ],
-                                )
-                              ],
-                            ),
+                                ),
+                              )
                           )
-                        )
-                      ],
+                        ],
+                      ),
                     );
                   }).toList(),
-                ),
+                ):new Container(),
               )
             ],
           ),
@@ -335,9 +359,11 @@ class _OrderContentState extends State<OrderContent> {
         builder: (BuildContext context,Widget widget,OrderDetailProvide  provide){
       OrderDetailModel model = provide.orderDetailModel;
         return new Container(
+          color: Colors.white,
+          margin: EdgeInsets.only(top: 5),
           padding: EdgeInsets.only(left:20,top: 10,right:20),
           width: double.infinity,
-          child: new Column(
+          child: model!=null? new Column(
             children: <Widget>[
               CustomsWidget().subTitle(title: "商品总价",color: AppConfig.primaryColor),
               new Padding(padding: EdgeInsets.all(10),
@@ -366,7 +392,7 @@ class _OrderContentState extends State<OrderContent> {
                 ],
               ))
             ]
-          )
+          ):new Container()
         );
     });
   }
@@ -377,9 +403,11 @@ class _OrderContentState extends State<OrderContent> {
         builder: (BuildContext context,Widget widget,OrderDetailProvide  provide){
       OrderDetailModel model = provide.orderDetailModel;
       return new Container(
+        color: Colors.white,
         width: double.infinity,
+        margin: EdgeInsets.only(top: 5),
         padding: EdgeInsets.all(10),
-        child: new Column(
+        child: model!=null? new Column(
           children: <Widget>[
             new Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -441,7 +469,7 @@ class _OrderContentState extends State<OrderContent> {
               ],
             ),
           ],
-        ),
+        ):new Container(),
       );
     });
   }
@@ -452,12 +480,13 @@ class _OrderContentState extends State<OrderContent> {
         builder: (BuildContext context, Widget widget,
             OrderDetailProvide provide) {
           OrderDetailModel model = provide.orderDetailModel;
-          return new Container(
+          return model!=null&&model.payDate!=null?new Container(
+            color: Colors.white,
             width: double.infinity,
+            margin: EdgeInsets.only(top: 5),
             padding: EdgeInsets.only(left:10,right:20,top: 5),
             child: new Column(
               children: <Widget>[
-                new Divider(height: ScreenAdapter.height(20),color: Colors.grey,),
                 new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -499,7 +528,22 @@ class _OrderContentState extends State<OrderContent> {
                       ),
                     )
                   ],
-                ),new Row(
+                ),
+                model.shipperName!=null? new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("配送方式:"),
+                    new Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: new Row(
+                      children: <Widget>[
+                          new Text(model.shipperName),
+                        ],
+                      ),
+                    )
+                  ],
+                ):new Container()
+                ,new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     new Text("订单编号:"),
@@ -542,7 +586,7 @@ class _OrderContentState extends State<OrderContent> {
                 ),
               ],
             ),
-          );
+          ):new Container();
         }
     );
   }

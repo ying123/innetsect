@@ -3,9 +3,13 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_types_model.dart';
+import 'package:innetsect/data/order_detail_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
+import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -14,23 +18,26 @@ import 'package:innetsect/utils/screen_adapter.dart';
 class CommodityCartPage extends PageProvideNode{
   final CommodityAndCartProvide _provide = CommodityAndCartProvide.instance;
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
 
   CommodityCartPage(){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+    mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
   }
   
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return CommodityCartContent(_provide,_detailProvide);
+    return CommodityCartContent(_provide,_detailProvide,_orderDetailProvide);
   }
 }
 
 class CommodityCartContent extends StatefulWidget {
   final CommodityAndCartProvide _provide;
   final CommodityDetailProvide _detailProvide;
-  CommodityCartContent(this._provide,this._detailProvide);
+  final OrderDetailProvide _orderDetailProvide;
+  CommodityCartContent(this._provide,this._detailProvide,this._orderDetailProvide);
   @override
   _CommodityCartContentState createState() => new _CommodityCartContentState();
 }
@@ -39,6 +46,8 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
 
   CommodityAndCartProvide provide;
   CommodityDetailProvide _detailProvide;
+  OrderDetailProvide _orderDetailProvide;
+
   // 全选
   bool isAllChecked = false;
   // 是否编辑
@@ -100,6 +109,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
     super.initState();
     this.provide = widget._provide;
     this._detailProvide = widget._detailProvide;
+    this._orderDetailProvide = widget._orderDetailProvide;
     // 设置多计数器模式
     this.provide.setMode(mode:"multiple");
     this.provide.sum = 0.00;
@@ -313,7 +323,56 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                   : new Container(),
               this.isEdited?_bottomDyAction(text: "去结算",
                 callback: (){
-                  //去结算
+                  // 去结算
+                  // 选中商品
+                  List<CommodityModels> list = [];
+                  this.provide.commodityTypesModelLists.forEach((item){
+                    item.commodityModelList.forEach((res){
+                      if(res.isChecked==true){
+                        list.add(res);
+                      }
+                    });
+                  });
+                  List json = new List();
+                  list.forEach((commModel){
+                    json.add({
+                      "acctID": UserTools().getUserData()['id'],
+                      "shopID":commModel.shopID,
+                      "prodID":commModel.prodID,
+                      "presale":commModel.presale,
+                      "skuCode":commModel.skuCode,
+                      "skuName":commModel.skuName,
+                      "skuPic":commModel.skuPic,
+                      "quantity":commModel.quantity,
+                      "unit": commModel.unit,
+                      "prodCode": commModel.prodCode,
+                      "salesPrice":0.01,
+                      "allowPointRate":commModel.allowPointRate
+                    });
+                  });
+
+                  // 跳转订单详情
+                  _detailProvide.createShopping(json,context)
+                      .doOnListen(() {
+                    print('doOnListen');
+                  })
+                      .doOnCancel(() {})
+                      .listen((item) {
+                    ///加载数据,订单详情
+                    print('listen data->$item');
+                    if(item.data!=null){
+                      OrderDetailModel model = OrderDetailModel.fromJson(item.data);
+                      this._orderDetailProvide.orderDetailModel = model;
+                    }
+                    Navigator.push(context, new MaterialPageRoute(
+                        builder: (context){
+                          return new OrderDetailPage();
+                        })
+                    );
+                    //      _provide
+                  }, onError: (e) {
+                    print(e);
+                  });
                 }
               ) : _bottomDyAction(text: "删除所选",
                 callback: (){
@@ -450,7 +509,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
         .listen((item) {
       ///加载数据
       print('listen data->$item');
-      if(item.data!=null){
+      if(item!=null&&item.data!=null){
         List<CommodityModels> list = CommodityList.fromJson(item.data).list;
         provide.commodityTypesModelLists.clear();
         list.forEach((res){

@@ -177,10 +177,9 @@ class CommodityDetailProvide extends BaseProvide {
   }
 
   /// 创建订单
-  Observable createShopping(CommodityModels models,
-      CommoditySkusModel skuModel,int counts,BuildContext context) {
+  Observable createShopping(List json,BuildContext context) {
     return _repo
-        .createShopping(models,skuModel,counts, context)
+        .createShopping(json, context)
         .doOnData((result) {
       print(result);
     })
