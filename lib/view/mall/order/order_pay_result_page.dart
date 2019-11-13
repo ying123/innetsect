@@ -82,14 +82,12 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
     // TODO: implement initState
     super.initState();
     this._provide ??= widget._provide;
-  }
-
-  void orderDetailRoute(BuildContext context,CommodityDetailProvide provide){
+    this._detailProvide??=widget._detailProvide;
     /// 订单详情请求
-    provide.getOrderPayDetails(
-        orderID:provide.orderId,
-        payMode:provide.commodityModels.payMode,
-        queryStatus:provide.resultStatus?1:0
+    _provide.getOrderPayDetails(
+        orderID:_provide.orderId,
+        payMode:_provide.commodityModels.payMode,
+        queryStatus:_provide.resultStatus?1:0
     ).doOnListen(() {
       print('doOnListen');
     }).doOnCancel(() {}).listen((item) {
@@ -97,14 +95,19 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
       print('listen data->$item');
       if(item.data!=null){
         _detailProvide.orderDetailModel=OrderDetailModel.fromJson(item.data);
+
       }
     }, onError: (e) {});
-    
-    Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context){
-          return OrderDetailPage();
-        }
-    ));
+  }
+
+  void orderDetailRoute(BuildContext context,CommodityDetailProvide provide){
+    if(_detailProvide.orderDetailModel!=null){
+      Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context){
+            return OrderDetailPage();
+          }
+      ));
+    }
   }
 }
 

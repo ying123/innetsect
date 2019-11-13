@@ -8,7 +8,7 @@ import 'package:provide/provide.dart';
 import 'dart:async';
 
 class LoginPage extends PageProvideNode {
-  final LoginProvide _provide = LoginProvide();
+  final LoginProvide _provide = LoginProvide.instance;
   LoginPage() {
     mProviders.provide(Provider<LoginProvide>.value(_provide));
   }

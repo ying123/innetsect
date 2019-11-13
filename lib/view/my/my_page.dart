@@ -37,9 +37,12 @@ class MyContentPage extends StatefulWidget {
 }
 
 class _MyContentPageState extends State<MyContentPage> {
+  LoginProvide _loginProvide;
   @override
   void initState() {
     super.initState();
+
+    this._loginProvide??=widget._loginProvide;
   }
 
   Future _loginPage() async {
@@ -448,10 +451,10 @@ class _MyContentPageState extends State<MyContentPage> {
     );
   }
 
-  Provide<MyProvide> _setupHeader() {
-    return Provide<MyProvide>(
-      builder: (BuildContext context, Widget child, MyProvide provide) {
-        UserInfoModel userModel = widget._loginProvide.userInfoModel;
+  Provide<LoginProvide> _setupHeader() {
+    return Provide<LoginProvide>(
+      builder: (BuildContext context, Widget child, LoginProvide provide) {
+        UserInfoModel userModel = provide.userInfoModel;
         return Stack(
           children: <Widget>[
             Container(
@@ -530,7 +533,7 @@ class _MyContentPageState extends State<MyContentPage> {
                       //border: Border.all(color: Colors.black12),
                     ),
                     child: userModel!=null&&userModel.portrait!=null? Image.network(userModel.portrait,fit: BoxFit.cover):Image.asset(
-                      provide.headPortrait,
+                      "assets/images/mall/hot_brand1.png",
                       fit: BoxFit.cover,
                     ),
                   ),
