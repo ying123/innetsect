@@ -1,0 +1,144 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/mall/content_model.dart';
+import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/information/infor_web_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view/widget/list_widget_page.dart';
+import 'package:innetsect/view_model/mall/information/information_provide.dart';
+import 'package:provide/provide.dart';
+
+class InformationPage extends PageProvideNode{
+
+  final InformationProvide _provide = InformationProvide.instance;
+
+  InformationPage(){
+    mProviders.provide(Provider<InformationProvide>.value(_provide));
+  }
+
+  @override
+  Widget buildContent(BuildContext context) {
+    // TODO: implement buildContent
+    return InformationContent(_provide);
+  }
+}
+
+class InformationContent extends StatefulWidget {
+  final InformationProvide _provide;
+  InformationContent(this._provide);
+
+  @override
+  _InformationContentState createState() => _InformationContentState();
+}
+
+class _InformationContentState extends State<InformationContent> {
+  int pageNo = 1;
+  List<ContentModel> list = new List();
+  EasyRefreshController _controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomsWidget().customNav(context: context, widget: new Container(),leading:false),
+      body: ListWidgetPage(
+        controller: _controller,
+        onRefresh: () async{
+          pageNo = 1;
+          list.clear();
+          await this._onLoadData();
+        },
+        onLoad: () async{
+          await this._onLoadData();
+        },
+        child: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate([
+              new Container(
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: list.map((item){
+                    return InkWell(
+                      onTap: () async{
+                        // 请求详情
+                        await this._onLoadDetail(item.contentID);
+                      },
+                      child: new Container(
+                        child: new Column(
+                          children: <Widget>[
+                            new Image.network(item.poster,fit: BoxFit.cover,width: double.infinity,
+                              height:ScreenAdapter.height(420),),
+                            new Container(
+                              width: double.infinity,
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.all(10),
+                              child: new Text(item.title,style: TextStyle(
+                                  fontSize: ScreenAdapter.size(32),
+                                  fontWeight: FontWeight.bold
+                              ),),
+                            ),
+                            new Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                new Container(
+                                  color: Colors.black,
+                                  alignment: Alignment.centerLeft,
+                                  margin: EdgeInsets.only(left: 20,bottom: 20),
+                                  padding: EdgeInsets.all(5),
+                                  child: new Text(item.tags,style: TextStyle(color:Colors.white,fontSize: ScreenAdapter.size(18))),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              )
+            ]),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controller = new EasyRefreshController();
+    // 初始化列表
+    this._onLoadData();
+  }
+
+  _onLoadData(){
+    widget._provide
+        .listData(pageNo: pageNo ++)
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      setState(() {
+        list.addAll(ContentModelList.fromJson(item.data).list);
+      });
+    }, onError: (e) {});
+  }
+
+  _onLoadDetail(int contentID){
+    try{
+      widget._provide
+          .getDetail(contentID:contentID).then((item){
+        widget._provide.html = item.data;
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context){
+            return new InforWebPage();
+          }
+        ));
+      });
+    }catch(e){}
+  }
+}

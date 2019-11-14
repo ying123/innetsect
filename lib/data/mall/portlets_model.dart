@@ -31,7 +31,7 @@ class PortletsModel{
       prodCollID: json['prodCollID'],
       layout: json['layout'],
       renderer: json['renderer'],
-      contents: ContentModelList.fromJson(json['contents']).list
+      contents: json['contents']!=null?ContentModelList.fromJson(json['contents']).list:[]
     );
   }
 }

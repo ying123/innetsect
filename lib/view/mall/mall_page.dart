@@ -3,6 +3,7 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/view/mall/home/mall_home_page.dart';
+import 'package:innetsect/view/mall/information/information_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
@@ -61,7 +62,7 @@ class _MallContentPageState extends State<MallContentPage> {
         return IndexedStack(
           index: widget._provide.currentIndex,
           children: [
-            new Text("11"),
+            InformationPage(),
             new Text("22"),
             MallHomePage(),
             CommodityPage(),

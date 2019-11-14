@@ -180,7 +180,31 @@ Future<BaseResponse> _getCountries(String url, {Map<String, dynamic> params,Buil
   return res;
 }
 
-///delete请求
+Future getHtml(String url, {Map<String, dynamic> params,BuildContext context}) {
+  return _getHtml(url, params: params,context: context);
+}
+
+Future _getHtml(String url, {Map<String, dynamic> params,BuildContext context}) async {
+  Response response;
+  Dio dio = HttpUtil().dio;
+  BaseOptions options = BaseOptions(
+      baseUrl:AppConfig.baseUrl,
+      connectTimeout: 10000,
+      receiveTimeout: 10000,
+      headers: {
+        'Content-Type':'text/html'
+      }
+  );
+  dio.options = options;
+  dio.interceptors.add(HeaderInterceptor());
+  await dio.get(url, queryParameters: params).then((res){
+    response = res;
+  }).catchError((error){
+  });
+  return response;
+}
+
+////delete请求
 Future delete(String url,
     {dynamic body, Map<String, dynamic> qureyParameters,BuildContext context}) {
   return _delete(url, body, queryParameters: qureyParameters,context: context);

@@ -9,6 +9,7 @@ class ContentModel{
   String tags;
   int status;
   int portletID;
+  String authorPortrait;
   int commentCount;
   int praiseCount;
   int hitCount;
@@ -24,6 +25,7 @@ class ContentModel{
     this.subtitle,
     this.tags,
     this.title,
+    this.authorPortrait,
     this.commentCount,
     this.praiseCount,
     this.hitCount
@@ -43,7 +45,8 @@ class ContentModel{
       portletID: json['portletID'],
       commentCount: json['commentCount'],
       praiseCount: json['praiseCount'],
-        hitCount: json['hitCount']
+        hitCount: json['hitCount'],
+        authorPortrait: json['authorPortrait']
     );
   }
 
