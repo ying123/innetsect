@@ -44,3 +44,12 @@ const List<PlatFormMenu> detailTabBarList = const <PlatFormMenu>[
   const PlatFormMenu( index: 1,title: "详情" )
 ];
 
+/// 我的售后
+const List<PlatFormMenu> afterTabBarList = const <PlatFormMenu>[
+  const PlatFormMenu(index: 0,title: "售后申请"),
+  const PlatFormMenu(index: 1,title: "审核中"),
+  const PlatFormMenu(index: 2,title: "待退货"),
+  const PlatFormMenu(index: 3,title: "处理中"),
+  const PlatFormMenu(index: 4,title: "全部售后"),
+];
+

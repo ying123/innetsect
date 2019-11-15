@@ -5,6 +5,7 @@ import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
@@ -16,21 +17,24 @@ import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 class CommodityPage extends PageProvideNode{
   final CommodityProvide _provide = CommodityProvide();
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final LogisticsProvide _logisticsProvide = LogisticsProvide.instance;
   CommodityPage(){
     mProviders.provide(Provider<CommodityProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+    mProviders.provide(Provider<LogisticsProvide>.value(_logisticsProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
 
-    return CommodityContent(_provide,_detailProvide);
+    return CommodityContent(_provide,_detailProvide,_logisticsProvide);
   }
 }
 
 class CommodityContent extends StatefulWidget {
   final CommodityProvide provide;
   final CommodityDetailProvide _detailProvide;
-  CommodityContent(this.provide,this._detailProvide);
+  final LogisticsProvide _logisticsProvide;
+  CommodityContent(this.provide,this._detailProvide,this._logisticsProvide);
 
   @override
   _CommodityContentState createState() => new _CommodityContentState();
@@ -40,6 +44,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 
   CommodityProvide provides;
   CommodityDetailProvide _detailProvide;
+  LogisticsProvide _logisticsProvide;
   TabController _tabController;
   EasyRefreshController _easyRefreshController;
   List<CommodityModels> list=[];
@@ -94,6 +99,8 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     super.initState();
     this.provides ??= widget.provide;
     this._detailProvide ??= widget._detailProvide;
+    _logisticsProvide??=widget._logisticsProvide;
+    _logisticsProvide.backPage = "/mallPage";
     _easyRefreshController = EasyRefreshController();
 
     _tabController = new TabController(length: mallTabBarList.length, vsync: this)

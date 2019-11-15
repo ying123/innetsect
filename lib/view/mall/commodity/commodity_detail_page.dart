@@ -8,6 +8,7 @@ import 'package:innetsect/data/commodity_skus_model.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -47,7 +48,6 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   ScrollController _scrollController ;
   CommodityDetailProvide _provide;
   CommodityAndCartProvide _cartProvide;
-
   // webview
   String html;
 
@@ -83,8 +83,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     // TODO: implement initState
     super.initState();
 
-    _provide = widget._provide;
-    _cartProvide = widget._cartProvide;
+    _provide ??= widget._provide;
+    _cartProvide ??= widget._cartProvide;
 
 //    _tabController = new TabController(length: detailTabBarList.length, vsync: this);
     _scrollController = new ScrollController();

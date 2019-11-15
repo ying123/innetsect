@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
@@ -6,10 +7,14 @@ import 'package:innetsect/utils/animation_util.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
+import 'package:innetsect/view/my/notice/notice_page.dart';
 import 'package:innetsect/view/my/settings/my_settings_page.dart';
+import 'package:innetsect/view/my_order/after_service_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
 
 import 'package:innetsect/view/personal_center/personal_center_page.dart';
+import 'package:innetsect/view/widget/commodity_cart_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/my/my_provide.dart';
 import 'package:provide/provide.dart';
@@ -93,7 +98,12 @@ class _MyContentPageState extends State<MyContentPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      print('购物车被点击');
+                      // 购物车
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context){
+                            return CommodityCartPage();
+                          },settings: RouteSettings(arguments: {'isBack': true})
+                      ));
                     },
                     child: _setupBtn(
                         'assets/images/newpersonalcentre/购物车@2x.png',
@@ -138,7 +148,12 @@ class _MyContentPageState extends State<MyContentPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      print('我的售后被点击');
+                      // 我的售后
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context){
+                          return AfterServicePage();
+                        }
+                      ));
                     },
                     child: _setupBtn(
                         'assets/images/newpersonalcentre/我的售后@2x.png',
@@ -233,218 +248,22 @@ class _MyContentPageState extends State<MyContentPage> {
         return Container(
             child: Column(
           children: <Widget>[
-            Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(125),
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    width: ScreenAdapter.width(50),
-                  ),
-                  Center(
-                    child: Container(
-                      width: ScreenAdapter.width(40),
-                      height: ScreenAdapter.width(26),
-                      child: Image.asset(
-                        'assets/images/newpersonalcentre/展会@2x.png',
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(20),
-                  ),
-                  Center(
-                    child: Text(
-                      '展会',
-                      style: TextStyle(
-                        color: Color.fromRGBO(95, 95, 95, 1.0),
-                        fontSize: ScreenAdapter.size(27),
-
-                        //fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                  Image.asset(
-                    'assets/images/mall/arrow_right.png',
-                    width: ScreenAdapter.width(25),
-                    height: ScreenAdapter.width(25),
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(43),
-                  ),
-                ],
-              ),
+            CustomsWidget().listSlider(
+              icon: 'assets/images/newpersonalcentre/购买须知@2x.png',
+              title: '够买须知',
+              onTap: (){
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return NoticePage();
+                    }
+                  ));
+              }
             ),
-            Container(
-              margin: EdgeInsets.only(
-                  left: ScreenAdapter.width(50),
-                  right: ScreenAdapter.width(50)),
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(3),
-              color: Color.fromRGBO(249, 249, 249, 1.0),
-            ),
-            Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(125),
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    width: ScreenAdapter.width(50),
-                  ),
-                  Center(
-                    child: Container(
-                      width: ScreenAdapter.width(43),
-                      height: ScreenAdapter.height(33),
-                      child: Image.asset(
-                          'assets/images/newpersonalcentre/购买须知@2x.png'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(20),
-                  ),
-                  Center(
-                    child: Text(
-                      '够买须知',
-                      style: TextStyle(
-                        color: Color.fromRGBO(95, 95, 95, 1.0),
-                        fontSize: ScreenAdapter.size(27),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                  Image.asset(
-                    'assets/images/mall/arrow_right.png',
-                    width: ScreenAdapter.width(25),
-                    height: ScreenAdapter.width(25),
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(43),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  left: ScreenAdapter.width(50),
-                  right: ScreenAdapter.width(50)),
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(3),
-              color: Color.fromRGBO(249, 249, 249, 1.0),
-            ),
-            Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(125),
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    width: ScreenAdapter.width(50),
-                  ),
-                  Center(
-                    child: Container(
-                      width: ScreenAdapter.width(35),
-                      height: ScreenAdapter.height(29),
-                      child: Image.asset(
-                          'assets/images/newpersonalcentre/联系客服@2x.png'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(20),
-                  ),
-                  Center(
-                    child: Text(
-                      '联系客服',
-                      style: TextStyle(
-                        color: Color.fromRGBO(95, 95, 95, 1.0),
-                        fontSize: ScreenAdapter.size(27),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                  Image.asset(
-                    'assets/images/mall/arrow_right.png',
-                    width: ScreenAdapter.width(25),
-                    height: ScreenAdapter.width(25),
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(43),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  left: ScreenAdapter.width(50),
-                  right: ScreenAdapter.width(50)),
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(3),
-              color: Color.fromRGBO(249, 249, 249, 1.0),
-            ),
-            Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(125),
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    width: ScreenAdapter.width(50),
-                  ),
-                  Center(
-                    child: Container(
-                      width: ScreenAdapter.width(37),
-                      height: ScreenAdapter.height(29),
-                      child: Image.asset(
-                          'assets/images/newpersonalcentre/反馈意@2x.png'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(20),
-                  ),
-                  Center(
-                    child: Text(
-                      '反馈意见',
-                      style: TextStyle(
-                        color: Color.fromRGBO(95, 95, 95, 1.0),
-                        fontSize: ScreenAdapter.size(27),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                  Image.asset(
-                    'assets/images/mall/arrow_right.png',
-                    width: ScreenAdapter.width(25),
-                    height: ScreenAdapter.width(25),
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(43),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  left: ScreenAdapter.width(50),
-                  right: ScreenAdapter.width(50)),
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(3),
-              color: Color.fromRGBO(249, 249, 249, 1.0),
-            ),
+            new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
+            CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/联系客服@2x.png', title: '联系客服'),
+            new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
+            CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/反馈意@2x.png', title: '反馈意见'),
+            new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
           ],
         ));
       },
@@ -489,18 +308,19 @@ class _MyContentPageState extends State<MyContentPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  top: ScreenAdapter.height(57), left: ScreenAdapter.width(35)),
-              child: Container(
-                width: ScreenAdapter.width(55),
-                height: ScreenAdapter.height(45),
-                child: Image.asset(
-                  'assets/images/newpersonalcentre/消息@1x.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+///TODO 暂时隐藏
+//            Padding(
+//              padding: EdgeInsets.only(
+//                  top: ScreenAdapter.height(57), left: ScreenAdapter.width(35)),
+//              child: Container(
+//                width: ScreenAdapter.width(55),
+//                height: ScreenAdapter.height(45),
+//                child: Image.asset(
+//                  'assets/images/newpersonalcentre/消息@1x.png',
+//                  fit: BoxFit.cover,
+//                ),
+//              ),
+//            ),
             Padding(
               padding: EdgeInsets.only(top: ScreenAdapter.height(170)),
               child: Center(

@@ -3,11 +3,13 @@ import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/logistics/logistics_page.dart';
 import 'package:innetsect/view/mall/order/order_pay_page.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
+import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/base/base.dart';
@@ -17,17 +19,19 @@ class OrderDetailPage extends PageProvideNode{
   final CommodityAndCartProvide _provide = CommodityAndCartProvide.instance;
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
+  final LogisticsProvide _logisticsProvide = LogisticsProvide.instance;
 
   OrderDetailPage(){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
+    mProviders.provide(Provider<LogisticsProvide>.value(_logisticsProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return OrderContent(_provide,_detailProvide,_orderDetailProvide);
+    return OrderContent(_provide,_detailProvide,_orderDetailProvide,_logisticsProvide);
   }
 }
 
@@ -35,8 +39,9 @@ class OrderContent extends StatefulWidget {
   final CommodityAndCartProvide _provide;
   final CommodityDetailProvide _detailProvide;
   final OrderDetailProvide _orderDetailProvide;
+  final LogisticsProvide _logisticsProvide;
 
-  OrderContent(this._provide,this._detailProvide,this._orderDetailProvide);
+  OrderContent(this._provide,this._detailProvide,this._orderDetailProvide,this._logisticsProvide);
 
   @override
   _OrderContentState createState() => new _OrderContentState();
@@ -45,6 +50,7 @@ class OrderContent extends StatefulWidget {
 class _OrderContentState extends State<OrderContent> {
   OrderDetailProvide _orderDetailProvide;
   CommodityDetailProvide _detailProvide;
+  LogisticsProvide _logisticsProvide;
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -102,8 +108,9 @@ class _OrderContentState extends State<OrderContent> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _orderDetailProvide = widget._orderDetailProvide;
-    _detailProvide = widget._detailProvide;
+    _orderDetailProvide ??= widget._orderDetailProvide;
+    _detailProvide ??= widget._detailProvide;
+    _logisticsProvide ??= widget._logisticsProvide;
     Future.delayed(Duration.zero,(){
       Map<dynamic,dynamic> map = ModalRoute.of(context).settings.arguments;
       if(map!=null&&map['orderID']!=null){
@@ -131,6 +138,11 @@ class _OrderContentState extends State<OrderContent> {
       textColor: Colors.white,
       onPressed: (){
         // 跳转物流信息
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context){
+              return LogisticsPage();
+            }
+        ));
       },child: new Text("物流信息"),
     );
   }

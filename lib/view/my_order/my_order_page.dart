@@ -2,28 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/all/all_page.dart';
+import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/my_order/my_order_provide.dart';
 import 'package:provide/provide.dart';
 
 class MyOrderPage extends PageProvideNode {
   final MyOrderProvide _provide = MyOrderProvide();
+  final LogisticsProvide _logisticsProvide = LogisticsProvide.instance;
   MyOrderPage() {
     mProviders.provide(Provider<MyOrderProvide>.value(_provide));
+    mProviders.provide(Provider<LogisticsProvide>.value(_logisticsProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return MyOrderContentPage(_provide);
+    return MyOrderContentPage(_provide,_logisticsProvide);
   }
 }
 
 class MyOrderContentPage extends StatefulWidget {
   final MyOrderProvide provide;
-  MyOrderContentPage(this.provide);
+  final LogisticsProvide _logisticsProvide;
+  MyOrderContentPage(this.provide,this._logisticsProvide);
   @override
   _MyOrderContentPageState createState() => _MyOrderContentPageState();
 }
 
 class _MyOrderContentPageState extends State<MyOrderContentPage> {
+  LogisticsProvide _logisticsProvide;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -36,7 +42,7 @@ class _MyOrderContentPageState extends State<MyOrderContentPage> {
           centerTitle: true,
           leading: InkWell(
               onTap: () {
-                Navigator.pop(context);
+                Navigator.popAndPushNamed(context, "/appNavigationBarPage");
               },
               child: new Container(
                   padding: EdgeInsets.all(20),
@@ -83,5 +89,13 @@ class _MyOrderContentPageState extends State<MyOrderContentPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _logisticsProvide ??= widget._logisticsProvide;
+    _logisticsProvide.backPage = "/myOrderPage";
   }
 }

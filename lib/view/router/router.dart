@@ -11,6 +11,8 @@ import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
+import 'package:innetsect/view/my/all/all_page.dart';
+import 'package:innetsect/view/my_order/my_order_page.dart';
 import 'package:innetsect/view/registered/registered_page.dart';
 
 final routes = {
@@ -24,7 +26,9 @@ final routes = {
   '/loginPage':(context)=>LoginPage(),
   '/regiseredPage':(context)=>RegisteredPage(),
   '/orderDetailPage':(context)=>OrderDetailPage(),
-  '/homePage':(context)=>HomePage()
+  '/homePage':(context)=>HomePage(),
+  '/allPage':(context)=>AllPage(),
+  '/myOrderPage':(context)=>MyOrderPage()
 };
 
 //固定写法

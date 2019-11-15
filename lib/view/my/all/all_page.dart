@@ -12,6 +12,7 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
+import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/my/all/all_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -20,6 +21,7 @@ class AllPage extends PageProvideNode{
   final AllProvide _provide = AllProvide.instance;
   final OrderDetailProvide _detailProvide = OrderDetailProvide.instance;
   final CommodityDetailProvide _commodityDetailProvide = CommodityDetailProvide.instance;
+
   AllPage({
     this.idx
   }){
@@ -95,14 +97,14 @@ class _AllContentPageState extends State<AllContentPage> {
                           children: <Widget>[
                             new Text('订单号: ${item.orderNo}'),
                             new Text(OrderStatusEnum().getStatusTitle(item.status),
-                              style: TextStyle(color: Colors.red),)
+                              style: TextStyle(color: Colors.blue),)
                           ],
                         ),
                       ),
                       // 商品展示
                       _commodityContent(item),
                       //底部操作按钮
-                      item.status!=2&&item.status!=-2?
+                      item.status!=-2?
                       new Container(
                         padding:EdgeInsets.only(bottom: 5,top: 10),
                         decoration: BoxDecoration(
@@ -201,7 +203,8 @@ class _AllContentPageState extends State<AllContentPage> {
               width: ScreenAdapter.width(180),
               padding:EdgeInsets.only(left: 10,) ,
               child: new RaisedButton(
-                color: AppConfig.primaryColor,
+                textColor: Colors.white,
+                color: Colors.blue,
                 onPressed: (){
                   ///默认支付宝
                   _commodityDetailProvide.payMode = 2;
@@ -214,9 +217,17 @@ class _AllContentPageState extends State<AllContentPage> {
                   ));
                 },
                 child: new Text("立即付款",style: TextStyle(
-                    fontSize: ScreenAdapter.size(24),color: AppConfig.fontBackColor),),
+                    fontSize: ScreenAdapter.size(24)),),
               ),
             )
+          ],
+        );
+        break;
+      case 2:
+        widget = widget = new Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            this._logisticsWidget(model)
           ],
         );
         break;

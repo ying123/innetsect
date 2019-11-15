@@ -491,17 +491,9 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                 onPressed: (){
                   ///TODO 判断是否展会进入
                   if(page=="mall"){
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                      builder: (context){
-                        return new MallPage();
-                      }
-                    ),ModalRoute.withName('/mallPage'),);
+                    _navigatorToPage(widget: MallPage(),navName: '/mallPage');
                   } else {
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                      builder: (context){
-                        return new AppNavigationBar();
-                      }
-                    ), ModalRoute.withName('/appNavigationBarPage'));
+                    _navigatorToPage(widget: AppNavigationBar(),navName: '/appNavigationBarPage');
                   }
                 },
                 child: new Text("去逛逛"),
@@ -511,6 +503,15 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
         ],
       ),
     );
+  }
+
+  /// 跳转
+  void _navigatorToPage({Widget widget,String navName}){
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+        builder: (context){
+          return widget;
+        }
+    ),ModalRoute.withName(navName),);
   }
 
   void _loadList(){

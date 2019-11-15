@@ -147,7 +147,8 @@ class CustomsWidget{
     bool centerTitle = true,
     bool automaticallyImplyLeading = false,
     List<Widget> actions,
-    Function() onTap
+    Function() onTap,
+    PreferredSizeWidget bottom
   }){
     return new AppBar(
       leading: leading ?new GestureDetector(
@@ -170,6 +171,7 @@ class CustomsWidget{
       automaticallyImplyLeading: automaticallyImplyLeading,
       elevation: elevation,
       centerTitle: centerTitle,
+      bottom: bottom,
     );
   }
 
@@ -179,6 +181,63 @@ class CustomsWidget{
   }){
     Fluttertoast.showToast(msg: title,gravity: ToastGravity.CENTER,
       toastLength: Toast.LENGTH_SHORT,backgroundColor: Colors.black54,textColor: Colors.white);
+  }
+
+  /// list操作栏
+  Widget listSlider({String icon,String title,Function() onTap,FontWeight titleFont}){
+    return InkWell(
+      onTap: (){
+        onTap();
+      },
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: ScreenAdapter.width(750),
+            height: ScreenAdapter.height(125),
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  width: ScreenAdapter.width(50),
+                ),
+                icon!=null?Center(
+                  child: Container(
+                    width: ScreenAdapter.width(43),
+                    height: ScreenAdapter.height(33),
+                    child: Image.asset(icon),
+                  ),
+                ):Container(),
+                SizedBox(
+                  width: ScreenAdapter.width(20),
+                ),
+                Center(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Color.fromRGBO(95, 95, 95, 1.0),
+                      fontSize: ScreenAdapter.size(27),
+                      fontWeight: titleFont
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+                Image.asset(
+                  'assets/images/mall/arrow_right.png',
+                  width: ScreenAdapter.width(25),
+                  height: ScreenAdapter.width(25),
+                ),
+                SizedBox(
+                  width: ScreenAdapter.width(43),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
 }

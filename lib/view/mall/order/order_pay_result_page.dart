@@ -135,7 +135,7 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
     /// 订单详情请求
     _provide.getOrderPayDetails(
         orderID:_provide.orderId,
-        payMode:_provide.commodityModels.payMode,
+        payMode:_provide.payMode,
         queryStatus:_provide.resultStatus?1:0
     ).doOnListen(() {
       print('doOnListen');

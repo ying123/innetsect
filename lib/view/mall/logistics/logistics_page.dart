@@ -3,13 +3,14 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:provide/provide.dart';
 
 class LogisticsPage extends PageProvideNode{
-  final LogisticsProvide _provide = LogisticsProvide();
+  final LogisticsProvide _provide = LogisticsProvide.instance;
   final OrderDetailProvide _detailProvide = OrderDetailProvide.instance;
 
   LogisticsPage(){
@@ -41,8 +42,11 @@ class _LogisticsContentState extends State<LogisticsContent> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
-          widget: new Text("订单详情",style: TextStyle(fontSize: ScreenAdapter.size((30)),
-            fontWeight: FontWeight.w900 ),)
+          widget: new Text("物流信息",style: TextStyle(fontSize: ScreenAdapter.size((30)),
+            fontWeight: FontWeight.w900 ),),
+        onTap: (){
+          Navigator.popAndPushNamed(context, _provide.backPage);
+        }
       ),
       body: new Stack(
         fit: StackFit.passthrough,
