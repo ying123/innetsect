@@ -1,23 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
-import 'package:innetsect/view/widget/web_view_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
 
 class CommodityDetailPage extends PageProvideNode{
 
-  final CommodityDetailProvide _provide = CommodityDetailProvide();
-  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide();
+  final CommodityDetailProvide _provide = CommodityDetailProvide.instance;
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
 
   CommodityDetailPage(){
     mProviders.provide(Provider<CommodityDetailProvide>.value(_provide));
@@ -26,13 +27,15 @@ class CommodityDetailPage extends PageProvideNode{
 
   @override
   Widget buildContent(BuildContext context) {
-    return CommodityDetailContent();
+    return CommodityDetailContent(_provide,_cartProvide);
   }
   
 }
 
 class CommodityDetailContent extends StatefulWidget {
-  CommodityDetailContent();
+  final CommodityDetailProvide _provide;
+  final CommodityAndCartProvide _cartProvide;
+  CommodityDetailContent(this._provide,this._cartProvide);
   @override
   _CommodityDetailContentState createState() => new _CommodityDetailContentState();
 }
@@ -40,26 +43,30 @@ class CommodityDetailContent extends StatefulWidget {
 class _CommodityDetailContentState extends State<CommodityDetailContent> with
     SingleTickerProviderStateMixin{
 
-  TabController _tabController;
+//  TabController _tabController;
   ScrollController _scrollController ;
   CommodityDetailProvide _provide;
   CommodityAndCartProvide _cartProvide;
 
+  // webview
+  String html;
+
   int pageNo = 1;
   /// 推荐商品
-  List<List<CommodityModels>> recommedList = new List();
+//  List<List<CommodityModels>> recommedList = new List();
 
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
-          widget: _topNavTabBar(),
+          widget: Container(),
           width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-120)
       ),
       body: new Stack(
         children: <Widget>[
-          _tabBarView(),
+          _contentWidget(),
+//          _tabBarView(),
           new Positioned(
             left: 0,
             right: 0,
@@ -76,34 +83,31 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     // TODO: implement initState
     super.initState();
 
-    _tabController = new TabController(length: detailTabBarList.length, vsync: this);
+    _provide = widget._provide;
+    _cartProvide = widget._cartProvide;
+
+//    _tabController = new TabController(length: detailTabBarList.length, vsync: this);
     _scrollController = new ScrollController();
 
-    _scrollController.addListener((){
-      if(_scrollController.position.pixels==_scrollController.position.maxScrollExtent){
-        _tabController.index=1;
-      }
-    });
-    _provide = CommodityDetailProvide.instance;
-    _cartProvide = CommodityAndCartProvide.instance;
+//    _scrollController.addListener((){
+//      if(_scrollController.position.pixels==_scrollController.position.maxScrollExtent){
+//        _tabController.index=1;
+//      }
+//    });
 
-    Future.delayed(Duration.zero,(){
-      // 运用未来获取context，初始化数据
-      Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
-      _loadData(mapData['id']) ;
-      _loadRemData(pageNo,37,mapData['id']);
-    });
+    _loadData();
+    _loadHtml();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _tabController.dispose();
+//    _tabController.dispose();
   }
 
-  /// 商品顶部导航
-  Widget _topNavTabBar(){
+  ///TODO 商品顶部导航（暂时隐藏)
+  /**Widget _topNavTabBar(){
     return new TabBar(
         isScrollable: false,
         controller: _tabController,
@@ -122,10 +126,10 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           );
         }).toList()
     );
-  }
+  }*/
 
-  /// tabBarView视图组件
-  Widget _tabBarView(){
+  ///TODO tabBarView视图组件（暂时隐藏)
+  /**Widget _tabBarView(){
     return new TabBarView(
         controller: _tabController,
         children: [
@@ -135,7 +139,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           )
         ]
     );
-  }
+  }*/
 
   /// 商品详情内容区域
   Widget _contentWidget(){
@@ -152,25 +156,27 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             new Padding(padding: EdgeInsets.only(top: 10),
               child: _selCol(),
             ),
-            new Padding(padding: EdgeInsets.only(top: 10),
-              child: _recommendWidget(),
-            ),
-            new Padding(padding: EdgeInsets.only(top: 10),
-              child: new Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.only(bottom: 10),
-                alignment: Alignment.center,
-                child: new Text("上拉显示商品详情",style: TextStyle(
-                    fontSize: ScreenAdapter.size(26),
-                    fontWeight: FontWeight.w600),
-                ),
-              )
-            ),
-            new Container(
-              height: ScreenAdapter.height(200),
-              color: Colors.white,
-            )
+//            new Padding(padding: EdgeInsets.only(top: 10),
+//              child: _recommendWidget(),
+//            ),
+//            new Padding(padding: EdgeInsets.only(top: 10),
+//              child: new Container(
+//                color: Colors.white,
+//                padding: EdgeInsets.all(10),
+//                margin: EdgeInsets.only(bottom: 10),
+//                alignment: Alignment.center,
+//                child: new Text("上拉显示商品详情",style: TextStyle(
+//                    fontSize: ScreenAdapter.size(26),
+//                    fontWeight: FontWeight.w600),
+//                ),
+//              )
+//            ),
+            html!=null?new Container(
+              child: Html(
+                data: html,
+              ),
+            ):new Container(),
+            SizedBox(width: double.infinity,height: ScreenAdapter.height(80),)
           ],
         ),
     );
@@ -243,6 +249,9 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                 new InkWell(
                   onTap: (){
                     /// 弹出颜色，尺码选择
+                    _provide.setInitData();
+                    _cartProvide.setInitCount();
+                    _provide.isBuy = false;
                     CommodityModalBottom.showBottomModal(context:context);
                   },
                   child: new Container(
@@ -262,8 +271,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     );
   }
   
-  /// 推荐
-  Widget _recommendWidget(){
+  ///TODO 推荐（暂时隐藏)
+  /**Widget _recommendWidget(){
     double childHeight = ScreenAdapter.getScreenHeight()/1.5;
     return Container(
       width: double.infinity,
@@ -341,7 +350,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         ],
       ),
     );
-  }
+  }*/
 
   /// 底部：客服、购物车、加入购物车、立即购买
   Widget _bottomBar(BuildContext context){
@@ -426,8 +435,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   }
 
   /// 加载数据
-  _loadData(int prodId){
-    _provide.detailData(prodId)
+  _loadData() {
+     _provide.detailData()
         .doOnListen(() {
       print('doOnListen');
     })
@@ -440,8 +449,18 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     }, onError: (e) {});
   }
 
-  /// 商品推荐
-  _loadRemData(int pageNo,int types,int prodID){
+  /// 加载webview
+  _loadHtml() async{
+    await _provide.getDetailHtml().then((item){
+      print(item);
+      setState(() {
+        html = item.data;
+      });
+    });
+  }
+
+  ///TODO 商品推荐(暂时隐藏)
+  /**_loadRemData(int pageNo,int types,int prodID){
     _provide.recommendedListData(pageNo, types, prodID).doOnListen((){}).doOnCancel((){})
         .listen((item){
           if(item.data!=null){
@@ -460,5 +479,5 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             });
           }
     },onError: (e){});
-  }
+  }*/
 }

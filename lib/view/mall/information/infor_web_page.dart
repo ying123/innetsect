@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/information/information_provide.dart';
@@ -31,30 +32,35 @@ class InforWebContentPage extends StatefulWidget {
 
 class _InforWebContentPageState extends State<InforWebContentPage> {
   WebViewController _controller;
+  String html;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomsWidget().customNav(context: context, widget: new Container()),
-      body: Provide<InformationProvide>(
-        builder: (BuildContext context,Widget widget,InformationProvide provide){
-          return WebView(
-            initialUrl: '',
-            onWebViewCreated: (WebViewController controller){
-              _controller = controller;
-              _loadHtml(provide);
-            },
-          );
-        },
-      ),
+      body: ListView(
+        children: <Widget>[
+          html!=null?Container(
+            child: Html(
+              data: html,
+            ),
+          ):Container()
+        ],
+      )
     );
   }
 
-  _loadHtml(InformationProvide provide) async {
-    _controller.loadUrl( Uri.dataFromString(
-        provide.html,
-        mimeType: 'text/html',
-        encoding: Encoding.getByName('utf-8')
-    ).toString());
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadData();
+  }
 
+  _loadData() async{
+    await widget._provide.getDetail().then((item){
+     setState(() {
+       html = item.data;
+     });
+    });
   }
 }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/app.dart';
 import 'package:innetsect/app_navigation_bar.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
+import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/login/login_page.dart';
+import 'package:innetsect/view/mall/commodity/commodity_page.dart';
 import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
@@ -16,11 +18,13 @@ final routes = {
   '/appNavigationBarPage':(context)=>AppNavigationBar(),
   '/mallPage':(context)=>MallPage(),
   '/mallSearchPage':(context)=>SearchPage(),
-  '/CommodityDetailPage':(context)=>CommodityDetailPage(),
+  '/commodityPage':(context)=>CommodityPage(),
+  '/commodityDetailPage':(context)=>CommodityDetailPage(),
   '/bindingSignIn':(context)=>BindingSignInPage(),
   '/loginPage':(context)=>LoginPage(),
   '/regiseredPage':(context)=>RegisteredPage(),
-  '/orderDetailPage':(context)=>OrderDetailPage()
+  '/orderDetailPage':(context)=>OrderDetailPage(),
+  '/homePage':(context)=>HomePage()
 };
 
 //固定写法

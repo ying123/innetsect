@@ -59,9 +59,10 @@ class _InformationContentState extends State<InformationContent> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: list.map((item){
                     return InkWell(
-                      onTap: () async{
+                      onTap: (){
                         // 请求详情
-                        await this._onLoadDetail(item.contentID);
+                        widget._provide.contentID = item.contentID;
+                        this._navToWebPage();
                       },
                       child: new Container(
                         child: new Column(
@@ -128,17 +129,11 @@ class _InformationContentState extends State<InformationContent> {
     }, onError: (e) {});
   }
 
-  _onLoadDetail(int contentID){
-    try{
-      widget._provide
-          .getDetail(contentID:contentID).then((item){
-        widget._provide.html = item.data;
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context){
-            return new InforWebPage();
-          }
-        ));
-      });
-    }catch(e){}
+  _navToWebPage(){
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context){
+          return new InforWebPage();
+        }
+    ));
   }
 }

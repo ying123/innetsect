@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/order_detail_model.dart';
@@ -56,9 +57,9 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
                 width: ScreenAdapter.width(240),),
               new Padding(
                 padding: EdgeInsets.only(top: 10),
-                child: new Text(provide.resultStatus?"支付成功":"支付失败",style: TextStyle(decoration: TextDecoration.none,fontSize: ScreenAdapter.size(32)),),
+                child: new Text(provide.resultStatus?"支付成功":"订单未支付",style: TextStyle(decoration: TextDecoration.none,fontSize: ScreenAdapter.size(32)),),
               ),
-              new Container(
+              provide.resultStatus?new Container(
                 padding: EdgeInsets.only(top: 10,left: 20,right: 20),
                 width: double.infinity,
                 child: new RaisedButton(
@@ -69,7 +70,55 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
                     this.orderDetailRoute(context,provide);
                   },
                   child: new Text("查看详情"),),
-              )
+              ): new Padding(padding: EdgeInsets.only(top: 20),
+              child: new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  new RaisedButton(
+                    textColor: Colors.white,
+                    color: Colors.black,
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                    child: new Text("暂不支付",),
+                  ),
+                  new RaisedButton(
+                    textColor: Colors.black,
+                    color: AppConfig.primaryColor,
+                    onPressed: (){
+                      // 提交付款
+                      _provide.payShopping().doOnListen(() {
+                        print('doOnListen');
+                      }).doOnCancel(() {}).listen((item) {
+                        ///加载数据
+                        print('listen data->$item');
+                        if(item.data!=null){
+                          PayUtils().aliPay(item.data['orderString']).then((result){
+                            if(result['resultStatus']=="9000"){
+                              _provide.resultStatus = true;
+                              // 支付成功
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                  builder: (context){
+                                    return OrderPayResultPage();
+                                  }
+                              ));
+                            }else{
+                              // 支付异常
+                              _provide.resultStatus = false;
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                  builder: (context){
+                                    return OrderPayResultPage();
+                                  }
+                              ));
+                            }
+                          });
+                        }
+                      }, onError: (e) {});
+                    },
+                    child: new Text("继续支付",),
+                  ),
+                ],
+              ),)
             ],
           ),
         );

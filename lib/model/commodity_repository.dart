@@ -11,9 +11,9 @@ class CommodityService {
 
   /// 列表数据请求
   Observable<BaseResponse> homeListData (int pageNo,String types){
-    var url = '/api/eshop/app/products/hotest?pageNo=$pageNo';
+    var url = '/api/eshop/app/products/hotest?pageNo=$pageNo&pageSize=8';
     if(types=="newCom"){
-      url = '/api/eshop/app/products/latest?pageNo=$pageNo';
+      url = '/api/eshop/app/products/latest?pageNo=$pageNo&pageSize=8';
     }
     var response = get(url);
     return response;
@@ -131,6 +131,12 @@ class CommodityService {
     return response;
   }
 
+  /// 商品详情底部webview
+  Future getDetailHtml(int prodId){
+    var url = '/api/eshop/products/$prodId/sizeBasePage';
+    return getHtml(url);
+  }
+
 }
 
 
@@ -197,5 +203,10 @@ class CommodityRepo {
   /// 支付后的订单详情
   Observable<BaseResponse> getOrderPayDetails ({@required int orderID,int payMode,int queryStatus}){
     return _remote.getOrderPayDetails(orderID:orderID,payMode:payMode,queryStatus:queryStatus);
+  }
+
+  /// 商品详情底部webview
+  Future getDetailHtml(int prodId){
+    return _remote.getDetailHtml(prodId);
   }
 }

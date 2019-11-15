@@ -138,19 +138,24 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                   this._detailProvide.commodityModels.isChecked = false;
                   this._detailProvide.commodityModels.quantity = this._cartProvide.count;
                   // 请求
-                  this._cartProvide.addCartsRequest(this._detailProvide.commodityModels)
-                      .doOnListen(() {
-                    print('doOnListen');
-                  })
-                      .doOnCancel(() {})
-                      .listen((item) {
-                    ///加载数据
-                    print('listen data->$item');
-                    if(item.data!=null){
-                      CustomsWidget().showToast(title: "添加成功");
-                      Navigator.pop(context);
-                    }
-                  }, onError: (e) {});
+                  if(this._detailProvide.skusModel.qtyInHand>0){
+                    this._cartProvide.addCartsRequest(this._detailProvide.commodityModels)
+                        .doOnListen(() {
+                      print('doOnListen');
+                    })
+                        .doOnCancel(() {})
+                        .listen((item) {
+                      ///加载数据
+                      print('listen data->$item');
+                      if(item.data!=null){
+                        CustomsWidget().showToast(title: "添加成功");
+                        Navigator.pop(context);
+                      }
+                    }, onError: (e) {});
+                  }else{
+                    CustomsWidget().showToast(title: "库存不足");
+                  }
+
                 }
                 
               },

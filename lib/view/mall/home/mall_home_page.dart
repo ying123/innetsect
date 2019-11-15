@@ -40,6 +40,9 @@ class _MallHomeContentState extends State<MallHomeContent> {
   EasyRefreshController _controller;
   // 分页
   int pageNo = 1;
+  List<BannersModel> _bannersList=[];
+
+  List<PortletsModel> _portletsModelList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +84,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
         controller: _controller,
         onRefresh: () async{
           pageNo = 1;
-          widget._provide.clearList();
+          _clearList();
           await _loadBannerData();
         },
         onLoad: () async{
@@ -111,73 +114,62 @@ class _MallHomeContentState extends State<MallHomeContent> {
   }
 
   ///轮播图
-  Provide<MallHomeProvide> _setupSwiperImage() {
-    return Provide<MallHomeProvide>(
-      builder: (BuildContext context, Widget child, MallHomeProvide provide) {
-        return Container(
+  Widget _setupSwiperImage() {
+    return Container(
+      width: ScreenAdapter.width(750),
+      height: ScreenAdapter.height(470),
+      color: Colors.white,
+      child: Center(
+        child: Container(
           width: ScreenAdapter.width(750),
-          height: ScreenAdapter.height(470),
+          height: ScreenAdapter.height(420),
           color: Colors.white,
-          child: Center(
-            child: Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(420),
-              color: Colors.white,
-              child: provide.bannersList.length>0?Swiper(
-                index: 0,
-                loop: true,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      print('第$index 页被点击');
-                    },
-                    child: ClipPath(
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            width: ScreenAdapter.width(750),
-                            height: ScreenAdapter.height(420),
-                            child: CachedNetworkImage(
-                              fadeOutDuration:
-                              const Duration(milliseconds: 300),
-                              fadeInDuration: const Duration(milliseconds: 700),
-                              fit: BoxFit.fill,
-                              imageUrl: provide.bannersList[index].bannerPic,
-                              errorWidget: (context, url, error) {
-                                return Icon(Icons.error);
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
+          child: _bannersList.length>0?Swiper(
+            index: 0,
+            loop: true,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  print('第$index 页被点击');
                 },
-                itemCount: provide.bannersList.length,
-                // pagination: SwiperPagination(),
-                autoplay: true,
-                duration: 300,
-                scrollDirection: Axis.horizontal,
-              ):new Container(),
-            ),
-          ),
-        );
-      },
+                child: ClipPath(
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        width: ScreenAdapter.width(750),
+                        height: ScreenAdapter.height(420),
+                        child: CachedNetworkImage(
+                          fit: BoxFit.fill,
+                          imageUrl: _bannersList[index].bannerPic,
+                          errorWidget: (context, url, error) {
+                            return Icon(Icons.error);
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+            itemCount: _bannersList.length,
+            // pagination: SwiperPagination(),
+            autoplay: true,
+            duration: 300,
+            scrollDirection: Axis.horizontal,
+          ):new Container(),
+        ),
+      ),
     );
   }
 
-  Provide<MallHomeProvide> _setupListItemsContent() {
-    return Provide<MallHomeProvide>(
-      builder: (BuildContext context, Widget child, MallHomeProvide provide) {
-        return Container(
-          width: double.infinity,
-          child: provide.portletsModelList.length>0?new Column(
-            children: provide.portletsModelList.map((item){
-              return _contentList(item);
-            }).toList(),
-          ):new Container(),
-        );
-      },
+  Widget _setupListItemsContent() {
+    return Container(
+      width: double.infinity,
+      child: _portletsModelList.length>0?new Column(
+        children: _portletsModelList.map((item){
+          return _contentList(item);
+        }).toList(),
+      ):new Container(),
     );
   }
 
@@ -264,12 +256,10 @@ class _MallHomeContentState extends State<MallHomeContent> {
         .listen((item) {
       ///加载数据
       if(item.data!=null){
-        widget._provide.addBannersModel(
-          BannersModelList.fromJson(item.data['banners']).list
-        );
-        widget._provide.addListData(
-          PortletsModelList.fromJson(item.data['portlets']).list
-        );
+        setState(() {
+          _bannersList=BannersModelList.fromJson(item.data['banners']).list;
+          _portletsModelList..addAll( PortletsModelList.fromJson(item.data['portlets']).list);
+        });
       }
       print('listen data->$item');
 //      _provide
@@ -279,7 +269,16 @@ class _MallHomeContentState extends State<MallHomeContent> {
   _loadListData(){
     widget._provide.listData(pageNo++).doOnListen((){}).doOnCancel((){})
         .listen((item){
-
+//          setState(() {
+//            _portletsModelList..addAll( PortletsModelList.fromJson(item.data).list);
+//          });
     },onError: (e){});
+  }
+
+  _clearList(){
+    setState(() {
+      _bannersList.clear();
+      _portletsModelList.clear();
+    });
   }
 }

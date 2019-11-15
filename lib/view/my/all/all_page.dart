@@ -7,6 +7,7 @@ import 'package:innetsect/enum/order_status.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/logistics/logistics_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
+import 'package:innetsect/view/mall/order/order_pay_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
@@ -18,7 +19,7 @@ class AllPage extends PageProvideNode{
   final int idx;
   final AllProvide _provide = AllProvide.instance;
   final OrderDetailProvide _detailProvide = OrderDetailProvide.instance;
-  final CommodityDetailProvide _commodityDetailProvide = CommodityDetailProvide();
+  final CommodityDetailProvide _commodityDetailProvide = CommodityDetailProvide.instance;
   AllPage({
     this.idx
   }){
@@ -125,7 +126,7 @@ class _AllContentPageState extends State<AllContentPage> {
     super.initState();
     _provide ??= widget._provide;
     _detailProvide??=widget._detailProvide;
-    _commodityDetailProvide??=_commodityDetailProvide;
+    _commodityDetailProvide??=widget._commodityDetailProvide;
     setState(() {
       idx = widget.idx;
     });
@@ -201,7 +202,17 @@ class _AllContentPageState extends State<AllContentPage> {
               padding:EdgeInsets.only(left: 10,) ,
               child: new RaisedButton(
                 color: AppConfig.primaryColor,
-                onPressed: (){},
+                onPressed: (){
+                  ///默认支付宝
+                  _commodityDetailProvide.payMode = 2;
+                  ///加载数据，存储订单号
+                  _commodityDetailProvide.setOrderId(model.orderID);
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return OrderPayPage();
+                    },
+                  ));
+                },
                 child: new Text("立即付款",style: TextStyle(
                     fontSize: ScreenAdapter.size(24),color: AppConfig.fontBackColor),),
               ),

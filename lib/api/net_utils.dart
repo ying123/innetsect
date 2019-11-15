@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/view/login/login_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:rxdart/rxdart.dart';
 import '../data/base.dart';
 import 'http_util.dart';
@@ -76,7 +77,7 @@ Future<BaseResponse> _post(String url, dynamic body,
       }
       print('response _post:->$response');
     }).catchError((error){
-      print(error);
+      CustomsWidget().showToast(title: error.response.data['message']);
 
       if(error.response.data['path']=="/salesorders/shoppingorder/create"){
         Future.delayed(Duration.zero,(){

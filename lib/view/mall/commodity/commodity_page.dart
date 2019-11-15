@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
@@ -13,20 +15,22 @@ import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 
 class CommodityPage extends PageProvideNode{
   final CommodityProvide _provide = CommodityProvide();
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   CommodityPage(){
     mProviders.provide(Provider<CommodityProvide>.value(_provide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
 
-    return CommodityContent(_provide);
+    return CommodityContent(_provide,_detailProvide);
   }
 }
 
 class CommodityContent extends StatefulWidget {
   final CommodityProvide provide;
-
-  CommodityContent(this.provide);
+  final CommodityDetailProvide _detailProvide;
+  CommodityContent(this.provide,this._detailProvide);
 
   @override
   _CommodityContentState createState() => new _CommodityContentState();
@@ -35,7 +39,10 @@ class CommodityContent extends StatefulWidget {
 class _CommodityContentState extends State<CommodityContent> with SingleTickerProviderStateMixin{
 
   CommodityProvide provides;
+  CommodityDetailProvide _detailProvide;
   TabController _tabController;
+  EasyRefreshController _easyRefreshController;
+  List<CommodityModels> list=[];
   int pageNo = 1;
 
   @override
@@ -56,7 +63,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                 padding: EdgeInsets.only(
                     top: ScreenAdapter.height(88.0)
                 ),
-                child: _tabBarView(provides.list),
+                child: _tabBarView(list),
               ),
               //307pt*20pt
               new Positioned(
@@ -85,26 +92,33 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   void initState() {
     // TODO: implement initState
     super.initState();
+    this.provides ??= widget.provide;
+    this._detailProvide ??= widget._detailProvide;
+    _easyRefreshController = EasyRefreshController();
 
     _tabController = new TabController(length: mallTabBarList.length, vsync: this)
     ..addListener((){
-      setState(() {
-        pageNo = 1;
-      });
       if(_tabController.index.toDouble() == _tabController.animation.value){
         switch(_tabController.index){
           case 0:
-            _loadList(pageNo: this.pageNo,types: "hotCom",isReload: true);
+            setState(() {
+              pageNo = 1;
+              list=[];
+            });
+            _loadList(types: "hotCom");
             break;
           case 1:
-            _loadList(pageNo: this.pageNo,types: "newCom",isReload: true);
+            setState(() {
+              pageNo = 1;
+              list=[];
+            });
+            _loadList(types: "newCom");
             break;
         }
       }
       print(_tabController.index);
     });
-    this.provides ??= widget.provide;
-    _loadList(pageNo: this.pageNo,types: "hotCom",isReload: true);
+    _loadList(types: "hotCom");
   }
 
   @override
@@ -148,23 +162,21 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   /// 数据列表
   Widget _listData(double itemWidth, List<CommodityModels> list,String types){
       return new ListWidgetPage(
-//            controller: _easyController,
+        controller: _easyRefreshController,
         onRefresh:() async{
-          await Future.delayed(Duration(seconds: 2), () {
+          await Future.delayed(Duration.zero, () {
             print('onRefresh');
-            this.pageNo = 1;
-            _loadList(pageNo: pageNo,types: types,isReload: true);
+            setState(() {
+              this.pageNo = 1;
+              this.list=[];
+            });
+            _loadList(types: types);
 //                _easyController.resetLoadState();
           });
         },
         onLoad: () async{
-          setState(() {
-            pageNo+=1;
-          });
-          await Future.delayed(Duration(seconds: 2), () {
-            print('onLoad');
-
-            _loadList(pageNo: pageNo ,types: types);
+          await Future.delayed(Duration.zero, () {
+            _loadList(types: types);
 //                _easyController.finishLoad(noMore: _count >= 20);
           });
         },
@@ -183,11 +195,12 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                       return new InkWell(
                         onTap: (){
                           /// 跳转详情
+                          _detailProvide.clearCommodityModels();
+                          _detailProvide.prodId = item.prodID;
                           Navigator.push(context, MaterialPageRoute(
                               builder:(context){
                                 return new CommodityDetailPage();
-                              },
-                              settings: RouteSettings(arguments: {'id': item.prodID})
+                              }
                             )
                           );
                         },
@@ -310,7 +323,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
           Navigator.push(context, MaterialPageRoute(
               builder: (context){
                 return CommodityCartPage();
-              },settings: RouteSettings(arguments: {'isBack': true})
+              },settings: RouteSettings(arguments: {'isBack': true,'page':'mall'})
           ));
         }
     );
@@ -318,10 +331,9 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 
 
 
-  _loadList({int pageNo=0,String types,bool isReload=false}){
-    if(isReload) provides.clearList();
+  _loadList({String types}){
     provides
-        .homeListData(pageNo,types)
+        .homeListData(pageNo++,types)
         .doOnListen(() {
       print('doOnListen');
     })
@@ -329,11 +341,14 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         .listen((item) {
       ///加载数据
       print('listen data->$item');
-      List<CommodityModels> list = new List();
-      if(item!=null&&item.data.length>0){
-        list = CommodityList.fromJson(item.data).list;
-      }
-      provides.setList(lists: list,isReload:isReload);
+      setState(() {
+        list..addAll(CommodityList.fromJson(item.data).list);
+      });
+//      List<CommodityModels> list = new List();
+//      if(item!=null&&item.data.length>0){
+//        list = CommodityList.fromJson(item.data).list;
+//      }
+//      provides.setList(lists: list,isReload:isReload);
 //      _provide
     }, onError: (e) {});
   }

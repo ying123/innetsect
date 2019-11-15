@@ -9,6 +9,8 @@ import 'package:rxdart/rxdart.dart';
 
 class CommodityDetailProvide extends BaseProvide {
 
+  /// 商品id
+  int _prodId;
   /// 商品详情
   CommodityModels _commodityModels;
   /// 默认选中的sku
@@ -19,6 +21,8 @@ class CommodityDetailProvide extends BaseProvide {
   int _index=0;
   /// 订单号
   int _orderId;
+  /// 支付方式
+  int _payMode;
   /// 是否立即购买
   bool _isBuy;
   /// 支付状态
@@ -34,6 +38,18 @@ class CommodityDetailProvide extends BaseProvide {
   int get orderId=>_orderId;
   bool get isBuy=>_isBuy;
   bool get resultStatus=>_resultStatus;
+  int get prodId => _prodId;
+  int get payMode => _payMode;
+
+  set payMode(int payMode){
+    _payMode = payMode;
+    notifyListeners();
+  }
+
+  set prodId(int prodId){
+    _prodId = prodId;
+    notifyListeners();
+  }
 
   set isBuy(bool flag){
     _isBuy = flag;
@@ -47,8 +63,14 @@ class CommodityDetailProvide extends BaseProvide {
 
   // 设置支付类型
   void setPayModel(int payModel){
-    CommodityModels models = _commodityModels;
-    models.payMode = payModel;
+    _commodityModels.payMode = payModel;
+    notifyListeners();
+  }
+
+  // 清除商品详情
+  void clearCommodityModels(){
+    _commodityModels = null;
+    _skusModel = null;
     notifyListeners();
   }
 
@@ -165,9 +187,9 @@ class CommodityDetailProvide extends BaseProvide {
   final CommodityRepo _repo = CommodityRepo();
 
   /// 详情数据
-  Observable detailData(int prodId) {
+  Observable detailData() {
     return _repo
-        .detailData(37, prodId)
+        .detailData(37, this.prodId)
         .doOnData((result) {
 
     })
@@ -204,7 +226,7 @@ class CommodityDetailProvide extends BaseProvide {
 
   /// 支付订单
   Observable payShopping() {
-    return _repo.payShopping(_orderId,_commodityModels.payMode)
+    return _repo.payShopping(_orderId,_payMode)
         .doOnData((result) {
 
     })
@@ -227,6 +249,11 @@ class CommodityDetailProvide extends BaseProvide {
     }).doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
+  }
+
+  /// 详情底部webview
+  Future getDetailHtml(){
+    return _repo.getDetailHtml(this.prodId);
   }
 
   ///工厂模式

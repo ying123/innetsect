@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/app_navigation_bar.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_types_model.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
+import 'package:innetsect/view/home/home_page.dart';
+import 'package:innetsect/view/mall/commodity/commodity_page.dart';
+import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
@@ -487,9 +491,17 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                 onPressed: (){
                   ///TODO 判断是否展会进入
                   if(page=="mall"){
-                    Navigator.pushNamedAndRemoveUntil(context, "/mallPage",(route) => route == null);
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                      builder: (context){
+                        return new MallPage();
+                      }
+                    ),ModalRoute.withName('/mallPage'),);
                   } else {
-                    Navigator.pushNamedAndRemoveUntil(context, "/",(route) => route == null);
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                      builder: (context){
+                        return new AppNavigationBar();
+                      }
+                    ), ModalRoute.withName('/appNavigationBarPage'));
                   }
                 },
                 child: new Text("去逛逛"),

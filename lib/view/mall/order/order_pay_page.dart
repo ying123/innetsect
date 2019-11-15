@@ -127,6 +127,12 @@ class _OrderPayContentState extends State<OrderPayContent> {
                                       ));
                                     }else{
                                       // 支付异常
+                                      widget._provide.resultStatus = false;
+                                      Navigator.pushReplacement(context, MaterialPageRoute(
+                                          builder: (context){
+                                            return OrderPayResultPage();
+                                          }
+                                      ));
                                     }
                                   });
                                 }

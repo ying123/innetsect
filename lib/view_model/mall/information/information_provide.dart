@@ -4,10 +4,10 @@ import 'package:innetsect/model/information/information_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class InformationProvide extends BaseProvide{
-  String _html;
-  String get html=>_html;
-  set html(String html){
-    _html = html;
+  int _contentID;
+  int get contentID=>_contentID;
+  set contentID(int contentID){
+    _contentID = contentID;
     notifyListeners();
   }
 
@@ -37,7 +37,7 @@ class InformationProvide extends BaseProvide{
   }
 
   /// 详情
-  Future getDetail({int contentID}){
-    return _repo.getDetail(contentID);
+  Future getDetail(){
+    return _repo.getDetail(this.contentID);
   }
 }

@@ -44,6 +44,7 @@ class OrderContent extends StatefulWidget {
 
 class _OrderContentState extends State<OrderContent> {
   OrderDetailProvide _orderDetailProvide;
+  CommodityDetailProvide _detailProvide;
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -102,7 +103,7 @@ class _OrderContentState extends State<OrderContent> {
     // TODO: implement initState
     super.initState();
     _orderDetailProvide = widget._orderDetailProvide;
-
+    _detailProvide = widget._detailProvide;
     Future.delayed(Duration.zero,(){
       Map<dynamic,dynamic> map = ModalRoute.of(context).settings.arguments;
       if(map!=null&&map['orderID']!=null){
@@ -141,27 +142,35 @@ class _OrderContentState extends State<OrderContent> {
       textColor: AppConfig.fontBackColor,
       onPressed: (){
         //提交订单
-        widget._detailProvide.submitShopping(widget._orderDetailProvide.orderDetailModel.addressID)
-            .doOnListen(() {
-          print('doOnListen');
-        })
-            .doOnCancel(() {})
-            .listen((item) {
-          print('listen data->$item');
-          if(item!=null&&item.data!=null){
-            ///默认支付宝
-            widget._detailProvide.setPayModel(2);
-            ///加载数据，存储订单号
-            widget._detailProvide.setOrderId(item.data['orderID']);
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context){
-                return OrderPayPage();
-              },
-            ));
-          }
-        }, onError: (e) {});
+        if(_orderDetailProvide.orderDetailModel.orderNo!=null){
+          _setOrder(_orderDetailProvide.orderDetailModel.orderID);
+        }else{
+          widget._detailProvide.submitShopping(widget._orderDetailProvide.orderDetailModel.addressID)
+              .doOnListen(() {
+            print('doOnListen');
+          })
+              .doOnCancel(() {})
+              .listen((item) {
+            print('listen data->$item');
+            if(item!=null&&item.data!=null){
+              _setOrder(item.data['orderID']);
+            }
+          }, onError: (e) {});
+        }
       },child: new Text("支付"),
     );
+  }
+
+  _setOrder(int orderID){
+    ///默认支付宝
+    _detailProvide.payMode=2;
+    ///加载数据，存储订单号
+    _detailProvide.setOrderId(orderID);
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context){
+        return OrderPayPage();
+      },
+    ));
   }
 
   /// 地址栏
