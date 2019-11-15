@@ -15,3 +15,20 @@ pubspec.lock
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.
 doc/api/
+android/.idea/libraries/Gradle____local_aars____Users_zl_Documents_flutter_flutter_bin_cache_artifacts_engine_android_arm64_flutter_jar_unspecified_jar.xml
+*.xml
+*.xml
+android/.idea/gradle.xml
+.idea/libraries/Dart_Packages.xml
+.flutter-plugins
+*.xml
+android/app/key.jks
+android/key.properties
+android/app/build.gradle
+android/app/app.iml
+android/android.iml
+android/.idea/caches/build_file_checksums.ser
+.idea/libraries/Flutter_Plugins.xml
+.idea/libraries/Dart_Packages.xml
+.flutter-plugins
+android/app/build.gradle
