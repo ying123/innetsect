@@ -20,7 +20,7 @@ const List<PlatFormMenu> mallNavBarList = const <PlatFormMenu>[
     icon: "assets/images/mall/tab_news.png",
     selIcon: "assets/images/mall/tab_news_h.png",
   ),
-  const PlatFormMenu(index:1,title: "品牌",
+  const PlatFormMenu(index:1,title: "分类",
     icon: "assets/images/mall/brand@3x.png",
     selIcon: "assets/images/mall/brand@3x.png",
   ),
@@ -51,5 +51,11 @@ const List<PlatFormMenu> afterTabBarList = const <PlatFormMenu>[
   const PlatFormMenu(index: 2,title: "待退货"),
   const PlatFormMenu(index: 3,title: "处理中"),
   const PlatFormMenu(index: 4,title: "全部售后"),
+];
+
+/// 分类导航栏
+const List<PlatFormMenu> seriesTabBarList = const <PlatFormMenu>[
+  const PlatFormMenu( index: 0,title: "品牌" ),
+  const PlatFormMenu( index: 1,title: "品类" )
 ];
 

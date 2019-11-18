@@ -34,7 +34,7 @@ class AppConfig{
   static final backGroundColor = Color.fromRGBO(249, 249, 249, 1.0);
   /// 按钮颜色，蓝色，最新
   static final blueBtnColor = Color.fromRGBO(144, 169, 204, 1.0);
-  /// 按钮字体颜色，蓝色，最新
+  /// 按钮字体颜色，白色，最新
   static final whiteBtnColor = Colors.white;
 
   static UserTools userTools;

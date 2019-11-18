@@ -62,6 +62,8 @@ dependencies:
   tobias: ^1.2.0
   #城市选择器
   city_pickers: ^0.1.28
+  #侧滑索引
+  azlistview: ^0.1.2
 
 dev_dependencies:
   flutter_test:
