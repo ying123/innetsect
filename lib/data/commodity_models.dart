@@ -24,8 +24,6 @@ class CommodityModels{
   String styleNo;
   //性别款
   int gender;
-  //退换策略
-  int rmaPolicy;
   //状态
   String tags;
   //标签
@@ -65,6 +63,14 @@ class CommodityModels{
   dynamic salesPrice;
   dynamic amount;
 
+  /// 售后modal扩展
+  // 退换策略,0：此商品不支持退换货,>0申请售后
+  int rmaPolicy;
+  // 是否申请售后，1已申请 0未申请
+  bool rmaRequested;
+  // 是否在可退换时间内，0：不可申请，1：可申请
+  bool rmaInPeriod;
+
   //购物车使用
   String types;
   bool isChecked;
@@ -81,7 +87,6 @@ class CommodityModels{
     this.series,
     this.styleNo,
     this.gender,
-    this.rmaPolicy,
     this.tags,
     this.status,
     this.defSalesPrice,
@@ -108,7 +113,10 @@ class CommodityModels{
     this.syncStatus,
     this.orderNo,
     this.orderDate,
-    this.remark
+    this.remark,
+    this.rmaPolicy,
+    this.rmaRequested,
+    this.rmaInPeriod
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -123,7 +131,6 @@ class CommodityModels{
         series: json['series'],
         styleNo: json['styleNo'],
         gender: json['gender'],
-        rmaPolicy: json['rmaPolicy'],
         tags: json['tags'],
         status: json['status'],
         defSalesPrice: json['defSalesPrice'],
@@ -150,7 +157,10 @@ class CommodityModels{
         syncStatus: json['syncStatus'],
         orderNo: json['orderNo'],
         orderDate: json['orderDate'],
-        remark: json['remark']
+        remark: json['remark'],
+        rmaPolicy: json['rmaPolicy'],
+        rmaRequested: json['rmaRequested'],
+        rmaInPeriod: json['rmaInPeriod']
     );
   }
 
@@ -165,7 +175,6 @@ class CommodityModels{
     'series': series,
     'styleNo': styleNo,
     'gender': gender,
-    'rmaPolicy': rmaPolicy,
     'tags': tags,
     'status': status,
     'defSalesPrice': defSalesPrice,
@@ -184,9 +193,11 @@ class CommodityModels{
     'syncStatus': syncStatus,
     'orderNo': orderNo,
     'orderDate': orderDate,
-    'remark': remark
+    'remark': remark,
+    'rmaPolicy': rmaPolicy,
+    'rmaRequested': rmaRequested,
+    'rmaInPeriod': rmaInPeriod
   };
-
 }
 
 class CommodityList{

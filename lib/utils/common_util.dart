@@ -38,6 +38,14 @@ static Route createRoute(Tween<Offset> tween, Widget child) {
       });
 }
 
+  static List skuNameSplit(String skuName){
+    List list;
+    if(skuName.indexOf(":")>0){
+      list = skuName.split(":");
+    }
+    return list;
+  }
+
 
 
 

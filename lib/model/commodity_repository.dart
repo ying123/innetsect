@@ -117,7 +117,8 @@ class CommodityService {
       "unit": "件",
       "quantity":model.quantity,
       "discountPrice": "",
-      "skuCode": model.skuCode
+      "skuCode": model.skuCode,
+      "allowPointRate": model.allowPointRate
     };
   }
 

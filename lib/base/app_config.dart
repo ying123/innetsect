@@ -32,6 +32,10 @@ class AppConfig{
   static final assistFontColor = Color.fromRGBO(197, 197, 197, 1.0);
   /// 背景色，浅灰色
   static final backGroundColor = Color.fromRGBO(249, 249, 249, 1.0);
+  /// 按钮颜色，蓝色，最新
+  static final blueBtnColor = Color.fromRGBO(144, 169, 204, 1.0);
+  /// 按钮字体颜色，蓝色，最新
+  static final whiteBtnColor = Colors.white;
 
   static UserTools userTools;
   static init()async{

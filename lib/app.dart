@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/entrance_page.dart';
 import 'package:innetsect/main_provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/widget/video_widget_page.dart';
@@ -30,13 +31,17 @@ class _AppContentPage extends StatefulWidget {
   __AppContentPageState createState() => __AppContentPageState();
 }
 
-class __AppContentPageState extends State<_AppContentPage> {
+class __AppContentPageState extends State<_AppContentPage> with TickerProviderStateMixin{
   MainProvide _provide;
+  // 可见图片透明
+  double opacityLevel = 1.0;
+  // 扩散动画
+//  AnimationController _animationController;
   @override
   void initState() {
     _provide ??= widget._provide;
     super.initState();
-    _provide.img = ExactAssetImage('assets/images/mall/welcome.png');
+//    _provide.img = ExactAssetImage('assets/images/mall/welcome.png');
     _provide.countdown = _provide.WELCOME_TIMER_OUT_IN_SECS;
 
     //退出计时器
@@ -51,8 +56,16 @@ class __AppContentPageState extends State<_AppContentPage> {
 
   ///完成
   void onDone() {
+    setState(() {
+      opacityLevel = 0.0;
+    });
     _provide.isDone = true;
-    Navigator.of(context).pushNamed('/appNavigationBarPage');
+//    Navigator.of(context).pushNamed('/appNavigationBarPage');
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context){
+        return new EntrancePage();
+      }
+    ));
   }
 
   @override
@@ -74,16 +87,18 @@ class __AppContentPageState extends State<_AppContentPage> {
   Provide<MainProvide> welcomeAnimation() {
     return Provide<MainProvide>(
       builder: (BuildContext context, Widget child, MainProvide provide) {
-        return Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(fit: BoxFit.cover, image: _provide.img)),
-            child: provide.isDone
+        return new Container(
+            width: double.infinity,
+            height: double.infinity,
+            child:provide.isDone
                 ? Container()
-                : VideoWidgetPage(
-                    url: "assets/res/welcome.mp4",
-                    previewImgUrl: 'assets/res/welcome.jpg',
-                    positionTag: 0,
-                  ));
+                : Image.asset("assets/images/main/open_app.jpg",fit: BoxFit.fill,)
+        );
+//                  VideoWidgetPage(
+//                    url: "assets/res/welcome.mp4",
+//                    previewImgUrl: 'assets/res/welcome.jpg',
+//                    positionTag: 0,
+//                  ));
       },
     );
   }

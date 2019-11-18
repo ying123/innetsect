@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/personal_center/personal_center_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,21 +33,8 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0.0,
-        title: Text('个人中心'),
-        centerTitle: true,
-        leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Image.asset(
-              'assets/images/xiangxia.png',
-              fit: BoxFit.none,
-              width: ScreenAdapter.width(38),
-              height: ScreenAdapter.width(38),
-            )),
-      ),
+      appBar: CustomsWidget().customNav(context: context,
+          widget: new Text("个人中心"),elevation: 0.0),
       body: ListView(
         physics: BouncingScrollPhysics(),
         children: <Widget>[
@@ -161,10 +150,12 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
     print(option);
   }
 
-  ///
+  /// 相册选择头像
   _openGallery() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
     widget.provide.imagePath = image;
+    // 更新头像
+    Navigator.pop(context);
   }
 
   Provide<PersonalCenterProvide> _setupPersonalCenterNickname() {
@@ -341,7 +332,7 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
                 child: ClipOval(
                   child: provide.imagePath == null
                       ? Image.asset(
-                          provide.headPortrait,
+                          "assets/images/mall/hot_brand1.png",
                           fit: BoxFit.cover,
                         )
                       : Image.file(

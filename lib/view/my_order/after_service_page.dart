@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/my/all/after_service_list_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
-import 'package:innetsect/base/base.dart';
+import 'package:innetsect/view_model/my_order/after_service_provide.dart';
 
-class AfterServicePage extends PageProvideNode{
+/// 我的售后
+
+class AfterServicePage extends StatefulWidget {
 
   @override
-  Widget buildContent(BuildContext context) {
-    // TODO: implement buildContent
-    return AfterServiceContent();
-  }
+  _AfterServicePageState createState() => new _AfterServicePageState();
 }
 
-class AfterServiceContent extends StatefulWidget {
-  @override
-  _AfterServiceContentState createState() => new _AfterServiceContentState();
-}
-
-class _AfterServiceContentState extends State<AfterServiceContent>
+class _AfterServicePageState extends State<AfterServicePage>
 with SingleTickerProviderStateMixin{
   TabController _tabController;
+  AfterServiceProvide _afterServiceProvide;
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +46,11 @@ with SingleTickerProviderStateMixin{
       body: new TabBarView(
         controller: _tabController,
         children: <Widget>[
-          new Text("1"),
-          new Text("2"),
-          new Text("2"),
-          new Text("2"),
-          new Text("2")
+          new AfterServiceListPage(idx: 0),
+          new AfterServiceListPage(idx: 1),
+          new AfterServiceListPage(idx: 2),
+          new AfterServiceListPage(idx: 3),
+          new AfterServiceListPage(idx: 4)
         ],
       ),
     );
@@ -71,17 +67,5 @@ with SingleTickerProviderStateMixin{
     // TODO: implement dispose
     super.dispose();
     _tabController.dispose();
-  }
-
-  @override
-  void didUpdateWidget(AfterServiceContent oldWidget) {
-    // TODO: implement didUpdateWidget
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/enum/order_status.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/logistics/logistics_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
@@ -12,7 +14,6 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
-import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/my/all/all_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -51,7 +52,7 @@ class _AllContentPageState extends State<AllContentPage> {
   OrderDetailProvide _detailProvide;
   CommodityDetailProvide _commodityDetailProvide;
   int idx;
-
+  EasyRefreshController _easyRefreshController;
   List<OrderDetailModel> _orderDetailList = new List();
 
   int pageNo=1;
@@ -60,15 +61,14 @@ class _AllContentPageState extends State<AllContentPage> {
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
     return ListWidgetPage(
+        controller: _easyRefreshController,
         onRefresh: () async{
-          await Future.delayed(Duration(seconds: 2), () {
-            _listData(pageNo: 1,isReload: true);
-          });
+          _orderDetailList.clear();
+          pageNo = 1;
+          await _listData(pageNo: pageNo,isReload: true);
         },
         onLoad: () async{
-          await Future.delayed(Duration(seconds: 2), () {
-            _listData(pageNo: pageNo++);
-          });
+          await _listData(pageNo: ++pageNo);
         },
         child: <Widget>[
           // 数据内容
@@ -97,7 +97,7 @@ class _AllContentPageState extends State<AllContentPage> {
                           children: <Widget>[
                             new Text('订单号: ${item.orderNo}'),
                             new Text(OrderStatusEnum().getStatusTitle(item.status),
-                              style: TextStyle(color: Colors.blue),)
+                              style: TextStyle(color: AppConfig.blueBtnColor),)
                           ],
                         ),
                       ),
@@ -129,6 +129,7 @@ class _AllContentPageState extends State<AllContentPage> {
     _provide ??= widget._provide;
     _detailProvide??=widget._detailProvide;
     _commodityDetailProvide??=widget._commodityDetailProvide;
+    _easyRefreshController = EasyRefreshController();
     setState(() {
       idx = widget.idx;
     });
@@ -148,6 +149,7 @@ class _AllContentPageState extends State<AllContentPage> {
       padding: EdgeInsets.only(bottom: 10),
       child: new Column(
         children: skuList.map((skuItem){
+          List skuNameList = CommonUtil.skuNameSplit(skuItem.skuName);
           return new Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
@@ -162,7 +164,22 @@ class _AllContentPageState extends State<AllContentPage> {
                   height: ScreenAdapter.height(120),
                   width: (ScreenAdapter.getScreenWidth()/1.7)-4,
                   padding: EdgeInsets.only(left: 10,top: 5),
-                  child: new Text(skuItem.skuName,softWrap: true,)),
+                  alignment: Alignment.centerLeft,
+                  child:skuNameList!=null? new Column(
+                    children: <Widget>[
+                      new Container(
+                        width: double.infinity,
+                        child: new Text(skuNameList[0],softWrap: true,),
+                      ),
+                      new Container(
+                          width: double.infinity,
+                          child: new Text(skuNameList[1],style: TextStyle(color: Colors.grey),)
+                      )
+                    ],
+                  ): new Container(
+                    width: double.infinity,
+                    child: new Text(skuItem.skuName,softWrap: true,),
+                  )),
               new Container(
                   height: ScreenAdapter.height(120),
                   padding:EdgeInsets.only(bottom: 5),
@@ -203,8 +220,8 @@ class _AllContentPageState extends State<AllContentPage> {
               width: ScreenAdapter.width(180),
               padding:EdgeInsets.only(left: 10,) ,
               child: new RaisedButton(
-                textColor: Colors.white,
-                color: Colors.blue,
+                textColor: AppConfig.whiteBtnColor,
+                color: AppConfig.blueBtnColor,
                 onPressed: (){
                   ///默认支付宝
                   _commodityDetailProvide.payMode = 2;
@@ -330,7 +347,6 @@ class _AllContentPageState extends State<AllContentPage> {
   }
 
   _listData({int pageNo=0,bool isReload = false}){
-    if(isReload) _orderDetailList.clear();
     String method;
     switch(this.idx){
       case 0:

@@ -21,7 +21,7 @@ class MainProvide extends BaseProvide {
     // 初始化
   }
 //欢迎定时器在秒
-  int WELCOME_TIMER_OUT_IN_SECS = 5;
+  int WELCOME_TIMER_OUT_IN_SECS = 3;
 
   ImageProvider img;
 //倒计时

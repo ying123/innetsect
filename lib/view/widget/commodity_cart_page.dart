@@ -6,8 +6,7 @@ import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_types_model.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
-import 'package:innetsect/view/home/home_page.dart';
-import 'package:innetsect/view/mall/commodity/commodity_page.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/widget/counter_widget.dart';
@@ -208,6 +207,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
       width: double.infinity,
       child: new Column(
         children: list.asMap().keys.map((key){
+          List lists = CommonUtil.skuNameSplit(list[key].skuName);
           return new Container(
             width: double.infinity,
             height: ScreenAdapter.height(200),
@@ -260,7 +260,20 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                       // 商品描述
                                       new Expanded(
                                         flex:2,
-                                        child: new Container(
+                                        child: lists!=null?
+                                            new Column(
+                                              children: <Widget>[
+                                                new Container(
+                                                  width: double.infinity,
+                                                  child: new Text(lists[0],softWrap: true,),
+                                                ),
+                                                new Container(
+                                                    width: double.infinity,
+                                                    child: new Text(lists[1],style: TextStyle(color: Colors.grey),)
+                                                )
+                                              ],
+                                            )
+                                            : new Container(
                                           padding: EdgeInsets.only(top: 10),
                                           child: new Text(list[key].skuName,softWrap: true,
                                             style: TextStyle(fontSize: ScreenAdapter.size(28)),

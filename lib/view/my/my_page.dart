@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
-import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/animation_util.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -50,10 +48,10 @@ class _MyContentPageState extends State<MyContentPage> {
     this._loginProvide??=widget._loginProvide;
   }
 
-  Future _loginPage() async {
-    print('_loginPage');
-    Navigator.pushNamed(context, '/loginPage');
-  }
+//  Future _loginPage() async {
+//    print('_loginPage');
+//    Navigator.pushNamed(context, '/loginPage');
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -278,10 +276,10 @@ class _MyContentPageState extends State<MyContentPage> {
           children: <Widget>[
             Container(
               width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(435),
+              height: ScreenAdapter.height(480),
               color: Colors.white,
               child: Image.asset(
-                'assets/images/我的页面背景图.png',
+                'assets/images/user/header.png',
                 fit: BoxFit.fill,
                 width: ScreenAdapter.width(750),
                 height: ScreenAdapter.height(435),
@@ -327,7 +325,7 @@ class _MyContentPageState extends State<MyContentPage> {
                 child: Text(
                   userModel!=null?userModel.mobile:'',
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: ScreenAdapter.size(35),
                       fontWeight: FontWeight.w800),
                 ),

@@ -1,14 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
-import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -235,36 +233,40 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     return Provide<CommodityDetailProvide>(
         builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
           CommoditySkusModel model = provide.skusModel;
-          return new Container(
-            height: ScreenAdapter.height(110),
-            color: Colors.white,
-            padding: EdgeInsets.all(10),
-            child: new Row(
-              children: <Widget>[
-                new Container(
-                  child: CustomsWidget().subTitle(
-                    title: "已选", color: AppConfig.primaryColor,
+          List list;
+          if(model!=null){
+            list = CommonUtil.skuNameSplit(model.skuName);
+          }
+          return new InkWell(
+            onTap: (){
+              /// 弹出颜色，尺码选择
+              _provide.setInitData();
+              _cartProvide.setInitCount();
+              _provide.isBuy = false;
+              CommodityModalBottom.showBottomModal(context:context);
+            },
+            child: new Container(
+              height: ScreenAdapter.height(110),
+              color: Colors.white,
+              padding: EdgeInsets.all(10),
+              child: new Row(
+                children: <Widget>[
+                  new Container(
+                    child: CustomsWidget().subTitle(
+                      title: "已选", color: AppConfig.primaryColor,
+                    ),
                   ),
-                ),
-                new InkWell(
-                  onTap: (){
-                    /// 弹出颜色，尺码选择
-                    _provide.setInitData();
-                    _cartProvide.setInitCount();
-                    _provide.isBuy = false;
-                    CommodityModalBottom.showBottomModal(context:context);
-                  },
-                  child: new Container(
+                  new Container(
                     width: ScreenAdapter.getScreenWidth()-150,
                     padding: EdgeInsets.only(left: 20,right: 20),
-                    child: new Text(model!=null?model.skuName:""),
+                    child: new Text(list!=null?list[1]:model!=null?model.skuName:""),
                   ),
-                ),
-                new Expanded(
-                  flex:1,
-                  child: new Icon(Icons.more_horiz),
-                )
-              ],
+                  new Expanded(
+                    flex:1,
+                    child: new Icon(Icons.more_horiz),
+                  )
+                ],
+              ),
             ),
           );
         }
@@ -410,9 +412,9 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
               child: new Container(
                 width: ScreenAdapter.width(230),
                 height: ScreenAdapter.height(90),
-                color: AppConfig.primaryColor,
+                color: AppConfig.blueBtnColor,
                 alignment: Alignment.center,
-                child: new Text("立即购买",style: TextStyle(color: AppConfig.fontBackColor,
+                child: new Text("立即购买",style: TextStyle(color: AppConfig.whiteBtnColor,
                     fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
               ),
             ),

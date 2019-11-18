@@ -5,7 +5,6 @@ import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/view/activity/activity_page.dart';
 import 'package:innetsect/view/brand/brand_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
-import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view/shopping/shopping_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';

@@ -169,8 +169,8 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
             width: _detailProvide.isBuy?ScreenAdapter.getScreenWidth():ScreenAdapter.getScreenWidth()/2-10,
             padding: _detailProvide.isBuy?EdgeInsets.only(right: 10,left: 10):EdgeInsets.only(right: 5),
             child: new RaisedButton(
-              color: AppConfig.primaryColor,
-              textColor: AppConfig.fontBackColor,
+              color: AppConfig.blueBtnColor,
+              textColor: AppConfig.whiteBtnColor,
               onPressed: (){
                 // 检测本地是否存在token
                 if(!isLogin()){

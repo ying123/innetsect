@@ -224,6 +224,13 @@ flutter:
     # ---支付成功、失败--
     - assets/images/mall/pay_success.png
     - assets/images/mall/pay_fail.png
+    # --- 我的 ---
+    - assets/images/user/header.png
+    - assets/images/user/logo.png
+    # --- 开屏页 ---
+    - assets/images/main/open_app.jpg
+    - assets/images/main/commodity_enter.jpg
+    - assets/images/main/trade_enter.jpg
     # ----
     - assets/images/mall/del.png
     - assets/images/mall/edit.png

@@ -4,6 +4,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/login/login_page.dart';
+import 'package:innetsect/view/my/settings/about_us_page.dart';
 import 'package:innetsect/view/my/settings/edit_pwd_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
@@ -44,7 +45,7 @@ class _MySettingsContentState extends State<MySettingsContent> {
         child: new Column(
           children: <Widget>[
             // 个人资料
-            _listWidgets(icon: Icons.supervised_user_circle,title: "个人资料"),
+            _listWidgets(icon: Icons.account_circle,title: "个人资料"),
             new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
             // 抽签登记
             // 修改密码
@@ -53,6 +54,14 @@ class _MySettingsContentState extends State<MySettingsContent> {
                 builder: (BuildContext context){
                   return EditPwdPage();
                 }
+              ));
+            }),
+            new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
+            _listWidgets(icon: Icons.supervised_user_circle, title: "关于我们",onTap: (){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (BuildContext context){
+                    return AboutUsPage();
+                  }
               ));
             }),
             // 退出登录
