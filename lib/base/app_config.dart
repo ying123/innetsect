@@ -11,7 +11,7 @@ class AppConfig{
 
   //todo App的所有基础配置
 
-  //样式
+  //样式åå
   static final themedata = ThemeData(
     primaryColor: Colors.white,
     accentColor: Colors.white,

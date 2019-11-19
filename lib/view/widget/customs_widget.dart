@@ -240,4 +240,28 @@ class CustomsWidget{
     );
   }
 
+  /// 搜索组件
+  Widget searchWidget({Function() onTap}){
+    return new Container(
+      margin: EdgeInsets.only(left: 10,right: 10),
+      padding: EdgeInsets.all(5.0),
+      decoration: BoxDecoration(
+          color: AppConfig.assistLineColor,
+          borderRadius: BorderRadius.circular(5.0)
+      ),
+      child: InkWell(
+        onTap: (){
+          onTap();
+        },
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            new Image.asset("assets/images/search.png",width: 40,height: 40,),
+            new Text("搜索商品、品牌",style: TextStyle(color: AppConfig.assistFontColor),)
+          ],
+        ),
+      ),
+    );
+  }
+
 }

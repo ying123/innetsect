@@ -64,6 +64,8 @@ dependencies:
   city_pickers: ^0.1.28
   #侧滑索引
   azlistview: ^0.1.2
+  #转拼音
+  lpinyin: ^1.0.7
 
 dev_dependencies:
   flutter_test:

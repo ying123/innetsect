@@ -75,12 +75,11 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                   top: 5,
                   width: ScreenAdapter.width(750),
                   height: ScreenAdapter.height(20*ScreenAdapter.getPixelRatio()),
-                  child: new InkWell(
-                    onTap: (){
-                      // 跳转到搜索页面
-                      Navigator.pushNamed(context, "/mallSearchPage");
-                    },
-                    child: _searchWidget(),
+                  child: CustomsWidget().searchWidget(
+                      onTap: (){
+                        //搜索页面
+                        Navigator.pushNamed(context, "/mallSearchPage");
+                      }
                   )
               )
             ],
@@ -234,25 +233,6 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
           ),
         ],
       );
-  }
-
-  /// 搜索组件
-  Widget _searchWidget(){
-    return new Container(
-      margin: EdgeInsets.only(left: 10,right: 10),
-      padding: EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-          color: AppConfig.assistLineColor,
-          borderRadius: BorderRadius.circular(5.0)
-      ),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          new Image.asset("assets/images/search.png",width: 40,height: 40,),
-          new Text("搜索商品、品牌、品类",style: TextStyle(color: AppConfig.assistFontColor),)
-        ],
-      ),
-    );
   }
 
   /// 商品图片

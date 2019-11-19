@@ -4,6 +4,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/view/mall/home/mall_home_page.dart';
 import 'package:innetsect/view/mall/information/information_page.dart';
+import 'package:innetsect/view/mall/series/series_main_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
@@ -63,7 +64,7 @@ class _MallContentPageState extends State<MallContentPage> {
           index: widget._provide.currentIndex,
           children: [
             InformationPage(),
-            new Text("22"),
+            SeriesMainPage(),
             MallHomePage(),
             CommodityPage(),
             MyPage()
