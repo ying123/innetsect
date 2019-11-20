@@ -3,8 +3,7 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/series/category_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/mall/series/series_left_nav_page.dart';
-import 'package:innetsect/view/mall/series/series_right_page.dart';
+import 'package:innetsect/view/mall/series/series_category_child_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/series/series_provide.dart';
 import 'package:provide/provide.dart';
@@ -35,16 +34,17 @@ class SeriesCategoryContent extends StatefulWidget {
 
 class _SeriesCategoryContentState extends State<SeriesCategoryContent> with TickerProviderStateMixin{
   SeriesProvide _seriesProvide;
-  List<CategoryModel> _list=[];
+  List<CategoryModel> _list = [];
 
   //顶部导航
   TabController _tabController;
   // 是否初始化tab切换
   bool isInitTabChange = true;
+  //选中导航下标
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    _tabController = TabController(vsync: this,length: _list.length);
     return Stack(
       children: <Widget>[
         new Padding(
@@ -73,6 +73,14 @@ class _SeriesCategoryContentState extends State<SeriesCategoryContent> with Tick
     super.initState();
     _seriesProvide ??= widget._seriesProvide;
     _initLoadData();
+
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _tabController.dispose();
   }
 
   /// 初始化数据
@@ -82,12 +90,26 @@ class _SeriesCategoryContentState extends State<SeriesCategoryContent> with Tick
       print('listen data->$items');
       if(items!=null&&items.data!=null){
         if(!mounted) return;
+        List<CategoryModel> lists = CategoryModelList.fromJson(items.data).list;
+
         setState(() {
-          _list = CategoryModelList.fromJson(items.data).list;
+          _list = lists;
         });
+
+
+        _tabController = TabController(vsync: this,length: _list.length);
+        _tabController.addListener(()=>_onChangeIndex());
       }
 
     }, onError: (e) {});
+  }
+  /// 选中下标
+  void _onChangeIndex(){
+    if (_tabController.index.toDouble() == _tabController.animation.value) {
+      setState(() {
+        _currentIndex = _tabController.index;
+      });
+    }
   }
 
   /// 顶部导航
@@ -121,16 +143,7 @@ class _SeriesCategoryContentState extends State<SeriesCategoryContent> with Tick
               child: new TabBarView(
                   controller: _tabController,
                   children: _list.map((item){
-                    return new Row(
-                      children: <Widget>[
-                        new Container(
-                          width: ScreenAdapter.getScreenWidth()/5,
-                          color: AppConfig.assistLineColor,
-                          child: SeriesLeftNavPage(model: item,),
-                        ),
-                        new SeriesRightPage()
-                      ],
-                    );
+                      return new SeriesCategoryChildPage(model: item);
                   }).toList()
               ),
             ),

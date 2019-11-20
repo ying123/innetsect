@@ -10,21 +10,24 @@ import 'package:provide/provide.dart';
 class SeriesLeftNavPage extends PageProvideNode{
   final SeriesProvide _seriesProvide = SeriesProvide.instance;
   final CategoryModel model;
+  final int index;
 
-  SeriesLeftNavPage({this.model}){
+  SeriesLeftNavPage({this.model,this.index}){
     mProviders.provide(Provider<SeriesProvide>.value(_seriesProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return SeriesLeftNavContent(_seriesProvide,model: model,);
+    return SeriesLeftNavContent(_seriesProvide,model: model,index: index);
   }
 }
 class SeriesLeftNavContent extends StatefulWidget {
   final SeriesProvide _seriesProvide;
   final CategoryModel model;
-  SeriesLeftNavContent(this._seriesProvide,{this.model});
+  final int index;
+  SeriesLeftNavContent(this._seriesProvide,{this.model,this.index});
+
   @override
   _SeriesLeftNavContentState createState() => _SeriesLeftNavContentState();
 }
@@ -35,31 +38,32 @@ class _SeriesLeftNavContentState extends State<SeriesLeftNavContent> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+      return ListView.builder(
         itemCount: _subList.length,
-        itemBuilder: (context,int index){
+        itemBuilder: (context,int index) {
           return InkWell(
-            onTap: (){
-              _subList.forEach((item)=>item.isSelected=false);
+            onTap: () {
+              _subList.forEach((item) => item.isSelected = false);
               setState(() {
                 _subList[index].isSelected = true;
               });
-
               // 选中品类左侧边栏
               _loadData(_subList[index].catCode);
             },
             child: Container(
               height: ScreenAdapter.height(70),
               alignment: Alignment.center,
-              color: _subList[index].isSelected?Colors.black:AppConfig.assistLineColor,
+              color: _subList[index].isSelected ? Colors.black : AppConfig
+                  .assistLineColor,
               child: Text(
                 _subList[index].catName,
                 style: TextStyle(fontSize: ScreenAdapter.size(28),
-                    color: _subList[index].isSelected?Colors.white:Colors.black),
+                    color: _subList[index].isSelected ? Colors.white : Colors
+                        .black),
               ),
             ),
           );
-        });
+      });
   }
 
   @override
@@ -67,10 +71,12 @@ class _SeriesLeftNavContentState extends State<SeriesLeftNavContent> {
     // TODO: implement initState
     super.initState();
     _seriesProvide ??= widget._seriesProvide;
-    _subList = widget.model.subCatalogs;
-    _subList.forEach((item)=>item.isSelected=false);
-    _subList[0].isSelected = true;
-    _loadData(_subList[0].catCode);
+    if(widget.model!=null){
+      _subList = widget.model.subCatalogs;
+      _subList.forEach((item)=>item.isSelected=false);
+      _subList[0].isSelected = true;
+      _loadData(_subList[0].catCode);
+    }
   }
 
   void _loadData(int catCode){

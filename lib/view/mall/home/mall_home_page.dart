@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/data/mall/portlets_model.dart';
+import 'package:innetsect/data/mall/promotion_model.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/home/mall_home_provide.dart';
 import 'package:provide/provide.dart';
@@ -162,17 +163,59 @@ class _MallHomeContentState extends State<MallHomeContent> {
     );
   }
 
+  /// 商品集合
   Widget _setupListItemsContent() {
-    return Container(
+    Widget widget;
+    if(_portletsModelList.length>0){
+      widget = Container(
+        width: double.infinity,
+        child: Column(
+          children: _portletsModelList.map((item)=>_portletContentList(item)).toList(),
+        ),
+      );
+    }else{
+      widget = Container();
+    }
+    return widget;
+  }
+
+  /// 商品集合
+  Widget _portletContentList(PortletsModel model){
+    return new Container(
       width: double.infinity,
-      child: _portletsModelList.length>0?new Column(
-        children: _portletsModelList.map((item){
-          return _contentList(item);
-        }).toList(),
-      ):new Container(),
+      padding: EdgeInsets.all(10),
+      child: new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          _headerContent(model.promotion)
+        ],
+      ),
     );
   }
 
+  /// 商品集合--头部样式
+  Widget _headerContent(PromotionModel model){
+    return new IntrinsicHeight(
+      child: new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: ScreenAdapter.getScreenWidth()/4,
+                height: ScreenAdapter.height(20),
+                color: Colors.red,
+                child: new Text(model.promotionName),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  ///TODO 废弃
   Widget _contentList(PortletsModel model){
     Widget widget;
     switch(model.contents.length) {
@@ -269,9 +312,9 @@ class _MallHomeContentState extends State<MallHomeContent> {
   _loadListData(){
     widget._provide.listData(pageNo++).doOnListen((){}).doOnCancel((){})
         .listen((item){
-//          setState(() {
-//            _portletsModelList..addAll( PortletsModelList.fromJson(item.data).list);
-//          });
+//        setState(() {
+//          _portletsModelList..addAll( PortletsModelList.fromJson(item.data).list);
+//        });
     },onError: (e){});
   }
 
