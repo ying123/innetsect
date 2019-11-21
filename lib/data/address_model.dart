@@ -30,9 +30,7 @@ class AddressModel{
     this.postalCode,
     this.email,
     this.lastUsed,
-  }){
-    lastUsed = false;
-  }
+  });
 
   factory AddressModel.fromJson(Map<String,dynamic> json){
     return AddressModel(

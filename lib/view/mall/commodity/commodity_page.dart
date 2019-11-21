@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
+import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
@@ -11,7 +12,6 @@ import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 
 class CommodityPage extends PageProvideNode{
@@ -78,7 +78,11 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                   child: CustomsWidget().searchWidget(
                       onTap: (){
                         //搜索页面
-                        Navigator.pushNamed(context, "/mallSearchPage");
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context){
+                              return SearchPage();
+                            }
+                        ));
                       }
                   )
               )

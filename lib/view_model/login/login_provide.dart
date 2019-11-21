@@ -120,7 +120,7 @@ class LoginProvide extends BaseProvide {
   
   /// 获取验证码
   Future getVaildCode() {
-    return _repo.getVaildCode(userCode);
+    return _repo.getVaildCode(_userCode);
   }
 
   /// 修改密码

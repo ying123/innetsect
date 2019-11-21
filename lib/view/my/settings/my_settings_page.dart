@@ -168,7 +168,7 @@ class _MySettingsContentState extends State<MySettingsContent> {
         padding: EdgeInsets.only(top: 20,bottom: 20),
         alignment: Alignment.center,
         margin: EdgeInsets.only(top: 20),
-        child: new Text("退  出  登  录",style: TextStyle(color: Colors.red,
+        child: new Text("退  出  登  录",style: TextStyle(color: AppConfig.blueBtnColor,
             fontSize: ScreenAdapter.size(28)),),
       ),
     );

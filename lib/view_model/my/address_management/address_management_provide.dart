@@ -18,7 +18,8 @@ class AddressManagementProvide extends BaseProvide{
   List<AddressModel> get listAddressModel => _listAddressModel;
 
   void addListAddress(List<AddressModel> list){
-    _listAddressModel=list;
+    _listAddressModel.clear();
+    _listAddressModel.addAll(list);
     notifyListeners();
   }
 
@@ -30,8 +31,9 @@ class AddressManagementProvide extends BaseProvide{
 
   void setIsDefault(AddressModel model){
     _listAddressModel.forEach((item){
+      item.lastUsed = false;
       if(item.addressID==model.addressID){
-        item.lastUsed = model.lastUsed;
+        item.lastUsed = true;
       }
     });
     notifyListeners();
@@ -75,6 +77,11 @@ class AddressManagementProvide extends BaseProvide{
   Future delDatas(AddressModel model) {
    return  _repo
        .deleteAddresses(model.addressID);
+  }
+
+  ///设置默认地址
+  Future onDefaultAddresses(AddressModel model){
+    return _repo.onDefaultAddresses(model.addressID);
   }
 
   ///工厂模式

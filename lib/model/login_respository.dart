@@ -21,7 +21,7 @@ class LoginService {
 
   /// 获取验证码
   Future getVaildCode(String phone){
-    var url = '/sms/vcode/$phone';
+    var url = '/api/sms/vcode/$phone';
     var response = patch(url);
     return response;
   }

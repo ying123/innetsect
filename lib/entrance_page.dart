@@ -13,6 +13,7 @@ class _EntrancePageState extends State<EntrancePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       body: new Container(
+        color: Colors.black,
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -28,7 +29,7 @@ class _EntrancePageState extends State<EntrancePage> {
               child: new Container(
                 width: double.infinity,
                 height: ScreenAdapter.getScreenHeight()/2,
-                child: Image.asset("assets/images/main/trade_enter.jpg",fit: BoxFit.fill,),
+                child: Image.asset("assets/images/main/trade_enter.jpg",fit: BoxFit.fitWidth,),
               )
             ),
             new InkWell(
@@ -43,7 +44,7 @@ class _EntrancePageState extends State<EntrancePage> {
               child: new Container(
                 width: double.infinity,
                 height: ScreenAdapter.getScreenHeight()/2,
-                child: Image.asset("assets/images/main/commodity_enter.jpg",fit: BoxFit.fill,),
+                child: Image.asset("assets/images/main/commodity_enter.jpg",fit: BoxFit.fitWidth,),
               )
             )
           ],

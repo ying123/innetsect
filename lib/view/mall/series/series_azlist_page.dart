@@ -87,8 +87,16 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
         list[i].tagIndex = "#";
       }
     }
+    list.sort((a,b){
+      String pinyinA = PinyinHelper.getPinyinE(a.name);
+      String pinyinB = PinyinHelper.getPinyinE(b.name);
+      dynamic tagA = pinyinA.substring(1, 2).toLowerCase();
+      dynamic tagB = pinyinB.substring(1, 2).toLowerCase();
+      return tagA.compareTo(tagB);
+    });
     //根据 #,A-Z 排序
     _sortListBySuspensionTag(_list);
+
   }
 
   /// 重置排序

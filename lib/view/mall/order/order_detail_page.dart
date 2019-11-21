@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/logistics/logistics_page.dart';
@@ -48,9 +49,11 @@ class OrderContent extends StatefulWidget {
 }
 
 class _OrderContentState extends State<OrderContent> {
+  CommodityAndCartProvide _provide;
   OrderDetailProvide _orderDetailProvide;
   CommodityDetailProvide _detailProvide;
   LogisticsProvide _logisticsProvide;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -108,6 +111,7 @@ class _OrderContentState extends State<OrderContent> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _provide ??= widget._provide;
     _orderDetailProvide ??= widget._orderDetailProvide;
     _detailProvide ??= widget._detailProvide;
     _logisticsProvide ??= widget._logisticsProvide;
@@ -165,12 +169,31 @@ class _OrderContentState extends State<OrderContent> {
               .listen((item) {
             print('listen data->$item');
             if(item!=null&&item.data!=null){
+              _reloadCartList();
               _setOrder(item.data['orderID']);
             }
           }, onError: (e) {});
         }
       },child: new Text("支付"),
     );
+  }
+
+  void _reloadCartList(){
+    _provide.getMyCarts().doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+        List<CommodityModels> list = CommodityList.fromJson(item.data).list;
+        _provide.commodityTypesModelLists.clear();
+        list.forEach((res){
+          _provide.addCarts(res);
+        });
+      }
+    }, onError: (e) {});
   }
 
   _setOrder(int orderID){

@@ -22,7 +22,7 @@ const List<PlatFormMenu> mallNavBarList = const <PlatFormMenu>[
   ),
   const PlatFormMenu(index:1,title: "分类",
     icon: "assets/images/mall/brand@3x.png",
-    selIcon: "assets/images/mall/brand@3x.png",
+    selIcon: "assets/images/mall/sel_brand@3x.png",
   ),
   const PlatFormMenu(index:1,title: "首页",
     icon: "assets/images/mall/tab_home.png",

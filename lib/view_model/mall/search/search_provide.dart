@@ -1,5 +1,7 @@
 
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/model/mall/search_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
 class SearchProvide extends BaseProvide{
 
@@ -16,5 +18,15 @@ class SearchProvide extends BaseProvide{
 
   SearchProvide._internal() {
     print('MallProvode init');
+  }
+
+  final SearchRepo _repo = SearchRepo();
+
+  ///获取列表
+  Observable onRecommendedTags(){
+    return _repo.onRecommendedTags().doOnData((result){})
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
   }
 }

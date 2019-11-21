@@ -4,12 +4,14 @@ import 'package:azlistview/azlistview.dart';
 class ApprovedModel extends ISuspensionBean{
   String name;
   String tagIndex;
+  String tagIndexTwo;
   String brandLogo;
   String namePinyin;
 
   ApprovedModel({
     this.name,
     this.tagIndex,
+    this.tagIndexTwo,
     this.brandLogo,
     this.namePinyin
   });
@@ -25,6 +27,7 @@ class ApprovedModel extends ISuspensionBean{
     'brandLogo': brandLogo,
     'brandName': name,
     'tagIndex': tagIndex,
+    'tagIndexTwo': tagIndexTwo,
     'namePinyin': namePinyin,
     'isShowSuspension': isShowSuspension
   };

@@ -108,7 +108,9 @@ class CustomsWidget{
   /// [price] 价格
   Widget priceTitle({
     @required price,
-    Color color
+    Color color,
+    FontWeight fontWeight = FontWeight.w900,
+    double fontSize
   }){
     return new Row(
       children: <Widget>[
@@ -122,7 +124,7 @@ class CustomsWidget{
         new Container(
             alignment: Alignment.center,
             child: new Text(price, style: TextStyle(
-                fontSize: ScreenAdapter.size(28),fontWeight: FontWeight.w900,color: color
+                fontSize: fontSize!=null?fontSize:ScreenAdapter.size(28),fontWeight: fontWeight,color: color
             ),
             )
         ),

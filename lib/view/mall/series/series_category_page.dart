@@ -3,6 +3,7 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/series/category_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/mall/series/series_category_child_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/series/series_provide.dart';
@@ -40,8 +41,6 @@ class _SeriesCategoryContentState extends State<SeriesCategoryContent> with Tick
   TabController _tabController;
   // 是否初始化tab切换
   bool isInitTabChange = true;
-  //选中导航下标
-  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +59,11 @@ class _SeriesCategoryContentState extends State<SeriesCategoryContent> with Tick
           child: CustomsWidget().searchWidget(
             onTap: (){
               // 跳转搜索
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context){
+                  return SearchPage();
+                }
+              ));
             }
           ),
         )
@@ -98,25 +102,16 @@ class _SeriesCategoryContentState extends State<SeriesCategoryContent> with Tick
 
 
         _tabController = TabController(vsync: this,length: _list.length);
-        _tabController.addListener(()=>_onChangeIndex());
       }
 
     }, onError: (e) {});
-  }
-  /// 选中下标
-  void _onChangeIndex(){
-    if (_tabController.index.toDouble() == _tabController.animation.value) {
-      setState(() {
-        _currentIndex = _tabController.index;
-      });
-    }
   }
 
   /// 顶部导航
   Widget _tabBarRootNav(){
     return Container(
       width: ScreenAdapter.getScreenWidth(),
-      child: Column(
+      child: _list.length>0? Column(
         children: <Widget>[
           new SizedBox(
             width: double.infinity,
@@ -142,14 +137,14 @@ class _SeriesCategoryContentState extends State<SeriesCategoryContent> with Tick
               padding: EdgeInsets.only(top: 10),
               child: new TabBarView(
                   controller: _tabController,
-                  children: _list.map((item){
+                  children:  _list.map((item){
                       return new SeriesCategoryChildPage(model: item);
                   }).toList()
               ),
             ),
           )
         ],
-      ),
+      ):Container(),
     );
   }
 }

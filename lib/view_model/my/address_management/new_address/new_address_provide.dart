@@ -181,6 +181,8 @@ class  NewAddressProvide extends BaseProvide{
           .doOnDone(() {});
     }
   }
+
+
   ///工厂模式
   factory NewAddressProvide()=> _getInstance();
   static NewAddressProvide get instance => _getInstance();

@@ -27,9 +27,9 @@ class AddressManagementPage extends PageProvideNode {
 }
 
 class AddressManagementContentPage extends StatefulWidget {
-  final AddressManagementProvide provide;
+  final AddressManagementProvide _provide;
   final OrderDetailProvide _orderDetailProvide;
-  AddressManagementContentPage(this.provide,this._orderDetailProvide);
+  AddressManagementContentPage(this._provide,this._orderDetailProvide);
 
   @override
   _AddressManagementContentPageState createState() =>
@@ -39,6 +39,7 @@ class AddressManagementContentPage extends StatefulWidget {
 class _AddressManagementContentPageState
     extends State<AddressManagementContentPage> {
   OrderDetailProvide _orderDetailProvide;
+  AddressManagementProvide _provide;
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +74,10 @@ class _AddressManagementContentPageState
   void initState() {
     // TODO: implement initState
     super.initState();
-    _orderDetailProvide = widget._orderDetailProvide;
+    _orderDetailProvide ??= widget._orderDetailProvide;
+    _provide ??= widget._provide;
     // 地址管理请求
-    widget.provide.clearList();
+    _provide.clearList();
     _listData();
   }
   
@@ -132,12 +134,17 @@ class _AddressManagementContentPageState
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
                                         new CustomsWidget().customRoundedWidget(isSelected: item.lastUsed,iconSize: 18, onSelectedCallback: (){
-                                          //设置默认地址请求
-                                          item.lastUsed = !item.lastUsed;
-                                          addressProvide.editDatas(item).doOnListen(() {}).doOnCancel(() {}).listen((items) {
-                                            print('listen data->$items');
-                                            addressProvide.setIsDefault(item);
-                                          }, onError: (e) {});
+                                          // 设置默认地址
+                                          addressProvide.onDefaultAddresses(item).then((items){
+                                            if(items!=null){
+                                              addressProvide.setIsDefault(item);
+                                              CustomsWidget().showToast(title: "修改成功");
+                                            }
+                                          });
+//                                          addressProvide.editDatas(item).doOnListen(() {}).doOnCancel(() {}).listen((items) {
+//                                            print('listen data->$items');
+//                                            addressProvide.setIsDefault(item);
+//                                          }, onError: (e) {});
                                         }),
                                         new Padding(padding: EdgeInsets.only(left: 5),
                                           child: new Text("设为默认",style: TextStyle(color: Colors.orange),),)
@@ -242,7 +249,7 @@ class _AddressManagementContentPageState
 
   /// 列表数据
   void _listData() {
-    widget.provide.listData().doOnListen(() {
+    _provide.listData().doOnListen(() {
       print('doOnListen');
     }).doOnCancel(() {}).listen((item) {
       ///加载数据
@@ -250,7 +257,7 @@ class _AddressManagementContentPageState
       List<AddressModel> list = AddressModelList
           .fromJson(item.data)
           .list;
-      widget.provide.addListAddress(list);
+      _provide.addListAddress(list);
     }, onError: (e) {});
   }
 }

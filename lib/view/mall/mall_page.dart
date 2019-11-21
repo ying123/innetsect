@@ -14,7 +14,7 @@ import 'package:innetsect/view/mall/commodity/commodity_page.dart';
 
 ///商城页面
 class MallPage extends PageProvideNode{
-  final MallProvide _provide = MallProvide();
+  final MallProvide _provide = MallProvide.instance;
   final LoginProvide _loginProvide = LoginProvide();
   MallPage(){
     mProviders.provide(Provider<MallProvide>.value(_provide));
@@ -67,7 +67,7 @@ class _MallContentPageState extends State<MallContentPage> {
             SeriesMainPage(),
             MallHomePage(),
             CommodityPage(),
-            MyPage()
+            MyPage(page:'mall')
           ],
         );
       },
@@ -118,7 +118,7 @@ class _MallContentPageState extends State<MallContentPage> {
     widget._provide.currentIndex = index;
       if(index==4){
         this._loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
-          if(userItem.data!=null){
+          if(userItem!=null&&userItem.data!=null){
             this._loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
           }
         },onError: (e){

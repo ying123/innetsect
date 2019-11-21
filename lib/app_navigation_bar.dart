@@ -11,7 +11,7 @@ import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
 
 class AppNavigationBar extends PageProvideNode {
-  final AppNavigationBarProvide _provide = AppNavigationBarProvide();
+  final AppNavigationBarProvide _provide = AppNavigationBarProvide.instance;
   final LoginProvide _loginProvide = LoginProvide();
   AppNavigationBar() {
     mProviders.provide(Provider<AppNavigationBarProvide>.value(_provide));
@@ -44,7 +44,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
   //购物车
   ShoppingPage _shoppingPage = ShoppingPage();
   //我的
-  MyPage _myPage = MyPage();
+  MyPage _myPage = MyPage(page:'exhibition');
 
   AnimationController _animationController;
   Animation<double> _animation;
@@ -63,12 +63,6 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
             _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
               if(userItem!=null&&userItem.data!=null){
                 _loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
-              }else{
-//                Navigator.push(context, MaterialPageRoute(
-//                  builder: (BuildContext context){
-//                    return new LoginPage();
-//                  }
-//                ));
               }
             },onError: (e){
             });

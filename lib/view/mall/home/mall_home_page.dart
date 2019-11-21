@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/data/mall/portlets_model.dart';
 import 'package:innetsect/data/mall/promotion_model.dart';
+import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/home/mall_home_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -14,13 +18,15 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class MallHomePage extends PageProvideNode {
   final MallHomeProvide _provide = MallHomeProvide();
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   MallHomePage(){
     mProviders.provide(Provider<MallHomeProvide>.value(_provide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
 
-    return MallHomeContent(_provide);
+    return MallHomeContent(_provide,_detailProvide);
   }
 
 }
@@ -28,8 +34,9 @@ class MallHomePage extends PageProvideNode {
 class MallHomeContent extends StatefulWidget {
 
   final MallHomeProvide _provide;
+  final CommodityDetailProvide _detailProvide;
 
-  MallHomeContent(this._provide);
+  MallHomeContent(this._provide,this._detailProvide);
 
   @override
   _MallHomeContentState createState() => new _MallHomeContentState();
@@ -37,6 +44,7 @@ class MallHomeContent extends StatefulWidget {
 
 class _MallHomeContentState extends State<MallHomeContent> {
 
+  CommodityDetailProvide _detailProvide;
   // 控制器
   EasyRefreshController _controller;
   // 分页
@@ -110,6 +118,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
     // TODO: implement initState
     super.initState();
     _controller = new EasyRefreshController();
+    _detailProvide ??= widget._detailProvide;
     // 加载首页数据
     _loadBannerData();
   }
@@ -187,7 +196,9 @@ class _MallHomeContentState extends State<MallHomeContent> {
       child: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          _headerContent(model.promotion)
+          _headerContent(model.promotion),
+          _commodityContent(model.promotion.products),
+          _bottomContent(model.promotion.promotionCode)
         ],
       ),
     );
@@ -199,19 +210,113 @@ class _MallHomeContentState extends State<MallHomeContent> {
       child: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: ScreenAdapter.getScreenWidth()/4,
-                height: ScreenAdapter.height(20),
-                color: Colors.red,
-                child: new Text(model.promotionName),
-              )
-            ],
+          new Padding(padding: EdgeInsets.only(bottom: 10),
+          child: new Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _dividerWidget(width: ScreenAdapter.getScreenWidth()/4,padding: EdgeInsets.only(right: 10),indent: 60),
+                new Text(model.promotionName,softWrap: false,
+                  style: TextStyle(color: AppConfig.fontBackColor,fontWeight:FontWeight.w600,fontSize: ScreenAdapter.size(32)),),
+                _dividerWidget(width: ScreenAdapter.getScreenWidth()/4,padding: EdgeInsets.only(left: 10),endIndent: 60),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            height: ScreenAdapter.height(340),
+            child: CachedNetworkImage(imageUrl: model.promotionPic,),
           )
         ],
       ),
+    );
+  }
+
+  /// 商品列表
+  Widget _commodityContent(List<CommodityModels> products){
+    return new Container(
+      color: Colors.white,
+      width: double.infinity,
+      padding: EdgeInsets.only(left: 30,bottom: 10),
+      alignment: Alignment.centerLeft,
+      child: new Wrap(
+        spacing: 10,
+        alignment: WrapAlignment.center,
+        children: products.map((item){
+          String title = item.prodName;
+          if(item.prodName.length>10){
+            title = title.substring(0,10) + "...";
+          }
+          return InkWell(
+            onTap: (){
+              /// 跳转商品详情
+              _detailProvide.clearCommodityModels();
+              _detailProvide.prodId = item.prodID;
+              Navigator.push(context, MaterialPageRoute(
+                  builder:(context){
+                    return new CommodityDetailPage();
+                  }
+              )
+              );
+            },
+            child: new Container(
+              width: ScreenAdapter.getScreenWidth()/3.8,
+              margin: EdgeInsets.only(top: 10),
+              child: new Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  new SizedBox(
+                    height: ScreenAdapter.height(180),
+                    child: new CachedNetworkImage(imageUrl: item.prodPic,),
+                  ),
+                  new Container(
+                    padding:EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new Text(title,overflow: TextOverflow.ellipsis,softWrap: false,
+                          style: TextStyle(fontSize: ScreenAdapter.size(26),fontWeight: FontWeight.w600),)
+                      ],
+                    ),
+                  ),
+                  new Container(
+                    padding:EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CustomsWidget().priceTitle(price: item.originalPrice.toString(),fontWeight: FontWeight.w500,fontSize: ScreenAdapter.size(24))
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+  
+  Widget _bottomContent(String promotionCode){
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(bottom: 10),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Text("查看全部",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: ScreenAdapter.size(26)),),
+          new Icon(Icons.arrow_right)
+        ],
+      ),
+    );
+  }
+
+  /// 横线
+  Widget _dividerWidget({double width,double height=50.0,EdgeInsetsGeometry padding,double indent=0.0,double endIndent=0.0}){
+    return Container(
+      width: width,
+      height: ScreenAdapter.height(height),
+      padding: padding,
+      child: new Divider(color: Colors.grey,indent: indent,endIndent: endIndent,height: 5,),
     );
   }
 
