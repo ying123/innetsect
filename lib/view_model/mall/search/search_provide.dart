@@ -5,6 +5,16 @@ import 'package:rxdart/rxdart.dart';
 
 class SearchProvide extends BaseProvide{
 
+  //搜索条件
+  String _searchValue;
+
+  String get searchValue=>_searchValue;
+
+  set searchValue(String searchValue){
+    _searchValue = searchValue;
+    notifyListeners();
+  }
+
   /// 工厂模式
   factory SearchProvide()=> _getInstance();
   static SearchProvide get instance => _getInstance();

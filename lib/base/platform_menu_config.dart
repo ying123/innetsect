@@ -4,8 +4,11 @@ class PlatFormMenu{
   final String title;
   final String icon;
   final String selIcon;
+  final bool isSelected;
+  final String direction;
 
-  const PlatFormMenu({this.index,this.title,this.icon,this.selIcon});
+  const PlatFormMenu({this.index,this.title,this.icon,this.selIcon,this.isSelected,this.direction});
+
 }
 
 /// 商城首页头部导航
@@ -58,4 +61,5 @@ const List<PlatFormMenu> seriesTabBarList = const <PlatFormMenu>[
   const PlatFormMenu( index: 0,title: "品牌" ),
   const PlatFormMenu( index: 1,title: "品类" )
 ];
+
 
