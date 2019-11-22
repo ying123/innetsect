@@ -217,7 +217,6 @@ class _AllContentPageState extends State<AllContentPage> {
             this._cancelOrderWidget(model.orderID),
             new Container(
               height: ScreenAdapter.height(60),
-              width: ScreenAdapter.width(180),
               padding:EdgeInsets.only(left: 10,) ,
               child: new RaisedButton(
                 textColor: AppConfig.whiteBtnColor,
@@ -264,7 +263,6 @@ class _AllContentPageState extends State<AllContentPage> {
   Widget _cancelOrderWidget(int orderID){
     return new Container(
         height: ScreenAdapter.height(60),
-        width: ScreenAdapter.width(160),
         child: new RaisedButton(
           color: AppConfig.assistLineColor,
           onPressed: (){
@@ -299,7 +297,6 @@ class _AllContentPageState extends State<AllContentPage> {
   Widget _logisticsWidget(OrderDetailModel model){
     return new Container(
       height: ScreenAdapter.height(60),
-      width: ScreenAdapter.width(180),
       padding:EdgeInsets.only(left: 10,) ,
       child: new RaisedButton(
         color: AppConfig.fontBackColor,
@@ -320,7 +317,6 @@ class _AllContentPageState extends State<AllContentPage> {
   Widget _delOrderWidget(int orderID){
     return new Container(
       height: ScreenAdapter.height(60),
-      width: ScreenAdapter.width(180),
       padding:EdgeInsets.only(left: 10,) ,
       child: new RaisedButton(
         color: AppConfig.primaryColor,

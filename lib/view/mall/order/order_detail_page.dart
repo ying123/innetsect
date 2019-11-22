@@ -477,7 +477,8 @@ class _OrderContentState extends State<OrderContent> {
         padding: EdgeInsets.all(10),
         child: model!=null? new Column(
           children: <Widget>[
-            new Row(
+            ///TODO 暂时隐藏
+            /**new Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 new Text("卡券抵用:"),
@@ -491,8 +492,9 @@ class _OrderContentState extends State<OrderContent> {
                   ),
                 )
               ],
-            ),
-            new Row(
+            ),*/
+            ///TODO 暂时隐藏
+            /**new Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 new Text("积分支付:"),
@@ -506,7 +508,7 @@ class _OrderContentState extends State<OrderContent> {
                   ),
                 )
               ],
-            ),
+            ),*/
             new Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -521,7 +523,8 @@ class _OrderContentState extends State<OrderContent> {
                 )
               ],
             ),
-            new Row(
+            ///TODO 暂时隐藏
+            /**new Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 new Text("发票类型:"),
@@ -535,7 +538,7 @@ class _OrderContentState extends State<OrderContent> {
                   ),
                 )
               ],
-            ),
+            ),*/
           ],
         ):new Container(),
       );
