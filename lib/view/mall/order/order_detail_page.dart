@@ -75,7 +75,7 @@ class _OrderContentState extends State<OrderContent> {
               // 商品总价
               _orderCountWidget(),
               // 底部
-              _orderDetailProvide.orderDetailModel.status==2?Container():_orderBottomWidget(),
+              _orderBottomWidget(),
               // 已支付订单显示
               _orderNoWidget(),
             ],
@@ -386,11 +386,11 @@ class _OrderContentState extends State<OrderContent> {
                                         children: <Widget>[
                                           new Container(
                                             width: double.infinity,
-                                            child: new Text(skuNameList[0],softWrap: true,),
+                                            child: new Text(skuNameList.length>0?skuNameList[0]:item.skuName,softWrap: true,),
                                           ),
                                           new Container(
                                               width: double.infinity,
-                                              child: new Text(skuNameList[1],style: TextStyle(color: Colors.grey),)
+                                              child: new Text(skuNameList.length>0?skuNameList[1]:"",style: TextStyle(color: Colors.grey),)
                                           )
                                         ],
                                       ),
@@ -470,78 +470,86 @@ class _OrderContentState extends State<OrderContent> {
     return Provide<OrderDetailProvide> (
         builder: (BuildContext context,Widget widget,OrderDetailProvide  provide){
       OrderDetailModel model = provide.orderDetailModel;
-      return new Container(
-        color: Colors.white,
-        width: double.infinity,
-        margin: EdgeInsets.only(top: 5),
-        padding: EdgeInsets.all(10),
-        child: model!=null? new Column(
-          children: <Widget>[
-            ///TODO 暂时隐藏
-            /**new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text("卡券抵用:"),
-                new Container(
+      if(model.status==2){
+        return Container();
+      }else {
+        return new Container(
+          color: Colors.white,
+          width: double.infinity,
+          margin: EdgeInsets.only(top: 5),
+          padding: EdgeInsets.all(10),
+          child: model != null ? new Column(
+            children: <Widget>[
+
+              ///TODO 暂时隐藏
+              /**new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                  new Text("卡券抵用:"),
+                  new Container(
                   padding: EdgeInsets.only(top: 10),
                   child: new Row(
-                    children: <Widget>[
-                      new CustomsWidget().priceTitle(price: model.payCoupon.toString()),
-                      new Icon(Icons.chevron_right,color: Colors.grey,)
-                    ],
+                  children: <Widget>[
+                  new CustomsWidget().priceTitle(price: model.payCoupon.toString()),
+                  new Icon(Icons.chevron_right,color: Colors.grey,)
+                  ],
                   ),
-                )
-              ],
-            ),*/
-            ///TODO 暂时隐藏
-            /**new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text("积分支付:"),
-                new Container(
+                  )
+                  ],
+                  ),*/
+
+              ///TODO 暂时隐藏
+              /**new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                  new Text("积分支付:"),
+                  new Container(
                   padding: EdgeInsets.only(top: 10),
                   child: new Row(
-                    children: <Widget>[
-                      new CustomsWidget().priceTitle(price: model.payPoint.toString()),
-                      new Icon(Icons.chevron_right,color: Colors.grey,)
-                    ],
+                  children: <Widget>[
+                  new CustomsWidget().priceTitle(price: model.payPoint.toString()),
+                  new Icon(Icons.chevron_right,color: Colors.grey,)
+                  ],
                   ),
-                )
-              ],
-            ),*/
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text("实际支付:"),
-                new Container(
-                  padding: EdgeInsets.only(right: 10,top: 10),
-                  child: new Row(
-                    children: <Widget>[
-                      new CustomsWidget().priceTitle(price: model.payableAmount.toString(),color: Colors.red)
-                    ],
-                  ),
-                )
-              ],
-            ),
-            ///TODO 暂时隐藏
-            /**new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text("发票类型:"),
-                new Container(
+                  )
+                  ],
+                  ),*/
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  new Text("实际支付:"),
+                  new Container(
+                    padding: EdgeInsets.only(right: 10, top: 10),
+                    child: new Row(
+                      children: <Widget>[
+                        new CustomsWidget().priceTitle(price: model
+                            .payableAmount.toString(), color: Colors.red)
+                      ],
+                    ),
+                  )
+                ],
+              ),
+
+              ///TODO 暂时隐藏
+              /**new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                  new Text("发票类型:"),
+                  new Container(
                   padding: EdgeInsets.only(top: 10),
                   child: new Row(
-                    children: <Widget>[
-                      new Text(getType(model.invoiceType)),
-                      new Icon(Icons.chevron_right,color: Colors.grey,)
-                    ],
+                  children: <Widget>[
+                  new Text(getType(model.invoiceType)),
+                  new Icon(Icons.chevron_right,color: Colors.grey,)
+                  ],
                   ),
-                )
-              ],
-            ),*/
-          ],
-        ):new Container(),
-      );
+                  )
+                  ],
+                  ),*/
+            ],
+          ) : new Container(),
+        );
+      }
     });
   }
 

@@ -319,7 +319,7 @@ class _AllContentPageState extends State<AllContentPage> {
       height: ScreenAdapter.height(60),
       padding:EdgeInsets.only(left: 10,) ,
       child: new RaisedButton(
-        color: AppConfig.primaryColor,
+        color: AppConfig.blueBtnColor,
         onPressed: () {
           //删除订单
           CustomsWidget().customShowDialog(

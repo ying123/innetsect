@@ -39,7 +39,7 @@ static Route createRoute(Tween<Offset> tween, Widget child) {
 }
 
   static List skuNameSplit(String skuName){
-    List list;
+    List list = List();
     if(skuName.indexOf(":")>0){
       list = skuName.split(":");
     }
