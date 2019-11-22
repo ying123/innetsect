@@ -130,4 +130,20 @@ class LoginProvide extends BaseProvide {
   Future editLogingPwd(String pwd){
     return _repo.editPwdSetting(pwd);
   }
+
+  /// 修改昵称
+  Future editUserNick(String userNick){
+    return _repo.editUserNick(userNick);
+  }
+
+  /// 验证昵称
+  Observable getVaildNick(String nickName) {
+    return _repo.getVaildNick(nickName)
+        .doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
 }

@@ -332,6 +332,7 @@ class _AllContentPageState extends State<AllContentPage> {
               onPressed: () async{
                 await _provide.delOrder(orderID).then((item){
                   if(item.data){
+                    CustomsWidget().showToast(title: "删除成功");
                     //删除订单
                     _orderDetailList.removeWhere((res)=>res.orderID==orderID);
                     this.setState((){});

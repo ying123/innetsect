@@ -42,7 +42,8 @@ class _MyOrderContentPageState extends State<MyOrderContentPage> {
           centerTitle: true,
           leading: InkWell(
               onTap: () {
-                Navigator.popAndPushNamed(context, "/appNavigationBarPage");
+                Navigator.pop(context);
+//                Navigator.popAndPushNamed(context, "/appNavigationBarPage");
               },
               child: new Container(
                   padding: EdgeInsets.all(20),

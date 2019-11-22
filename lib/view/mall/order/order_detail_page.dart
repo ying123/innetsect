@@ -3,6 +3,7 @@ import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/order_detail_model.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/logistics/logistics_page.dart';
 import 'package:innetsect/view/mall/order/order_pay_page.dart';
@@ -62,48 +63,39 @@ class _OrderContentState extends State<OrderContent> {
           fontWeight: FontWeight.w900 ),
         )
       ),
-      body: new Stack(
-        children: <Widget>[
-          new Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: new Container(
-                width: double.infinity,
-                height: ScreenAdapter.getScreenHeight()-140,
-                color: AppConfig.assistLineColor,
-                child: new ListView(
-                  children: <Widget>[
-                    // 地址栏
-                    _addressWidget(),
-                    // 订单详情
-                    _orderDetailWidget(),
-                    // 商品总价
-                    _orderCountWidget(),
-                    // 底部
-                    _orderBottomWidget(),
-                    // 已支付订单显示
-                    this._orderNoWidget(),
-                  ],
-                ),
-              ),
+      body: Scaffold(
+        body: new SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: 80),
+          child: Column(
+            children: <Widget>[
+              // 地址栏
+              _addressWidget(),
+              // 订单详情
+              _orderDetailWidget(),
+              // 商品总价
+              _orderCountWidget(),
+              // 底部
+              _orderDetailProvide.orderDetailModel.status==2?Container():_orderBottomWidget(),
+              // 已支付订单显示
+              _orderNoWidget(),
+            ],
           ),
-          new Positioned(
-              bottom: 10,
-              left: 20,
-              right: 20,
-              child: Provide<OrderDetailProvide>(
-                  builder: (BuildContext context,Widget widget, OrderDetailProvide provide){
-                    if(provide.orderDetailModel!=null&&provide.orderDetailModel.status==0){
-                      return this.payBtn();
-                    }else {
-                      return this.logisticsBtn();
-                    }
-                  }
-              )
-          )
-        ],
-      ),
+        ),
+        bottomSheet: Container(
+          width: double.infinity,
+          color: Colors.white,
+          margin: EdgeInsets.only(left: 20,right: 20),
+          child: Provide<OrderDetailProvide>(
+              builder: (BuildContext context,Widget widget, OrderDetailProvide provide){
+                if(provide.orderDetailModel!=null&&provide.orderDetailModel.status==0){
+                  return this.payBtn();
+                }else {
+                  return this.logisticsBtn();
+                }
+              }
+          ),
+        ),
+      )
     );
   }
 
@@ -339,13 +331,33 @@ class _OrderContentState extends State<OrderContent> {
           width: double.infinity,
           child: new Column(
             children: <Widget>[
-              CustomsWidget().subTitle(title: "订单详情",color: AppConfig.primaryColor),
+              new Row(
+                children: <Widget>[
+                  new Container(
+                    width: ScreenAdapter.width(10),
+                    height: ScreenAdapter.height(40),
+                    margin: EdgeInsets.only(right: 8),
+                    color: AppConfig.blueBtnColor,
+                  ),
+                  new Text("订单详情",style: TextStyle(
+                      fontSize: ScreenAdapter.size(28),
+                      fontWeight: FontWeight.w600),
+                  ),
+                  model.status==-1?Expanded(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: Text('已取消',style: TextStyle(color: AppConfig.blueBtnColor),),
+                    ),
+                  ):Container()
+                ],
+              ),
               new Container(
                 width: double.infinity,
                 alignment: Alignment.center,
                 padding: EdgeInsets.only(top: 10,left: 10,right: 10),
                 child: model!=null? new Column(
                   children: model.skuModels.map((item){
+                    List skuNameList = CommonUtil.skuNameSplit(item.skuName);
                     return new Container(
                       padding:EdgeInsets.only(top: 10,bottom: 20),
                       decoration: BoxDecoration(
@@ -370,7 +382,18 @@ class _OrderContentState extends State<OrderContent> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     new Padding(padding: EdgeInsets.only(left: 10,bottom: 10),
-                                      child: new Text(item.skuName,softWrap: true,),
+                                      child: new Column(
+                                        children: <Widget>[
+                                          new Container(
+                                            width: double.infinity,
+                                            child: new Text(skuNameList[0],softWrap: true,),
+                                          ),
+                                          new Container(
+                                              width: double.infinity,
+                                              child: new Text(skuNameList[1],style: TextStyle(color: Colors.grey),)
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     new Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -409,7 +432,15 @@ class _OrderContentState extends State<OrderContent> {
           width: double.infinity,
           child: model!=null? new Column(
             children: <Widget>[
-              CustomsWidget().subTitle(title: "商品总价",color: AppConfig.primaryColor),
+              CustomsWidget().subTitle(title: "商品总价",color: AppConfig.blueBtnColor),
+              new Padding(padding: EdgeInsets.all(10),
+              child: new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  new Text("商品总价",style: TextStyle(fontWeight: FontWeight.w600,fontSize: ScreenAdapter.size(24)),),
+                  new CustomsWidget().priceTitle(price: model.totalAmount.toString())
+                ],
+              )),
               new Padding(padding: EdgeInsets.all(10),
                 child: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -428,13 +459,6 @@ class _OrderContentState extends State<OrderContent> {
                   ],
                 ),
               ),
-              new Padding(padding: EdgeInsets.all(10),
-              child: new Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  new CustomsWidget().priceTitle(price: model.totalAmount.toString())
-                ],
-              ))
             ]
           ):new Container()
         );

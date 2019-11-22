@@ -186,7 +186,10 @@ class CustomsWidget{
   }
 
   /// list操作栏
-  Widget listSlider({String icon,String title,Function() onTap,FontWeight titleFont}){
+  Widget listSlider({String icon,String title,double titleFontSize,Color titleColor,
+    Function() onTap,FontWeight titleFont,bool rightTitle=false,String rightDesc,
+    bool isRightIcon=true
+  }){
     return InkWell(
       onTap: (){
         onTap();
@@ -210,27 +213,30 @@ class CustomsWidget{
                     child: Image.asset(icon),
                   ),
                 ):Container(),
-                SizedBox(
-                  width: ScreenAdapter.width(20),
-                ),
                 Center(
                   child: Text(
                     title,
                     style: TextStyle(
-                      color: Color.fromRGBO(95, 95, 95, 1.0),
-                      fontSize: ScreenAdapter.size(27),
+                      color: titleColor==null?Color.fromRGBO(95, 95, 95, 1.0):titleColor,
+                      fontSize: titleFontSize==null?ScreenAdapter.size(27):titleFontSize,
                       fontWeight: titleFont
                     ),
                   ),
                 ),
                 Expanded(
-                  child: Container(),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 10),
+                    child: rightTitle?
+                        Text(rightDesc,softWrap: false,style: TextStyle(color: Colors.grey,
+                            fontSize: ScreenAdapter.size(24)),):Container(),
+                  ),
                 ),
-                Image.asset(
+                isRightIcon?Image.asset(
                   'assets/images/mall/arrow_right.png',
                   width: ScreenAdapter.width(25),
                   height: ScreenAdapter.width(25),
-                ),
+                ):Container(),
                 SizedBox(
                   width: ScreenAdapter.width(43),
                 ),

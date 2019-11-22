@@ -25,10 +25,10 @@ class OrderStatusEnum{
         str = "已取消";
         break;
       case -2:
-        str = "已取消待退款";
+        str = "已取消,退款中";
         break;
       case -4:
-        str = "已取消已退款";
+        str = "已取消,已退款";
         break;
     }
     return str;

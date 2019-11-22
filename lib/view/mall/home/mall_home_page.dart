@@ -59,7 +59,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
       appBar: new AppBar(
         elevation: 0.0,
         title: Text(
-          '商城',
+          '首页',
           style: TextStyle(
               fontSize: ScreenAdapter.size(40),
               fontWeight: FontWeight.w600,
@@ -193,20 +193,20 @@ class _MallHomeContentState extends State<MallHomeContent> {
     return new Container(
       width: double.infinity,
       padding: EdgeInsets.all(10),
-      child: new Column(
+      child: model!=null? new Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           _headerContent(model.promotion),
-          _commodityContent(model.promotion.products),
-          _bottomContent(model.promotion.promotionCode)
+          model.promotion!=null?_commodityContent(model.promotion.products):Container(),
+          model.promotion!=null?_bottomContent(model.promotion.promotionCode):Container()
         ],
-      ),
+      ):new Container(),
     );
   }
 
   /// 商品集合--头部样式
   Widget _headerContent(PromotionModel model){
-    return new IntrinsicHeight(
+    return model!=null?new IntrinsicHeight(
       child: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -228,7 +228,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
           )
         ],
       ),
-    );
+    ):Container();
   }
 
   /// 商品列表

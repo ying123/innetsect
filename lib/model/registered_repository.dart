@@ -2,6 +2,7 @@
 
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/base.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// 注册
@@ -16,6 +17,7 @@ class RegisteredService{
   /// 注册
   /// *referer 推荐人
   Observable<BaseResponse> onRegistered(String vaildCode){
+    UserTools().clearUserInfo();
     var url = '/api/accounts/register?referer=admin&vcode=$vaildCode';
     var response = post(url);
     return response;

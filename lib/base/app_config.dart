@@ -7,8 +7,8 @@ class AppConfig{
 
 
   ///基础链接
-  static const baseUrl = 'https://gate.innersect.net';
-//  static const baseUrl = "http://test.innersect.net";
+//  static const baseUrl = 'https://gate.innersect.net';
+  static const baseUrl = "http://test.innersect.net";
 
   //todo App的所有基础配置
 

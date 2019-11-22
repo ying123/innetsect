@@ -5,6 +5,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/my/all/after_apply_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/my_order/after_service_provide.dart';
@@ -62,15 +63,6 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
             SliverList(
                 delegate: SliverChildListDelegate(
                     provide.list.map((item){
-                      /**
-                       *  // 退换策略,0：此商品不支持退换货,>0申请售后
-                          int rmaPolicy;
-                          // 是否申请售后，1已申请 0未申请
-                          bool rearequested;
-                          // 是否在可退换时间内，0：不可申请，1：可申请
-                          bool rmaInPeriod;
-                       */
-                      bool flag = item.rmaPolicy>0&&!item.rmaRequested&&item.rmaInPeriod;
                       return new Container(
                         width: double.infinity,
                         color: Colors.white,
@@ -88,7 +80,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
                             // 商品展示
                             _commodityContent(item),
                             // 底部操作按钮
-                            flag?_bottomAction(item):Container()
+                            _bottomConditionBtn(item)
                           ],
                         ),
                       );
@@ -173,26 +165,66 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
     );
   }
 
-  /// 底部操作按钮
-  _bottomAction(item){
-    return new Container(
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: AppConfig.assistLineColor))
-      ),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          new Container(
-            child: RaisedButton(
-              color: Colors.black,
-              textColor: Colors.white,
-              onPressed: (){},
-              child: new Text("申请售后"),
-            ),
+  /// 底部操作按钮,动态显示底部操作栏
+  Widget _bottomConditionBtn(CommodityModels item){
+    /**
+     *  // 退换策略,0：此商品不支持退换货,>0申请售后，1.退货，2.换货,3.可退换
+        int rmaPolicy;
+        // 是否申请售后，1已申请 0未申请
+        bool rearequested;
+        // 是否在可退换时间内，0：不可申请，1：可申请
+        bool rmaInPeriod;
+     */
+    Widget widget=Container();
+    if(item.rmaPolicy>0&&!item.rmaRequested&&item.rmaInPeriod){
+      // 申请售后
+      widget = new Container(
+          decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: AppConfig.assistLineColor))
+          ),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              new Container(
+                child: RaisedButton(
+                  color: Colors.black,
+                  textColor: Colors.white,
+                  onPressed: (){
+                    // 跳转申请售后
+                    _afterServiceProvide.commodityModels = item;
+                    _afterServiceProvide.count = item.quantity;
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return AfterApplyPage();
+                      }
+                    ));
+                  },
+                  child: new Text("申请售后"),
+                ),
+              )
+            ],
           )
-        ],
-      ),
-    );
+        );
+    }else if(item.rmaPolicy==0){
+      // 此商品不支持退换货
+      widget = new Container(
+          decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: AppConfig.assistLineColor))
+          ),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              new Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: new Text("此商品不支持退换货",style: TextStyle(color: AppConfig.blueBtnColor,
+                    fontSize: ScreenAdapter.size(26)
+                ),),
+              )
+            ],
+          ),
+      );
+    }
+    return widget;
   }
 
   /// 加载列表数据

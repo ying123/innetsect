@@ -130,7 +130,11 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
     this.provide.setMode(mode:"multiple");
     this.provide.sum = 0.00;
     // 初始化数据
-    _loadList();
+    // 判断是否存在token
+    print(UserTools().getUserToken());
+    if(UserTools().getUserToken()!=null){
+      _loadList();
+    }
   }
 
   /// 购物车是否存在商品，构建视图

@@ -1,12 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
+import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
+import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
@@ -16,17 +19,19 @@ import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 
 class CommodityPage extends PageProvideNode{
   final CommodityProvide _provide = CommodityProvide();
-  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final LogisticsProvide _logisticsProvide = LogisticsProvide.instance;
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
   CommodityPage(){
     mProviders.provide(Provider<CommodityProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<LogisticsProvide>.value(_logisticsProvide));
+    mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
 
-    return CommodityContent(_provide,_detailProvide,_logisticsProvide);
+    return CommodityContent(_provide,_detailProvide,_logisticsProvide,_cartProvide);
   }
 }
 
@@ -34,7 +39,8 @@ class CommodityContent extends StatefulWidget {
   final CommodityProvide provide;
   final CommodityDetailProvide _detailProvide;
   final LogisticsProvide _logisticsProvide;
-  CommodityContent(this.provide,this._detailProvide,this._logisticsProvide);
+  final CommodityAndCartProvide _cartProvide;
+  CommodityContent(this.provide,this._detailProvide,this._logisticsProvide,this._cartProvide);
 
   @override
   _CommodityContentState createState() => new _CommodityContentState();
@@ -45,6 +51,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   CommodityProvide provides;
   CommodityDetailProvide _detailProvide;
   LogisticsProvide _logisticsProvide;
+  CommodityAndCartProvide _cartProvide;
   TabController _tabController;
   EasyRefreshController _easyRefreshController;
   List<CommodityModels> list=[];
@@ -103,6 +110,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     this.provides ??= widget.provide;
     this._detailProvide ??= widget._detailProvide;
     _logisticsProvide??=widget._logisticsProvide;
+    _cartProvide ??= widget._cartProvide;
     _logisticsProvide.backPage = "/mallPage";
     _easyRefreshController = EasyRefreshController();
 
@@ -205,8 +213,8 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                       return new InkWell(
                         onTap: (){
                           /// 跳转详情
-                          _detailProvide.clearCommodityModels();
-                          _detailProvide.prodId = item.prodID;
+                          /// 加载详情
+                          _loadDetail(item.prodID);
                           Navigator.push(context, MaterialPageRoute(
                               builder:(context){
                                 return new CommodityDetailPage();
@@ -223,7 +231,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                               // 商品图片
                               _imageWidget(item.prodPic),
                               // 价格 购物车图标
-                              _priceAndCartWidget(item.salesPriceRange.toString()),
+                              _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID),
                               // 描述
                               _textWidget(item.prodName)
                             ],
@@ -254,17 +262,18 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         new Container(
             width: double.infinity,
             height: ScreenAdapter.height(320),
-            child: Image.network(
-              image,
+            child:Image.network(
+               image,
               fit: BoxFit.fitWidth,
             )
+
         )
       ],
     );
   }
 
   /// 价格和购物车
-  Widget _priceAndCartWidget(String price){
+  Widget _priceAndCartWidget(String price,int prodID){
     return new Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 10,left: 10,right: 10,bottom: 5),
@@ -280,6 +289,8 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
             child: new InkWell(
               onTap: (){
                 print("购物车");
+                _loadDetail(prodID);
+                CommodityModalBottom.showBottomModal(context:context);
               },
               child: new Image.asset("assets/images/mall/shop_bucket.png",
               ),
@@ -340,6 +351,26 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 //        list = CommodityList.fromJson(item.data).list;
 //      }
 //      provides.setList(lists: list,isReload:isReload);
+//      _provide
+    }, onError: (e) {});
+  }
+
+  _loadDetail(int prodID){
+    _detailProvide.clearCommodityModels();
+    _detailProvide.prodId = prodID;
+    /// 加载详情数据
+    _detailProvide.detailData()
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
+      _detailProvide.setInitData();
+      _cartProvide.setInitCount();
+      _detailProvide.isBuy = false;
 //      _provide
     }, onError: (e) {});
   }

@@ -28,6 +28,10 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
     res = BaseResponse.fromlist(response.data);
   }
   }).catchError((error){
+    print('error------${error.response.data['path']}');
+    if(error.response.data['path']=='/api/eshop/shoppingcart/my'){
+      print(error);
+    }
     if(error.response.data['path']=="/accounts/me" || error.response.statusCode==401){
       print(context.widget);
       Future.delayed(Duration.zero,(){

@@ -47,6 +47,9 @@ class PayUtils{
       case 2:
         str="支付宝";
         break;
+      case 1:
+        str="微信";
+        break;
     }
     return str;
   }

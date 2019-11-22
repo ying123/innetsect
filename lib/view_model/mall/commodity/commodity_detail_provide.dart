@@ -24,7 +24,7 @@ class CommodityDetailProvide extends BaseProvide {
   /// 支付方式
   int _payMode;
   /// 是否立即购买
-  bool _isBuy;
+  bool _isBuy = false;
   /// 支付状态
   bool _resultStatus = false;
 
