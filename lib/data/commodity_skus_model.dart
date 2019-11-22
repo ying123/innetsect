@@ -44,8 +44,8 @@ class CommoditySkusModel{
         salesPrice: json['salesPrice'],
         kitting: json['kitting'],
         status: json['status'],
-        pics: CommodityPicList.fromJson(json['pics']).list,
-        features: CommodityFeatureList.fromJson(json['features']).list,
+        pics: json['pics']!=null?CommodityPicList.fromJson(json['pics']).list:[],
+        features: json['features']!=null?CommodityFeatureList.fromJson(json['features']).list:[],
         isSelected: json['isSelected'],
         qtyInHand: json['qtyInHand']
     );

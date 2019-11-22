@@ -1,30 +1,43 @@
+import 'package:innetsect/app_navigation_bar.dart';
+import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/mall_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
+import 'package:innetsect/view_model/mall/mall_provide.dart';
 import 'package:provide/provide.dart';
 import 'dart:async';
 
 class LoginPage extends PageProvideNode {
   final LoginProvide _provide = LoginProvide.instance;
+  final MallProvide _mallProvide = MallProvide.instance;
+  final AppNavigationBarProvide _appNavigationBarProvide = AppNavigationBarProvide.instance;
   LoginPage() {
     mProviders.provide(Provider<LoginProvide>.value(_provide));
+    mProviders.provide(Provider<MallProvide>.value(_mallProvide));
+    mProviders.provide(Provider<AppNavigationBarProvide>.value(_appNavigationBarProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return LoginContentPage();
+    return LoginContentPage(_provide,_mallProvide,_appNavigationBarProvide);
   }
 }
 
 class LoginContentPage extends StatefulWidget {
+  final LoginProvide _provide;
+  final MallProvide _mallProvide;
+  final AppNavigationBarProvide _appNavigationBarProvide;
+  LoginContentPage(this._provide,this._mallProvide,this._appNavigationBarProvide);
   @override
   _LoginContentPageState createState() => _LoginContentPageState();
 }
 
 class _LoginContentPageState extends State<LoginContentPage> {
-  String pages;
+  dynamic pages;
   // 是否验证码登录
   bool isPhone = false;
   // 验证码
@@ -33,6 +46,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
   Timer timer;
   int count = 60;
   String buttonText="获取验证码";
+  LoginProvide _provide;
+  MallProvide _mallProvide;
+  AppNavigationBarProvide _appNavigationBarProvide;
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +59,26 @@ class _LoginContentPageState extends State<LoginContentPage> {
         leading: InkWell(
             onTap: () {
               // 返回按钮
-              Navigator.pop(context);
-              if(pages == 'orderDetail'){
+              print(pages is AppNavigationContentBar);
+              if(pages is AppNavigationContentBar){
+                _appNavigationBarProvide.currentIndex = 2;
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                    builder: (context){
+                      return AppNavigationBar();
+                    }
+                ), (Route<dynamic> route)=>false );
+              }else if(pages is MallContentPage){
+                _mallProvide.currentIndex = 2;
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context){
+                    return MallPage();
+                  }
+                ), (Route<dynamic> route)=>false );
+              }else{
                 Navigator.pop(context);
+                if(pages == 'orderDetail'){
+                  Navigator.pop(context);
+                }
               }
             },
             child: Image.asset(
@@ -72,7 +105,8 @@ class _LoginContentPageState extends State<LoginContentPage> {
              SizedBox(
               height: ScreenAdapter.height(60),
             ),
-            _setupThirdPartyBtn(),
+///TODO 三方登录
+//            _setupThirdPartyBtn(),
           ],
         ),
       ),
@@ -83,6 +117,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
   void initState(){
     // TODO: implement initState
     super.initState();
+    _provide ??= widget._provide;
+    _mallProvide ??= widget._mallProvide;
+    _appNavigationBarProvide ??= widget._appNavigationBarProvide;
     Future.delayed(Duration.zero,(){
       // 运用未来获取context，初始化数据
       Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
@@ -97,6 +134,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
     timer?.cancel();
     timer = null;
     super.dispose();
+    _provide.userCode = null;
+    _provide.password = null;
+    _provide.vaildCode = null;
   }
 
   Provide<LoginProvide> _setupLogo() {
@@ -137,23 +177,26 @@ class _LoginContentPageState extends State<LoginContentPage> {
                     child: new Stack(
                       children: <Widget>[
                         isPhone ?
-                        new TextField(
-                          enabled: true,
-                          style: new TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: provide.placePhoneText[index],
-                            hintStyle: new TextStyle(color: Colors.grey),
-                            focusedBorder: InputBorder.none,
+                        Padding(
+                          padding: EdgeInsets.only(top: 10),
+                          child: new TextField(
+                            enabled: true,
+                            style: new TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              hintText: provide.placePhoneText[index],
+                              hintStyle: new TextStyle(color: Colors.grey),
+                              focusedBorder: InputBorder.none,
+                            ),
+                            onChanged: (str) {
+                              if (index == 0) {
+                                provide.userCode = str;
+                              }
+                              if (index == 1) {
+                                provide.vaildCode = str;
+                              }
+                            },
                           ),
-                          onChanged: (str) {
-                            if (index == 0) {
-                              provide.userCode = str;
-                            }
-                            if (index == 1) {
-                              provide.vaildCode = str;
-                            }
-                          },
-                        ):new TextField(
+                        ) : new TextField(
                           enabled: true,
                           obscureText:
                           (index == 1 && provide.passwordVisiable == false)
@@ -177,11 +220,11 @@ class _LoginContentPageState extends State<LoginContentPage> {
                         ),
                         isPhone && index ==1?
                             new Positioned(
-                              top: 10,
+                              top: 0,
                               right: 10,
                               child: Container(
                                 width: ScreenAdapter.width(220),
-                                height: ScreenAdapter.height(60),
+                                padding: EdgeInsets.only(top: 5,bottom: 5),
                                 child: FlatButton(
                                   disabledColor: Colors.grey.withOpacity(0.1),
                                   disabledTextColor: Colors.white,
@@ -218,7 +261,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
   void  _buttonClickListen(LoginProvide provide) {
     if (isButtonEnable) {
       provide.getVaildCode().then((item){
-        print('获取验证码-----$item');
+        if(item){
+          CustomsWidget().showToast(title: "验证码已发送");
+        }
       });
 
       setState(() {
@@ -282,6 +327,18 @@ class _LoginContentPageState extends State<LoginContentPage> {
         return InkWell(
           onTap: (){
             // 登录
+            if(provide.userCode==null){
+              CustomsWidget().showToast(title: "请输入账号");
+              return;
+            }
+            if(isPhone && provide.vaildCode==null){
+              CustomsWidget().showToast(title: "请输入验证码");
+              return;
+            }
+            if(!isPhone && provide.password==null){
+              CustomsWidget().showToast(title: "请输入密码");
+              return;
+            }
             provide.loginData()
                 .doOnListen(() {
               print('doOnListen');
@@ -298,11 +355,14 @@ class _LoginContentPageState extends State<LoginContentPage> {
                   }
                 },onError: (e){});
                 UserTools().setUserData(item.data);
-              }
-              Navigator.pop(context);
-              if(pages == 'orderDetail'){
                 Navigator.pop(context);
+                if(pages == 'orderDetail'){
+                  Navigator.pop(context);
+                }
+              }else{
+                return;
               }
+
 //      _provide
             }, onError: (e) {});
           },
@@ -328,7 +388,6 @@ class _LoginContentPageState extends State<LoginContentPage> {
       builder: (BuildContext context, Widget child, LoginProvide provide) {
         return InkWell(
           onTap: (){
-            print('注册被点击');
             Navigator.pushNamed(context, '/regiseredPage');
           },
           child: Container(

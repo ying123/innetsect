@@ -4,8 +4,11 @@ class PlatFormMenu{
   final String title;
   final String icon;
   final String selIcon;
+  final bool isSelected;
+  final String direction;
 
-  const PlatFormMenu({this.index,this.title,this.icon,this.selIcon});
+  const PlatFormMenu({this.index,this.title,this.icon,this.selIcon,this.isSelected,this.direction});
+
 }
 
 /// 商城首页头部导航
@@ -20,9 +23,9 @@ const List<PlatFormMenu> mallNavBarList = const <PlatFormMenu>[
     icon: "assets/images/mall/tab_news.png",
     selIcon: "assets/images/mall/tab_news_h.png",
   ),
-  const PlatFormMenu(index:1,title: "品牌",
+  const PlatFormMenu(index:1,title: "分类",
     icon: "assets/images/mall/brand@3x.png",
-    selIcon: "assets/images/mall/brand@3x.png",
+    selIcon: "assets/images/mall/sel_brand@3x.png",
   ),
   const PlatFormMenu(index:1,title: "首页",
     icon: "assets/images/mall/tab_home.png",
@@ -52,4 +55,11 @@ const List<PlatFormMenu> afterTabBarList = const <PlatFormMenu>[
   const PlatFormMenu(index: 3,title: "处理中"),
   const PlatFormMenu(index: 4,title: "全部售后"),
 ];
+
+/// 分类导航栏
+const List<PlatFormMenu> seriesTabBarList = const <PlatFormMenu>[
+  const PlatFormMenu( index: 0,title: "品牌" ),
+  const PlatFormMenu( index: 1,title: "品类" )
+];
+
 

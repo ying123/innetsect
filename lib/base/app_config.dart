@@ -8,10 +8,11 @@ class AppConfig{
 
   ///基础链接
   static const baseUrl = 'https://gate.innersect.net';
+//  static const baseUrl = "http://test.innersect.net";
 
   //todo App的所有基础配置
 
-  //样式
+  //样式åå
   static final themedata = ThemeData(
     primaryColor: Colors.white,
     accentColor: Colors.white,
@@ -34,7 +35,7 @@ class AppConfig{
   static final backGroundColor = Color.fromRGBO(249, 249, 249, 1.0);
   /// 按钮颜色，蓝色，最新
   static final blueBtnColor = Color.fromRGBO(144, 169, 204, 1.0);
-  /// 按钮字体颜色，蓝色，最新
+  /// 按钮字体颜色，白色，最新
   static final whiteBtnColor = Colors.white;
 
   static UserTools userTools;

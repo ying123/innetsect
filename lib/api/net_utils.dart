@@ -29,9 +29,14 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
   }
   }).catchError((error){
     if(error.response.data['path']=="/accounts/me" || error.response.statusCode==401){
-
+      print(context.widget);
       Future.delayed(Duration.zero,(){
-        Navigator.pushNamed(context, '/loginPage');
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context){
+            return LoginPage();
+          },
+          settings: RouteSettings(arguments: {"pages":context.widget})
+        ));
       });
     }else{
       Fluttertoast.showToast(
@@ -77,8 +82,13 @@ Future<BaseResponse> _post(String url, dynamic body,
       }
       print('response _post:->$response');
     }).catchError((error){
-      CustomsWidget().showToast(title: error.response.data['message']);
 
+      if(error.response.data['message']=='密钥不正确'&&error.response.data['status']==400){
+        CustomsWidget().showToast(title: error.response.data['message']);
+        return ;
+      }else {
+        CustomsWidget().showToast(title: error.response.data['message']);
+      }
       if(error.response.data['path']=="/salesorders/shoppingorder/create"){
         Future.delayed(Duration.zero,(){
           Navigator.push(context, MaterialPageRoute(

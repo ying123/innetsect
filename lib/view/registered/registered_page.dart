@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/my/settings/protocol_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/registered/registered_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -40,6 +42,12 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -59,43 +67,31 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
             )),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: ScreenAdapter.height(180),
-            ),
-            //注册
-            _setupTextFields(),
-            SizedBox(
-              height: ScreenAdapter.height(545),
-            ),
-            //勾选条款
-            _setupAgreeTerms(),
-          ],
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: (){
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: ScreenAdapter.height(180),
+              ),
+              //注册
+              _setupTextFields(),
+              SizedBox(
+                height: ScreenAdapter.height(545),
+              ),
+              //勾选条款
+              _setupAgreeTerms(),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
         width: ScreenAdapter.width(750),
         height: ScreenAdapter.height(166),
-        child: Center(
-          child: GestureDetector(
-            onTap: (){
-              print('注册按钮被点击');
-            },
-            child: Container(
-              width: ScreenAdapter.width(705),
-              height: ScreenAdapter.height(95),
-              color: Colors.black,
-              child: Center(
-                child: Text(
-                  '注册',
-                  style: TextStyle(
-                      color: Colors.white, fontSize: ScreenAdapter.size(38)),
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: _registerBtn(),
       ),
     );
   }
@@ -154,7 +150,7 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                   // border: Border(bottom: BorderSide(color: Colors.grey))
                   ),
               margin: EdgeInsets.fromLTRB(
-                  ScreenAdapter.width(70), 0, ScreenAdapter.width(70), 0),
+                  ScreenAdapter.width(70), 10, ScreenAdapter.width(70), 0),
               child: new Column(
                 children: <Widget>[
                   new Row(
@@ -169,7 +165,7 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                             focusedBorder: InputBorder.none,
                           ),
                           onChanged: (str) {
-                            provide.userCode = str;
+                            provide.vaildCode = str;
                           },
                         ),
                       )
@@ -178,32 +174,71 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  top: ScreenAdapter.height(18),
-                  left: ScreenAdapter.width(485)),
-              child: Container(
-                width: ScreenAdapter.width(170),
-                height: ScreenAdapter.height(60),
-                child: FlatButton(
-                  disabledColor: Colors.grey.withOpacity(0.1),
-                  disabledTextColor: Colors.white,
-                  textColor:
-                      provide.isButtonEnable ? Colors.white : Colors.white,
-                  color: provide.isButtonEnable
-                      ? Colors.black
-                      : Colors.grey.withOpacity(0.8),
-                  onPressed: () {
-                    _buttonClickListen();
-                  },
-                  child: Text(
-                    provide.buttonText,
-                    style: TextStyle(fontSize: ScreenAdapter.size(22)),
+            new Positioned(
+                top: 0,
+                right: 60,
+                child: Container(
+                  width: ScreenAdapter.width(220),
+                  padding: EdgeInsets.only(top: 5,bottom: 5),
+                  child: FlatButton(
+                    disabledColor: Colors.grey.withOpacity(0.1),
+                    disabledTextColor: Colors.white,
+                    textColor:
+                    provide.isButtonEnable ? Colors.white : Colors.white,
+                    color: provide.isButtonEnable
+                        ? Colors.black
+                        : Colors.grey.withOpacity(0.8),
+                    onPressed: () {
+                      _buttonClickListen();
+                    },
+                    child: Text(
+                      provide.buttonText,
+                      style: TextStyle(fontSize: ScreenAdapter.size(22)),
+                    ),
                   ),
+                )
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  /// 注册按钮
+  Provide<RegisteredProvide> _registerBtn(){
+    return Provide<RegisteredProvide>(
+      builder: (BuildContext context,Widget widget,RegisteredProvide provide){
+        return Center(
+          child: InkWell(
+            onTap: (){
+              print('注册按钮被点击');
+              if(provide.userCode==null){
+                CustomsWidget().showToast(title: "请输入账号");
+                return;
+              }
+              if(!provide.checkSelected){
+                CustomsWidget().showToast(title: "是否同意注册并遵守服务条款");
+                return;
+              }
+              if(provide.vaildCode==null){
+                CustomsWidget().showToast(title: "请输入验证码");
+                return;
+              }
+              _onRegistered();
+            },
+            child: Container(
+              width: ScreenAdapter.width(705),
+              height: ScreenAdapter.height(95),
+              color: Colors.black,
+              child: Center(
+                child: Text(
+                  '注册',
+                  style: TextStyle(
+                      color: Colors.white, fontSize: ScreenAdapter.size(38)),
                 ),
               ),
             ),
-          ],
+          ),
         );
       },
     );
@@ -212,7 +247,24 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
   _buttonClickListen() {
     if (widget.provide.isButtonEnable) {
       print('获取验证码');
-      widget.provide.isButtonEnable = false;
+
+      widget.provide.registeredPhone().doOnListen(() {
+        print('doOnListen');
+      }).doOnCancel(() {}).listen((item) {
+        ///加载数据
+        print('listen data->$item');
+        if(item!=null&&item.data!=null){
+          if(item.data['passed']){
+            CustomsWidget().showToast(title: "验证码已发送");
+          }else{
+            CustomsWidget().showToast(title: item.data['error']);
+          }
+        }
+      }, onError: (e) {});
+
+      setState(() {
+        widget.provide.isButtonEnable = false;
+      });
       _initTimer();
       return null;
     } else {
@@ -257,11 +309,36 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                 },
               ),
               
-              Center(child: Text('注册即代表同意INNERSECT服务条款',style: TextStyle(fontSize: ScreenAdapter.size(28)),))
+              Center(child:
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context){
+                          return ProtocolPage();
+                        }
+                    ));
+                  },
+                  child: Text('注册即代表同意INNERSECT服务条款',style: TextStyle(fontSize: ScreenAdapter.size(28)),)),
+                )
+
             ],
           ),
         );
       },
     );
+  }
+
+  /// 注册请求
+  void _onRegistered(){
+    widget.provide.onRegistered().doOnListen(() {
+      print('doOnListen');
+    }).doOnCancel(() {}).listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+        Navigator.pop(context);
+        CustomsWidget().showToast(title: "注册成功");
+      }
+    }, onError: (e) {});
   }
 }

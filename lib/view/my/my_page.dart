@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
@@ -21,31 +22,35 @@ import 'package:provide/provide.dart';
 class MyPage extends PageProvideNode {
   final MyProvide _provide = MyProvide();
   final LoginProvide _loginProvide = LoginProvide.instance;
-  MyPage() {
+  final String page;
+  MyPage({this.page}) {
     mProviders.provide(Provider<MyProvide>.value(_provide));
     mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return MyContentPage(_provide,_loginProvide);
+    return MyContentPage(_provide,_loginProvide,page);
   }
 }
 
 class MyContentPage extends StatefulWidget {
   final MyProvide provide;
   final LoginProvide _loginProvide;
-  MyContentPage(this.provide,this._loginProvide);
+  final String page;
+  MyContentPage(this.provide,this._loginProvide,this.page);
   @override
   _MyContentPageState createState() => _MyContentPageState();
 }
 
 class _MyContentPageState extends State<MyContentPage> {
   LoginProvide _loginProvide;
+  String page;
   @override
   void initState() {
     super.initState();
 
     this._loginProvide??=widget._loginProvide;
+    page = widget.page;
   }
 
 //  Future _loginPage() async {
@@ -100,7 +105,7 @@ class _MyContentPageState extends State<MyContentPage> {
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context){
                             return CommodityCartPage();
-                          },settings: RouteSettings(arguments: {'isBack': true})
+                          },settings: RouteSettings(arguments: {'isBack': true,'page':page})
                       ));
                     },
                     child: _setupBtn(
@@ -323,7 +328,7 @@ class _MyContentPageState extends State<MyContentPage> {
               padding: EdgeInsets.only(top: ScreenAdapter.height(170)),
               child: Center(
                 child: Text(
-                  userModel!=null?userModel.mobile:'',
+                  userModel!=null?userModel.nickName:'',
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: ScreenAdapter.size(35),
@@ -345,15 +350,15 @@ class _MyContentPageState extends State<MyContentPage> {
                     width: ScreenAdapter.width(190),
                     height: ScreenAdapter.width(190),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(ScreenAdapter.width(100))),
+                        shape: BoxShape.circle,
                       //border: Border.all(color: Colors.black12),
                     ),
-                    child: userModel!=null&&userModel.portrait!=null? Image.network(userModel.portrait,fit: BoxFit.cover):Image.asset(
-                      "assets/images/mall/hot_brand1.png",
-                      fit: BoxFit.cover,
-                    ),
+                    child: CircleAvatar(
+                      radius: 40.0,
+                      backgroundImage: userModel!=null&&userModel.portrait!=null?
+                         NetworkImage( userModel.portrait):AssetImage(
+                         "assets/images/mall/hot_brand1.png", ),
+                    ) ,
                   ),
                 ),
               ),

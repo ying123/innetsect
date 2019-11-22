@@ -93,12 +93,19 @@ class _EditPwdContentState extends State<EditPwdContent> {
                 onTap: (){
                   // 验证两次密码一致
                   if(newPwd!=reNewPwd){
-                    Fluttertoast.showToast(msg: "两次输入密码不一致！");
+                    CustomsWidget().showToast(title: "两次输入密码不一致");
+                    return;
+                  }
+                  if(newPwd==null){
+                    CustomsWidget().showToast(title: "请输入密码");
+                    return;
+                  }
+                  if(reNewPwd==null){
+                    CustomsWidget().showToast(title: "请再次输入密码");
                     return;
                   }
                   // 修改密码请求
                   _loginProvide.editLogingPwd(newPwd).then((item){
-                    print(item);
                     if(item.data){
                       Navigator.pop(context);
                     } else {

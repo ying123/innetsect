@@ -107,16 +107,17 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
     return Provide<MainProvide>(
       builder: (BuildContext context, Widget child, MainProvide provide) {
         return Align(
-          alignment: Alignment.bottomRight,
+          alignment: Alignment.topRight,
           child: Container(
-            margin: EdgeInsets.all(10.0),
-            padding: EdgeInsets.all(10.0),
+            margin: EdgeInsets.only(top: 60,right: 20),
+            padding: EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 5),
             child: GestureDetector(
               onTap: () {
                 onDone();
               },
               child: Text(
-                '${IntlUtil.getString(context, Ids.x_jump_welcome)}(${provide.countdown})',
+//                '${IntlUtil.getString(context, Ids.x_jump_welcome)}(${provide.countdown})',
+              '跳过 ${provide.countdown}',
                 style: TextStyle(fontSize: 14.0, color: Colors.white),
               ),
             ),

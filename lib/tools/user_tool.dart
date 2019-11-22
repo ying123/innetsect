@@ -124,6 +124,19 @@ void clearUserInfo(){
     return _spf.getString(ConstConfig.EXHIBITION_ID);
   }
 
+  ///存储搜索历史记录
+  Future<bool> saveSearchHistory(String searchText){
+      List<String> list = _spf.getStringList(ConstConfig.SEARCH_LIST);
+      if(list==null){
+        list = List();
+      }
+      list.add(searchText);
+      return _spf.setStringList(ConstConfig.SEARCH_LIST, list);
+  }
 
+  /// 获取搜索历史记录
+  List<String> getSearchHistory(){
+      return _spf.getStringList(ConstConfig.SEARCH_LIST);
+  }
 
 }

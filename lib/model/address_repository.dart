@@ -56,6 +56,12 @@ class AddressService{
     var url = '/api/eshop/addresses/$addressID';
     return delete(url);
   }
+
+  /// 设置默认地址
+  Future onDefaultAddresses(int addressID){
+    var url="/api/eshop/addresses/default/$addressID";
+    return patch(url);
+  }
 }
 ///地址数据请求响应
 class AddressRepo {
@@ -93,6 +99,11 @@ class AddressRepo {
   /// 删除地址
   Future deleteAddresses(int addressID){
     return _remote.deleteAddresses(addressID);
+  }
+
+  /// 设置默认地址
+  Future onDefaultAddresses(int addressID){
+    return _remote.onDefaultAddresses(addressID);
   }
 
 }

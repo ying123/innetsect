@@ -28,7 +28,7 @@ class AboutUsPage extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     image: DecorationImage(
                         image: AssetImage("assets/images/user/logo.png"),
-                        fit: BoxFit.fill
+                        fit: BoxFit.fitWidth
                     ),
                   ),
 //              child: new Image.asset("assets/images/user/logo.png",fit: BoxFit.fill,),

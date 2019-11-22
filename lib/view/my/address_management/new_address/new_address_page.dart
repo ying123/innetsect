@@ -233,7 +233,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                         Center(
                           child: Text('所在地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                         ),
-                        provide.provincesModel!=null&&provide.cityModel!=null&&provide.countyModel!=null?
+                        provide.provincesModel!=null||provide.cityModel!=null||provide.countyModel!=null?
                         Padding(
                           padding: EdgeInsets.only(left: 40),
                           child: Text("${provide.provincesModel.regionName} ${provide.cityModel.regionName} ${provide.countyModel.regionName}"),

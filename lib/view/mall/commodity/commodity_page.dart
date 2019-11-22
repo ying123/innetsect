@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
+import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
@@ -11,7 +12,6 @@ import 'package:innetsect/view_model/mall/commodity/commodity_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 
 class CommodityPage extends PageProvideNode{
@@ -75,12 +75,15 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                   top: 5,
                   width: ScreenAdapter.width(750),
                   height: ScreenAdapter.height(20*ScreenAdapter.getPixelRatio()),
-                  child: new InkWell(
-                    onTap: (){
-                      // 跳转到搜索页面
-                      Navigator.pushNamed(context, "/mallSearchPage");
-                    },
-                    child: _searchWidget(),
+                  child: CustomsWidget().searchWidget(
+                      onTap: (){
+                        //搜索页面
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context){
+                              return SearchPage();
+                            }
+                        ));
+                      }
                   )
               )
             ],
@@ -234,25 +237,6 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
           ),
         ],
       );
-  }
-
-  /// 搜索组件
-  Widget _searchWidget(){
-    return new Container(
-      margin: EdgeInsets.only(left: 10,right: 10),
-      padding: EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-          color: AppConfig.assistLineColor,
-          borderRadius: BorderRadius.circular(5.0)
-      ),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          new Image.asset("assets/images/search.png",width: 40,height: 40,),
-          new Text("搜索商品、品牌、品类",style: TextStyle(color: AppConfig.assistFontColor),)
-        ],
-      ),
-    );
   }
 
   /// 商品图片

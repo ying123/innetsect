@@ -1,4 +1,5 @@
 import 'package:innetsect/data/mall/content_model.dart';
+import 'package:innetsect/data/mall/promotion_model.dart';
 
 class PortletsModel{
   int portletID;
@@ -8,6 +9,10 @@ class PortletsModel{
   int prodCollID;
   int layout;
   dynamic renderer;
+  // 查询使用（全部）
+  String promotionCode;
+  // 商品集合
+  PromotionModel promotion;
 
   List<ContentModel> contents;
 
@@ -19,7 +24,9 @@ class PortletsModel{
     this.portletIdx,
     this.portletType,
     this.prodCollID,
-    this.renderer
+    this.renderer,
+    this.promotionCode,
+    this.promotion
   });
 
   factory PortletsModel.fromJson(Map<String,dynamic> json){
@@ -31,7 +38,9 @@ class PortletsModel{
       prodCollID: json['prodCollID'],
       layout: json['layout'],
       renderer: json['renderer'],
-      contents: json['contents']!=null?ContentModelList.fromJson(json['contents']).list:[]
+      contents: json['contents']!=null?ContentModelList.fromJson(json['contents']).list:[],
+      promotionCode: json['promotionCode'],
+        promotion: json['promotion']!=null?PromotionModel.fromJson(json['promotion']): null
     );
   }
 }
