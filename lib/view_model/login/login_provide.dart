@@ -98,6 +98,7 @@ class LoginProvide extends BaseProvide {
 
   /// 详情数据
   Observable loginData() {
+
     return _repo.loginData(_userCode, _password)
         .doOnData((result) {
 
@@ -106,6 +107,7 @@ class LoginProvide extends BaseProvide {
         .doOnListen(() {})
         .doOnDone(() {});
   }
+
 
   /// 用户数据
   Observable getUserInfo({BuildContext context}) {
@@ -117,6 +119,7 @@ class LoginProvide extends BaseProvide {
         .doOnListen(() {})
         .doOnDone(() {});
   }
+  
   
   /// 获取验证码
   Future getVaildCode() {

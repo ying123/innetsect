@@ -42,6 +42,7 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
   
   @override
   Widget build(BuildContext context) {
+    print('OrderPayResultPage');
     return Provide<CommodityDetailProvide>(
       builder: (BuildContext context,Widget widget, CommodityDetailProvide provide){
         return Container(
