@@ -11,6 +11,7 @@ import 'package:innetsect/view/widget/counter_widget.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
+import 'package:innetsect/view_model/my_order/after_service_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:provide/provide.dart';
@@ -19,16 +20,18 @@ class CommodityModalChildPage extends PageProvideNode{
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
+  final AfterServiceProvide _afterServiceProvide = AfterServiceProvide.instance;
 
   CommodityModalChildPage(){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
+    mProviders.provide(Provider<AfterServiceProvide>.value(_afterServiceProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return CommodityModalChildContent(_cartProvide,_detailProvide,_orderDetailProvide);
+    return CommodityModalChildContent(_cartProvide,_detailProvide,_orderDetailProvide,_afterServiceProvide);
   }
 }
 
@@ -36,7 +39,8 @@ class CommodityModalChildContent extends StatefulWidget {
   final CommodityAndCartProvide _cartProvide ;
   final CommodityDetailProvide _detailProvide ;
   final OrderDetailProvide _orderDetailProvide ;
-  CommodityModalChildContent(this._cartProvide,this._detailProvide,this._orderDetailProvide);
+  final AfterServiceProvide _afterServiceProvide;
+  CommodityModalChildContent(this._cartProvide,this._detailProvide,this._orderDetailProvide,this._afterServiceProvide);
   @override
   _CommodityModalChildContentState createState() => new _CommodityModalChildContentState();
 }
@@ -45,29 +49,48 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
   CommodityAndCartProvide _cartProvide;
   CommodityDetailProvide _detailProvide;
   OrderDetailProvide _orderDetailProvide;
+  AfterServiceProvide _afterServiceProvide;
 
   @override
   Widget build(BuildContext context) {
-    return new Column(
-      children: <Widget>[
-        // 返回按钮
-        goBackIcon(),
-        // 中间部分
-        contentWidget(),
-        // 计数器
-        counterWidget(),
-        // 加入购物车、立即购买
-        bottomBtn()
-      ],
+    return Provide<CommodityDetailProvide>(
+      builder: (BuildContext context,Widget widget,CommodityDetailProvide provide){
+        return new Column(
+          children: <Widget>[
+            // 返回按钮
+            goBackIcon(),
+            // 中间部分
+            contentWidget(),
+            // 计数器
+            provide.afterBtn?Container(): counterWidget(),
+            // 加入购物车、立即购买
+            provide.afterBtn?Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(left: 20,right: 20),
+              child: RaisedButton(
+                onPressed: (){
+                  // 售后选择规格
+                  _afterServiceProvide.skusModel = provide.skusModel;
+                  Navigator.pop(context);
+                },
+                color: Colors.black,
+                textColor: Colors.white,
+                child: new Text("确认"),
+              ),
+            ):bottomBtn(),
+          ],
+        );
+      },
     );
   }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    this._cartProvide = widget._cartProvide;
-    this._detailProvide = widget._detailProvide;
-    this._orderDetailProvide = widget._orderDetailProvide;
+    this._cartProvide ??= widget._cartProvide;
+    this._detailProvide ??= widget._detailProvide;
+    this._orderDetailProvide ??= widget._orderDetailProvide;
+    this._afterServiceProvide ??= widget._afterServiceProvide;
     this._cartProvide.setMode();
   }
 
@@ -189,7 +212,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                       "quantity":_cartProvide.count,
                       "unit": _detailProvide.commodityModels.unit,
                       "prodCode": _detailProvide.commodityModels.prodCode,
-                      "salesPrice":0.01,
+                      "salesPrice":_detailProvide.commodityModels.salesPrice,
                       "allowPointRate":_detailProvide.commodityModels.allowPointRate
                     }];
                     _detailProvide.createShopping(json,context)

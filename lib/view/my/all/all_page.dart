@@ -76,7 +76,19 @@ class _AllContentPageState extends State<AllContentPage> {
             delegate: SliverChildListDelegate(_orderDetailList.map((item){
               return new InkWell(
                 onTap: () {
-                  /// 订单详情请求
+//                  /// 订单详情请求
+//                  _commodityDetailProvide.getOrderPayDetails(
+//                    orderID: item.orderID,
+//                  ).doOnListen(() {
+//                    print('doOnListen');
+//                  }).doOnCancel(() {}).listen((items) {
+//                    ///加载数据
+//                    print('listen data->$items');
+//                    if(items!=null&&items.data!=null){
+//                      _detailProvide.orderDetailModel = OrderDetailModel.fromJson(items.data);
+//
+//                    }
+//                  }, onError: (e) {});
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context){
                         return OrderDetailPage();
@@ -145,9 +157,42 @@ class _AllContentPageState extends State<AllContentPage> {
 
   Widget _commodityContent(OrderDetailModel model){
     List<CommodityModels> skuList = model.skuModels;
+    double price;
+    skuList.forEach((items){
+      price = items.salesPrice*skuList.length;
+    });
     return new Container(
       padding: EdgeInsets.only(bottom: 10),
-      child: new Column(
+      child: skuList.length>1?
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              SizedBox(
+                child: Row(
+                  children: skuList.sublist(0,2).map((skuItem){
+                    return  new Container(
+                        width: ScreenAdapter.width(120),
+                        height: ScreenAdapter.height(120),
+                        alignment: Alignment.center,
+                        child: new Image.network(skuItem.skuPic,fit: BoxFit.fill,
+                          width: ScreenAdapter.width(100),height: ScreenAdapter.height(100),)
+                    );
+                  }).toList(),
+                ),
+              ),
+              new Container(
+                  height: ScreenAdapter.height(120),
+                  padding:EdgeInsets.only(bottom: 5),
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      new CustomsWidget().priceTitle(price: price.toString()),
+                      new Text("共 ${skuList.length} 件")
+                    ],
+                  ))
+            ],
+          )
+          : new Column(
         children: skuList.map((skuItem){
           List skuNameList = CommonUtil.skuNameSplit(skuItem.skuName);
           return new Row(
@@ -338,7 +383,7 @@ class _AllContentPageState extends State<AllContentPage> {
           );
         },
         child: new Text("删除订单",style: TextStyle(
-            fontSize: ScreenAdapter.size(24),color: AppConfig.fontBackColor),),
+            fontSize: ScreenAdapter.size(24),color:Colors.white),),
       ),
     );
   }

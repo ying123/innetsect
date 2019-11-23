@@ -299,22 +299,22 @@ class _LoginContentPageState extends State<LoginContentPage> {
   Provide<LoginProvide> _setupVerificationCodeBtn() {
     return Provide<LoginProvide>(
       builder: (BuildContext context, Widget child, LoginProvide provide) {
-        return InkWell(
-          onTap: (){
-            setState(() {
-              isPhone = !isPhone;
-            });
-          },
-          child: Container(
+        return Container(
             alignment: Alignment.centerRight,
             height: ScreenAdapter.height(95),
-            width: ScreenAdapter.width(595),
-            child: Text(
-              !isPhone?'验证码登录':'密码登录',
-              style: TextStyle(
-                  color: Colors.black, fontSize: ScreenAdapter.size(30)),
-            ),
-          ),
+            padding: EdgeInsets.only(right: 60),
+            child: InkWell(
+                onTap: (){
+                  setState(() {
+                    isPhone = !isPhone;
+                  });
+                },
+                child: Text(
+                  !isPhone?'验证码登录':'密码登录',
+                  style: TextStyle(
+                      color: Colors.black, fontSize: ScreenAdapter.size(30)),
+                ),
+            )
         );
       },
     );

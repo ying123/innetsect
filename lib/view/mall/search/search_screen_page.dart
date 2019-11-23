@@ -3,6 +3,7 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
@@ -237,14 +238,13 @@ class _SearchScreenContentState extends State<SearchScreenContent> {
                         return new InkWell(
                           onTap: (){
                             /// 跳转详情
-//                            _detailProvide.clearCommodityModels();
-//                            _detailProvide.prodId = item.prodID;
-//                            Navigator.push(context, MaterialPageRoute(
-//                                builder:(context){
-//                                  return new CommodityDetailPage();
-//                                }
-//                            )
-//                            );
+                            _loadDetail(item.prodID);
+                            Navigator.push(context, MaterialPageRoute(
+                                builder:(context){
+                                  return new CommodityDetailPage();
+                                }
+                            )
+                            );
                           },
                           child: new Container(
                             width: itemWidth,

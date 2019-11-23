@@ -3,7 +3,6 @@ import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/all/after_service_list_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
-import 'package:innetsect/view_model/my_order/after_service_provide.dart';
 
 /// 我的售后
 
@@ -16,7 +15,6 @@ class AfterServicePage extends StatefulWidget {
 class _AfterServicePageState extends State<AfterServicePage>
 with SingleTickerProviderStateMixin{
   TabController _tabController;
-  AfterServiceProvide _afterServiceProvide;
 
   @override
   Widget build(BuildContext context) {

@@ -80,6 +80,26 @@ class OrderDetailModel{
   // sku
   List<CommodityModels> skuModels;
 
+  /// 售后扩展
+  String skuPic;
+  String skuName;
+  String skuCode;
+  // 退换策略,0：此商品不支持退换货,>0申请售后
+  int rmaPolicy;
+  // 是否申请售后，1已申请 0未申请
+  bool rmaRequested;
+  // 是否在可退换时间内，0：不可申请，1：可申请
+  bool rmaInPeriod;
+  // 数量
+  int quantity;
+  // 价格
+  double salesPrice;
+  // 商品id
+  int prodID;
+  // 原订单号
+  int itemID;
+
+
   OrderDetailModel({
     this.addressModel,
     this.areaCode,
@@ -118,7 +138,17 @@ class OrderDetailModel{
     this.status,
     this.shipperName,
     this.shipperCode,
-    this.waybillNo
+    this.waybillNo,
+    this.skuPic,
+    this.skuName,
+    this.rmaPolicy,
+    this.rmaRequested,
+    this.rmaInPeriod,
+    this.quantity,
+    this.salesPrice,
+    this.prodID,
+    this.itemID,
+    this.skuCode
   });
 
   factory OrderDetailModel.fromJson(Map<String,dynamic> json) {
@@ -160,7 +190,17 @@ class OrderDetailModel{
         status: json['status'],
         shipperName: json['shipperName'],
         shipperCode: json['shipperCode'],
-        waybillNo: json['waybillNo']
+        waybillNo: json['waybillNo'],
+        skuPic: json['skuPic'],
+        skuName: json['skuName'],
+        rmaPolicy: json['rmaPolicy'],
+        rmaRequested: json['rmaRequested'],
+        rmaInPeriod: json['rmaInPeriod'],
+        quantity: json['quantity'],
+        salesPrice: json['salesPrice'],
+        prodID: json['prodID'],
+        itemID: json['itemID'],
+        skuCode: json['skuCode']
     );
   }
 

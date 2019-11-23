@@ -27,6 +27,8 @@ class CommodityDetailProvide extends BaseProvide {
   bool _isBuy = false;
   /// 支付状态
   bool _resultStatus = false;
+  /// 售后按钮显示
+  bool _afterBtn = false;
 
   CommodityModels get commodityModels => _commodityModels;
 
@@ -40,6 +42,7 @@ class CommodityDetailProvide extends BaseProvide {
   bool get resultStatus=>_resultStatus;
   int get prodId => _prodId;
   int get payMode => _payMode;
+  bool get afterBtn => _afterBtn;
 
   set payMode(int payMode){
     _payMode = payMode;
@@ -58,6 +61,11 @@ class CommodityDetailProvide extends BaseProvide {
 
   set resultStatus(bool success){
     _resultStatus = success;
+    notifyListeners();
+  }
+
+  set afterBtn(bool flag){
+    _afterBtn = flag;
     notifyListeners();
   }
 

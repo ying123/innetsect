@@ -63,7 +63,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
         widget: _tabBar(),
-        width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-100),
+        width: ScreenAdapter.getScreenWidth()-100,
         centerTitle: false,
         leading: false
       ),
@@ -154,10 +154,10 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         unselectedLabelColor: Colors.grey,
         unselectedLabelStyle: new TextStyle(fontSize: 14.0),
         labelColor: Colors.black,
-        labelStyle: new TextStyle(fontSize: 16.0,fontWeight: FontWeight.bold),
+        labelStyle: new TextStyle(fontSize: 14.0,fontWeight: FontWeight.bold),
         tabs: mallTabBarList.map((item){
           return new Container(
-            child: new Text(item.title,maxLines: 1,),
+            child: new Text(item.title,maxLines: 1,softWrap: false,),
           );
         }).toList()
     );

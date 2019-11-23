@@ -9,27 +9,31 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/my/address_management/address_management_provide.dart';
+import 'package:innetsect/view_model/my_order/after_service_provide.dart';
 import 'package:provide/provide.dart';
 
 class AddressManagementPage extends PageProvideNode {
   final AddressManagementProvide _provide = AddressManagementProvide();
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
+  final AfterServiceProvide _afterServiceProvide = AfterServiceProvide.instance;
 
   AddressManagementPage() {
     mProviders.provide(Provider<AddressManagementProvide>.value(_provide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
+    mProviders.provide(Provider<AfterServiceProvide>.value(_afterServiceProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return AddressManagementContentPage(_provide,_orderDetailProvide);
+    return AddressManagementContentPage(_provide,_orderDetailProvide,_afterServiceProvide);
   }
 }
 
 class AddressManagementContentPage extends StatefulWidget {
   final AddressManagementProvide _provide;
   final OrderDetailProvide _orderDetailProvide;
-  AddressManagementContentPage(this._provide,this._orderDetailProvide);
+  final AfterServiceProvide _afterServiceProvide;
+  AddressManagementContentPage(this._provide,this._orderDetailProvide,this._afterServiceProvide);
 
   @override
   _AddressManagementContentPageState createState() =>
@@ -40,6 +44,7 @@ class _AddressManagementContentPageState
     extends State<AddressManagementContentPage> {
   OrderDetailProvide _orderDetailProvide;
   AddressManagementProvide _provide;
+  AfterServiceProvide _afterServiceProvide;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +81,7 @@ class _AddressManagementContentPageState
     super.initState();
     _orderDetailProvide ??= widget._orderDetailProvide;
     _provide ??= widget._provide;
+    _afterServiceProvide ??= widget._afterServiceProvide;
     // 地址管理请求
     _provide.clearList();
     _listData();
@@ -96,7 +102,12 @@ class _AddressManagementContentPageState
                     onTap: (){
                       // 订单详情选中事件
                       if(mapData['pages']=="orderDetail"){
+                        // 订单详情
                         _orderDetailProvide.editAddress(item);
+                        Navigator.pop(context);
+                      }else if(mapData['pages']=="afterApply"){
+                        // 售后申请
+                        _afterServiceProvide.editAddress(item);
                         Navigator.pop(context);
                       }
                     },

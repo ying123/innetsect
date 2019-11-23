@@ -2,10 +2,12 @@
 class RmareasonsModel{
   int reasonType;
   String reasonName;
+  bool isSelected;
 
   RmareasonsModel({
     this.reasonName,
-    this.reasonType
+    this.reasonType,
+    this.isSelected
   });
 
   factory RmareasonsModel.fromJson(Map<String,dynamic> json){

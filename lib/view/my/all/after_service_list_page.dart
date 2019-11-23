@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
-import 'package:innetsect/data/commodity_models.dart';
+import 'package:innetsect/data/order/after_order_model.dart';
+import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/all/after_apply_page.dart';
@@ -62,7 +63,8 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
             // 数据内容
             SliverList(
                 delegate: SliverChildListDelegate(
-                    provide.list.map((item){
+                   provide.list.length>0? provide.list.map((item){
+                      String orderNoName = item is AfterOrderModel?"售后单号: ${item.rmaNo}":"订单号: ${item.orderNo}";
                       return new Container(
                         width: double.infinity,
                         color: Colors.white,
@@ -75,16 +77,23 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
                             new Container(
                               width: double.infinity,
                               alignment: Alignment.centerLeft,
-                              child: new Text("订单号:  ${item.orderNo}"),
+                              child:item is AfterOrderModel?
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    new Text(orderNoName),
+                                    new Text(CommonUtil.afterStatusName(item.status),style: TextStyle(color: AppConfig.blueBtnColor),)
+                                  ],
+                                ): new Text(orderNoName),
                             ),
                             // 商品展示
                             _commodityContent(item),
                             // 底部操作按钮
-                            _bottomConditionBtn(item)
+                            item is AfterOrderModel?_afterBottom(item):_bottomConditionBtn(item)
                           ],
                         ),
                       );
-                    }).toList()
+                    }).toList():[]
                 )
             )
           ],
@@ -101,6 +110,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
     setState(() {
       idx = widget.idx;
     });
+    _afterServiceProvide.clearList();
     _loadData(pageNo: pageNo);
   }
 
@@ -130,18 +140,17 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
           ),
           // 商品描述
           new Container(
-              height: ScreenAdapter.height(140),
               width: (ScreenAdapter.getScreenWidth()/1.7)-4,
               padding: EdgeInsets.only(left: 10,top: 5),
               child: list!=null? new Column(
                 children: <Widget>[
                   new Container(
                     width: double.infinity,
-                    child: new Text(list[0],softWrap: true,),
+                    child: new Text(list.length==0?item.skuName:list[0],softWrap: true,),
                   ),
                   new Container(
                       width: double.infinity,
-                      child: new Text(list[1],style: TextStyle(color: Colors.grey),)
+                      child: new Text(list.length==0?"":list[1],style: TextStyle(color: Colors.grey),)
                   ),
                   new Container(
                     padding:EdgeInsets.only(top: 10),
@@ -165,8 +174,48 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
     );
   }
 
+  /// 底部售后申请列表按钮
+  Widget _afterBottom(AfterOrderModel model){
+    Widget widget = Container();
+    if(model.status==10){
+      // 显示取消售后
+      widget = new Container(
+          decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: AppConfig.assistLineColor))
+          ),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              new Container(
+                child: RaisedButton(
+                  color: AppConfig.assistLineColor,
+                  textColor: Colors.black,
+                  onPressed: (){
+                    // 取消售后
+                    CustomsWidget().customShowDialog(context: context,content: "确定取消售后吗？",
+                    onPressed: (){
+                      // 取消售后请求
+                      _afterServiceProvide.cancelAfterOrder(model.rmaID).then((item){
+                        if(item!=null&&item.data){
+                          CustomsWidget().showToast(title: "取消成功");
+                          _afterServiceProvide.removeOrder(model);
+                        }
+                      });
+                    });
+                  },
+                  child: new Text("取消售后"),
+                ),
+              )
+            ],
+          )
+      );
+    }
+    return widget;
+  }
+
   /// 底部操作按钮,动态显示底部操作栏
-  Widget _bottomConditionBtn(CommodityModels item){
+  /// 售后申请列表底部按钮
+  Widget _bottomConditionBtn(OrderDetailModel item){
     /**
      *  // 退换策略,0：此商品不支持退换货,>0申请售后，1.退货，2.换货,3.可退换
         int rmaPolicy;
@@ -191,8 +240,9 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
                   textColor: Colors.white,
                   onPressed: (){
                     // 跳转申请售后
-                    _afterServiceProvide.commodityModels = item;
+                    _afterServiceProvide.orderDetailModel = item;
                     _afterServiceProvide.count = item.quantity;
+                    _afterServiceProvide.clearReasonList();
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context){
                         return AfterApplyPage();
@@ -207,24 +257,49 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
         );
     }else if(item.rmaPolicy==0){
       // 此商品不支持退换货
+      widget = _textDesc("此商品不支持退换货");
+    }else if(item.rmaPolicy>0&&item.rmaRequested&&item.rmaInPeriod){
       widget = new Container(
           decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: AppConfig.assistLineColor))
+              border: Border(top: BorderSide(color: AppConfig.assistLineColor))
           ),
           child: new Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              new Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: new Text("此商品不支持退换货",style: TextStyle(color: AppConfig.blueBtnColor,
-                    fontSize: ScreenAdapter.size(26)
-                ),),
+              new Container(
+                child: RaisedButton(
+                  disabledColor: AppConfig.assistLineColor,
+                  disabledTextColor: Colors.grey,
+                  child: new Text("已申请售后"),
+                ),
               )
             ],
-          ),
+          )
       );
+    }else if(item.rmaPolicy>0&&!item.rmaRequested&&!item.rmaInPeriod){
+      widget = _textDesc("该商品已超过7天售后期");
     }
     return widget;
+  }
+
+  /// 文字描述
+  Widget _textDesc(String title){
+    return new Container(
+      decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: AppConfig.assistLineColor))
+      ),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          new Padding(
+            padding: EdgeInsets.only(left: 20,top: 10),
+            child: new Text(title,style: TextStyle(color: AppConfig.blueBtnColor,
+                fontSize: ScreenAdapter.size(26)
+            ),),
+          )
+        ],
+      ),
+    );
   }
 
   /// 加载列表数据
@@ -257,9 +332,10 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
       print('listen data->$item');
       if(item!=null&&item.data!=null){
         if(idx==0){
-          _afterServiceProvide.setList(CommodityList.fromJson(item.data).list);
+          _afterServiceProvide.setList(OrderDetailModelList.fromJson(item.data).list);
         }else{
           // 售后模型
+          _afterServiceProvide.setList(AfterOrderModelList.fromJson(item.data).list);
         }
       }
     }, onError: (e) {});

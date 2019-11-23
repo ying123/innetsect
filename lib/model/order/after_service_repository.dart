@@ -17,6 +17,19 @@ class AfterService{
     return response;
   }
 
+  /// 提交售后
+  Observable<BaseResponse> submitSalesRma(Map<String,dynamic> json){
+    var url = '/api/eshop/salesrma';
+    var response = post(url,body: json);
+    return response;
+  }
+
+  /// 取消售后
+  Future cancelAfterOrder (int rmaID){
+    var url = '/api/eshop/salesrma/cancel/$rmaID';
+    return patch(url);
+  }
+
 }
 
 class AfterRepo {
@@ -30,5 +43,15 @@ class AfterRepo {
   /// 申请原因列表
   Observable<BaseResponse> rmareasonsListData(){
     return _remote.rmareasonsListData();
+  }
+
+  /// 提交售后
+  Observable<BaseResponse> submitSalesRma(Map<String,dynamic> json){
+    return _remote.submitSalesRma(json);
+  }
+
+  /// 取消售后
+  Future cancelAfterOrder (int rmaID){
+    return _remote.cancelAfterOrder(rmaID);
   }
 }

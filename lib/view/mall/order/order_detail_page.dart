@@ -79,7 +79,7 @@ class _OrderContentState extends State<OrderContent> {
               // 已支付订单显示
               _orderNoWidget(),
             ],
-          ),
+          ) ,
         ),
         bottomSheet: Container(
           width: double.infinity,
@@ -127,6 +127,12 @@ class _OrderContentState extends State<OrderContent> {
 
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    widget._orderDetailProvide.orderDetailModel = null;
+  }
   /// 查询物流信息
   Widget logisticsBtn(){
     return  new RaisedButton(
@@ -329,7 +335,7 @@ class _OrderContentState extends State<OrderContent> {
           color: Colors.white,
           padding: EdgeInsets.only(left:20,top: 10,right:20),
           width: double.infinity,
-          child: new Column(
+          child: model!=null? new Column(
             children: <Widget>[
               new Row(
                 children: <Widget>[
@@ -415,7 +421,7 @@ class _OrderContentState extends State<OrderContent> {
                 ):new Container(),
               )
             ],
-          ),
+          ):Container(),
         );
       }
     );
@@ -470,15 +476,12 @@ class _OrderContentState extends State<OrderContent> {
     return Provide<OrderDetailProvide> (
         builder: (BuildContext context,Widget widget,OrderDetailProvide  provide){
       OrderDetailModel model = provide.orderDetailModel;
-      if(model.status==2){
-        return Container();
-      }else {
         return new Container(
           color: Colors.white,
           width: double.infinity,
           margin: EdgeInsets.only(top: 5),
           padding: EdgeInsets.all(10),
-          child: model != null ? new Column(
+          child: model != null && model.status!=2? new Column(
             children: <Widget>[
 
               ///TODO 暂时隐藏
@@ -549,7 +552,6 @@ class _OrderContentState extends State<OrderContent> {
             ],
           ) : new Container(),
         );
-      }
     });
   }
 
