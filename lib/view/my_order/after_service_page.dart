@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/my/all/after_service_list_page.dart';
+import 'package:innetsect/view/my/all/after/after_service_list_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 
 /// 我的售后

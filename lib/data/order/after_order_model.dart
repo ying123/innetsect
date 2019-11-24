@@ -16,6 +16,8 @@ class AfterOrderModel{
   String exSkuCode;
   // 原订单ID
   int orderID;
+  // 原订单编号
+  String orderNo;
   // 原订单号
   int itemID;
   //申请数量
@@ -24,6 +26,8 @@ class AfterOrderModel{
   int exAddressID;
   //申请原因
   int reasonType;
+  // 申请原因（售后详情返回）
+  String reasonName;
   //收货人
   String exReceipient;
   //联系电话
@@ -50,6 +54,12 @@ class AfterOrderModel{
   String skuPic;
   // 售后状态
   int status;
+  // 退换货物流状态，<3显示退货物流，>=3显示换货物流
+  int syncStatus;
+  // 物流单号
+  String waybillNo;
+  // 物流公司code
+  String shipperCode;
 
   AfterOrderModel({
     this.exAddressID,
@@ -77,7 +87,12 @@ class AfterOrderModel{
     this.skuName,
     this.skuPic,
     this.status,
-    this.rmaID
+    this.rmaID,
+    this.reasonName,
+    this.orderNo,
+    this.syncStatus,
+    this.waybillNo,
+    this.shipperCode
   });
 
   factory AfterOrderModel.fromJson(Map<String,dynamic> json){
@@ -107,7 +122,12 @@ class AfterOrderModel{
         skuName: json['skuName'],
         skuPic: json['skuPic'],
         status: json['status'],
-        rmaID: json['rmaID']
+        rmaID: json['rmaID'],
+        reasonName: json['reasonName'],
+        orderNo: json['orderNo'],
+        syncStatus: json['syncStatus'],
+        waybillNo: json['waybillNo'],
+        shipperCode: json['shipperCode']
     );
   }
 
@@ -137,7 +157,12 @@ class AfterOrderModel{
     'skuName': skuName,
     'skuPic': skuPic,
     'status': status,
-    'rmaID': rmaID
+    'rmaID': rmaID,
+    'reasonName': reasonName,
+    'orderNo': orderNo,
+    'syncStatus': syncStatus,
+    'waybillNo': waybillNo,
+    'shipperCode': shipperCode
   };
 }
 

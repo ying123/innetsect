@@ -58,7 +58,7 @@ class _LogisticsContentState extends State<LogisticsContent> {
                 color: Colors.white,
                 padding: EdgeInsets.only(left: 20,bottom: 10),
                 child: CustomsWidget().subTitle(title: "订单编号:  ${_detailProvide.orderDetailModel.orderNo}",
-                    color: AppConfig.primaryColor),
+                    color: AppConfig.blueBtnColor),
               )
           ),
           new Positioned(
@@ -90,8 +90,8 @@ class _LogisticsContentState extends State<LogisticsContent> {
                                   Expanded(
                                     flex: 9,
                                     child: new Container(
-                                      color: Colors.red,
-                                      padding: EdgeInsets.only(left: 10),
+                                      padding: EdgeInsets.only(left: 10,right: 20),
+                                      margin: EdgeInsets.only(top: 20),
                                       child: new Column(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,6 +125,7 @@ class _LogisticsContentState extends State<LogisticsContent> {
     _loadData();
   }
 
+  /// 订单物流
   _loadData(){
     OrderDetailModel model = _detailProvide.orderDetailModel;
     _provide.getLogisticsList(orderID: model.orderID,shipperCode: model.shipperCode,

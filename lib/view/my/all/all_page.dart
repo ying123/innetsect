@@ -73,7 +73,8 @@ class _AllContentPageState extends State<AllContentPage> {
         child: <Widget>[
           // 数据内容
           SliverList(
-            delegate: SliverChildListDelegate(_orderDetailList.map((item){
+            delegate: SliverChildListDelegate(
+                _orderDetailList.length>0?_orderDetailList.map((item){
               return new InkWell(
                 onTap: () {
 //                  /// 订单详情请求
@@ -128,7 +129,8 @@ class _AllContentPageState extends State<AllContentPage> {
                   ),
                 ),
               );
-            }).toList()),
+            }).toList():CustomsWidget().noDataWidget()
+            ),
           )
         ]
     );
@@ -242,6 +244,7 @@ class _AllContentPageState extends State<AllContentPage> {
     );
   }
 
+  /// 底部操作栏
   Widget _bottomAction(OrderDetailModel model){
     Widget widget;
     //0待支付 1待收货 2已完成 -1已取消 -2已取消待退款 -4已取消已退款
@@ -253,53 +256,55 @@ class _AllContentPageState extends State<AllContentPage> {
           this._logisticsWidget(model)
         ],
       );
-    }
-    switch(model.status){
-      case 0:
-        widget = new Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            this._cancelOrderWidget(model.orderID),
-            new Container(
-              height: ScreenAdapter.height(60),
-              padding:EdgeInsets.only(left: 10,) ,
-              child: new RaisedButton(
-                textColor: AppConfig.whiteBtnColor,
-                color: AppConfig.blueBtnColor,
-                onPressed: (){
-                  ///默认支付宝
-                  _commodityDetailProvide.payMode = 2;
-                  ///加载数据，存储订单号
-                  _commodityDetailProvide.setOrderId(model.orderID);
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context){
-                      return OrderPayPage();
-                    },
-                  ));
-                },
-                child: new Text("立即付款",style: TextStyle(
-                    fontSize: ScreenAdapter.size(24)),),
-              ),
-            )
-          ],
-        );
-        break;
-      case 2:
-        widget = widget = new Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            this._logisticsWidget(model)
-          ],
-        );
-        break;
-      case -1:
-        widget = new Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            _delOrderWidget(model.orderID)
-          ],
-        );
-        break;
+    }else if(model.status==0){
+      widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          this._cancelOrderWidget(model.orderID),
+          new Container(
+            height: ScreenAdapter.height(60),
+            padding:EdgeInsets.only(left: 10,) ,
+            child: new RaisedButton(
+              textColor: AppConfig.whiteBtnColor,
+              color: AppConfig.blueBtnColor,
+              onPressed: (){
+                ///默认支付宝
+                _commodityDetailProvide.payMode = 2;
+                ///加载数据，存储订单号
+                _commodityDetailProvide.setOrderId(model.orderID);
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return OrderPayPage();
+                  },
+                ));
+              },
+              child: new Text("立即付款",style: TextStyle(
+                  fontSize: ScreenAdapter.size(24)),),
+            ),
+          )
+        ],
+      );
+    }else if(model.status==1){
+      widget = widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          this._logisticsWidget(model)
+        ],
+      );
+    }else if(model.status==2){
+      widget = widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          this._logisticsWidget(model)
+        ],
+      );
+    }else if(model.status==-1){
+      widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          _delOrderWidget(model.orderID)
+        ],
+      );
     }
     return widget;
   }

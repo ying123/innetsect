@@ -235,6 +235,8 @@ flutter:
     - assets/images/main/open_app.jpg
     - assets/images/main/commodity_enter.jpg
     - assets/images/main/trade_enter.jpg
+    # --- 暂无数据 ---
+    - assets/images/mall/no_data.png
     # ----
     - assets/images/mall/del.png
     - assets/images/mall/edit.png

@@ -37,7 +37,9 @@ class CustomsWidget{
     String title,
     String content,
     VoidCallback onPressed,
-    VoidCallback onCancel
+    VoidCallback onCancel,
+    String cancelTitle = "放弃",
+    String submitTitle="确认"
   }){
     return showDialog(
       context: context,
@@ -57,10 +59,13 @@ class CustomsWidget{
                   color:Colors.white,
                   textColor: Colors.blue,
                   onPressed: () {
-                    onCancel();
-                    Navigator.of(context).pop();
+                    if(onCancel!=null){
+                      onCancel();
+                    }else{
+                      Navigator.of(context).pop();
+                    }
                   },
-                  child: new Text("取消"),
+                  child: new Text(cancelTitle),
                 ),
                 new FlatButton(
                   color:Colors.white,
@@ -69,7 +74,7 @@ class CustomsWidget{
                     onPressed();
                     Navigator.of(context).pop();
                   },
-                  child: new Text("确认"),
+                  child: new Text(submitTitle,style: TextStyle(color: AppConfig.blueBtnColor),),
                 )
               ],
             )
@@ -271,6 +276,28 @@ class CustomsWidget{
         ),
       ),
     );
+  }
+
+  /// 暂无数据
+  List<Widget> noDataWidget(){
+    return <Widget>[
+      Container(
+        width: double.infinity,
+        height: ScreenAdapter.height(240),
+        margin: EdgeInsets.only(top: 120),
+        child: Image.asset("assets/images/mall/no_data.png",
+          fit: BoxFit.contain,
+          width: ScreenAdapter.width(120),
+          height: ScreenAdapter.height(120),
+        ),
+      ),
+      Center(
+        child: Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: Text("暂无相关数据",style: TextStyle(color: Colors.black54,fontSize: ScreenAdapter.size(28)),),
+        ),
+      )
+    ];
   }
 
 }

@@ -44,7 +44,7 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
       });
     }else{
       Fluttertoast.showToast(
-          msg: error.toString(),
+          msg: error.response.data['message'].toString(),
           gravity: ToastGravity.CENTER
       );
     }

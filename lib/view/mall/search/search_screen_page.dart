@@ -64,7 +64,24 @@ class _SearchScreenContentState extends State<SearchScreenContent> {
         _searchProvide.searchValue,style: TextStyle(fontSize: ScreenAdapter.size((30)),
           fontWeight: FontWeight.w900 ),) ,
       ),
-      body: Stack(
+      body:
+//      CustomScrollView(
+//        slivers: <Widget>[
+//          SliverAppBar(
+//            pinned: true,
+//            elevation: 0,
+//            expandedHeight: 250,
+//            flexibleSpace: FlexibleSpaceBar(
+//              title: Text('Sliver-sticky效果'),
+//              background: Image.asset("assets/images/mall/exhibition_news.png"),
+//            ),
+//          ),
+//          _listWidget()
+//        ],
+//      )
+
+
+      Stack(
         children: <Widget>[
           Container(
             width: double.infinity,

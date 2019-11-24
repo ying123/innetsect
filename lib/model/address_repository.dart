@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/address_model.dart';

@@ -7,7 +7,7 @@ import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
-import 'package:innetsect/view/my/all/rmareason_page.dart';
+import 'package:innetsect/view/my/all/after/rmareason_page.dart';
 import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
@@ -42,8 +42,6 @@ class AfterApplyContent extends StatefulWidget {
 class _AfterApplyContentState extends State<AfterApplyContent> {
   AfterServiceProvide _afterServiceProvide;
   CommodityDetailProvide _commodityDetailProvide;
-  List<Map<String,dynamic>> applyTypeList = [{"val":1,"title":"退货","isSelected": false},
-    {"val":2,"title":"换货","isSelected": false}];
   //原因描述
   String reason="";
 
@@ -60,80 +58,97 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Center(
-          child: Column(
-            children: <Widget>[
-              // 订单信息
-              _orderDetail(),
-              // 申请数量
-              _applyCount(),
-              // 申请类型
-              Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(8),
-                color: Color(0xFFFFFF),
-              ),
-              _applyType(),
-              // 选择规格，如果是换货
-              applyTypeList[1]['isSelected']?Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(8),
-                color: Color(0xFFFFFF),
-              ):Container(),
-              applyTypeList[1]['isSelected']?_orderDetailWidget():Container(),
-              // 申请原因
-              Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(8),
-                color: Color(0xFFFFFF),
-              ),
-              _applyCause(),
-              // 退款方式
-              applyTypeList[1]['isSelected']?Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(8),
-                color: Color(0xFFFFFF),
-              ):Container(),
-              applyTypeList[1]['isSelected']?_payRefundWidget():Container(),
-              // 地址
-              applyTypeList[1]['isSelected']?Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(8),
-                color: Color(0xFFFFFF),
-              ):Container(),
-              applyTypeList[1]['isSelected']?_addressWidget():Container(),
-            ],
+          child: Provide<AfterServiceProvide>(
+            builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+              return Column(
+                children: <Widget>[
+                  // 订单信息
+                  _orderDetail(),
+                  // 申请数量
+                  _applyCount(),
+                  // 申请类型
+                  Container(
+                    width: double.infinity,
+                    height: ScreenAdapter.height(8),
+                    color: Color(0xFFFFFF),
+                  ),
+                  _applyType(),
+                  // 选择规格，如果是换货
+                  provide.applyTypeList[1]['isSelected']?Container(
+                    width: double.infinity,
+                    height: ScreenAdapter.height(8),
+                    color: Color(0xFFFFFF),
+                  ):Container(),
+                  provide.applyTypeList[1]['isSelected']?_orderDetailWidget():Container(),
+                  // 申请原因
+                  Container(
+                    width: double.infinity,
+                    height: ScreenAdapter.height(8),
+                    color: Color(0xFFFFFF),
+                  ),
+                  _applyCause(),
+                  // 退款方式
+                  provide.applyTypeList[1]['isSelected']?Container(
+                    width: double.infinity,
+                    height: ScreenAdapter.height(8),
+                    color: Color(0xFFFFFF),
+                  ):Container(),
+                  provide.applyTypeList[1]['isSelected']?_payRefundWidget():Container(),
+                  // 地址
+                  provide.applyTypeList[1]['isSelected']?Container(
+                    width: double.infinity,
+                    height: ScreenAdapter.height(8),
+                    color: Color(0xFFFFFF),
+                  ):Container(),
+                  provide.applyTypeList[1]['isSelected']?_addressWidget():Container(),
+                ],
+              );
+            },
           ),
         ),
       ),
-      bottomSheet: Container(
-        width: double.infinity,
-        margin: EdgeInsets.only(left: 20,right: 20),
-        child:  RaisedButton(
-          color: Colors.black,
-          textColor: Colors.white,
-          onPressed: (){
-            /// 提交申请
-            //退换类型
-            if(!applyTypeList[0]['isSelected']&&!applyTypeList[1]['isSelected']){
-                CustomsWidget().showToast(title: "请选择申请类型");
-                return;
-            }
-            // 退换原因
-            bool flag = false;
-            _afterServiceProvide.rmareasonsModelList.forEach((item){
-              if(item.isSelected==true){
-                flag = true;
-              }
-            });
-            if(!flag){
-              CustomsWidget().showToast(title: "请选择申请原因");
-              return;
-            }
-            _submitAfterRequest();
-          },
-          child: new Text("提交申请"),
-        ),
-      ),
+      bottomSheet: Provide<AfterServiceProvide>(
+          builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+            return Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(left: 20,right: 20),
+              child:  RaisedButton(
+                color: Colors.black,
+                textColor: Colors.white,
+                onPressed: (){
+                  /// 提交申请
+                  //退换类型
+                  if(!provide.applyTypeList[0]['isSelected']&&!provide.applyTypeList[1]['isSelected']){
+                    CustomsWidget().showToast(title: "请选择申请类型");
+                    return;
+                  }
+                  // 退换原因
+                  bool flag = false;
+                  _afterServiceProvide.rmareasonsModelList.forEach((item){
+                    if(item.isSelected==true){
+                      flag = true;
+                      // 当退换原因为5、6时，原因描述和图片必须填写
+                      if(item.reasonType==5||item.reasonType==6){
+                        if(reason==""){
+                          CustomsWidget().showToast(title: "请填写申请售后具体原因");
+                          return;
+                        }
+                      }
+                    }
+                  });
+                  if(!flag){
+                    CustomsWidget().showToast(title: "请选择申请原因");
+                    return;
+                  }
+                  // 当退换原因为5、6时，原因描述和图片必须填写
+
+                  _submitAfterRequest();
+                },
+                child: new Text("提交申请"),
+              ),
+            );
+          }
+      )
     );
   }
 
@@ -368,7 +383,7 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
           height: ScreenAdapter.height(80),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: applyTypeList.asMap().keys.map((keys){
+            children: provide.applyTypeList.asMap().keys.map((keys){
               return Container(
                 width: ScreenAdapter.width(100),
                 margin: EdgeInsets.only(right: 20),
@@ -377,15 +392,12 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
                   children: <Widget>[
                     new InkWell(
                       onTap: (){
-                        applyTypeList.forEach((val)=> val['isSelected']=false);
-                        setState(() {
-                          applyTypeList[keys]['isSelected'] = !applyTypeList[keys]['isSelected'];
-                        });
+                        provide.onSelectedApplyType(keys);
                       },
                       child: Row(
                         children: <Widget>[
                           new Container(
-                            child: applyTypeList[keys]['isSelected']? new Icon(
+                            child: provide.applyTypeList[keys]['isSelected']? new Icon(
                               Icons.check_circle,
                               size: 20.0,
                               color: AppConfig.fontBackColor,
@@ -394,7 +406,7 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
                             ),
                           ),
                           Container(
-                            child: Text(applyTypeList[keys]['title']),
+                            child: Text(provide.applyTypeList[keys]['title']),
                           )
                         ],
                       ),
@@ -732,8 +744,8 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
 
   /// 提交申请
   _submitAfterRequest(){
-    int index = applyTypeList.indexWhere((item)=>item['isSelected']==true);
-    _afterServiceProvide.submitSalesRma(applyTypeList[index]['val'], reason)
+    int index = _afterServiceProvide.applyTypeList.indexWhere((item)=>item['isSelected']==true);
+    _afterServiceProvide.submitSalesRma(_afterServiceProvide.applyTypeList[index]['val'], reason)
         .doOnListen(() {
       print('doOnListen');
     })
@@ -742,8 +754,9 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
       ///加载数据
       print('listen data->$item');
       if(item!=null&&item.data!=null){
-        CustomsWidget().showToast(title: "提交成功");
+        _afterServiceProvide.updateOrderListModal();
         Navigator.pop(context);
+        CustomsWidget().showToast(title: "提交成功");
       }
     }, onError: (e) {});
   }

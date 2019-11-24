@@ -3,6 +3,7 @@ import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/order_detail_model.dart';
+import 'package:innetsect/enum/order_status.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/logistics/logistics_page.dart';
@@ -145,7 +146,8 @@ class _OrderContentState extends State<OrderContent> {
               return LogisticsPage();
             }
         ));
-      },child: new Text("物流信息"),
+      },child: new Text("查看物流",style: TextStyle(fontSize: ScreenAdapter.size(24),
+    fontWeight: FontWeight.w500),),
     );
   }
 
@@ -349,12 +351,12 @@ class _OrderContentState extends State<OrderContent> {
                       fontSize: ScreenAdapter.size(28),
                       fontWeight: FontWeight.w600),
                   ),
-                  model.status==-1?Expanded(
+                  Expanded(
                     child: Container(
                       alignment: Alignment.centerRight,
-                      child: Text('已取消',style: TextStyle(color: AppConfig.blueBtnColor),),
+                      child: Text(OrderStatusEnum().getStatusTitle(model.status),style: TextStyle(color: AppConfig.blueBtnColor),),
                     ),
-                  ):Container()
+                  )
                 ],
               ),
               new Container(
@@ -443,16 +445,18 @@ class _OrderContentState extends State<OrderContent> {
               child: new Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new Text("商品总价",style: TextStyle(fontWeight: FontWeight.w600,fontSize: ScreenAdapter.size(24)),),
-                  new CustomsWidget().priceTitle(price: model.totalAmount.toString())
+                  new Text("商品总价",style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                  new CustomsWidget().priceTitle(price: model.totalAmount.toString(),
+                  color: Colors.grey,fontWeight: FontWeight.w400)
                 ],
               )),
               new Padding(padding: EdgeInsets.all(10),
                 child: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    new Text("优惠",style: TextStyle(fontWeight: FontWeight.w600,fontSize: ScreenAdapter.size(24)),),
-                    new CustomsWidget().priceTitle(price: model.totalDiscount.toString())
+                    new Text("优惠",style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                    new CustomsWidget().priceTitle(price: model.totalDiscount.toString(),
+                        color: Colors.grey,fontWeight: FontWeight.w400)
                   ],
                 ),
               ),
@@ -460,8 +464,9 @@ class _OrderContentState extends State<OrderContent> {
                 child: new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    new Text("运费",style: TextStyle(fontWeight: FontWeight.w600,fontSize: ScreenAdapter.size(24)),),
-                    new CustomsWidget().priceTitle(price: model.freight.toString())
+                    new Text("运费",style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                    new CustomsWidget().priceTitle(price: model.freight.toString(),
+                        color: Colors.grey,fontWeight: FontWeight.w400)
                   ],
                 ),
               ),
@@ -481,7 +486,7 @@ class _OrderContentState extends State<OrderContent> {
           width: double.infinity,
           margin: EdgeInsets.only(top: 5),
           padding: EdgeInsets.all(10),
-          child: model != null && model.status!=2? new Column(
+          child: model != null? new Column(
             children: <Widget>[
 
               ///TODO 暂时隐藏
@@ -526,7 +531,7 @@ class _OrderContentState extends State<OrderContent> {
                     child: new Row(
                       children: <Widget>[
                         new CustomsWidget().priceTitle(price: model
-                            .payableAmount.toString(), color: Colors.red)
+                            .payableAmount.toString(), color: AppConfig.blueBtnColor)
                       ],
                     ),
                   )

@@ -56,7 +56,7 @@ static Route createRoute(Tween<Offset> tween, Widget child) {
         name = "申请中";
         break;
       case 30:
-        name = "已审核通过";
+        name = "审核通过";
         break;
       case 34:
         name ="审核不通过";
