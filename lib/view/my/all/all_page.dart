@@ -14,6 +14,7 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
+import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/my/all/all_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -22,6 +23,7 @@ class AllPage extends PageProvideNode{
   final AllProvide _provide = AllProvide.instance;
   final OrderDetailProvide _detailProvide = OrderDetailProvide.instance;
   final CommodityDetailProvide _commodityDetailProvide = CommodityDetailProvide.instance;
+  final LogisticsProvide _logisticsProvide = LogisticsProvide.instance;
 
   AllPage({
     this.idx
@@ -29,11 +31,13 @@ class AllPage extends PageProvideNode{
     mProviders.provide(Provider<AllProvide>.value(_provide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_commodityDetailProvide));
+    mProviders.provide(Provider<LogisticsProvide>.value(_logisticsProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
    
-    return AllContentPage(_provide,_detailProvide,_commodityDetailProvide,this.idx);
+    return AllContentPage(_provide,_detailProvide,_commodityDetailProvide,this.idx,
+    this._logisticsProvide);
   }
 }
 
@@ -42,7 +46,9 @@ class AllContentPage extends StatefulWidget {
   final AllProvide _provide;
   final OrderDetailProvide _detailProvide;
   final CommodityDetailProvide _commodityDetailProvide;
-  AllContentPage(this._provide,this._detailProvide,this._commodityDetailProvide,this.idx);
+  final LogisticsProvide _logisticsProvide;
+  AllContentPage(this._provide,this._detailProvide,this._commodityDetailProvide,this.idx,
+      this._logisticsProvide);
   @override
   _AllContentPageState createState() => _AllContentPageState();
 }
@@ -51,6 +57,7 @@ class _AllContentPageState extends State<AllContentPage> {
   AllProvide _provide;
   OrderDetailProvide _detailProvide;
   CommodityDetailProvide _commodityDetailProvide;
+  LogisticsProvide _logisticsProvide;
   int idx;
   EasyRefreshController _easyRefreshController;
   List<OrderDetailModel> _orderDetailList = new List();
@@ -143,6 +150,7 @@ class _AllContentPageState extends State<AllContentPage> {
     _provide ??= widget._provide;
     _detailProvide??=widget._detailProvide;
     _commodityDetailProvide??=widget._commodityDetailProvide;
+    _logisticsProvide ??= widget._logisticsProvide;
     _easyRefreshController = EasyRefreshController();
     setState(() {
       idx = widget.idx;
@@ -212,7 +220,7 @@ class _AllContentPageState extends State<AllContentPage> {
                   width: (ScreenAdapter.getScreenWidth()/1.7)-4,
                   padding: EdgeInsets.only(left: 10,top: 5),
                   alignment: Alignment.centerLeft,
-                  child:skuNameList!=null? new Column(
+                  child:skuNameList!=null&&skuNameList.length>0? new Column(
                     children: <Widget>[
                       new Container(
                         width: double.infinity,
@@ -352,6 +360,7 @@ class _AllContentPageState extends State<AllContentPage> {
         color: AppConfig.fontBackColor,
         onPressed: (){
           _detailProvide.orderDetailModel = model;
+          _logisticsProvide.backPage=null;
           Navigator.push(context, MaterialPageRoute(
             builder: (context){
               return LogisticsPage();

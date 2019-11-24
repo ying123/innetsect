@@ -155,7 +155,8 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
       Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (context){
             return OrderDetailPage();
-          }
+          },
+        settings: RouteSettings(arguments: {'orderID':_detailProvide.orderDetailModel.orderID})
       ));
     }
   }

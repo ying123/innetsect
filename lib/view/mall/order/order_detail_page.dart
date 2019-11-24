@@ -88,9 +88,13 @@ class _OrderContentState extends State<OrderContent> {
           margin: EdgeInsets.only(left: 20,right: 20),
           child: Provide<OrderDetailProvide>(
               builder: (BuildContext context,Widget widget, OrderDetailProvide provide){
-                if(provide.orderDetailModel!=null&&provide.orderDetailModel.status==0){
+                if(provide.orderDetailModel!=null
+                    &&provide.orderDetailModel.status==0){
                   return this.payBtn();
-                }else {
+                }else if(provide.orderDetailModel!=null
+                    &&provide.orderDetailModel.status==-2){
+                  return Container();
+                }else{
                   return this.logisticsBtn();
                 }
               }
@@ -161,7 +165,7 @@ class _OrderContentState extends State<OrderContent> {
         if(_orderDetailProvide.orderDetailModel.orderNo!=null){
           _setOrder(_orderDetailProvide.orderDetailModel.orderID);
         }else{
-          widget._detailProvide.submitShopping(widget._orderDetailProvide.orderDetailModel.addressID)
+          _detailProvide.submitShopping(_orderDetailProvide.orderDetailModel.addressID)
               .doOnListen(() {
             print('doOnListen');
           })
@@ -201,7 +205,7 @@ class _OrderContentState extends State<OrderContent> {
     _detailProvide.payMode=2;
     ///加载数据，存储订单号
     _detailProvide.setOrderId(orderID);
-    Navigator.push(context, MaterialPageRoute(
+    Navigator.pushReplacement(context, MaterialPageRoute(
       builder: (context){
         return OrderPayPage();
       },
@@ -354,7 +358,7 @@ class _OrderContentState extends State<OrderContent> {
                   Expanded(
                     child: Container(
                       alignment: Alignment.centerRight,
-                      child: Text(OrderStatusEnum().getStatusTitle(model.status),style: TextStyle(color: AppConfig.blueBtnColor),),
+                      child: Text(model.status!=null?OrderStatusEnum().getStatusTitle(model.status):"",style: TextStyle(color: AppConfig.blueBtnColor),),
                     ),
                   )
                 ],
@@ -525,13 +529,13 @@ class _OrderContentState extends State<OrderContent> {
               new Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new Text("实际支付:"),
+                  new Text(model.payAmount!=null?"实际支付:":"应付金额"),
                   new Container(
                     padding: EdgeInsets.only(right: 10, top: 10),
                     child: new Row(
                       children: <Widget>[
-                        new CustomsWidget().priceTitle(price: model
-                            .payableAmount.toString(), color: AppConfig.blueBtnColor)
+                        new CustomsWidget().priceTitle(price: model.payAmount!=null?
+                            model.payAmount.toString():model.payableAmount.toString(), color: AppConfig.blueBtnColor)
                       ],
                     ),
                   )
@@ -679,16 +683,40 @@ class _OrderContentState extends State<OrderContent> {
 
   /// 添加购物车地址
   Widget _addAddress(){
-    return new Row(
-      children: <Widget>[
-        new Image.asset("assets/images/mall/express.png",width: ScreenAdapter.width(40),),
-        new Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: new Text("添加购物地址",style: TextStyle(fontSize: ScreenAdapter.size(28),
-              color: AppConfig.assistFontColor
-          ),),
-        )
-      ],
+    return InkWell(
+      onTap: (){
+        // 跳转新建地址
+        // 点击跳转地址管理页面
+        Navigator.push(context, MaterialPageRoute(
+            builder: (BuildContext context){
+              return AddressManagementPage();
+            },
+            settings: RouteSettings(arguments: {'pages': 'orderDetail'})
+        ));
+      },
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              width:double.infinity,
+              padding: EdgeInsets.only(left: 20,top: 10,bottom: 10),
+              child: Row(
+                children: <Widget>[
+                  new Image.asset("assets/images/mall/express.png",width: ScreenAdapter.width(40),),
+                  new Text("添加购物地址",style: TextStyle(fontSize: ScreenAdapter.size(28),
+                      color: AppConfig.assistFontColor
+                  ),)
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 20),
+            child: Icon(Icons.chevron_right),
+          )
+        ],
+      ),
     );
   }
 

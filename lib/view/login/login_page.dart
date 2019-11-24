@@ -59,7 +59,6 @@ class _LoginContentPageState extends State<LoginContentPage> {
         leading: InkWell(
             onTap: () {
               // 返回按钮
-              print(pages is AppNavigationContentBar);
               if(pages is AppNavigationContentBar){
                 _appNavigationBarProvide.currentIndex = 2;
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(

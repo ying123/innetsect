@@ -3,10 +3,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/address_model.dart';
+import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/new_address/new_address_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
-import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/my/address_management/address_management_provide.dart';
 import 'package:innetsect/view_model/my_order/after_service_provide.dart';
@@ -103,6 +103,8 @@ class _AddressManagementContentPageState
                       // 订单详情选中事件
                       if(mapData['pages']=="orderDetail"){
                         // 订单详情
+                        //TODO 调用地址运费计算请求
+                        _addressFreight(item.addressID);
                         _orderDetailProvide.editAddress(item);
                         Navigator.pop(context);
                       }else if(mapData['pages']=="afterApply"){
@@ -131,6 +133,7 @@ class _AddressManagementContentPageState
                               children: <Widget>[
                                 new Image.asset("assets/images/mall/location.png",fit: BoxFit.fill,width: ScreenAdapter.width(25),),
                                 new Container(
+                                  padding:EdgeInsets.only(left: 10),
                                   child: new Text(item.province+item.city+item.addressDetail),
                                 )
                               ],
@@ -269,6 +272,19 @@ class _AddressManagementContentPageState
           .fromJson(item.data)
           .list;
       _provide.addListAddress(list);
+    }, onError: (e) {});
+  }
+
+  /// 运费请求
+  void _addressFreight(int addrID) {
+    _provide.onAddressFreight(addrID).doOnListen(() {
+      print('doOnListen');
+    }).doOnCancel(() {}).listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+        _orderDetailProvide.orderDetailModel = OrderDetailModel.fromJson(item.data);
+      }
     }, onError: (e) {});
   }
 }

@@ -83,6 +83,15 @@ class AddressManagementProvide extends BaseProvide{
   Future onDefaultAddresses(AddressModel model){
     return _repo.onDefaultAddresses(model.addressID);
   }
+  /// 设置地址运费
+  Observable onAddressFreight(int addrID){
+    return  _repo.onAddressFreight(addrID).doOnData((result) {
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
 
   ///工厂模式
   factory AddressManagementProvide()=> _getInstance();

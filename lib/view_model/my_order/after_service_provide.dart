@@ -230,6 +230,7 @@ class AfterServiceProvide extends BaseProvide{
     AfterOrderModel model = AfterOrderModel();
     model.rmaType = rmaType;
     model.reason = reason;
+    model.rmaPics = "testPic";
     // 申请原因
     int index = _rmareasonsModelList.indexWhere((item)=>item.isSelected);
     model.reasonType=_rmareasonsModelList[index].reasonType;

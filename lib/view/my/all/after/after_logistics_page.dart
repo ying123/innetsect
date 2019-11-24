@@ -66,13 +66,13 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
                           Expanded(
                             child: new Row(
                               children: <Widget>[
-                                Expanded(
-                                  flex:1,
-                                  child: new Container(
-                                    color: Colors.yellow,
-                                    child: Text('1'),
-                                  ),
-                                ),
+//                                Expanded(
+//                                  flex:1,
+//                                  child: new Container(
+//                                    color: Colors.yellow,
+//                                    child: Text('1'),
+//                                  ),
+//                                ),
                                 Expanded(
                                   flex: 9,
                                   child: new Container(

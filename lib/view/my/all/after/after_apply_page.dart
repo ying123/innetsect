@@ -43,7 +43,7 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
   AfterServiceProvide _afterServiceProvide;
   CommodityDetailProvide _commodityDetailProvide;
   //原因描述
-  String reason="";
+  String reason;
 
   @override
   Widget build(BuildContext context) {
@@ -117,32 +117,32 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
                 textColor: Colors.white,
                 onPressed: (){
                   /// 提交申请
-                  //退换类型
-                  if(!provide.applyTypeList[0]['isSelected']&&!provide.applyTypeList[1]['isSelected']){
-                    CustomsWidget().showToast(title: "请选择申请类型");
-                    return;
-                  }
                   // 退换原因
                   bool flag = false;
+                  bool isReason = false;
+
                   _afterServiceProvide.rmareasonsModelList.forEach((item){
-                    if(item.isSelected==true){
+                    if(item.isSelected){
                       flag = true;
                       // 当退换原因为5、6时，原因描述和图片必须填写
                       if(item.reasonType==5||item.reasonType==6){
-                        if(reason==""){
-                          CustomsWidget().showToast(title: "请填写申请售后具体原因");
-                          return;
+                        if(reason.isEmpty){
+                          isReason = true;
                         }
                       }
                     }
                   });
-                  if(!flag){
+                  //退换类型
+                  if(!provide.applyTypeList[0]['isSelected']&&!provide.applyTypeList[1]['isSelected']){
+                    CustomsWidget().showToast(title: "请选择申请类型");
+                  }else if(!flag){
                     CustomsWidget().showToast(title: "请选择申请原因");
-                    return;
+                  }else if(isReason){
+                    CustomsWidget().showToast(title: "请填写申请售后具体原因");
+                  }else{
+                    _submitAfterRequest();
                   }
-                  // 当退换原因为5、6时，原因描述和图片必须填写
 
-                  _submitAfterRequest();
                 },
                 child: new Text("提交申请"),
               ),

@@ -3,6 +3,7 @@ import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/mall/order/order_pay_result_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
@@ -38,112 +39,94 @@ class _OrderPayContentState extends State<OrderPayContent> {
           widget: new Text("选择支付方式",style: TextStyle(
               fontSize: ScreenAdapter.size((30)),fontWeight: FontWeight.w900
             ),
-          )
+          ),onTap: (){
+            Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (context){
+                  return OrderDetailPage();
+                },
+                settings: RouteSettings(arguments: {"orderID":widget._provide.orderId})
+            ));
+          }
       ),
       body: new Container(
         color: Colors.white,
-        child: new Stack(
+        width: double.infinity,
+        child: new Column(
           children: <Widget>[
-            new Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: new Container(
-                  width: double.infinity,
-                  child: new Column(
-                    children: <Widget>[
-                      new Container(
-                        padding: EdgeInsets.all(10),
-                        alignment: Alignment.centerLeft,
-                        decoration: BoxDecoration(
-                            border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
-                        ),
-                        child: new Text("请选择支付方式"),
-                      ),
-                      new Container(
-                        padding: EdgeInsets.only(left: 20,right: 20),
-                        height: ScreenAdapter.height(120),
-                        decoration: BoxDecoration(
-                            border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
-                        ),
-                        child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Text("支付宝"),
-                            CustomsWidget().customRoundedWidget(isSelected: true,
-                                onSelectedCallback: (){
-                                  // 点击回调
-                                  widget._provide.setPayModel(2);
-                                })
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                )
+            new Container(
+              padding: EdgeInsets.all(10),
+              alignment: Alignment.centerLeft,
+              decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
+              ),
+              child: new Text("请选择支付方式"),
             ),
-            new Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: new Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      border: Border(top: BorderSide(width: 1,color: AppConfig.assistLineColor))
-                  ),
-                  child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      new Container(
-                        width: ScreenAdapter.getScreenWidth()/2 -20,
-                        child: new RaisedButton(
-                          color: AppConfig.fontBackColor,
-                          textColor: Colors.white,
-                          onPressed: (){
-                            Navigator.pop(context);
-                          },child: new Text("取消支付"),),
-                      ),
-                      new Container(
-                          width: ScreenAdapter.getScreenWidth()/2 -20,
-                          child: new RaisedButton(
-                            color: AppConfig.primaryColor,
-                            textColor: Colors.black,
-                            onPressed: (){
-                              // 提交付款
-                              widget._provide.payShopping().doOnListen(() {
-                                print('doOnListen');
-                              }).doOnCancel(() {}).listen((item) {
-                                ///加载数据
-                                print('listen data->$item');
-                                if(item.data!=null){
-                                  PayUtils().aliPay(item.data['orderString']).then((result){
-                                    if(result['resultStatus']=="9000"){
-                                      widget._provide.resultStatus = true;
-                                      // 支付成功
-                                      Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context){
-                                          return OrderPayResultPage();
-                                        }
-                                      ));
-                                    }else{
-                                      // 支付异常
-                                      widget._provide.resultStatus = false;
-                                      Navigator.pushReplacement(context, MaterialPageRoute(
-                                          builder: (context){
-                                            return OrderPayResultPage();
-                                          }
-                                      ));
-                                    }
-                                  });
+            _payWidget()
+          ],
+        ),
+      ),
+      bottomSheet: new Container(
+        width: double.infinity,
+        height: ScreenAdapter.height(80),
+        decoration: BoxDecoration(
+            border: Border(top: BorderSide(width: 1,color: AppConfig.assistLineColor))
+        ),
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            new Container(
+              width: ScreenAdapter.getScreenWidth()/2 -20,
+              padding: EdgeInsets.only(top: 10,bottom: 10),
+              child: new RaisedButton(
+                color: AppConfig.fontBackColor,
+                textColor: Colors.white,
+                onPressed: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute(
+                    builder: (context){
+                      return OrderDetailPage();
+                    },
+                    settings: RouteSettings(arguments: {"orderID":widget._provide.orderId})
+                  ));
+                },child: new Text("取消支付",style:TextStyle(fontSize: ScreenAdapter.size(24)))),
+            ),
+            new Container(
+                width: ScreenAdapter.getScreenWidth()/2 -20,
+                padding: EdgeInsets.only(top: 10,bottom: 10),
+                child: new RaisedButton(
+                  color: AppConfig.blueBtnColor,
+                  textColor: Colors.white,
+                  onPressed: (){
+                    // 提交付款
+                    widget._provide.payShopping().doOnListen(() {
+                      print('doOnListen');
+                    }).doOnCancel(() {}).listen((item) {
+                      ///加载数据
+                      print('listen data->$item');
+                      if(item.data!=null){
+                        PayUtils().aliPay(item.data['orderString']).then((result){
+                          if(result['resultStatus']=="9000"){
+                            widget._provide.resultStatus = true;
+                            // 支付成功
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context){
+                                  return OrderPayResultPage();
                                 }
-                              }, onError: (e) {});
+                            ));
+                          }else{
+                            // 支付异常
+                            widget._provide.resultStatus = false;
+                            Navigator.pushReplacement(context, MaterialPageRoute(
+                                builder: (context){
+                                  return OrderPayResultPage();
+                                }
+                            ));
+                          }
+                        });
+                      }
+                    }, onError: (e) {});
 
-                            },
-                            child: new Text("付款"),)
-                      )
-                    ],
-                  ),
-                )
+                  },
+                  child: new Text("付款",style:TextStyle(fontSize: ScreenAdapter.size(24))),)
             )
           ],
         ),
@@ -156,6 +139,45 @@ class _OrderPayContentState extends State<OrderPayContent> {
     // TODO: implement initState
     super.initState();
 
+  }
+
+  /// 选择支付方式
+  Provide<CommodityDetailProvide> _payWidget(){
+    return Provide<CommodityDetailProvide>(
+      builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
+        return new Column(
+            children: provide.payList.asMap().keys.map((keys){
+              return GestureDetector(
+                onTap: (){
+                  provide.onChangePayMode(keys);
+                },
+                child: new Container(
+                  padding: EdgeInsets.only(left: 20,right: 20),
+                  height: ScreenAdapter.height(120),
+                  decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      new Text(provide.payList[keys]['name'],style: TextStyle(fontSize: ScreenAdapter.height(28)),),
+                      new Container(
+                        child: provide.payList[keys]['isSelected']? new Icon(
+                          Icons.check_circle,
+                          size: 25.0,
+                          color: AppConfig.fontBackColor,
+                        ) : new Icon(Icons.panorama_fish_eye,
+                          size: 25.0,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              );
+            }).toList()
+        );
+      },
+    );
   }
 
 

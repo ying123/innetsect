@@ -422,27 +422,31 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                       callback: (){
                         // 删除所选
 //                  this.provide.onDelSelect();
-                        List<CommodityModels> list = [];
-                        this.provide.commodityTypesModelLists.forEach((item){
-                          item.commodityModelList.forEach((res){
-                            if(res.isChecked==true){
-                              list.add(res);
-                            }
+                        CustomsWidget().customShowDialog(context: context,
+                          content: "是否删除所选商品",
+                          onPressed: (){
+                            List<CommodityModels> list = [];
+                            this.provide.commodityTypesModelLists.forEach((item){
+                              item.commodityModelList.forEach((res){
+                                if(res.isChecked==true){
+                                  list.add(res);
+                                }
+                              });
+                            });
+                            //请求删除
+                            this.provide.removeCartsList(list).doOnListen(() {
+                              print('doOnListen');
+                            })
+                                .doOnCancel(() {})
+                                .listen((item) {
+                              ///加载数据
+                              print('listen data->$item');
+                              if(item.data!=null){
+                                this.provide.onDelSelect();
+                                CustomsWidget().showToast(title: "删除成功");
+                              }
+                            }, onError: (e) {});
                           });
-                        });
-                        //请求删除
-                        this.provide.removeCartsList(list).doOnListen(() {
-                          print('doOnListen');
-                        })
-                            .doOnCancel(() {})
-                            .listen((item) {
-                          ///加载数据
-                          print('listen data->$item');
-                          if(item.data!=null){
-                            this.provide.onDelSelect();
-                            CustomsWidget().showToast(title: "删除成功");
-                          }
-                        }, onError: (e) {});
                       }
                   )
 

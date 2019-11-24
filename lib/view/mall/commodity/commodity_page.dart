@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
@@ -249,26 +248,14 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 
   /// 商品图片
   Widget _imageWidget(String image){
-    return new Stack(
-      children: <Widget>[
-        new Positioned(
-          top:0,
-          right: 0,
-          child: new Container(
-            padding: EdgeInsets.all(5),
-            child: new Text("标签栏",style: TextStyle(fontSize: ScreenAdapter.size(16.0)),),
-          )
-        ),
-        new Container(
-            width: double.infinity,
-            height: ScreenAdapter.height(320),
-            child:Image.network(
-               image,
-              fit: BoxFit.fitWidth,
-            )
-
+    return new Container(
+        width: double.infinity,
+        height: ScreenAdapter.height(320),
+        child:Image.network(
+          image,
+          fit: BoxFit.fitWidth,
         )
-      ],
+
     );
   }
 

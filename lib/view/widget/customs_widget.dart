@@ -158,7 +158,7 @@ class CustomsWidget{
     PreferredSizeWidget bottom
   }){
     return new AppBar(
-      leading: leading ?new GestureDetector(
+      leading: leading ?new InkWell(
         onTap: (){
           onTap==null ?
             Navigator.pop(context) : onTap();
