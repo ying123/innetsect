@@ -66,16 +66,16 @@ dependencies:
   azlistview: ^0.1.2
   #转拼音
   lpinyin: ^1.0.7
-<<<<<<< HEAD
+
   chewie: ^0.9.8+1
   flutter_webview_plugin: ^0.3.9+1
   qr_flutter: ^3.1.0
   #barcode_scan: ^1.0.0
-=======
+
   #微信支付
 #  fluwx:fluwx ^1.1.3
   sy_flutter_wechat: ^0.2.2
->>>>>>> c75930295a7e367612384e4d1fb241d1f9e41ddb
+
 
 dev_dependencies:
   flutter_test:
