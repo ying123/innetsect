@@ -22,7 +22,6 @@ class BannersModel{
     'portalID': portalID,
     'bannerPic':bannerPic
   };
-
 }
 
 

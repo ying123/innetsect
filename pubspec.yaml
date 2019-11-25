@@ -66,6 +66,10 @@ dependencies:
   azlistview: ^0.1.2
   #转拼音
   lpinyin: ^1.0.7
+  chewie: ^0.9.8+1
+  flutter_webview_plugin: ^0.3.9+1
+  qr_flutter: ^3.1.0
+  #barcode_scan: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -175,6 +179,14 @@ flutter:
     - assets/images/newpersonalcentre/消息@1x.png
     - assets/images/yifi1.png
     - assets/images/yifu2.png
+
+    #展会首页
+    - assets/images/showhome/展会活动.png
+    - assets/images/showhome/场馆地图.png
+    - assets/images/showhome/购买门票.png
+    - assets/images/showhome/展会商品.png
+    - assets/images/showhome/签到绑定.png
+    - assets/images/showhome/扫码购物.png
     
 
     

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fluintl/fluintl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,6 +64,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    if (Platform.isAndroid) {
+        SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+        );
+        SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+    }
     //配置简单多语言资源
     // setLocalizedSimpleValues(localizedSimpleValues);
     setLocalizedValues(localizedValues);

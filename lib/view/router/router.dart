@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/app.dart';
 import 'package:innetsect/app_navigation_bar.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
+import 'package:innetsect/view/exhibition/home_portlets_details_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_page.dart';
@@ -14,6 +15,8 @@ import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/my/all/all_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
 import 'package:innetsect/view/registered/registered_page.dart';
+import 'package:innetsect/view/show_tickets/show_tickets.dart';
+import 'package:innetsect/view/venues_map/venues_map_page.dart';
 
 final routes = {
   '/':(context)=>App(),
@@ -28,7 +31,10 @@ final routes = {
   '/orderDetailPage':(context)=>OrderDetailPage(),
   '/homePage':(context)=>HomePage(),
   '/allPage':(context)=>AllPage(),
-  '/myOrderPage':(context)=>MyOrderPage()
+  '/myOrderPage':(context)=>MyOrderPage(),
+  '/venuesMapPage':(context,{arguments})=>VenuesMapPage(hallsData: arguments,),
+  '/showTickets':(context,{arguments})=>ShowTicketsPage(showId: arguments,),
+  '/homePortletsDetailsPage':(context,{arguments})=>HomePortletsDetailsPage(contentID: arguments,)
 };
 
 //固定写法

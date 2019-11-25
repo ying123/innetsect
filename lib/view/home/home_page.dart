@@ -1,20 +1,23 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
-import 'package:innetsect/utils/animation_util.dart';
-import 'package:innetsect/utils/common_util.dart';
+import 'package:innetsect/data/exhibition/exhibitions_model.dart';
+import 'package:innetsect/data/exhibition/halls_model.dart';
+import 'package:innetsect/data/exhibition/home_banners_model.dart';
+import 'package:innetsect/data/exhibition/home_portlets_model.dart';
+
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/advisory_details/advisory_details_page.dart';
-import 'package:innetsect/view/show_tickets/show_tickets.dart';
-import 'package:innetsect/view/venues_map/venues_map_page.dart';
+import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/home/home_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
+//import 'package:barcode_scan/barcode_scan.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
-import 'package:rxdart/rxdart.dart';
 
 class HomePage extends PageProvideNode {
   final HomeProvide _provide = HomeProvide();
@@ -38,51 +41,83 @@ class _HomeContentPageState extends State<HomeContentPage>
     with TickerProviderStateMixin {
   HomeProvide _provide;
 
-  ScrollController controller = new ScrollController();
-  final _subscriptions = CompositeSubscription();
+  ///控制器
+  EasyRefreshController _controller;
+
+  VideoPlayerController _videoPlayerController;
+  ChewieController _chewieController;
+
+  ///分页
+  int pageNo = 1;
+
   @override
   void initState() {
     super.initState();
     _provide ??= widget._provide;
-    _loadData();
+    _controller = EasyRefreshController();
+
+    //加载首页数据
+    _loadBannerData();
+    
+    
   }
 
-  _loadData() {
-    print('开始加载数据');
-    var s = _provide
-        .homeDatas()
-        .doOnListen(() {
-          print('doOnListen');
-        })
-        .doOnCancel(() {})
-        .listen((data) {
-          AppConfig.userTools.setExhibitionID(data.data['exhibitionID'].toString());
-          ///加载展会首页数据
-          print('listen data->$data');
-          for (var item in data.data['banners']) {
-            //print('item:->${item['bannerPic']}');
-            widget._provide.banneImages = item['bannerPic'];
-          }
-          for (var item in data.data['portlets']) {
-            // print('item---->$item');
-            widget._provide.portlets = item;
+  _loadBannerData() {
+    _provide.bannerData().doOnListen(() {}).doOnCancel(() {}).listen((item) {
+      print('bannerData=====>${item.data}');
+      if (item.data != null) {
+        print('exhibitionID===>${item.data['exhibitionID']}');
+        _provide.portalID = item.data['portalID'];
+        _provide.portalName = item.data['portalName'];
+        _provide.portalCover = item.data['portalCover'];
+        _provide.exhibitionID = item.data['exhibitionID'];
+        _provide.layout = item.data['layout'];
+        _provide.createdDate = item.data['createdDate'];
+        _provide.createdBy = item.data['createdBy'];
+        _provide.lastModified = item.data['lastModified'];
+        _provide.lastModifiedBy = item.data['lastModifiedBy'];
 
-            for (var item in item['contents']) {
-              //  print('item countents====>$item');
-              widget._provide.contents = item;
-            }
-            
-          }
-          print('widget_provide.contents${widget._provide.contents}');
-        }, onError: (e) {});
-    _subscriptions.add(s);
+        _provide.addBanners(
+            HomeBannersModelList.fromJson(item.data['banners']).list);
+        _provide.addPortlets(
+            HomePortletsModelList.fromJson(item.data['portlets']).list);
+        String videoUrl = _provide.portletsModelList[0].contents[0].mediaFiles;
+        _videoPlayerController = VideoPlayerController.network(videoUrl);
+        _chewieController = ChewieController(
+            videoPlayerController: _videoPlayerController,
+            aspectRatio: 9.5 / 5,
+            autoPlay: false,
+            autoInitialize: true,
+            looping: true);
+
+            _provide.exhibitions(_provide.exhibitionID).doOnListen((){
+
+            }).doOnError((e, siack){
+
+            }).listen((item){
+              print('exhibitions=====>${item.data}');
+              if (item != null) {
+               _provide.addHalls(HallsModelList.fromJson(item.data['halls']).list);
+               _provide.shopID = item.data['shopID'];
+               _provide.locOverview = item.data['locOverview'];
+              }
+            });
+      }
+    });
+  }
+
+  _loadListData(){
+    _provide.listData(pageNo++).doOnListen((){}).doOnCancel((){}).listen((item){
+    _provide.addPortlets(HomePortletsModelList.fromJson(item.data).list);
+    },onError: (e){});
   }
 
   @override
   void dispose() {
-    _subscriptions.dispose();
-    controller.dispose();
     super.dispose();
+    _controller.dispose();
+    _videoPlayerController.dispose();
+    _chewieController.dispose();
   }
 
   @override
@@ -90,302 +125,171 @@ class _HomeContentPageState extends State<HomeContentPage>
     ScreenAdapter.init(context);
     print('进入主页');
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        title: Text(
-          '展会',
-          style: TextStyle(
-              fontSize: ScreenAdapter.size(40),
-              // fontWeight: FontWeight.w600,
-              color: AppConfig.fontPrimaryColor),
-        ),
-        centerTitle: true,
-        leading: Container(),
-        actions: <Widget>[
-          GestureDetector(
-            child: Container(
-              alignment: Alignment.center,
-              child: Text(
-                '去商城',
-                textAlign: TextAlign.end,
-                style: TextStyle(
-                  fontSize: ScreenAdapter.size(30),
-                  color: AppConfig.fontPrimaryColor,
+        appBar: AppBar(
+          elevation: 0.0,
+          title: Text(
+            '展会',
+            style: TextStyle(
+                //  fontSize: ScreenAdapter.size(40),
+                // fontWeight: FontWeight.w600,
+                color: AppConfig.fontPrimaryColor),
+          ),
+          centerTitle: true,
+          leading: Container(),
+          actions: <Widget>[
+            GestureDetector(
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                  '去商城',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontSize: ScreenAdapter.size(30),
+                    color: AppConfig.fontPrimaryColor,
+                  ),
                 ),
               ),
+              onTap: () {
+                print('进入商城被点击');
+                Navigator.pushNamed(context, '/mallPage');
+              },
             ),
-            onTap: () {
-              print('进入商城被点击');
-              Navigator.pushNamed(context, '/mallPage');
-            },
-          ),
-          SizedBox(
-            width: ScreenAdapter.width(20),
-          )
-        ],
-      ),
-      body: ListView(
-        //ListView的Ite
-        controller: controller,
-        // shrinkWrap: true,
-        physics: BouncingScrollPhysics(),
-        //physics: NeverScrollableScrollPhysics(),
-        children: <Widget>[
-          _setupSwiperImage(),
-          _setupCenterWidget(),
-          _setupListItemsContent(),
-        ],
-      ),
-    );
+            SizedBox(
+              width: ScreenAdapter.width(20),
+            )
+          ],
+        ),
+        body: ListWidgetPage(
+          controller: _controller,
+          onRefresh: () async {
+            pageNo = 1;
+            print('onRefresh');
+            _provide.clearList();
+            await _loadBannerData();
+          },
+          onLoad: () async {
+            await _loadListData();
+          },
+          child: <Widget>[
+            SliverList(
+              delegate: SliverChildListDelegate([
+                _setupSwiperImage(),
+                _setupCenter(),
+                _setupListItemsContent()
+              ]),
+            )
+          ],
+        ));
   }
 
-  Provide<HomeProvide> _setupListItemsContent() {
+  Provide<HomeProvide> _setupSwiperImage() {
     return Provide<HomeProvide>(
       builder: (BuildContext context, Widget child, HomeProvide provide) {
-        var itemWith = (ScreenAdapter.getScreenWidth()) / 1;
-        return ListView.builder(
-          shrinkWrap: true,
-          primary: false,
-          itemCount: provide.contents.length,
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: (){
-                print('${provide.contents[index]['title']}被点击');
-                provide.contentID = provide.contents[index]['contentID'];
-                 Navigator.of(context).push(CommonUtil.createRoute(
-                            AnimationUtil.getBottominAnilmation(),
-                            AdvisoryDetailsPage(provide.contentID)));
-                
-              },
-              child: Wrap(
-                runSpacing: 0,
-                spacing: 0,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    width: itemWith,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          width: double.infinity,
-                          child: AspectRatio(
-                            aspectRatio: 2 / 1,
-                            child: Image.network(
-                              provide.contents[index]['poster'],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: ScreenAdapter.height(20),
-                              left: ScreenAdapter.width(0)),
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              provide.contents[index]['title'],
-                              softWrap: true,
-                              style: TextStyle(fontSize: ScreenAdapter.size(30)),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: ScreenAdapter.height(20),
-                              left: ScreenAdapter.width(0)),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                width: ScreenAdapter.width(120),
-                                height: ScreenAdapter.height(30),
-                                color: AppConfig.fontPrimaryColor,
-                                child: Center(
-                                  child: Text(
-                                    provide.contents[index]['tags'],
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: ScreenAdapter.size(21)),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: ScreenAdapter.width(10),
-                              ),
-                              // Container(
-                              //   width: ScreenAdapter.width(85),
-                              //   height: ScreenAdapter.height(30),
-                              //   color: AppConfig.fontPrimaryColor,
-                              //   child: Center(
-                              //     child: Text(
-                              //       value['subTitle1'],
-                              //       style: TextStyle(
-                              //           color: Colors.white,
-                              //           fontSize: ScreenAdapter.size(21)),
-                              //     ),
-                              //   ),
-                              // ),
-                              // SizedBox(
-                              //   width: ScreenAdapter.width(10),
-                              // ),
-                              // Container(
-                              //   width: ScreenAdapter.width(85),
-                              //   height: ScreenAdapter.height(30),
-                              //   color: AppConfig.fontPrimaryColor,
-                              //   child: Center(
-                              //     child: Text(
-                              //       value['subTitle2'],
-                              //       style: TextStyle(
-                              //           color: Colors.white,
-                              //           fontSize: ScreenAdapter.size(21)),
-                              //     ),
-                              //   ),
-                              // ),
-                              // SizedBox(
-                              //   width: ScreenAdapter.width(10),
-                              // ),
-                              // Text(
-                              //   value['time'],
-                              //   style: TextStyle(
-                              //       color: Color.fromRGBO(180, 180, 180, 1.0)),
-                              // ),
-                              // Expanded(
-                              //   child: Container(),
-                              // ),
-                              // Image.asset(
-                              //   'assets/images/关注.png',
-                              //   fit: BoxFit.cover,
-                              //   width: ScreenAdapter.width(30),
-                              //   height: ScreenAdapter.height(25),
-                              // ),
-                              // SizedBox(
-                              //   width: ScreenAdapter.width(6),
-                              // ),
-                              // Text(value['focusNuber'],
-                              //     style: TextStyle(
-                              //         color: Color.fromRGBO(180, 180, 180, 1.0))),
-                              // SizedBox(
-                              //   width: ScreenAdapter.width(35),
-                              // )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+        return Container(
+          width: ScreenAdapter.width(750),
+          height: ScreenAdapter.height(390),
+          child: provide.bannersList.length > 0
+              ? Swiper(
+                  index: 0,
+                  loop: true,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        print('$index');
+                      },
+                      child: CachedNetworkImage(
+                        fit: BoxFit.fill,
+                        imageUrl: provide.bannersList[index].bannerPic,
+                        errorWidget: (context, url, error) {
+                          return Icon(Icons.error);
+                        },
+                      ),
+                    );
+                  },
+                  itemCount: provide.bannersList.length,
+                  autoplay: true,
+                  duration: 300,
+                  scrollDirection: Axis.horizontal,
+                  //   pagination: SwiperPagination(),
+                )
+              : Container(),
         );
       },
     );
   }
 
-  Provide<HomeProvide> _setupCenterWidget() {
+  Provide<HomeProvide> _setupCenter() {
     return Provide<HomeProvide>(
       builder: (BuildContext context, Widget child, HomeProvide provide) {
         return Container(
           width: ScreenAdapter.width(750),
-          height: ScreenAdapter.height(250),
+          height: ScreenAdapter.height(270),
           color: Colors.white,
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Container(
-                width: ScreenAdapter.width(750),
-                height: ScreenAdapter.height(40),
-                child: Center(
-                  child: Text(
-                    provide.advertising,
-                    style: TextStyle(
-                      //fontWeight: FontWeight.bold,
-                      fontSize: ScreenAdapter.size(30),
-                    ),
-                  ),
+              InkWell(
+                onTap: (){
+                  Navigator.pushNamed(context, '/showTickets',arguments: {"shopID":provide.shopID});
+                },
+                child: Image.asset(
+                  'assets/images/showhome/购买门票.png',
+                  width: ScreenAdapter.width(131),
+                  height: ScreenAdapter.height(115),
                 ),
               ),
-              Container(
-                width: ScreenAdapter.width(750),
-                height: ScreenAdapter.height(200),
-                color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: ScreenAdapter.width(60),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        print('够买门票被点击');
-                        Navigator.of(context).push(CommonUtil.createRoute(
-                            AnimationUtil.getBottominAnilmation(),
-                            ShowTicketsPage()));
-                      },
-                      child: Container(
-                          margin: EdgeInsets.fromLTRB(
-                              0, ScreenAdapter.height(45), 0, 0),
-                          child: Image.asset(
-                            'assets/images/够买门票.png',
-                            width: ScreenAdapter.size(110),
-                          )),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        print('签到绑定被点击');
-                        Navigator.pushNamed(context, '/bindingSignIn');
-                      },
-                      child: Container(
-                          margin: EdgeInsets.fromLTRB(
-                              0, ScreenAdapter.height(45), 0, 0),
-                          child: Image.asset(
-                            'assets/images/签到绑定.png',
-                            width: ScreenAdapter.size(110),
-                            fit: BoxFit.cover,
-                          )),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    GestureDetector(
-                      onTap: scan,
-                      child: Container(
-                          margin: EdgeInsets.fromLTRB(
-                              0, ScreenAdapter.height(45), 0, 0),
-                          child: Image.asset(
-                            'assets/images/排队扫码.png',
-                            width: ScreenAdapter.size(110),
-                            fit: BoxFit.cover,
-                          )),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        print('场馆地图');
-                        Navigator.of(context).push(CommonUtil.createRoute(
-                            AnimationUtil.getBottominAnilmation(),
-                            VenuesMapPage()));
-                      },
-                      child: Container(
-                          margin: EdgeInsets.fromLTRB(
-                              0, ScreenAdapter.height(45), 0, 0),
-                          child: Image.asset(
-                            'assets/images/场馆地图.png',
-                            width: ScreenAdapter.size(110),
-                            fit: BoxFit.cover,
-                          )),
-                    ),
-                    SizedBox(
-                      width: ScreenAdapter.width(60),
-                    ),
-                  ],
+              InkWell(
+                onTap: (){
+                  if (AppConfig.userTools.getUserToken() == '') {
+                    Navigator.pushNamed(context, '/loginPage');
+                  }else{
+                    Navigator.pushNamed(context, '/bindingSignIn');
+                  }
+
+                },
+                child: Image.asset(
+                  'assets/images/showhome/签到绑定.png',
+                  width: ScreenAdapter.width(131),
+                  height: ScreenAdapter.height(115),
                 ),
-              )
+              ),
+              InkWell(
+                onTap: ()async{
+                  try {
+                    //扫码结果
+                    String barcode = await scanner.scan();
+                    print('扫码结果=>$barcode');
+
+                  }on PlatformException catch(e){
+                    if (e.code == scanner.CameraAccessDenied) {
+                      //未授于App相机权限
+                      print('未授于App相机权限');
+                    }else
+                      //扫码错误
+                      print('扫码错误:$e');
+                    }
+
+                },
+                child: Image.asset(
+                  'assets/images/showhome/扫码购物.png',
+                  width: ScreenAdapter.width(131),
+                  height: ScreenAdapter.height(115),
+                ),
+              ),
+              InkWell(
+                onTap: (){
+                  Navigator.pushNamed(context, '/venuesMapPage',arguments: {
+                    'halls':provide.hallsModelList,
+                    'showId':provide.shopID,
+                    'locOverview':provide.locOverview
+                  });
+                },
+                child: Image.asset(
+                  'assets/images/showhome/场馆地图.png',
+                  width: ScreenAdapter.width(131),
+                  height: ScreenAdapter.height(115),
+                ),
+              ),
             ],
           ),
         );
@@ -393,78 +297,106 @@ class _HomeContentPageState extends State<HomeContentPage>
     );
   }
 
-  ///二维码扫描
-  Future scan() async {
-    try {
-      String barcode = await scanner.scan();
-      setState(() => _provide.barcode = barcode);
-    } on Exception catch (e) {
-      if (e == scanner.CameraAccessDenied) {
-        setState(() {
-          _provide.barcode = 'The user did not grant the camera permission!';
-        });
-      } else {
-        setState(() => _provide.barcode = 'Unknown error: $e');
-      }
-    } on FormatException {
-      setState(() => _provide.barcode =
-          'null (User returned using the "back"-button before scanning anything. Result)');
-    } catch (e) {
-      setState(() => _provide.barcode = 'Unknown error: $e');
-    }
-  }
-
-  ///轮播图
-  Provide<HomeProvide> _setupSwiperImage() {
+  Provide<HomeProvide> _setupListItemsContent() {
     return Provide<HomeProvide>(
       builder: (BuildContext context, Widget child, HomeProvide provide) {
-        return Container(
-          width: ScreenAdapter.width(750),
-          height: ScreenAdapter.height(470),
-          color: Colors.white,
-          child: Center(
-            child: Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(420),
-              color: Colors.white,
-              child: provide.bannerImages.length>0?Swiper(
-                index: 0,
-                loop: true,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      print('第$index 页被点击');
-                    },
-                    child: ClipPath(
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            width: ScreenAdapter.width(750),
-                            height: ScreenAdapter.height(420),
-                            child: CachedNetworkImage(
-                              fadeOutDuration:
-                              const Duration(milliseconds: 300),
-                              fadeInDuration: const Duration(milliseconds: 700),
-                              fit: BoxFit.fill,
-                              imageUrl: provide.bannerImages[index],
-                              errorWidget: (context, url, error) {
-                                return Icon(Icons.error);
-                              },
+        return ListView.builder(
+          padding: EdgeInsets.all(0),
+          shrinkWrap: true,
+          primary: false,
+          itemCount: provide.portletsModelList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return InkWell(
+              onTap: () {
+                print(index);
+                Navigator.pushNamed(context, '/homePortletsDetailsPage',arguments: {"contentID":provide.portletsModelList[index].contents[0].contentID});
+              },
+              child: Container(
+                width: ScreenAdapter.width(750),
+                height: ScreenAdapter.height(620),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      width: ScreenAdapter.width(750),
+                      height: ScreenAdapter.height(435),
+                      child: provide.portletsModelList[index]
+                                  .contents[0]
+                                  .mediaFiles
+                                  .split('.')[provide.portletsModelList[index]
+                                      .contents[0]
+                                      .mediaFiles
+                                      .split('.')
+                                      .length -
+                                  1] ==
+                              'mp4'
+                          ? Chewie(
+                              controller: _chewieController,
+                            )
+                          : Image.network(
+                              provide.portletsModelList[index].contents[0].mediaFiles,
+                              fit: BoxFit.cover,
                             ),
-                          )
+                    ),
+                    Container(
+                      width: ScreenAdapter.width(750),
+                      height: ScreenAdapter.height(185),
+                      child: Column(
+                        //crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: ScreenAdapter.height(30),
+                          ),
+                          Row(
+                            //  mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(
+                                width: ScreenAdapter.width(40),
+                              ),
+                              Container(
+                                width: ScreenAdapter.width(710),
+                                //height: ScreenAdapter.height(50),
+                                child: Text(
+                                  provide.portletsModelList[index].contents[0].title,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.left,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontSize: ScreenAdapter.size(35),
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: ScreenAdapter.height(20),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              SizedBox(
+                                width: ScreenAdapter.width(40),
+                              ),
+                              Container(
+                                width: ScreenAdapter.width(150),
+                                height: ScreenAdapter.height(42),
+                                color: Colors.black,
+                                child: Center(
+                                  child: Text(
+                                    provide.portletsModelList[index].contents[0].tags,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ],
                       ),
-                    ),
-                  );
-                },
-                itemCount: provide.bannerImages.length,
-                // pagination: SwiperPagination(),
-                autoplay: true,
-                duration: 300,
-                scrollDirection: Axis.horizontal,
-              ):new Container(),
-            ),
-          ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );

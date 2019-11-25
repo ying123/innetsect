@@ -24,6 +24,8 @@ class ShoppingContentPage extends StatefulWidget {
 class _ShoppingContentPageState extends State<ShoppingContentPage> {
   @override
   Widget build(BuildContext context) {
-    return CommodityCartPage();
+    return Container(
+
+    );
   }
 }

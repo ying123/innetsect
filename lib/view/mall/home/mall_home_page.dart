@@ -49,6 +49,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
   EasyRefreshController _controller;
   // 分页
   int pageNo = 1;
+  
   List<BannersModel> _bannersList=[];
 
   List<PortletsModel> _portletsModelList = [];

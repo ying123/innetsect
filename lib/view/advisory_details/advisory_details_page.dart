@@ -41,7 +41,7 @@ class _AdvisoryDatailsContentPageState extends State<AdvisoryDatailsContentPage>
     print('AdvisoryDetailsProvide=>${_provide.contentID}');
 
     ///加载详情讯息数据
-    _loadadvisoryDetails();
+  //  _loadadvisoryDetails();
     super.initState();
   }
 

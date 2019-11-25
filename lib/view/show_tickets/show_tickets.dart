@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/exhibition/ticket_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/show_tickets/ticket_page.dart';
 import 'package:innetsect/view_model/show_tickets/show_tickets_provide.dart';
@@ -8,32 +9,56 @@ import 'package:provide/provide.dart';
 
 class ShowTicketsPage extends PageProvideNode {
   final ShowTicketsProvide _provide = ShowTicketsProvide();
-  ShowTicketsPage() {
+  Map showId;
+  ShowTicketsPage({this.showId}) {
     mProviders.provide(Provider<ShowTicketsProvide>.value(_provide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return ShowTicketsContentPage(_provide);
+    return ShowTicketsContentPage(_provide,showId);
   }
 }
 
 class ShowTicketsContentPage extends StatefulWidget {
-  final ShowTicketsProvide provide;
-  ShowTicketsContentPage(this.provide);
+  final ShowTicketsProvide _provide;
+  Map showId;
+  ShowTicketsContentPage(this._provide,this.showId);
   @override
   _ShowTicketsContentPageState createState() => _ShowTicketsContentPageState();
 }
 
 class _ShowTicketsContentPageState extends State<ShowTicketsContentPage> {
+ShowTicketsProvide _provide;
+  @override
+  void initState() { 
+    super.initState();
+    _provide??= widget._provide;
+    _loadTickets();
+  }
+  _loadTickets(){
+    _provide.tickets(widget.showId['shopID']).doOnListen((){
+
+    }).listen((item){
+      if (item!= null) {
+        setState(() {
+        _provide.addTickets(TicketModelList.fromJson(item.data).list);
+        print('_provide.showTickets[0].prodPic===>${_provide.showTickets[0].prodPic}');
+        });
+      }
+    },onError: (e, stack){
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0.0,
           title: Text(
             '展会门票',
-            style: TextStyle(
-                color: AppConfig.fontPrimaryColor, fontWeight: FontWeight.w700),
+            
           ),
           centerTitle: true,
           leading: InkWell(
@@ -51,6 +76,8 @@ class _ShowTicketsContentPageState extends State<ShowTicketsContentPage> {
           physics: BouncingScrollPhysics(),
           children: <Widget>[
             _showTicketsList(),
+       
+          
           ],
         ));
   }
@@ -73,43 +100,41 @@ class _ShowTicketsContentPageState extends State<ShowTicketsContentPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) {
-                            return new TicketPage(value);
+                            return new TicketPage();
                           },
                           settings: RouteSettings(arguments: value)));
                 },
                 child: Container(
                   width: itemWidth,
                   decoration: BoxDecoration(
-                      // border: Border.all(
-                      //   color: Color.fromRGBO(233, 233, 233, 0.9),
-                      //   width: 1,
-                      // ),
+                
                       ),
                   child: Column(
                     children: <Widget>[
                       Container(
                           width: double.infinity,
-                          child: Image.asset(
-                            value['image'],
+                          child: Image.network(
+                            value.prodPic,
                             fit: BoxFit.fill,
                           )),
                       Padding(
                         padding: EdgeInsets.only(top: ScreenAdapter.height(20)),
                         child: Container(
+                          height: ScreenAdapter.height(90),
                           child: Row(
                             children: <Widget>[
                               Text(
                                 '￥',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontSize: ScreenAdapter.size(25),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                               Text(
-                                value['Price'],
+                                value.salesPriceRange,
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontSize: ScreenAdapter.size(35),
                                   fontWeight: FontWeight.w900,
                                 ),
@@ -118,17 +143,17 @@ class _ShowTicketsContentPageState extends State<ShowTicketsContentPage> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: ScreenAdapter.height(10)),
-                        child: Container(
-                          child: Text(
-                            value['describe'],
-                            style: TextStyle(
-                              color: Color.fromRGBO(120, 120, 120, 1.0),
-                            ),
-                          ),
-                        ),
-                      )
+                      // Padding(
+                      //   padding: EdgeInsets.only(top: ScreenAdapter.height(10)),
+                      //   child: Container(
+                      //     child: Text(
+                      //       value['describe'],
+                      //       style: TextStyle(
+                      //         color: Color.fromRGBO(120, 120, 120, 1.0),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 ),

@@ -1,45 +1,79 @@
 import 'package:azlistview/azlistview.dart';
-import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:flutter/material.dart';
+import 'package:innetsect/data/exhibition/halls_model.dart';
+import 'package:innetsect/data/exhibition/venue_halls_model.dart';
 import 'package:innetsect/data/series/approved_model.dart';
-import 'package:innetsect/view_model/mall/series/series_provide.dart';
+import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/venues_map/venues_Halls_e5_provide.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:provide/provide.dart';
 
-/// 品牌
-class SeriesAzListPage extends PageProvideNode {
-  final SeriesProvide _seriesProvide = SeriesProvide.instance;
-
-  SeriesAzListPage() {
-    mProviders.provide(Provider<SeriesProvide>.value(_seriesProvide));
+class VenuesHallsE5Page extends PageProvideNode {
+  VenuesHallsE5Provide _e5provide = VenuesHallsE5Provide();
+  List<HallsModel> venueHallsE5;
+  VenuesHallsE5Page(this.venueHallsE5) {
+    mProviders.provide(Provider<VenuesHallsE5Provide>.value(_e5provide));
+    print('E5-------------->${venueHallsE5}');
   }
-
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return SeriesAzListContent(_seriesProvide);
+    return VenuesHallsE5ContentPage(_e5provide, venueHallsE5);
   }
 }
 
-class SeriesAzListContent extends StatefulWidget {
-  final SeriesProvide _seriesProvide;
-  SeriesAzListContent(this._seriesProvide);
+class VenuesHallsE5ContentPage extends StatefulWidget {
+  VenuesHallsE5Provide _e5provide;
+  List<HallsModel> venueHallsE5;
+  VenuesHallsE5ContentPage(this._e5provide, this.venueHallsE5);
   @override
-  _SeriesAzListContentState createState() => _SeriesAzListContentState();
+  _VenuesHallsE5ContentPageState createState() =>
+      _VenuesHallsE5ContentPageState();
 }
 
-class _SeriesAzListContentState extends State<SeriesAzListContent> {
-  SeriesProvide _seriesProvide;
-  //品牌list
+class _VenuesHallsE5ContentPageState extends State<VenuesHallsE5ContentPage> {
+  VenuesHallsE5Provide _e5provide;
+  List<HallsModel> venueHallsE5;
+
   List<ApprovedModel> _list = [];
+  String _suspensionTag = "";
   int _itemHeight = 60;
   int _suspensionHeight = 40;
-  String _suspensionTag = "";
-
   @override
+  void initState() {
+    super.initState();
+    _e5provide ??= widget._e5provide;
+    venueHallsE5 ??= widget.venueHallsE5;
+    _initLoadData();
+  }
+
+
+
+  void _initLoadData(){
+    _e5provide.hallsData(venueHallsE5[0].exhibitionID, venueHallsE5[0].exhibitionHall).doOnListen((){
+
+    }).doOnCancel((){
+
+    }).listen((items){
+       ///加载数据
+      print('listen data->$items');
+      if (items != null && items.data != null) {
+        if (!mounted) return;
+        _list = ApprovedModelList.fromJson(items.data).list;
+        _handleList(_list);
+        print('_suspensionTag===----->${_list[0]}.getSuspensionTag()');
+        setState(() {
+          _suspensionTag = _list[0].getSuspensionTag();
+        });
+      }
+    });
+  }
+
+    @override
   Widget build(BuildContext context) {
-    print('_list===>${_list[2].tagIndex}');
+    print('_list===>${_list[0].tagIndex}');
     return AzListView(
       data: _list,
       isUseRealIndex: true,
@@ -49,33 +83,7 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
     );
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _seriesProvide ??= widget._seriesProvide;
-    _initLoadData();
-  }
-
-  /// 初始化数据
-  void _initLoadData() {
-    _seriesProvide.seriesListData().doOnListen(() {}).doOnCancel(() {}).listen(
-        (items) {
-      ///加载数据
-      print('listen data->$items');
-      if (items != null && items.data != null) {
-        if (!mounted) return;
-        _list = ApprovedModelList.fromJson(items.data).list;
-        _handleList(_list);
-        print('_suspensionTag===----->$_list[0].getSuspensionTag()');
-        setState(() {
-          _suspensionTag = _list[0].getSuspensionTag();
-        });
-      }
-    }, onError: (e) {});
-  }
-
-  /// 排序
+ /// 排序
   void _handleList(List<ApprovedModel> list) {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
@@ -99,13 +107,15 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
     _sortListBySuspensionTag(_list);
   }
 
-  /// 重置排序
+   /// 重置排序
   void _sortListBySuspensionTag(List<ISuspensionBean> list) {
     if (list == null || list.isEmpty) return;
     list.sort((a, b) {
       return a.getSuspensionTag().compareTo(b.getSuspensionTag());
     });
   }
+
+ 
 
   ///数据展示
   Widget _buildListItem(ApprovedModel model) {
@@ -138,6 +148,7 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
     );
   }
 
+
   /// 标签展示
   Widget _buildSusWidget(String susTag) {
     return Container(
@@ -164,4 +175,5 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
       _suspensionTag = tag;
     });
   }
+
 }
