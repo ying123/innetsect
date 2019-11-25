@@ -40,7 +40,8 @@ class _InformationContentState extends State<InformationContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomsWidget().customNav(context: context, widget: new Container(),leading:false),
+      appBar: CustomsWidget().customNav(context: context, widget: new Text("资讯",style: TextStyle(fontSize: ScreenAdapter.size((30)),
+        fontWeight: FontWeight.w900 )),leading:false),
       body: ListWidgetPage(
         controller: _controller,
         onRefresh: () async{

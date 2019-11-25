@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';

@@ -2,7 +2,11 @@ import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/series/approved_model.dart';
+import 'package:innetsect/view/mall/search/search_screen_page.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_list_provide.dart';
+import 'package:innetsect/view_model/mall/search/search_provide.dart';
 import 'package:innetsect/view_model/mall/series/series_provide.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:provide/provide.dart';
@@ -10,27 +14,35 @@ import 'package:provide/provide.dart';
 /// 品牌
 class SeriesAzListPage extends PageProvideNode {
   final SeriesProvide _seriesProvide = SeriesProvide.instance;
+  final SearchProvide _searchProvide = SearchProvide.instance;
+  final CommodityListProvide _commodityListProvide = CommodityListProvide.instance;
 
   SeriesAzListPage() {
     mProviders.provide(Provider<SeriesProvide>.value(_seriesProvide));
+    mProviders.provide(Provider<SearchProvide>.value(_searchProvide));
+    mProviders.provide(Provider<CommodityListProvide>.value(_commodityListProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return SeriesAzListContent(_seriesProvide);
+    return SeriesAzListContent(_seriesProvide,_searchProvide,_commodityListProvide);
   }
 }
 
 class SeriesAzListContent extends StatefulWidget {
   final SeriesProvide _seriesProvide;
-  SeriesAzListContent(this._seriesProvide);
+  final SearchProvide _searchProvide;
+  final CommodityListProvide _commodityListProvide;
+  SeriesAzListContent(this._seriesProvide,this._searchProvide,this._commodityListProvide);
   @override
   _SeriesAzListContentState createState() => _SeriesAzListContentState();
 }
 
 class _SeriesAzListContentState extends State<SeriesAzListContent> {
   SeriesProvide _seriesProvide;
+  SearchProvide _searchProvide;
+  CommodityListProvide _commodityListProvide;
   //品牌list
   List<ApprovedModel> _list = [];
   int _itemHeight = 60;
@@ -54,6 +66,8 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
     // TODO: implement initState
     super.initState();
     _seriesProvide ??= widget._seriesProvide;
+    _searchProvide ??= widget._searchProvide;
+    _commodityListProvide ??= widget._commodityListProvide;
     _initLoadData();
   }
 
@@ -130,6 +144,9 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
               title: Text(model.name),
               onTap: () {
                 print("OnItemClick: $model");
+                // 点击跳转筛选页
+                _searchProvide.searchValue = model.name;
+                _searchRequest(model.name);
               },
             ),
           ),
@@ -163,5 +180,26 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
     setState(() {
       _suspensionTag = tag;
     });
+  }
+
+  /// 搜索请求
+  void _searchRequest(String name){
+    // 清除原数据
+    _commodityListProvide.clearList();
+    _commodityListProvide.requestUrl = "/api/eshop/app/products/filterByBrand?brand=$name";
+    _searchProvide.onSearch(_commodityListProvide.requestUrl+'&pageNo=1&pageSize=8').doOnListen(() { }).doOnCancel(() {}).listen((items) {
+      ///加载数据
+      print('listen data->$items');
+      if(items!=null&&items.data!=null){
+        _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
+      }
+
+    }, onError: (e) {});
+
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context){
+          return SearchScreenPage();
+        }
+    ));
   }
 }

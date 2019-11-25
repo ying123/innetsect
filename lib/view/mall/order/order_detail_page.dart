@@ -3,6 +3,8 @@ import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/order_detail_model.dart';
+import 'package:innetsect/enum/order_status.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/logistics/logistics_page.dart';
 import 'package:innetsect/view/mall/order/order_pay_page.dart';
@@ -62,48 +64,43 @@ class _OrderContentState extends State<OrderContent> {
           fontWeight: FontWeight.w900 ),
         )
       ),
-      body: new Stack(
-        children: <Widget>[
-          new Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: new Container(
-                width: double.infinity,
-                height: ScreenAdapter.getScreenHeight()-140,
-                color: AppConfig.assistLineColor,
-                child: new ListView(
-                  children: <Widget>[
-                    // 地址栏
-                    _addressWidget(),
-                    // 订单详情
-                    _orderDetailWidget(),
-                    // 商品总价
-                    _orderCountWidget(),
-                    // 底部
-                    _orderBottomWidget(),
-                    // 已支付订单显示
-                    this._orderNoWidget(),
-                  ],
-                ),
-              ),
+      body: Scaffold(
+        body: new SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: 80),
+          child: Column(
+            children: <Widget>[
+              // 地址栏
+              _addressWidget(),
+              // 订单详情
+              _orderDetailWidget(),
+              // 商品总价
+              _orderCountWidget(),
+              // 底部
+              _orderBottomWidget(),
+              // 已支付订单显示
+              _orderNoWidget(),
+            ],
+          ) ,
+        ),
+        bottomSheet: Container(
+          width: double.infinity,
+          color: Colors.white,
+          margin: EdgeInsets.only(left: 20,right: 20),
+          child: Provide<OrderDetailProvide>(
+              builder: (BuildContext context,Widget widget, OrderDetailProvide provide){
+                if(provide.orderDetailModel!=null
+                    &&provide.orderDetailModel.status==0){
+                  return this.payBtn();
+                }else if(provide.orderDetailModel!=null
+                    &&provide.orderDetailModel.status==-2){
+                  return Container();
+                }else{
+                  return this.logisticsBtn();
+                }
+              }
           ),
-          new Positioned(
-              bottom: 10,
-              left: 20,
-              right: 20,
-              child: Provide<OrderDetailProvide>(
-                  builder: (BuildContext context,Widget widget, OrderDetailProvide provide){
-                    if(provide.orderDetailModel!=null&&provide.orderDetailModel.status==0){
-                      return this.payBtn();
-                    }else {
-                      return this.logisticsBtn();
-                    }
-                  }
-              )
-          )
-        ],
-      ),
+        ),
+      )
     );
   }
 
@@ -135,6 +132,14 @@ class _OrderContentState extends State<OrderContent> {
 
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    widget._orderDetailProvide.orderDetailModel = null;
+    ///默认支付宝
+    _detailProvide.defaultPayMode();
+  }
   /// 查询物流信息
   Widget logisticsBtn(){
     return  new RaisedButton(
@@ -147,7 +152,8 @@ class _OrderContentState extends State<OrderContent> {
               return LogisticsPage();
             }
         ));
-      },child: new Text("物流信息"),
+      },child: new Text("查看物流",style: TextStyle(fontSize: ScreenAdapter.size(24),
+    fontWeight: FontWeight.w500),),
     );
   }
 
@@ -161,7 +167,7 @@ class _OrderContentState extends State<OrderContent> {
         if(_orderDetailProvide.orderDetailModel.orderNo!=null){
           _setOrder(_orderDetailProvide.orderDetailModel.orderID);
         }else{
-          widget._detailProvide.submitShopping(widget._orderDetailProvide.orderDetailModel.addressID)
+          _detailProvide.submitShopping(_orderDetailProvide.orderDetailModel.addressID)
               .doOnListen(() {
             print('doOnListen');
           })
@@ -198,10 +204,10 @@ class _OrderContentState extends State<OrderContent> {
 
   _setOrder(int orderID){
     ///默认支付宝
-    _detailProvide.payMode=2;
+    _detailProvide.defaultPayMode();
     ///加载数据，存储订单号
     _detailProvide.setOrderId(orderID);
-    Navigator.push(context, MaterialPageRoute(
+    Navigator.pushReplacement(context, MaterialPageRoute(
       builder: (context){
         return OrderPayPage();
       },
@@ -337,15 +343,35 @@ class _OrderContentState extends State<OrderContent> {
           color: Colors.white,
           padding: EdgeInsets.only(left:20,top: 10,right:20),
           width: double.infinity,
-          child: new Column(
+          child: model!=null? new Column(
             children: <Widget>[
-              CustomsWidget().subTitle(title: "订单详情",color: AppConfig.primaryColor),
+              new Row(
+                children: <Widget>[
+                  new Container(
+                    width: ScreenAdapter.width(10),
+                    height: ScreenAdapter.height(40),
+                    margin: EdgeInsets.only(right: 8),
+                    color: AppConfig.blueBtnColor,
+                  ),
+                  new Text("订单详情",style: TextStyle(
+                      fontSize: ScreenAdapter.size(28),
+                      fontWeight: FontWeight.w600),
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: Text(model.status!=null?OrderStatusEnum().getStatusTitle(model.status):"",style: TextStyle(color: AppConfig.blueBtnColor),),
+                    ),
+                  )
+                ],
+              ),
               new Container(
                 width: double.infinity,
                 alignment: Alignment.center,
                 padding: EdgeInsets.only(top: 10,left: 10,right: 10),
                 child: model!=null? new Column(
                   children: model.skuModels.map((item){
+                    List skuNameList = CommonUtil.skuNameSplit(item.skuName);
                     return new Container(
                       padding:EdgeInsets.only(top: 10,bottom: 20),
                       decoration: BoxDecoration(
@@ -370,7 +396,18 @@ class _OrderContentState extends State<OrderContent> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     new Padding(padding: EdgeInsets.only(left: 10,bottom: 10),
-                                      child: new Text(item.skuName,softWrap: true,),
+                                      child: new Column(
+                                        children: <Widget>[
+                                          new Container(
+                                            width: double.infinity,
+                                            child: new Text(skuNameList.length>0?skuNameList[0]:item.skuName,softWrap: true,),
+                                          ),
+                                          new Container(
+                                              width: double.infinity,
+                                              child: new Text(skuNameList.length>0?skuNameList[1]:"",style: TextStyle(color: Colors.grey),)
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     new Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -392,7 +429,7 @@ class _OrderContentState extends State<OrderContent> {
                 ):new Container(),
               )
             ],
-          ),
+          ):Container(),
         );
       }
     );
@@ -409,32 +446,36 @@ class _OrderContentState extends State<OrderContent> {
           width: double.infinity,
           child: model!=null? new Column(
             children: <Widget>[
-              CustomsWidget().subTitle(title: "商品总价",color: AppConfig.primaryColor),
-              new Padding(padding: EdgeInsets.all(10),
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    new Text("优惠",style: TextStyle(fontWeight: FontWeight.w600,fontSize: ScreenAdapter.size(24)),),
-                    new CustomsWidget().priceTitle(price: model.totalDiscount.toString())
-                  ],
-                ),
-              ),
-              new Padding(padding: EdgeInsets.all(10),
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    new Text("运费",style: TextStyle(fontWeight: FontWeight.w600,fontSize: ScreenAdapter.size(24)),),
-                    new CustomsWidget().priceTitle(price: model.freight.toString())
-                  ],
-                ),
-              ),
+              CustomsWidget().subTitle(title: "商品总价",color: AppConfig.blueBtnColor),
               new Padding(padding: EdgeInsets.all(10),
               child: new Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new CustomsWidget().priceTitle(price: model.totalAmount.toString())
+                  new Text("商品总价",style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                  new CustomsWidget().priceTitle(price: model.totalAmount.toString(),
+                  color: Colors.grey,fontWeight: FontWeight.w400)
                 ],
-              ))
+              )),
+              new Padding(padding: EdgeInsets.all(10),
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("优惠",style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                    new CustomsWidget().priceTitle(price: model.totalDiscount.toString(),
+                        color: Colors.grey,fontWeight: FontWeight.w400)
+                  ],
+                ),
+              ),
+              new Padding(padding: EdgeInsets.all(10),
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text("运费",style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                    new CustomsWidget().priceTitle(price: model.freight.toString(),
+                        color: Colors.grey,fontWeight: FontWeight.w400)
+                  ],
+                ),
+              ),
             ]
           ):new Container()
         );
@@ -446,75 +487,82 @@ class _OrderContentState extends State<OrderContent> {
     return Provide<OrderDetailProvide> (
         builder: (BuildContext context,Widget widget,OrderDetailProvide  provide){
       OrderDetailModel model = provide.orderDetailModel;
-      return new Container(
-        color: Colors.white,
-        width: double.infinity,
-        margin: EdgeInsets.only(top: 5),
-        padding: EdgeInsets.all(10),
-        child: model!=null? new Column(
-          children: <Widget>[
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text("卡券抵用:"),
-                new Container(
+        return new Container(
+          color: Colors.white,
+          width: double.infinity,
+          margin: EdgeInsets.only(top: 5),
+          padding: EdgeInsets.all(10),
+          child: model != null? new Column(
+            children: <Widget>[
+
+              ///TODO 暂时隐藏
+              /**new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                  new Text("卡券抵用:"),
+                  new Container(
                   padding: EdgeInsets.only(top: 10),
                   child: new Row(
-                    children: <Widget>[
-                      new CustomsWidget().priceTitle(price: model.payCoupon.toString()),
-                      new Icon(Icons.chevron_right,color: Colors.grey,)
-                    ],
+                  children: <Widget>[
+                  new CustomsWidget().priceTitle(price: model.payCoupon.toString()),
+                  new Icon(Icons.chevron_right,color: Colors.grey,)
+                  ],
                   ),
-                )
-              ],
-            ),
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text("积分支付:"),
-                new Container(
+                  )
+                  ],
+                  ),*/
+
+              ///TODO 暂时隐藏
+              /**new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                  new Text("积分支付:"),
+                  new Container(
                   padding: EdgeInsets.only(top: 10),
                   child: new Row(
-                    children: <Widget>[
-                      new CustomsWidget().priceTitle(price: model.payPoint.toString()),
-                      new Icon(Icons.chevron_right,color: Colors.grey,)
-                    ],
+                  children: <Widget>[
+                  new CustomsWidget().priceTitle(price: model.payPoint.toString()),
+                  new Icon(Icons.chevron_right,color: Colors.grey,)
+                  ],
                   ),
-                )
-              ],
-            ),
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text("实际支付:"),
-                new Container(
-                  padding: EdgeInsets.only(right: 10,top: 10),
-                  child: new Row(
-                    children: <Widget>[
-                      new CustomsWidget().priceTitle(price: model.payableAmount.toString(),color: Colors.red)
-                    ],
-                  ),
-                )
-              ],
-            ),
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                new Text("发票类型:"),
-                new Container(
+                  )
+                  ],
+                  ),*/
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  new Text(model.payAmount!=null?"实际支付:":"应付金额"),
+                  new Container(
+                    padding: EdgeInsets.only(right: 10, top: 10),
+                    child: new Row(
+                      children: <Widget>[
+                        new CustomsWidget().priceTitle(price: model.payAmount!=null?
+                            model.payAmount.toString():model.payableAmount.toString(), color: AppConfig.blueBtnColor)
+                      ],
+                    ),
+                  )
+                ],
+              ),
+
+              ///TODO 暂时隐藏
+              /**new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                  new Text("发票类型:"),
+                  new Container(
                   padding: EdgeInsets.only(top: 10),
                   child: new Row(
-                    children: <Widget>[
-                      new Text(getType(model.invoiceType)),
-                      new Icon(Icons.chevron_right,color: Colors.grey,)
-                    ],
+                  children: <Widget>[
+                  new Text(getType(model.invoiceType)),
+                  new Icon(Icons.chevron_right,color: Colors.grey,)
+                  ],
                   ),
-                )
-              ],
-            ),
-          ],
-        ):new Container(),
-      );
+                  )
+                  ],
+                  ),*/
+            ],
+          ) : new Container(),
+        );
     });
   }
 
@@ -637,16 +685,40 @@ class _OrderContentState extends State<OrderContent> {
 
   /// 添加购物车地址
   Widget _addAddress(){
-    return new Row(
-      children: <Widget>[
-        new Image.asset("assets/images/mall/express.png",width: ScreenAdapter.width(40),),
-        new Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: new Text("添加购物地址",style: TextStyle(fontSize: ScreenAdapter.size(28),
-              color: AppConfig.assistFontColor
-          ),),
-        )
-      ],
+    return InkWell(
+      onTap: (){
+        // 跳转新建地址
+        // 点击跳转地址管理页面
+        Navigator.push(context, MaterialPageRoute(
+            builder: (BuildContext context){
+              return AddressManagementPage();
+            },
+            settings: RouteSettings(arguments: {'pages': 'orderDetail'})
+        ));
+      },
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              width:double.infinity,
+              padding: EdgeInsets.only(left: 20,top: 10,bottom: 10),
+              child: Row(
+                children: <Widget>[
+                  new Image.asset("assets/images/mall/express.png",width: ScreenAdapter.width(40),),
+                  new Text("添加购物地址",style: TextStyle(fontSize: ScreenAdapter.size(28),
+                      color: AppConfig.assistFontColor
+                  ),)
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 20),
+            child: Icon(Icons.chevron_right),
+          )
+        ],
+      ),
     );
   }
 

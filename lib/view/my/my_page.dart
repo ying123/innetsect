@@ -120,9 +120,11 @@ class _MyContentPageState extends State<MyContentPage> {
                   GestureDetector(
                     onTap: () {
                       print('我的订单被点击');
-                      Navigator.of(context).push(CommonUtil.createRoute(
-                          AnimationUtil.getBottominAnilmation(),
-                          MyOrderPage()));
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context){
+                          return MyOrderPage();
+                        }
+                      ));
                     },
                     child: _setupBtn(
                         'assets/images/newpersonalcentre/我的订单@2x.png',
@@ -136,9 +138,11 @@ class _MyContentPageState extends State<MyContentPage> {
                   GestureDetector(
                     onTap: () {
                       print('地址管理被点击');
-                      Navigator.of(context).push(CommonUtil.createRoute(
-                          AnimationUtil.getBottominAnilmation(),
-                          AddressManagementPage()));
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context){
+                            return AddressManagementPage();
+                          }
+                      ));
                     },
                     child: _setupBtn(
                         'assets/images/newpersonalcentre/地址管理@2x.png',

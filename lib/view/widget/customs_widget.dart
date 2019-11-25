@@ -37,7 +37,9 @@ class CustomsWidget{
     String title,
     String content,
     VoidCallback onPressed,
-    VoidCallback onCancel
+    VoidCallback onCancel,
+    String cancelTitle = "放弃",
+    String submitTitle="确认"
   }){
     return showDialog(
       context: context,
@@ -57,10 +59,13 @@ class CustomsWidget{
                   color:Colors.white,
                   textColor: Colors.blue,
                   onPressed: () {
-                    onCancel();
-                    Navigator.of(context).pop();
+                    if(onCancel!=null){
+                      onCancel();
+                    }else{
+                      Navigator.of(context).pop();
+                    }
                   },
-                  child: new Text("取消"),
+                  child: new Text(cancelTitle),
                 ),
                 new FlatButton(
                   color:Colors.white,
@@ -69,7 +74,7 @@ class CustomsWidget{
                     onPressed();
                     Navigator.of(context).pop();
                   },
-                  child: new Text("确认"),
+                  child: new Text(submitTitle,style: TextStyle(color: AppConfig.blueBtnColor),),
                 )
               ],
             )
@@ -153,13 +158,14 @@ class CustomsWidget{
     PreferredSizeWidget bottom
   }){
     return new AppBar(
-      leading: leading ?new GestureDetector(
+      leading: leading ?new InkWell(
         onTap: (){
           onTap==null ?
             Navigator.pop(context) : onTap();
         },
         child: new Container(
             padding: EdgeInsets.all(20),
+            color: Colors.orange,
             child: new Image.asset("assets/images/mall/arrow_down.png",
               fit: BoxFit.fitWidth,
             )
@@ -186,7 +192,10 @@ class CustomsWidget{
   }
 
   /// list操作栏
-  Widget listSlider({String icon,String title,Function() onTap,FontWeight titleFont}){
+  Widget listSlider({String icon,String title,double titleFontSize,Color titleColor,
+    Function() onTap,FontWeight titleFont,bool rightTitle=false,String rightDesc,
+    bool isRightIcon=true
+  }){
     return InkWell(
       onTap: (){
         onTap();
@@ -210,27 +219,30 @@ class CustomsWidget{
                     child: Image.asset(icon),
                   ),
                 ):Container(),
-                SizedBox(
-                  width: ScreenAdapter.width(20),
-                ),
                 Center(
                   child: Text(
                     title,
                     style: TextStyle(
-                      color: Color.fromRGBO(95, 95, 95, 1.0),
-                      fontSize: ScreenAdapter.size(27),
+                      color: titleColor==null?Color.fromRGBO(95, 95, 95, 1.0):titleColor,
+                      fontSize: titleFontSize==null?ScreenAdapter.size(27):titleFontSize,
                       fontWeight: titleFont
                     ),
                   ),
                 ),
                 Expanded(
-                  child: Container(),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 10),
+                    child: rightTitle?
+                        Text(rightDesc,softWrap: false,style: TextStyle(color: Colors.grey,
+                            fontSize: ScreenAdapter.size(24)),):Container(),
+                  ),
                 ),
-                Image.asset(
+                isRightIcon?Image.asset(
                   'assets/images/mall/arrow_right.png',
                   width: ScreenAdapter.width(25),
                   height: ScreenAdapter.width(25),
-                ),
+                ):Container(),
                 SizedBox(
                   width: ScreenAdapter.width(43),
                 ),
@@ -264,6 +276,28 @@ class CustomsWidget{
         ),
       ),
     );
+  }
+
+  /// 暂无数据
+  List<Widget> noDataWidget(){
+    return <Widget>[
+      Container(
+        width: double.infinity,
+        height: ScreenAdapter.height(240),
+        margin: EdgeInsets.only(top: 120),
+        child: Image.asset("assets/images/mall/no_data.png",
+          fit: BoxFit.contain,
+          width: ScreenAdapter.width(120),
+          height: ScreenAdapter.height(120),
+        ),
+      ),
+      Center(
+        child: Padding(
+          padding: EdgeInsets.only(top: 20),
+          child: Text("暂无相关数据",style: TextStyle(color: Colors.black54,fontSize: ScreenAdapter.size(28)),),
+        ),
+      )
+    ];
   }
 
 }

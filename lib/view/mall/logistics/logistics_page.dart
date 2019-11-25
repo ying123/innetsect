@@ -44,7 +44,11 @@ class _LogisticsContentState extends State<LogisticsContent> {
           widget: new Text("物流信息",style: TextStyle(fontSize: ScreenAdapter.size((30)),
             fontWeight: FontWeight.w900 ),),
         onTap: (){
-          Navigator.popAndPushNamed(context, _provide.backPage);
+          if(_provide.backPage=="/myOrderPage"){
+            Navigator.popAndPushNamed(context, _provide.backPage);
+          }else{
+            Navigator.pop(context);
+          }
         }
       ),
       body: new Stack(
@@ -58,7 +62,7 @@ class _LogisticsContentState extends State<LogisticsContent> {
                 color: Colors.white,
                 padding: EdgeInsets.only(left: 20,bottom: 10),
                 child: CustomsWidget().subTitle(title: "订单编号:  ${_detailProvide.orderDetailModel.orderNo}",
-                    color: AppConfig.primaryColor),
+                    color: AppConfig.blueBtnColor),
               )
           ),
           new Positioned(
@@ -68,43 +72,28 @@ class _LogisticsContentState extends State<LogisticsContent> {
               child: new Container(
                 width: double.infinity,
                 height: ScreenAdapter.getScreenHeight()-40,
-                child: list==null?
-                    new Padding(padding: EdgeInsets.all(20),
-                      child: new Text("暂无数据"),
-                    )
+                child: list==null&&list.length==0?
+                    CustomsWidget().noDataWidget()
                     :ListView.builder(
                       itemCount: list.length,
                       itemBuilder: (BuildContext context, int index){
                         return new Row(
                           children: <Widget>[
                             Expanded(
-                              child: new Row(
-                                children: <Widget>[
-                                  Expanded( 
-                                    flex:1,
-                                    child: new Container(
-                                      color: Colors.yellow,
-                                      child: Text('1'),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 9,
-                                    child: new Container(
-                                      color: Colors.red,
-                                      padding: EdgeInsets.only(left: 10),
-                                      child: new Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          new Text(list[index]['context']),
-                                          new Padding(padding: EdgeInsets.only(top: 20),
-                                            child: new Text(list[index]['ftime'],style: TextStyle(color: Colors.grey),),),
-                                          new Divider(endIndent: 10,color: AppConfig.assistLineColor,)
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
+                              flex: 9,
+                              child: new Container(
+                                padding: EdgeInsets.only(left: 10,right: 20),
+                                margin: EdgeInsets.only(top: 20),
+                                child: new Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Text(list[index]['context']),
+                                    new Padding(padding: EdgeInsets.only(top: 20),
+                                      child: new Text(list[index]['ftime'],style: TextStyle(color: Colors.grey),),),
+                                    new Divider(endIndent: 10,color: AppConfig.assistLineColor,)
+                                  ],
+                                ),
                               ),
                             )
                           ],
@@ -125,6 +114,7 @@ class _LogisticsContentState extends State<LogisticsContent> {
     _loadData();
   }
 
+  /// 订单物流
   _loadData(){
     OrderDetailModel model = _detailProvide.orderDetailModel;
     _provide.getLogisticsList(orderID: model.orderID,shipperCode: model.shipperCode,

@@ -39,4 +39,13 @@ class SearchProvide extends BaseProvide{
         .doOnListen(() {})
         .doOnDone(() {});
   }
+
+  /// 品类搜索
+  Observable onSearch(url){
+    return _repo.onSearch(url).doOnData((result){})
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
 }

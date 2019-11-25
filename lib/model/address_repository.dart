@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/address_model.dart';
@@ -62,6 +61,13 @@ class AddressService{
     var url="/api/eshop/addresses/default/$addressID";
     return patch(url);
   }
+
+  /// 设置地址运费
+  Observable<BaseResponse> onAddressFreight(int addrID){
+    var url = '/api/eshop/salesorders/calcfreight?shipperCode=01&addrID=$addrID';
+    var response = post(url);
+    return response;
+  }
 }
 ///地址数据请求响应
 class AddressRepo {
@@ -105,5 +111,8 @@ class AddressRepo {
   Future onDefaultAddresses(int addressID){
     return _remote.onDefaultAddresses(addressID);
   }
-
+  /// 设置地址运费
+  Observable<BaseResponse> onAddressFreight(int addrID){
+    return  _remote.onAddressFreight(addrID);
+  }
 }

@@ -7,7 +7,7 @@ class CommodityProvide extends BaseProvide{
 
   final CommodityRepo _repo = CommodityRepo();
 
-  ///展会首页数据
+  ///首页数据
   Observable homeListData(int pageNo,String types) {
     return _repo
         .homeListData(pageNo,types)

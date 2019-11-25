@@ -34,6 +34,11 @@ class NewAddressContentPage extends StatefulWidget {
 class _NewAddressContentPageState extends State<NewAddressContentPage> {
 
   bool isSelected = false;
+  AddressManagementProvide _addressManagementProvide;
+  // 手机号
+  TextEditingController _phoneText = TextEditingController();
+  // 收货人
+  TextEditingController _nameText = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +80,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _addressManagementProvide ??= widget._addressManagementProvide;
     // 获取国家
     _getCountries();
     // 编辑时
@@ -124,6 +130,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
   Provide<NewAddressProvide> _setupNewGoodsAddress() {
     return Provide<NewAddressProvide>(
       builder: (BuildContext context, Widget child, NewAddressProvide provide) {
+        _phoneText.text = provide.tel;
+        _nameText.text = provide.name;
         return Column(
           children: <Widget>[
             Container(
@@ -144,6 +152,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           width: ScreenAdapter.width(500),
                           margin: EdgeInsets.only(left: 20),
                           child: TextField(
+                            controller: _nameText,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.name:"请输入收货人姓名"
@@ -174,6 +183,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           width: ScreenAdapter.width(500),
                           margin: EdgeInsets.only(left: 20),
                           child: TextField(
+                            controller: _phoneText,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.tel:"请输入收货人手机号"
@@ -319,6 +329,11 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
           .list;
       widget._addressManagementProvide.addListAddress(list);
     }, onError: (e) {});
+    widget.provide.tel = null;
+    widget.provide.name = null;
+    widget.provide.addressDetail = null;
+    _nameText.dispose();
+    _phoneText.dispose();
   }
 
   Provide<NewAddressProvide> _setupBottomBtn() {
@@ -328,7 +343,11 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
           child: InkWell(
             onTap: () {
               /// 保存地址
-              if(widget._addressManagementProvide.addressModel!=null){
+              if(provide.countryModel==null){
+                CustomsWidget().showToast(title: "请选择国家和所在地区");
+              }else if(provide.addressDetail==null){
+                CustomsWidget().showToast(title: "请填写详细地址");
+              }else if(widget._addressManagementProvide.addressModel!=null){
                 provide.createAndEditAddresses(context,isEdit: true,
                 addressModel:widget._addressManagementProvide.addressModel)
                     .doOnListen(() {}).doOnCancel(() {})
@@ -347,6 +366,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                   print(items.data);
                   if(items.data!=null){
                     /// 列表数据
+                    /// 添加新数据
+                    _addressManagementProvide.addAddresses(AddressModel.fromJson(items.data));
                     Fluttertoast.showToast(msg: "保存成功",gravity: ToastGravity.CENTER);
                     Navigator.pop(context);
                   }

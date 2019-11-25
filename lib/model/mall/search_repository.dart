@@ -12,6 +12,11 @@ class SearchService {
     return response;
   }
 
+  /// 品类搜索
+  Observable<BaseResponse> onSearch (String url){
+    var response = get(url);
+    return response;
+  }
 }
 
 ///搜索
@@ -23,4 +28,8 @@ class SearchRepo {
     return _remote.onRecommendedTags();
   }
 
+  /// 品类搜索
+  Observable<BaseResponse> onSearch (String url){
+    return _remote.onSearch(url);
+  }
 }

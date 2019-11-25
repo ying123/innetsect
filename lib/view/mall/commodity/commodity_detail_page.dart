@@ -93,7 +93,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 //      }
 //    });
 
-    _loadData();
+//    _loadData();
     _loadHtml();
   }
 
@@ -437,19 +437,19 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   }
 
   /// 加载数据
-  _loadData() {
-     _provide.detailData()
-        .doOnListen(() {
-      print('doOnListen');
-    })
-        .doOnCancel(() {})
-        .listen((item) {
-      ///加载数据
-      print('listen data->$item');
-      _provide.setCommodityModels(CommodityModels.fromJson(item.data));
-//      _provide
-    }, onError: (e) {});
-  }
+//  _loadData() {
+//     _provide.detailData()
+//        .doOnListen(() {
+//      print('doOnListen');
+//    })
+//        .doOnCancel(() {})
+//        .listen((item) {
+//      ///加载数据
+//      print('listen data->$item');
+//      _provide.setCommodityModels(CommodityModels.fromJson(item.data));
+////      _provide
+//    }, onError: (e) {});
+//  }
 
   /// 加载webview
   _loadHtml() async{

@@ -14,6 +14,7 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
+import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/my/all/all_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -22,6 +23,7 @@ class AllPage extends PageProvideNode{
   final AllProvide _provide = AllProvide.instance;
   final OrderDetailProvide _detailProvide = OrderDetailProvide.instance;
   final CommodityDetailProvide _commodityDetailProvide = CommodityDetailProvide.instance;
+  final LogisticsProvide _logisticsProvide = LogisticsProvide.instance;
 
   AllPage({
     this.idx
@@ -29,11 +31,13 @@ class AllPage extends PageProvideNode{
     mProviders.provide(Provider<AllProvide>.value(_provide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_commodityDetailProvide));
+    mProviders.provide(Provider<LogisticsProvide>.value(_logisticsProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
    
-    return AllContentPage(_provide,_detailProvide,_commodityDetailProvide,this.idx);
+    return AllContentPage(_provide,_detailProvide,_commodityDetailProvide,this.idx,
+    this._logisticsProvide);
   }
 }
 
@@ -42,7 +46,9 @@ class AllContentPage extends StatefulWidget {
   final AllProvide _provide;
   final OrderDetailProvide _detailProvide;
   final CommodityDetailProvide _commodityDetailProvide;
-  AllContentPage(this._provide,this._detailProvide,this._commodityDetailProvide,this.idx);
+  final LogisticsProvide _logisticsProvide;
+  AllContentPage(this._provide,this._detailProvide,this._commodityDetailProvide,this.idx,
+      this._logisticsProvide);
   @override
   _AllContentPageState createState() => _AllContentPageState();
 }
@@ -51,6 +57,7 @@ class _AllContentPageState extends State<AllContentPage> {
   AllProvide _provide;
   OrderDetailProvide _detailProvide;
   CommodityDetailProvide _commodityDetailProvide;
+  LogisticsProvide _logisticsProvide;
   int idx;
   EasyRefreshController _easyRefreshController;
   List<OrderDetailModel> _orderDetailList = new List();
@@ -73,10 +80,23 @@ class _AllContentPageState extends State<AllContentPage> {
         child: <Widget>[
           // 数据内容
           SliverList(
-            delegate: SliverChildListDelegate(_orderDetailList.map((item){
+            delegate: SliverChildListDelegate(
+                _orderDetailList.length>0?_orderDetailList.map((item){
               return new InkWell(
                 onTap: () {
-                  /// 订单详情请求
+//                  /// 订单详情请求
+//                  _commodityDetailProvide.getOrderPayDetails(
+//                    orderID: item.orderID,
+//                  ).doOnListen(() {
+//                    print('doOnListen');
+//                  }).doOnCancel(() {}).listen((items) {
+//                    ///加载数据
+//                    print('listen data->$items');
+//                    if(items!=null&&items.data!=null){
+//                      _detailProvide.orderDetailModel = OrderDetailModel.fromJson(items.data);
+//
+//                    }
+//                  }, onError: (e) {});
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context){
                         return OrderDetailPage();
@@ -116,7 +136,8 @@ class _AllContentPageState extends State<AllContentPage> {
                   ),
                 ),
               );
-            }).toList()),
+            }).toList():CustomsWidget().noDataWidget()
+            ),
           )
         ]
     );
@@ -129,6 +150,7 @@ class _AllContentPageState extends State<AllContentPage> {
     _provide ??= widget._provide;
     _detailProvide??=widget._detailProvide;
     _commodityDetailProvide??=widget._commodityDetailProvide;
+    _logisticsProvide ??= widget._logisticsProvide;
     _easyRefreshController = EasyRefreshController();
     setState(() {
       idx = widget.idx;
@@ -145,9 +167,42 @@ class _AllContentPageState extends State<AllContentPage> {
 
   Widget _commodityContent(OrderDetailModel model){
     List<CommodityModels> skuList = model.skuModels;
+    double price;
+    skuList.forEach((items){
+      price = items.salesPrice*skuList.length;
+    });
     return new Container(
       padding: EdgeInsets.only(bottom: 10),
-      child: new Column(
+      child: skuList.length>1?
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              SizedBox(
+                child: Row(
+                  children: skuList.sublist(0,2).map((skuItem){
+                    return  new Container(
+                        width: ScreenAdapter.width(120),
+                        height: ScreenAdapter.height(120),
+                        alignment: Alignment.center,
+                        child: new Image.network(skuItem.skuPic,fit: BoxFit.fill,
+                          width: ScreenAdapter.width(100),height: ScreenAdapter.height(100),)
+                    );
+                  }).toList(),
+                ),
+              ),
+              new Container(
+                  height: ScreenAdapter.height(120),
+                  padding:EdgeInsets.only(bottom: 5),
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      new CustomsWidget().priceTitle(price: price.toString()),
+                      new Text("共 ${skuList.length} 件")
+                    ],
+                  ))
+            ],
+          )
+          : new Column(
         children: skuList.map((skuItem){
           List skuNameList = CommonUtil.skuNameSplit(skuItem.skuName);
           return new Row(
@@ -165,7 +220,7 @@ class _AllContentPageState extends State<AllContentPage> {
                   width: (ScreenAdapter.getScreenWidth()/1.7)-4,
                   padding: EdgeInsets.only(left: 10,top: 5),
                   alignment: Alignment.centerLeft,
-                  child:skuNameList!=null? new Column(
+                  child:skuNameList!=null&&skuNameList.length>0? new Column(
                     children: <Widget>[
                       new Container(
                         width: double.infinity,
@@ -197,6 +252,7 @@ class _AllContentPageState extends State<AllContentPage> {
     );
   }
 
+  /// 底部操作栏
   Widget _bottomAction(OrderDetailModel model){
     Widget widget;
     //0待支付 1待收货 2已完成 -1已取消 -2已取消待退款 -4已取消已退款
@@ -208,54 +264,55 @@ class _AllContentPageState extends State<AllContentPage> {
           this._logisticsWidget(model)
         ],
       );
-    }
-    switch(model.status){
-      case 0:
-        widget = new Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            this._cancelOrderWidget(model.orderID),
-            new Container(
-              height: ScreenAdapter.height(60),
-              width: ScreenAdapter.width(180),
-              padding:EdgeInsets.only(left: 10,) ,
-              child: new RaisedButton(
-                textColor: AppConfig.whiteBtnColor,
-                color: AppConfig.blueBtnColor,
-                onPressed: (){
-                  ///默认支付宝
-                  _commodityDetailProvide.payMode = 2;
-                  ///加载数据，存储订单号
-                  _commodityDetailProvide.setOrderId(model.orderID);
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context){
-                      return OrderPayPage();
-                    },
-                  ));
-                },
-                child: new Text("立即付款",style: TextStyle(
-                    fontSize: ScreenAdapter.size(24)),),
-              ),
-            )
-          ],
-        );
-        break;
-      case 2:
-        widget = widget = new Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            this._logisticsWidget(model)
-          ],
-        );
-        break;
-      case -1:
-        widget = new Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            _delOrderWidget(model.orderID)
-          ],
-        );
-        break;
+    }else if(model.status==0){
+      widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          this._cancelOrderWidget(model.orderID),
+          new Container(
+            height: ScreenAdapter.height(60),
+            padding:EdgeInsets.only(left: 10,) ,
+            child: new RaisedButton(
+              textColor: AppConfig.whiteBtnColor,
+              color: AppConfig.blueBtnColor,
+              onPressed: (){
+                ///默认支付宝
+                _commodityDetailProvide.payMode = 2;
+                ///加载数据，存储订单号
+                _commodityDetailProvide.setOrderId(model.orderID);
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return OrderPayPage();
+                  },
+                ));
+              },
+              child: new Text("立即付款",style: TextStyle(
+                  fontSize: ScreenAdapter.size(24)),),
+            ),
+          )
+        ],
+      );
+    }else if(model.status==1){
+      widget = widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          this._logisticsWidget(model)
+        ],
+      );
+    }else if(model.status==2){
+      widget = widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          this._logisticsWidget(model)
+        ],
+      );
+    }else if(model.status==-1){
+      widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          _delOrderWidget(model.orderID)
+        ],
+      );
     }
     return widget;
   }
@@ -264,7 +321,6 @@ class _AllContentPageState extends State<AllContentPage> {
   Widget _cancelOrderWidget(int orderID){
     return new Container(
         height: ScreenAdapter.height(60),
-        width: ScreenAdapter.width(160),
         child: new RaisedButton(
           color: AppConfig.assistLineColor,
           onPressed: (){
@@ -299,12 +355,12 @@ class _AllContentPageState extends State<AllContentPage> {
   Widget _logisticsWidget(OrderDetailModel model){
     return new Container(
       height: ScreenAdapter.height(60),
-      width: ScreenAdapter.width(180),
       padding:EdgeInsets.only(left: 10,) ,
       child: new RaisedButton(
         color: AppConfig.fontBackColor,
         onPressed: (){
           _detailProvide.orderDetailModel = model;
+          _logisticsProvide.backPage=null;
           Navigator.push(context, MaterialPageRoute(
             builder: (context){
               return LogisticsPage();
@@ -320,10 +376,9 @@ class _AllContentPageState extends State<AllContentPage> {
   Widget _delOrderWidget(int orderID){
     return new Container(
       height: ScreenAdapter.height(60),
-      width: ScreenAdapter.width(180),
       padding:EdgeInsets.only(left: 10,) ,
       child: new RaisedButton(
-        color: AppConfig.primaryColor,
+        color: AppConfig.blueBtnColor,
         onPressed: () {
           //删除订单
           CustomsWidget().customShowDialog(
@@ -332,6 +387,7 @@ class _AllContentPageState extends State<AllContentPage> {
               onPressed: () async{
                 await _provide.delOrder(orderID).then((item){
                   if(item.data){
+                    CustomsWidget().showToast(title: "删除成功");
                     //删除订单
                     _orderDetailList.removeWhere((res)=>res.orderID==orderID);
                     this.setState((){});
@@ -341,7 +397,7 @@ class _AllContentPageState extends State<AllContentPage> {
           );
         },
         child: new Text("删除订单",style: TextStyle(
-            fontSize: ScreenAdapter.size(24),color: AppConfig.fontBackColor),),
+            fontSize: ScreenAdapter.size(24),color:Colors.white),),
       ),
     );
   }

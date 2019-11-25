@@ -21,18 +21,26 @@ class CommodityDetailProvide extends BaseProvide {
   int _index=0;
   /// 订单号
   int _orderId;
+  /// 支付方式list
+  List<Map<String,dynamic>> _payList = [
+    {"payMode":2,"name":"支付宝","isSelected":true},
+    {"payMode":1,"name":"微信","isSelected":false},
+  ];
   /// 支付方式
   int _payMode;
   /// 是否立即购买
-  bool _isBuy;
+  bool _isBuy = false;
   /// 支付状态
   bool _resultStatus = false;
+  /// 售后按钮显示
+  bool _afterBtn = false;
 
   CommodityModels get commodityModels => _commodityModels;
 
   CommoditySkusModel get skusModel =>_skusModel;
 
   List<CommoditySkusModel> get skusList => _skusList;
+  List<Map<String,dynamic>> get payList => _payList;
 
   int get index=>_index;
   int get orderId=>_orderId;
@@ -40,6 +48,24 @@ class CommodityDetailProvide extends BaseProvide {
   bool get resultStatus=>_resultStatus;
   int get prodId => _prodId;
   int get payMode => _payMode;
+  bool get afterBtn => _afterBtn;
+
+  // 变更支付方式
+  void onChangePayMode(int index){
+    _payList.forEach((item)=>item['isSelected']=false);
+    _payList[index]['isSelected']=true;
+    _payMode = _payList[index]['payMode'];
+    setPayModel(_payList[index]['payMode']);
+    notifyListeners();
+  }
+  // 默认支付方式
+  void defaultPayMode(){
+    _payList.forEach((item)=>item['isSelected']=false);
+    _payList[0]['isSelected']=true;
+    _payMode = _payList[0]['payMode'];
+    setPayModel(_payList[0]['payMode']);
+    notifyListeners();
+  }
 
   set payMode(int payMode){
     _payMode = payMode;
@@ -58,6 +84,11 @@ class CommodityDetailProvide extends BaseProvide {
 
   set resultStatus(bool success){
     _resultStatus = success;
+    notifyListeners();
+  }
+
+  set afterBtn(bool flag){
+    _afterBtn = flag;
     notifyListeners();
   }
 
@@ -214,7 +245,7 @@ class CommodityDetailProvide extends BaseProvide {
 
   /// 提交订单
   Observable submitShopping(int addrID) {
-
+    print(addrID);
     return _repo.submitShopping(addrID)
         .doOnData((result) {
 
@@ -226,7 +257,7 @@ class CommodityDetailProvide extends BaseProvide {
 
   /// 支付订单
   Observable payShopping() {
-    return _repo.payShopping(_orderId,_payMode)
+    return _repo.payShopping(_orderId,payMode)
         .doOnData((result) {
 
     })

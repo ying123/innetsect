@@ -42,15 +42,18 @@ class _MyOrderContentPageState extends State<MyOrderContentPage> {
           centerTitle: true,
           leading: InkWell(
               onTap: () {
-                Navigator.popAndPushNamed(context, "/appNavigationBarPage");
+                Navigator.pop(context);
+//                Navigator.popAndPushNamed(context, "/appNavigationBarPage");
               },
               child: new Container(
                   padding: EdgeInsets.all(20),
+                  color:Colors.deepOrangeAccent,
                   child: new Image.asset("assets/images/mall/arrow_down.png",
                     fit: BoxFit.fitWidth,
                   )
               )),
           bottom: TabBar(
+            isScrollable: true,
             unselectedLabelColor: Colors.black38,
             indicatorColor: Colors.black54,
             indicatorSize: TabBarIndicatorSize.label,

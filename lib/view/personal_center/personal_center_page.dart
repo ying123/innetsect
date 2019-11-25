@@ -1,36 +1,54 @@
 
 import 'package:flutter/material.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/personal_center/edit_nick_name_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/personal_center/personal_center_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:image_picker/image_picker.dart';
 
+/// 个人资料
 class PersonalCenterPage extends PageProvideNode {
   final PersonalCenterProvide _provide = PersonalCenterProvide();
+  final LoginProvide _loginProvide = LoginProvide.instance;
   PersonalCenterPage() {
     mProviders.provide(Provider.value(_provide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return PersonalCenterContentPage(_provide);
+    return PersonalCenterContentPage(_provide,_loginProvide);
   }
 }
 
 class PersonalCenterContentPage extends StatefulWidget {
   
    final PersonalCenterProvide provide ;
-   PersonalCenterContentPage(this.provide);
+   final LoginProvide _loginProvide;
+   PersonalCenterContentPage(this.provide,this._loginProvide);
   @override
   _PersonalCenterContentPageState createState() =>
       _PersonalCenterContentPageState();
 }
 
 class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
+  LoginProvide _loginProvide;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loginProvide ??= widget._loginProvide;
+  }
+
   @override
   Widget build(BuildContext context) {
+    UserInfoModel userModel = _loginProvide.userInfoModel;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomsWidget().customNav(context: context,
@@ -45,40 +63,54 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
               },
               child: _setupPersonalCenterHeadPortrait()),
           Container(
-            width: ScreenAdapter.width(750),
-            height: ScreenAdapter.height(2),
-            color: Color.fromRGBO(249, 249, 249, 1.0),
+              width: double.infinity,
+              height: ScreenAdapter.height(10),
+              color: AppConfig.assistLineColor),
+          CustomsWidget().listSlider(
+            title: "昵称",rightTitle: true,
+            rightDesc: userModel.nickName,titleFont: FontWeight.w800,
+            titleFontSize: ScreenAdapter.size(28),titleColor: Colors.black,
+            onTap: (){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return EditNickNamePage();
+                  }
+                ));
+            }
           ),
-          InkWell(
-              onTap: () {
-                print('昵称被点击');
-              },
-              child: _setupPersonalCenterNickname()),
-          Container(
-            width: ScreenAdapter.width(750),
-            height: ScreenAdapter.height(2),
-            color: Color.fromRGBO(249, 249, 249, 1.0),
+          Divider(color: AppConfig.assistLineColor,height: 10,indent: 10,endIndent: 10,),
+          CustomsWidget().listSlider(
+              title: "更换手机号",rightTitle: true,
+              rightDesc: userModel.mobile,titleFont: FontWeight.w800,
+              titleFontSize: ScreenAdapter.size(28),titleColor: Colors.black
           ),
-          InkWell(
-              onTap: () {
-                print('性别被点击');
-              },
-              child: _setupPersonalCenterGender()),
-          Container(
-            width: ScreenAdapter.width(750),
-            height: ScreenAdapter.height(2),
-            color: Color.fromRGBO(249, 249, 249, 1.0),
+          Divider(color: AppConfig.assistLineColor,height: 10,indent: 10,endIndent: 10,),
+          CustomsWidget().listSlider(
+              title: "换绑邮箱",rightTitle: true,
+              rightDesc: userModel.email==null?"":userModel.email,titleFont: FontWeight.w800,
+              titleFontSize: ScreenAdapter.size(28),titleColor: Colors.black
           ),
-          InkWell(
-              onTap: () {
-                print('生日被点击');
-              },
-              child: _setupPersonalCenterBirthday()),
-          Container(
-            width: ScreenAdapter.width(750),
-            height: ScreenAdapter.height(2),
-            color: Color.fromRGBO(249, 249, 249, 1.0),
-          ),
+          Divider(color: AppConfig.assistLineColor,height: 10,indent: 10,endIndent: 10,)
+//          InkWell(
+//              onTap: () {
+//                print('性别被点击');
+//              },
+//              child: _setupPersonalCenterGender()),
+//          Container(
+//            width: ScreenAdapter.width(750),
+//            height: ScreenAdapter.height(2),
+//            color: Color.fromRGBO(249, 249, 249, 1.0),
+//          ),
+//          InkWell(
+//              onTap: () {
+//                print('生日被点击');
+//              },
+//              child: _setupPersonalCenterBirthday()),
+//          Container(
+//            width: ScreenAdapter.width(750),
+//            height: ScreenAdapter.height(2),
+//            color: Color.fromRGBO(249, 249, 249, 1.0),
+//          ),
         ],
       ),
     );
@@ -205,6 +237,7 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
     );
   }
 
+  ///TODO 废弃
   Provide<PersonalCenterProvide> _setupPersonalCenterGender() {
     return Provide<PersonalCenterProvide>(
       builder:
@@ -315,7 +348,8 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
               Text(
                 '头像',
                 style: TextStyle(
-                  fontSize: ScreenAdapter.size(30),
+                  fontSize: ScreenAdapter.size(28),
+                  fontWeight: FontWeight.w800
                 ),
               ),
               Expanded(

@@ -38,15 +38,49 @@ static Route createRoute(Tween<Offset> tween, Widget child) {
       });
 }
 
+  /// 商品skuname截取显示
   static List skuNameSplit(String skuName){
-    List list;
+    List list = List();
     if(skuName.indexOf(":")>0){
       list = skuName.split(":");
     }
     return list;
   }
 
-
-
+  /// 售后状态
+  /// *[状态：10 申请中 30已审核通过 34审核不通过 35已退货 40已收到退货 50已完成 60 已协商取消 61验货不通过 -1用户取消]
+  static String afterStatusName(int status){
+    String name;
+    switch(status){
+      case 10:
+        name = "申请中";
+        break;
+      case 30:
+        name = "审核通过";
+        break;
+      case 34:
+        name ="审核不通过";
+        break;
+      case 35:
+        name = "已退货";
+        break;
+      case 40:
+        name = "已收到退货";
+        break;
+      case 50:
+        name="已完成";
+        break;
+      case 60:
+        name="已协商取消";
+        break;
+      case 61:
+        name="验货不通过";
+        break;
+      case -1:
+        name="退货已取消";
+        break;
+    }
+    return name;
+  }
 
 }

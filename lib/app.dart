@@ -4,11 +4,8 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/entrance_page.dart';
 import 'package:innetsect/main_provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/widget/video_widget_page.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
-import 'package:fluintl/fluintl.dart';
-import 'package:innetsect/res/strings.dart';
 
 class App extends PageProvideNode {
   final MainProvide _provide = MainProvide.instance;

@@ -64,7 +64,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
       builder: (BuildContext context,Widget widget,CommodityDetailProvide provide){
         CommoditySkusModel skusModel = provide.skusModel;
         List<CommoditySkusModel> skuModelGroup = provide.skusList;
-        return new Container(
+        return skusModel!=null?new Container(
           width: double.infinity,
           child: new Column(
             children: skuModelGroup.map((item){
@@ -98,11 +98,11 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                                 color:skusModel.skuCode==item.skuCode?AppConfig.fontBackColor:Colors.white
                             )
                         ),
-                        child: Image.network(item.skuPic,fit: BoxFit.fill,),
+                        child: item.skuPic!=null?Image.network(item.skuPic,fit: BoxFit.fill,):Container(),
                       ),
                       new Expanded(
                         flex:1,
-                        child: new Container(
+                        child: item.features!=null?new Container(
                           color: Colors.white,
                           padding: EdgeInsets.only(left: 10),
                           child: new Text(this.getName(item.features),softWrap: true,
@@ -110,7 +110,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                                 fontSize: ScreenAdapter.size(32)
                             ),
                           )
-                        ),
+                        ):Container(),
                       ),
                     ],
                   ),
@@ -118,7 +118,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
               );
             }).toList(),
           ),
-        );
+        ):new Container();
       },
     );
   }
@@ -139,41 +139,42 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
         builder: (BuildContext context,Widget widget,CommodityDetailProvide provide){
           CommodityModels model = provide.commodityModels;
           CommoditySkusModel skusModel = provide.skusModel;
-          List<CommodityFeatureModel> features = model.features;
-          return new Scrollbar(child: new SingleChildScrollView(
-            scrollDirection:Axis.horizontal,
-            child: new Center(
-              child: new Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: features.map((CommodityFeatureModel item){
-                  // 选中尺码
-                  return new InkWell(
-                    onTap: (){
-                      provide.setSelectSku(item,_cartProvide.count);
-                      setState(() {});
-                    },
-                    child: item.featureGroup=="尺码" ?new Container(
-                      width: ScreenAdapter.width(100),
-                      height: ScreenAdapter.height(100),
-                      margin: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(width: 2,
-                              color: skusModel.features.any((items)=>items.featureCode==item.featureCode)?AppConfig.fontBackColor:Colors.white
-                          )
-                      ),
-                      alignment: Alignment.center,
-                      child: new Text(item.featureValue,style: TextStyle(
-                          fontSize: ScreenAdapter.size(32),
-                          fontWeight: FontWeight.w900
-                      ),),
-                    ):new Text(""),
-                  );
-                }).toList(),
-              ),
+          List<CommodityFeatureModel> features = List();
+          if(model!=null&&model.features!=null){
+            features = model.features;
+          }
+          return new Container(
+            width: double.infinity,
+            child: Wrap(
+              spacing: 5,
+              runSpacing: 5,
+              children: features.length>0? features.map((CommodityFeatureModel item){
+                // 选中尺码
+                return new InkWell(
+                  onTap: (){
+                    provide.setSelectSku(item,_cartProvide.count);
+                    setState(() {});
+                  },
+                  child: item.featureGroup=="尺码" ?new Container(
+                    width: ScreenAdapter.width(100),
+                    height: ScreenAdapter.height(100),
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(width: 2,
+                            color: skusModel.features.any((items)=>items.featureCode==item.featureCode)?AppConfig.fontBackColor:Colors.white
+                        )
+                    ),
+                    alignment: Alignment.center,
+                    child: new Text(item.featureValue,style: TextStyle(
+                        fontSize: ScreenAdapter.size(32),
+                        fontWeight: FontWeight.w900
+                    ),),
+                  ):new Text(""),
+                );
+              }).toList():[],
             ),
-          ));
+          );
         }
     );
   }
