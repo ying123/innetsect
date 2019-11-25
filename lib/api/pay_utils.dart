@@ -1,7 +1,10 @@
 import 'package:tobias/tobias.dart' as tobias;
+//import 'package:fluwx/fluwx.dart' as fluwx;
+import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 
 class PayUtils{
 
+  /// 支付宝支付
   Future<Map> aliPay(String orderInfo) async{
     Map result = new Map();
     try{
@@ -18,6 +21,15 @@ class PayUtils{
       print(map);
     }catch(e){}
     return result;
+  }
+
+  /// 微信支付
+  /// *[index==0] 支付成功
+  /// *[index!=0] 支付失败
+  Future<SyPayResult> weChatPay(dynamic data) async{
+      SyPayResult payResult = await SyFlutterWechat.pay(
+          SyPayInfo.fromJson(data));
+      return payResult;
   }
 
   String aliPayFormat(String resultStatus){

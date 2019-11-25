@@ -137,6 +137,8 @@ class _OrderContentState extends State<OrderContent> {
     // TODO: implement dispose
     super.dispose();
     widget._orderDetailProvide.orderDetailModel = null;
+    ///默认支付宝
+    _detailProvide.defaultPayMode();
   }
   /// 查询物流信息
   Widget logisticsBtn(){
@@ -202,7 +204,7 @@ class _OrderContentState extends State<OrderContent> {
 
   _setOrder(int orderID){
     ///默认支付宝
-    _detailProvide.payMode=2;
+    _detailProvide.defaultPayMode();
     ///加载数据，存储订单号
     _detailProvide.setOrderId(orderID);
     Navigator.pushReplacement(context, MaterialPageRoute(

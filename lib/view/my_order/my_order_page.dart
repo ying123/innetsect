@@ -53,6 +53,7 @@ class _MyOrderContentPageState extends State<MyOrderContentPage> {
                   )
               )),
           bottom: TabBar(
+            isScrollable: true,
             unselectedLabelColor: Colors.black38,
             indicatorColor: Colors.black54,
             indicatorSize: TabBarIndicatorSize.label,

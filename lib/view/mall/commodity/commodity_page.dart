@@ -148,14 +148,14 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   /// 顶部导航栏组件
   Widget _tabBar(){
     return new TabBar(
-        isScrollable: false,
+        isScrollable: true,
         controller: _tabController,
         unselectedLabelColor: Colors.grey,
         unselectedLabelStyle: new TextStyle(fontSize: 14.0),
         labelColor: Colors.black,
         labelStyle: new TextStyle(fontSize: 14.0,fontWeight: FontWeight.bold),
         tabs: mallTabBarList.map((item){
-          return new Container(
+          return new FractionallySizedBox(
             child: new Text(item.title,maxLines: 1,softWrap: false,),
           );
         }).toList()

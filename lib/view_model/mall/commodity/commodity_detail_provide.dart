@@ -58,6 +58,14 @@ class CommodityDetailProvide extends BaseProvide {
     setPayModel(_payList[index]['payMode']);
     notifyListeners();
   }
+  // 默认支付方式
+  void defaultPayMode(){
+    _payList.forEach((item)=>item['isSelected']=false);
+    _payList[0]['isSelected']=true;
+    _payMode = _payList[0]['payMode'];
+    setPayModel(_payList[0]['payMode']);
+    notifyListeners();
+  }
 
   set payMode(int payMode){
     _payMode = payMode;
@@ -249,7 +257,7 @@ class CommodityDetailProvide extends BaseProvide {
 
   /// 支付订单
   Observable payShopping() {
-    return _repo.payShopping(_orderId,_payMode)
+    return _repo.payShopping(_orderId,payMode)
         .doOnData((result) {
 
     })

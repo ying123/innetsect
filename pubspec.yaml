@@ -67,7 +67,8 @@ dependencies:
   #转拼音
   lpinyin: ^1.0.7
   #微信支付
-  fluwx: ^1.1.3
+#  fluwx:fluwx ^1.1.3
+  sy_flutter_wechat: ^0.2.2
 
 dev_dependencies:
   flutter_test:

@@ -8,6 +8,8 @@ import 'package:innetsect/view/mall/order/order_pay_result_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:provide/provide.dart';
+//import 'package:fluwx/fluwx.dart' as fluwx;
+import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 
 class OrderPayPage extends PageProvideNode{
 
@@ -81,6 +83,8 @@ class _OrderPayContentState extends State<OrderPayContent> {
                 color: AppConfig.fontBackColor,
                 textColor: Colors.white,
                 onPressed: (){
+                  // 默认支付宝支付
+                  widget._provide.defaultPayMode();
                   Navigator.pushReplacement(context, MaterialPageRoute(
                     builder: (context){
                       return OrderDetailPage();
@@ -103,25 +107,51 @@ class _OrderPayContentState extends State<OrderPayContent> {
                       ///加载数据
                       print('listen data->$item');
                       if(item.data!=null){
-                        PayUtils().aliPay(item.data['orderString']).then((result){
-                          if(result['resultStatus']=="9000"){
-                            widget._provide.resultStatus = true;
-                            // 支付成功
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                                builder: (context){
-                                  return OrderPayResultPage();
-                                }
-                            ));
-                          }else{
-                            // 支付异常
-                            widget._provide.resultStatus = false;
-                            Navigator.pushReplacement(context, MaterialPageRoute(
-                                builder: (context){
-                                  return OrderPayResultPage();
-                                }
-                            ));
-                          }
-                        });
+                        if(widget._provide.payMode==1){
+                          // 微信支付，注册
+                          SyFlutterWechat.register(item.data['appid']);
+                          // package,orderID,appid,sign,partnerid,prepayid,noncestr,timestamp
+                          PayUtils().weChatPay(item.data).then((result){
+                            if(result.index==0){
+                              widget._provide.resultStatus = true;
+                              // 支付成功
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                  builder: (context){
+                                    return OrderPayResultPage();
+                                  }
+                              ));
+                            }else{
+                              // 支付异常
+                              widget._provide.resultStatus = false;
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                  builder: (context){
+                                    return OrderPayResultPage();
+                                  }
+                              ));
+                            }
+                          });
+                        }else if(widget._provide.payMode==2){
+                          //支付宝支付
+                          PayUtils().aliPay(item.data['orderString']).then((result){
+                            if(result['resultStatus']=="9000"){
+                              widget._provide.resultStatus = true;
+                              // 支付成功
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                  builder: (context){
+                                    return OrderPayResultPage();
+                                  }
+                              ));
+                            }else{
+                              // 支付异常
+                              widget._provide.resultStatus = false;
+                              Navigator.pushReplacement(context, MaterialPageRoute(
+                                  builder: (context){
+                                    return OrderPayResultPage();
+                                  }
+                              ));
+                            }
+                          });
+                        }
                       }
                     }, onError: (e) {});
 
