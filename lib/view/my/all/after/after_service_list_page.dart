@@ -51,77 +51,73 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
   @override
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
-    return Provide<AfterServiceProvide>(
-      builder: (context,Widget widget,AfterServiceProvide provide){
-        return ListWidgetPage(
-          controller: _easyRefreshController,
-          onRefresh: () async{
-            provide.clearList();
-            pageNo = 1;
-            await this._loadData(pageNo: pageNo);
-          },
-          onLoad: () async{
-            await this._loadData(pageNo: ++pageNo);
-          },
-          child: <Widget>[
-            // 数据内容
-            SliverList(
-                delegate: SliverChildListDelegate(
-                    provide.list.length>0? provide.list.map((item){
-                      String orderNoName = item is AfterOrderModel?"售后单号: ${item.rmaNo}":"订单号: ${item.orderNo}";
-                      String status = CommonUtil.afterStatusName(item.status);
-                      if(item.syncStatus>=3&&item.status==40){
-                        status = "已发出换货";
-                      }else if(item.syncStatus>=3&&item.status==50){
-                        status = "换货已完成";
-                      }
-                      return new Container(
-                        width: double.infinity,
-                        color: Colors.white,
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.only(bottom: 5),
-                        child: GestureDetector(
-                          onTap: () async {
-                            if(item is AfterOrderModel){
-                              // 售后详情请求
-                              _loadAfterDetail(item.rmaID);
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context){
-                                    return AfterDetailPage();
-                                  }
-                              ));
-                            }
-                          },
-                          child: new Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              // 订单号
-                              new Container(
-                                width: double.infinity,
-                                alignment: Alignment.centerLeft,
-                                child:item is AfterOrderModel?
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    new Text(orderNoName),
-                                    new Text(status,style: TextStyle(color: AppConfig.blueBtnColor),)
-                                  ],
-                                ): new Text(orderNoName),
-                              ),
-                              // 商品展示
-                              _commodityContent(item),
-                              // 底部操作按钮
-                              item is AfterOrderModel?_afterBottom(item):_bottomConditionBtn(item)
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList():CustomsWidget().noDataWidget()
-                )
-            )
-          ],
-        );
+    return ListWidgetPage(
+      controller: _easyRefreshController,
+      onRefresh: () async{
+        _afterServiceProvide.clearList();
+        pageNo = 1;
+        await this._loadData(pageNo: pageNo);
       },
+      onLoad: () async{
+        await this._loadData(pageNo: ++pageNo);
+      },
+      child: <Widget>[
+        // 数据内容
+        SliverList(
+            delegate: SliverChildListDelegate(
+                _afterServiceProvide.list.length>0? _afterServiceProvide.list.map((item){
+                  String orderNoName = item is AfterOrderModel?"售后单号: ${item.rmaNo}":"订单号: ${item.orderNo}";
+                  String status = CommonUtil.afterStatusName(item.status);
+                  if(item.syncStatus>=3&&item.status==40){
+                    status = "已发出换货";
+                  }else if(item.syncStatus>=3&&item.status==50){
+                    status = "换货已完成";
+                  }
+                  return new Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.only(bottom: 5),
+                    child: GestureDetector(
+                      onTap: () async {
+                        if(item is AfterOrderModel){
+                          // 售后详情请求
+                          _loadAfterDetail(item.rmaID);
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context){
+                                return AfterDetailPage();
+                              }
+                          ));
+                        }
+                      },
+                      child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          // 订单号
+                          new Container(
+                            width: double.infinity,
+                            alignment: Alignment.centerLeft,
+                            child:item is AfterOrderModel?
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                new Text(orderNoName),
+                                new Text(status,style: TextStyle(color: AppConfig.blueBtnColor),)
+                              ],
+                            ): new Text(orderNoName),
+                          ),
+                          // 商品展示
+                          _commodityContent(item),
+                          // 底部操作按钮
+                          item is AfterOrderModel?_afterBottom(item):_bottomConditionBtn(item)
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList():CustomsWidget().noDataWidget()
+            )
+        )
+      ],
     );
   }
   @override
@@ -408,7 +404,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
       ///加载数据
       print('listen data->$item');
       if(item!=null&&item.data!=null){
-        Future.delayed(Duration(milliseconds: 200)).then((e){
+        setState(() {
           if(idx==0){
             _afterServiceProvide.setList(OrderDetailModelList.fromJson(item.data).list);
           }else{

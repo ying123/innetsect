@@ -263,155 +263,156 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
   }
 
   /// 申请类型
-  Provide<AfterServiceProvide> _applyType(){
+  Widget _applyType(){
     /**
      *   退换策略,0：此商品不支持退换货,>0申请售后，1.退货，2.换货,3.可退换
      *   int rmaPolicy;
      */
-    return Provide<AfterServiceProvide>(
-      builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+    return Container(
+      width: ScreenAdapter.width(750),
+      height: ScreenAdapter.height(80),
+      padding:EdgeInsets.only(left: 20),
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            "售后类型",
+            style: TextStyle(
+                color: Color.fromRGBO(95, 95, 95, 1.0),
+                fontSize: ScreenAdapter.size(28),
+                fontWeight: FontWeight.w500
+            ),
+          ),
+          Expanded(
+            child: _applyTypeAction(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 退换货选择
+  Widget _applyTypeAction(){
+    /**
+     *   退换策略,0：此商品不支持退换货,>0申请售后，1.退货，2.换货,3.可退换
+     *   int rmaPolicy;
+     */
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: _afterServiceProvide.applyTypeList.asMap().keys.map((keys){
         return Container(
-          width: ScreenAdapter.width(750),
-          height: ScreenAdapter.height(80),
-          padding:EdgeInsets.only(left: 20),
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          width: ScreenAdapter.width(120),
+          margin: EdgeInsets.only(right: 20),
+          child: new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                "售后类型",
+              Expanded(
+                child: Container(
+                  child: Provide<AfterServiceProvide>(
+                    builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+                      return provide.applyTypeList[keys]['isSelected']? new Icon(
+                        Icons.check_circle,
+                        size: 20.0,
+                        color: AppConfig.fontBackColor,
+                      ) : new Icon(Icons.panorama_fish_eye,
+                        size: 20.0,
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Text(_afterServiceProvide.applyTypeList[keys]['title'],
+                    style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                ),
+              )
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  /// 申请原因,_applyCause
+  Widget _applyCause(){
+    return Container(
+      width: double.infinity,
+      color: Colors.white,
+      height: ScreenAdapter.height(80),
+      padding: EdgeInsets.only(left: 20,right: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Center(
+            child: Text(
+              "申请原因",
+              style: TextStyle(
+                  color: Color.fromRGBO(95, 95, 95, 1.0),
+                  fontSize: ScreenAdapter.size(28),
+                  fontWeight: FontWeight.w500
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              alignment: Alignment.centerRight,
+              child: Provide<AfterServiceProvide>(
+                  builder: (BuildContext context,Widget widget,AfterServiceProvide provide) {
+                    String reasonName = "";
+                    if(provide.afterOrderModel.reasonName != null){
+                      reasonName=provide.afterOrderModel.reasonName;
+                    }
+                    return new Text(reasonName,
+                      style: TextStyle(color: Color.fromRGBO(95, 95, 95, 1.0),
+                          fontSize: ScreenAdapter.size(24)),);
+              })
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 备注
+  Widget _remarkWidget(){
+      return Container(
+        width: double.infinity,
+        color: Colors.white,
+        height: ScreenAdapter.height(80),
+        padding: EdgeInsets.only(left: 20,right: 20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Center(
+              child: Text(
+                "备注",
                 style: TextStyle(
                     color: Color.fromRGBO(95, 95, 95, 1.0),
                     fontSize: ScreenAdapter.size(28),
                     fontWeight: FontWeight.w500
                 ),
               ),
-              Expanded(
-                child: _applyTypeAction(),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  /// 退换货选择
-  Provide<AfterServiceProvide> _applyTypeAction(){
-    /**
-     *   退换策略,0：此商品不支持退换货,>0申请售后，1.退货，2.换货,3.可退换
-     *   int rmaPolicy;
-     */
-    return Provide<AfterServiceProvide>(
-        builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-          return Container(
-            width: double.infinity,
-            height: ScreenAdapter.height(80),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: provide.applyTypeList.asMap().keys.map((keys){
-                return Container(
-                  width: ScreenAdapter.width(100),
-                  margin: EdgeInsets.only(right: 20),
-                  child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      new Container(
-                        child: provide.applyTypeList[keys]['isSelected']? new Icon(
-                          Icons.check_circle,
-                          size: 20.0,
-                          color: AppConfig.fontBackColor,
-                        ) : new Icon(Icons.panorama_fish_eye,
-                          size: 20.0,
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Text(provide.applyTypeList[keys]['title'],
-                          style: TextStyle(fontSize: ScreenAdapter.size(24)),),
-                      )
-                    ],
-                  ),
-                );
-              }).toList(),
             ),
-          );
-        });
-  }
-
-  /// 申请原因,_applyCause
-  Provide<AfterServiceProvide> _applyCause(){
-    return Provide<AfterServiceProvide>(
-        builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-          String reasonName = provide.afterOrderModel.reasonName!=null?
-            provide.afterOrderModel.reasonName:"";
-          return Container(
-            width: double.infinity,
-            color: Colors.white,
-            height: ScreenAdapter.height(80),
-            padding: EdgeInsets.only(left: 20,right: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Center(
-                  child: Text(
-                    "申请原因",
-                    style: TextStyle(
-                        color: Color.fromRGBO(95, 95, 95, 1.0),
-                        fontSize: ScreenAdapter.size(28),
-                        fontWeight: FontWeight.w500
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: new Text(reasonName,
-                      style: TextStyle(color: Color.fromRGBO(95, 95, 95, 1.0),
-                          fontSize: ScreenAdapter.size(24)),),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  /// 备注
-  Provide<AfterServiceProvide> _remarkWidget(){
-    return Provide<AfterServiceProvide>(
-        builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-          return Container(
-            width: double.infinity,
-            color: Colors.white,
-            height: ScreenAdapter.height(80),
-            padding: EdgeInsets.only(left: 20,right: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Center(
-                  child: Text(
-                    "备注",
-                    style: TextStyle(
-                        color: Color.fromRGBO(95, 95, 95, 1.0),
-                        fontSize: ScreenAdapter.size(28),
-                        fontWeight: FontWeight.w500
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: new Text(provide.afterOrderModel.reason!=null?provide.afterOrderModel.reason:'',softWrap: true,
+            Expanded(
+              child: Container(
+                alignment: Alignment.centerRight,
+                child: Provide<AfterServiceProvide>(
+                  builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+                    return new Text(provide.afterOrderModel.reason.isEmpty
+                        ?provide.afterOrderModel.reason:'',softWrap: true,
                       maxLines: 10,
                       style: TextStyle(color: Color.fromRGBO(95, 95, 95, 1.0),
-                          fontSize: ScreenAdapter.size(24)),),
-                  ),
-                ),
-              ],
+                          fontSize: ScreenAdapter.size(24)),);
+                })
+              ),
             ),
-          );
-        });
+          ],
+        ),
+      );
   }
 
   /// 退款方式widget
@@ -515,43 +516,42 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
   }
 
   /// 地址栏
-  Provide<AfterServiceProvide> _addressWidget(){
-    return Provide<AfterServiceProvide>(
-      builder: (BuildContext context,Widget widget, AfterServiceProvide provide){
-        AfterOrderModel model = provide.afterOrderModel;
-        return new Container(
-          width: double.infinity,
-          color: Colors.white,
-          padding: EdgeInsets.only(top: 10,bottom: 10),
-          child: new Column(
-            children: <Widget>[
-              new Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                child: this.getAddress(model),
-              ),
-              getAddressDetailWidget(shipTo: model.exShipTo)
-            ],
+  Widget _addressWidget(){
+    return new Container(
+      width: double.infinity,
+      color: Colors.white,
+      padding: EdgeInsets.only(top: 10,bottom: 10),
+      child: new Column(
+        children: <Widget>[
+          new Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(10),
+            child: this.getAddress(),
           ),
-        );
-      },
+          getAddressDetailWidget()
+        ],
+      ),
     );
   }
 
-  Widget getAddress(AfterOrderModel model){
-    return this.getAddressWidget(name: model.exReceipient,tel: model.exTel);
+  Widget getAddress(){
+    return this.getAddressWidget();
   }
 
-  Widget getAddressDetailWidget({String shipTo}){
+  Widget getAddressDetailWidget(){
     return new Container(
       width: double.infinity,
       padding: EdgeInsets.only(left: 40,bottom: 10),
-      child:  new Text(shipTo,
-        style: TextStyle(color: Colors.black54,fontSize: ScreenAdapter.size(22)),),
+      child:  Provide<AfterServiceProvide>(
+          builder: (BuildContext context,Widget widget, AfterServiceProvide provide) {
+            AfterOrderModel model = provide.afterOrderModel;
+            return new Text(model.exShipTo==null?"":model.exShipTo,
+              style: TextStyle(color: Colors.black54,fontSize: ScreenAdapter.size(22)),);
+      }),
     );
   }
 
-  Widget getAddressWidget({String name,String tel}){
+  Widget getAddressWidget(){
     return new Column(
       children: <Widget>[
         new Container(
@@ -565,8 +565,16 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
                     child: new Row(
                       children: <Widget>[
                         new Image.asset("assets/images/mall/location.png",fit: BoxFit.fill,width: ScreenAdapter.width(25),),
-                        new Padding(padding: EdgeInsets.only(left: 5),
-                          child: new Text("$name  $tel ",maxLines: 1,style: TextStyle(fontSize: ScreenAdapter.size(24)),),)
+                        Provide<AfterServiceProvide>(
+                        builder: (BuildContext context,Widget widget, AfterServiceProvide provide) {
+                          AfterOrderModel model = provide.afterOrderModel;
+                          if(model.exReceipient!=null&&model.exTel!=null){
+                            return new Padding(padding: EdgeInsets.only(left: 5),
+                              child: new Text("${model.exReceipient}  ${model.exTel} ",maxLines: 1,style: TextStyle(fontSize: ScreenAdapter.size(24)),),);
+                          } else {
+                            return Container(height: 0.0,width: 0.0,);
+                          }
+                        })
                       ],
                     ),
                   )

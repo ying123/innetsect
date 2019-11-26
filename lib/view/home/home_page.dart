@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
-import 'package:innetsect/data/exhibition/exhibitions_model.dart';
 import 'package:innetsect/data/exhibition/halls_model.dart';
 import 'package:innetsect/data/exhibition/home_banners_model.dart';
 import 'package:innetsect/data/exhibition/home_portlets_model.dart';
@@ -16,7 +15,6 @@ import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
-//import 'package:barcode_scan/barcode_scan.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
 class HomePage extends PageProvideNode {

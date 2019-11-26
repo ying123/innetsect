@@ -58,53 +58,49 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         child: Center(
-          child: Provide<AfterServiceProvide>(
-            builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-              return Column(
-                children: <Widget>[
-                  // 订单信息
-                  _orderDetail(),
-                  // 申请数量
-                  _applyCount(),
-                  // 申请类型
-                  Container(
-                    width: double.infinity,
-                    height: ScreenAdapter.height(8),
-                    color: Color(0xFFFFFF),
-                  ),
-                  _applyType(),
-                  // 选择规格，如果是换货
-                  provide.applyTypeList[1]['isSelected']?Container(
-                    width: double.infinity,
-                    height: ScreenAdapter.height(8),
-                    color: Color(0xFFFFFF),
-                  ):Container(),
-                  provide.applyTypeList[1]['isSelected']?_orderDetailWidget():Container(),
-                  // 申请原因
-                  Container(
-                    width: double.infinity,
-                    height: ScreenAdapter.height(8),
-                    color: Color(0xFFFFFF),
-                  ),
-                  _applyCause(),
-                  // 退款方式
-                  provide.applyTypeList[1]['isSelected']?Container(
-                    width: double.infinity,
-                    height: ScreenAdapter.height(8),
-                    color: Color(0xFFFFFF),
-                  ):Container(),
-                  provide.applyTypeList[1]['isSelected']?_payRefundWidget():Container(),
-                  // 地址
-                  provide.applyTypeList[1]['isSelected']?Container(
-                    width: double.infinity,
-                    height: ScreenAdapter.height(8),
-                    color: Color(0xFFFFFF),
-                  ):Container(),
-                  provide.applyTypeList[1]['isSelected']?_addressWidget():Container(),
-                ],
-              );
-            },
-          ),
+          child:  Column(
+            children: <Widget>[
+              // 订单信息
+              _orderDetail(),
+              // 申请数量
+              _applyCount(),
+              // 申请类型
+              Container(
+                width: double.infinity,
+                height: ScreenAdapter.height(8),
+                color: Color(0xFFFFFF),
+              ),
+              _applyType(),
+              // 选择规格，如果是换货
+              _afterServiceProvide.applyTypeList[1]['isSelected']?Container(
+                width: double.infinity,
+                height: ScreenAdapter.height(8),
+                color: Color(0xFFFFFF),
+              ):Container(),
+              _afterServiceProvide.applyTypeList[1]['isSelected']?_orderDetailWidget():Container(),
+              // 申请原因
+              Container(
+                width: double.infinity,
+                height: ScreenAdapter.height(8),
+                color: Color(0xFFFFFF),
+              ),
+              _applyCause(),
+              // 退款方式
+              _afterServiceProvide.applyTypeList[1]['isSelected']?Container(
+                width: double.infinity,
+                height: ScreenAdapter.height(8),
+                color: Color(0xFFFFFF),
+              ):Container(),
+              _afterServiceProvide.applyTypeList[1]['isSelected']?_payRefundWidget():Container(),
+              // 地址
+              _afterServiceProvide.applyTypeList[1]['isSelected']?Container(
+                width: double.infinity,
+                height: ScreenAdapter.height(8),
+                color: Color(0xFFFFFF),
+              ):Container(),
+              _afterServiceProvide.applyTypeList[1]['isSelected']?_addressWidget():Container(),
+            ],
+          )
         ),
       ),
       bottomSheet: Provide<AfterServiceProvide>(
@@ -421,60 +417,65 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
   }
 
   /// 如果是换货，选择规格
-  Provide<AfterServiceProvide> _orderDetailWidget(){
-    return Provide<AfterServiceProvide>(
-        builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-          String skuName="";
-          if(provide.skusModel!=null){
-            List list = CommonUtil.skuNameSplit(provide.skusModel.skuName);
-            skuName = list[1];
-          }
-          return Container(
-            width: double.infinity,
-            color: Colors.white,
-            child: InkWell(
-              onTap: (){
-                // 商品详情请求
-                _commodityDetailProvide.prodId = provide.orderDetailModel.prodID;
-                _loadDetail();
-                //选择规格请求
-                CommodityModalBottom.showBottomModal(context:context);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 20,top: 10,bottom: 10),
-                    child: Text(
+  Widget _orderDetailWidget(){
+      return Container(
+        width: double.infinity,
+        color: Colors.white,
+        child: InkWell(
+          onTap: (){
+            // 商品详情请求
+            _commodityDetailProvide.prodId = _afterServiceProvide.orderDetailModel.prodID;
+            _loadDetail();
+            //选择规格请求
+            CommodityModalBottom.showBottomModal(context:context);
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(left: 20,top: 10,bottom: 10),
+                child: Provide<AfterServiceProvide>(
+                  builder: (BuildContext context,Widget widget,AfterServiceProvide provide) {
+                    return Text(
                       provide.skusModel!=null?"已选":"请选择",
                       style: TextStyle(
                           color: Color.fromRGBO(95, 95, 95, 1.0),
                           fontSize: ScreenAdapter.size(28),
                           fontWeight: FontWeight.w500
                       ),
-                    ),
-                  ),
-                  provide.skusModel!=null?
-                      Expanded(
-                        flex: 8,
-                        child: Container(
-                          alignment: Alignment.centerRight,
-                          padding: EdgeInsets.only(right: 10),
-                          child: Text("$skuName",style: TextStyle(color:Color.fromRGBO(95, 95, 95, 1.0)),),
-                        ),
-                      ):Container(),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      padding: EdgeInsets.only(right: 10),
-                      child: Icon(Icons.chevron_right,color:Color.fromRGBO(95, 95, 95, 1.0),),
-                    ),
-                  ),
-                ],
+                    );
+                  })
               ),
-            ),
-          );
-    });
+              Provide<AfterServiceProvide>(
+                builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+                  String skuName="";
+                  if(provide.skusModel!=null){
+                    List list = CommonUtil.skuNameSplit(provide.skusModel.skuName);
+                    skuName = list[1];
+                    return Expanded(
+                      flex: 8,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.only(right: 10),
+                        child: Text(skuName,style: TextStyle(color:Color.fromRGBO(95, 95, 95, 1.0)),),
+                      ),
+                    );
+                  }else{
+                    return Container();
+                  }
+                }
+              ),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.only(right: 10),
+                  child: Icon(Icons.chevron_right,color:Color.fromRGBO(95, 95, 95, 1.0),),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
   }
 
   /// 申请原因,_applyCause

@@ -37,31 +37,27 @@ class _NoticeContentState extends State<NoticeContent> {
           widget: new Text("购买须知",style: TextStyle(fontSize: ScreenAdapter.size((30)),
               fontWeight: FontWeight.w900 ),
           )),
-      body: Provide<NoticeProvide>(
-        builder: (BuildContext context,Widget widget,NoticeProvide provide){
-          return provide.list.length>0? new Container(
-            child: Column(
-              children: provide.list.map((item){
-                return new Column(
-                  children: <Widget>[
-                    CustomsWidget().listSlider(title: item['topic'],titleFont: FontWeight.w700,
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(
+      body:  _provide.list.length>0? new Container(
+        child: Column(
+          children: _provide.list.map((item){
+            return new Column(
+              children: <Widget>[
+                CustomsWidget().listSlider(title: item['topic'],titleFont: FontWeight.w700,
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(
                           builder: (context){
                             return NoticeChildPage();
                           },
                           settings: RouteSettings(arguments: {'topic':item['topic']})
-                        ));
-                      }
-                    ),
-                    Divider(height: 3,color: Colors.grey,indent: 20,endIndent: 20,)
-                  ],
-                );
-              }).toList(),
-            ),
-          ):new Container();
-        },
-      ),
+                      ));
+                    }
+                ),
+                Divider(height: 3,color: Colors.grey,indent: 20,endIndent: 20,)
+              ],
+            );
+          }).toList(),
+        ),
+      ):new Container(),
     );
   }
   @override

@@ -24,8 +24,10 @@ class CommodityListProvide extends BaseProvide{
   }
 
   void clearList(){
-    _list.clear();
-    notifyListeners();
+    if(_list.length>0){
+      _list.clear();
+      notifyListeners();
+    }
   }
 
   /// 工厂模式
