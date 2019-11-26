@@ -165,6 +165,22 @@ class _LoginContentPageState extends State<LoginContentPage> {
   Provide<LoginProvide> _setupItem(int index) {
     return Provide<LoginProvide>(
       builder: (BuildContext context, Widget child, LoginProvide provide) {
+        String userName="";
+        String pwd="";
+        if(provide.userCode!=null||provide.vaildCode!=null){
+          if(index==0){
+            userName = provide.userCode;
+          }else{
+            userName = provide.vaildCode;
+          }
+        }
+        if(provide.userCode!=null||provide.password!=null){
+          if(index==0){
+            pwd = provide.userCode;
+          }else{
+            pwd = provide.password;
+          }
+        }
         return Container(
           margin: EdgeInsets.fromLTRB(
               ScreenAdapter.width(70), 0, ScreenAdapter.width(70), 0),
@@ -179,6 +195,14 @@ class _LoginContentPageState extends State<LoginContentPage> {
                         Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: new TextField(
+                            controller: TextEditingController.fromValue(
+                                TextEditingValue(
+                                text: userName==null?'':userName,
+                                selection: TextSelection.fromPosition(TextPosition(
+                                    affinity: TextAffinity.downstream,
+                                    offset: userName.toString().length
+                                ))
+                            )),
                             enabled: true,
                             style: new TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -207,6 +231,14 @@ class _LoginContentPageState extends State<LoginContentPage> {
                             hintStyle: new TextStyle(color: Colors.grey),
                             focusedBorder: InputBorder.none,
                           ),
+                          controller: TextEditingController.fromValue(
+                              TextEditingValue(
+                              text: pwd==null?'':pwd,
+                              selection: TextSelection.fromPosition(TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset: pwd.toString().length
+                              ))
+                          )),
                           onChanged: (str) {
                             if (index == 0) {
                               provide.userCode = str;
@@ -232,7 +264,11 @@ class _LoginContentPageState extends State<LoginContentPage> {
                                       ? Colors.black
                                       : Colors.grey.withOpacity(0.8),
                                   onPressed: () {
-                                    _buttonClickListen(provide);
+                                    if(provide.userCode==null){
+                                      CustomsWidget().showToast(title: "请输入手机号");
+                                    }else{
+                                      _buttonClickListen(provide);
+                                    }
                                   },
                                   child: Text(
                                     buttonText,
@@ -257,10 +293,10 @@ class _LoginContentPageState extends State<LoginContentPage> {
     );
   }
 
-  void  _buttonClickListen(LoginProvide provide) {
+  void  _buttonClickListen(LoginProvide provide) async {
     if (isButtonEnable) {
-      provide.getVaildCode().then((item){
-        if(item){
+      await provide.getVaildCode().then((item){
+        if(item.data){
           CustomsWidget().showToast(title: "验证码已发送");
         }
       });
@@ -304,9 +340,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
             padding: EdgeInsets.only(right: 60),
             child: InkWell(
                 onTap: (){
-                  setState(() {
-                    isPhone = !isPhone;
-                  });
+                    setState(() {
+                      isPhone = !isPhone;
+                    });
                 },
                 child: Text(
                   !isPhone?'验证码登录':'密码登录',
@@ -326,44 +362,42 @@ class _LoginContentPageState extends State<LoginContentPage> {
         return InkWell(
           onTap: (){
             // 登录
-            if(provide.userCode==null){
+            String pwd = '';
+            if(provide.userCode.isEmpty){
               CustomsWidget().showToast(title: "请输入账号");
-              return;
-            }
-            if(isPhone && provide.vaildCode==null){
+            }else if(isPhone && provide.vaildCode.toString().isEmpty){
               CustomsWidget().showToast(title: "请输入验证码");
-              return;
-            }
-            if(!isPhone && provide.password==null){
+            }else if(!isPhone && provide.password.toString().isEmpty){
               CustomsWidget().showToast(title: "请输入密码");
-              return;
-            }
-            provide.loginData()
-                .doOnListen(() {
-              print('doOnListen');
-            })
-                .doOnCancel(() {})
-                .listen((item) {
-              print('listen data->$item');
-              ///加载数据
-              if(item!=null&&item.data!=null){
-                /// 获取用户信息
-                provide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
-                  if(userItem.data!=null){
-                    provide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
-                  }
-                },onError: (e){});
-                UserTools().setUserData(item.data);
-                Navigator.pop(context);
-                if(pages == 'orderDetail'){
-                  Navigator.pop(context);
-                }
+            }else{
+              if(isPhone&&provide.vaildCode.toString().isNotEmpty){
+                pwd = provide.vaildCode;
               }else{
-                return;
+                pwd = provide.password;
               }
-
-//      _provide
-            }, onError: (e) {});
+              provide.loginData(pwd: pwd)
+                  .doOnListen(() {
+                print('doOnListen');
+              })
+                  .doOnCancel(() {})
+                  .listen((item) {
+                print('listen data->$item');
+                ///加载数据
+                if(item!=null&&item.data!=null){
+                  /// 获取用户信息
+                  provide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
+                    if(userItem.data!=null){
+                      provide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
+                    }
+                  },onError: (e){});
+                  UserTools().setUserData(item.data);
+                  Navigator.pop(context);
+                  if(pages == 'orderDetail'){
+                    Navigator.pop(context);
+                  }
+                }
+              }, onError: (e) {});
+            }
           },
           child: Container(
             height: ScreenAdapter.height(95),

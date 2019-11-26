@@ -5,24 +5,28 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/settings/protocol_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/registered/registered_provide.dart';
 import 'package:provide/provide.dart';
 
 class RegisteredPage extends PageProvideNode {
   final RegisteredProvide _provide = RegisteredProvide();
+  final LoginProvide _loginProvide = LoginProvide.instance;
   RegisteredPage() {
     mProviders.provide(Provider<RegisteredProvide>.value(_provide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return RegidterContentPage(_provide);
+    return RegidterContentPage(_provide,_loginProvide);
   }
 }
 
 class RegidterContentPage extends StatefulWidget {
   final RegisteredProvide provide;
-  RegidterContentPage(this.provide);
+  final LoginProvide _loginProvide;
+  RegidterContentPage(this.provide,this._loginProvide);
   @override
   _RegidterContentPageState createState() => _RegidterContentPageState();
 }
@@ -30,6 +34,7 @@ class RegidterContentPage extends StatefulWidget {
 class _RegidterContentPageState extends State<RegidterContentPage> {
   ///文本编辑控制器
   TextEditingController mController = TextEditingController();
+  LoginProvide _loginProvide;
 
   ///倒计时定时器
   Timer timer;
@@ -45,6 +50,7 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _loginProvide ??=widget._loginProvide;
   }
 
   @override
@@ -131,6 +137,14 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                         onChanged: (str) {
                           provide.userCode = str;
                         },
+                        controller: TextEditingController.fromValue(
+                          TextEditingValue(
+                              text: provide.userCode==null?'':provide.userCode,
+                              selection: TextSelection.fromPosition(TextPosition(
+                                  affinity: TextAffinity.downstream,
+                                  offset: provide.userCode.toString().length
+                              ))
+                          ))
                       ),
                     )
                   ],
@@ -189,7 +203,11 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                         ? Colors.black
                         : Colors.grey.withOpacity(0.8),
                     onPressed: () {
-                      _buttonClickListen();
+                      if(provide.userCode.isEmpty){
+                        CustomsWidget().showToast(title: "请输入账号");
+                      }else{
+                        _buttonClickListen();
+                      }
                     },
                     child: Text(
                       provide.buttonText,
@@ -214,17 +232,15 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
               print('注册按钮被点击');
               if(provide.userCode==null){
                 CustomsWidget().showToast(title: "请输入账号");
-                return;
-              }
+              }else
               if(!provide.checkSelected){
                 CustomsWidget().showToast(title: "是否同意注册并遵守服务条款");
-                return;
-              }
+              }else
               if(provide.vaildCode==null){
                 CustomsWidget().showToast(title: "请输入验证码");
-                return;
+              }else{
+                _onRegistered();
               }
-              _onRegistered();
             },
             child: Container(
               width: ScreenAdapter.width(705),
@@ -246,30 +262,40 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
 
   _buttonClickListen() {
     if (widget.provide.isButtonEnable) {
-      print('获取验证码');
-
+      /// 验证手机号是否注册过
       widget.provide.registeredPhone().doOnListen(() {
         print('doOnListen');
       }).doOnCancel(() {}).listen((item) {
         ///加载数据
         print('listen data->$item');
-        if(item!=null&&item.data!=null){
-          if(item.data['passed']){
-            CustomsWidget().showToast(title: "验证码已发送");
-          }else{
+        if (item != null && item.data != null) {
+          if (item.data['passed']) {
+            _sendValidCode();
+
+            setState(() {
+              widget.provide.isButtonEnable = false;
+            });
+            _initTimer();
+          } else {
             CustomsWidget().showToast(title: item.data['error']);
           }
         }
-      }, onError: (e) {});
-
-      setState(() {
-        widget.provide.isButtonEnable = false;
       });
-      _initTimer();
+
       return null;
     } else {
       return null;
     }
+  }
+
+  /// 发送验证码
+  void _sendValidCode() async{
+    _loginProvide.userCode = widget.provide.userCode;
+    await _loginProvide.getVaildCode().then((item){
+      if(item!=null&&item.data){
+        CustomsWidget().showToast(title: "验证码已发送");
+      }
+    });
   }
 
   void _initTimer() {
@@ -330,7 +356,7 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
 
   /// 注册请求
   void _onRegistered(){
-    widget.provide.onRegistered().doOnListen(() {
+    widget.provide.onRegistered(widget.provide.vaildCode).doOnListen(() {
       print('doOnListen');
     }).doOnCancel(() {}).listen((item) {
       ///加载数据

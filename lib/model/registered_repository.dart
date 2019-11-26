@@ -18,8 +18,12 @@ class RegisteredService{
   /// *referer 推荐人
   Observable<BaseResponse> onRegistered(String vaildCode){
     UserTools().clearUserInfo();
-    var url = '/api/accounts/register?referer=admin&vcode=$vaildCode';
-    var response = post(url);
+    var url = '/api/accounts/register';
+    var json={
+      'referer':'admin',
+      'vcode':vaildCode
+    };
+    var response = post(url,body: json);
     return response;
   }
 }

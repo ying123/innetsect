@@ -96,9 +96,7 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
                           )
                         ],
                       );
-                    }): new Padding(padding: EdgeInsets.all(20),
-                        child: new Text("暂无数据"),
-                      ),
+                    }): CustomsWidget().noDataWidget(),
               )
           )
         ],

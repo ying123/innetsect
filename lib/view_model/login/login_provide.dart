@@ -97,9 +97,9 @@ class LoginProvide extends BaseProvide {
   final LoginRepo _repo = LoginRepo();
 
   /// 详情数据
-  Observable loginData() {
+  Observable loginData({String pwd}) {
 
-    return _repo.loginData(_userCode, _password)
+    return _repo.loginData(_userCode, pwd)
         .doOnData((result) {
 
     })

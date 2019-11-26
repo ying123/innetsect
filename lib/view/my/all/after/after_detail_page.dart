@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/order/after_order_model.dart';
+import 'package:innetsect/data/order/logistice_model.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/my/all/after/after_logistics_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/my_order/after_service_provide.dart';
 import 'package:provide/provide.dart';
@@ -400,7 +402,7 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
                 Expanded(
                   child: Container(
                     alignment: Alignment.centerRight,
-                    child: new Text(provide.afterOrderModel.reason,softWrap: true,
+                    child: new Text(provide.afterOrderModel.reason!=null?provide.afterOrderModel.reason:'',softWrap: true,
                       maxLines: 10,
                       style: TextStyle(color: Color.fromRGBO(95, 95, 95, 1.0),
                           fontSize: ScreenAdapter.size(24)),),
@@ -453,9 +455,20 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
 
   /// 查看物流
   Widget _logisticsWidget(){
-    return GestureDetector(
-      onTap: (){
+    return InkWell(
+      onTap: () async {
         // 跳转物流
+        // 退货物流请求
+        if(_afterServiceProvide.afterOrderModel.waybillNo!=null){
+          await _getShipperDetail();
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context){
+                return AfterLogisticsPage();
+              }
+          ));
+        }else{
+          CustomsWidget().showToast(title: "暂无物流信息");
+        }
       },
       child: Row(
         children: <Widget>[
@@ -483,6 +496,22 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
         ],
       ),
     );
+  }
+
+  /// 退货物流请求
+  _getShipperDetail(){
+    _afterServiceProvide.getShipperDetail().doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+        // 设置物流数据
+        _afterServiceProvide.logisticeModelList = LogisticeModelList.fromJson(item.data['data']).list;
+      }
+    }, onError: (e) {});
   }
 
   /// 地址栏

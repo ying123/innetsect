@@ -117,17 +117,19 @@ class _LogisticsContentState extends State<LogisticsContent> {
   /// 订单物流
   _loadData(){
     OrderDetailModel model = _detailProvide.orderDetailModel;
-    _provide.getLogisticsList(orderID: model.orderID,shipperCode: model.shipperCode,
-    waybillNo: model.waybillNo,phone:model.tel).doOnListen(() {
-      print('doOnListen');
-    }).doOnCancel(() {}).listen((items) {
-      ///加载数据
-      print('listen data->$items');
-      if(items!=null&&items.data!=null){
-        setState(() {
-          list = items.data['data'];
-        });
-      }
-    }, onError: (e) {});
+    if(model.shipperCode!=null||model.waybillNo!=null){
+      _provide.getLogisticsList(orderID: model.orderID,shipperCode: model.shipperCode,
+          waybillNo: model.waybillNo,phone:model.tel).doOnListen(() {
+        print('doOnListen');
+      }).doOnCancel(() {}).listen((items) {
+        ///加载数据
+        print('listen data->$items');
+        if(items!=null&&items.data!=null){
+          setState(() {
+            list = items.data['data'];
+          });
+        }
+      }, onError: (e) {});
+    }
   }
 }

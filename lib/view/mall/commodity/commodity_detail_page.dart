@@ -61,18 +61,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           widget: Container(),
           width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-120)
       ),
-      body: new Stack(
-        children: <Widget>[
-          _contentWidget(),
-//          _tabBarView(),
-          new Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: _bottomBar(context)
-          )
-        ],
-      )
+      body: _contentWidget(),
+      bottomSheet: _bottomBar(context),
     );
   }
 
@@ -218,7 +208,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
               ),),
               new Padding(padding: EdgeInsets.only(top: 10),
                 child: new Container(
-                  child: CustomsWidget().priceTitle(price: models!=null?models.salesPriceRange:""),
+                  child: CustomsWidget().priceTitle(price: models!=null?models.salesPrice.toString():""),
                 ),
               )
             ],
@@ -357,67 +347,76 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   /// 底部：客服、购物车、加入购物车、立即购买
   Widget _bottomBar(BuildContext context){
     return new Container(
+      width: double.infinity,
+      height: ScreenAdapter.height(100),
       color: Colors.white,
       padding: EdgeInsets.only(left: 12,right: 12,top: 10,bottom: 12),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"),
-//          new Padding(padding: EdgeInsets.only(left: 12),
-//            child: _iconAndTextMerge(title:"心愿单",icon: "assets/images/mall/wish_icon.png")
-//          ),
-          new Padding(padding: EdgeInsets.only(left: 24),
-            child: InkWell(
-              onTap: (){
-                // 跳转到购物车
-                // 如果需要返回，设置isBack为true,
-                // 设置settings为传参
-                // 默认为false,不返回
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context){
-                    return CommodityCartPage();
-                  },settings: RouteSettings(arguments: {'isBack': true,'page':'mall'})
-                ));
-              },
-              child: _iconAndTextMerge(title:"购物车",icon: "assets/images/mall/cart_icon.png"),
-            )
+          Expanded(
+            flex: 1,
+            child: _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"),
           ),
-          new Padding(padding: EdgeInsets.only(left: 17),
-            child: new InkWell(
-              onTap: (){
-                _provide.setInitData();
-                _cartProvide.setInitCount();
-                _provide.isBuy = false;
-                CommodityModalBottom.showBottomModal(context:context);
-              },
-              child: new Container(
-                width: ScreenAdapter.width(230),
-                height: ScreenAdapter.height(90),
-                color: Colors.black,
-                alignment: Alignment.center,
-                child: new Text("加入购物车",style: TextStyle(color: Colors.white,
-                    fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
-              )
+          Expanded(
+            flex: 1,
+            child: new Padding(padding: EdgeInsets.only(left: 10),
+                child: _iconAndTextMerge(title:"购物车",icon: "assets/images/mall/cart_icon.png",
+                onTap: (){
+                  // 跳转到购物车
+                  // 如果需要返回，设置isBack为true,
+                  // 设置settings为传参
+                  // 默认为false,不返回
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return CommodityCartPage();
+                      },settings: RouteSettings(arguments: {'isBack': true,'page':'mall'})
+                  ));
+                }),
             ),
           ),
-          new Padding(padding: EdgeInsets.only(left: 15),
-            child: InkWell(
-              onTap: (){
-                _provide.setInitData();
-                _cartProvide.setInitCount();
-                _provide.isBuy = true;
-                // 存储当前商品信息
-                CommodityModalBottom.showBottomModal(context:context);
-              },
-              child: new Container(
-                width: ScreenAdapter.width(230),
-                height: ScreenAdapter.height(90),
-                color: AppConfig.blueBtnColor,
-                alignment: Alignment.center,
-                child: new Text("立即购买",style: TextStyle(color: AppConfig.whiteBtnColor,
-                    fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+          Expanded(
+            flex: 3,
+            child: new Padding(padding: EdgeInsets.only(left: 10),
+              child: new InkWell(
+                  onTap: (){
+                    _provide.setInitData();
+                    _cartProvide.setInitCount();
+                    _provide.isBuy = false;
+                    CommodityModalBottom.showBottomModal(context:context);
+                  },
+                  child: new Container(
+                    width: ScreenAdapter.width(230),
+                    height: ScreenAdapter.height(80),
+                    color: Colors.black,
+                    alignment: Alignment.center,
+                    child: new Text("加入购物车",style: TextStyle(color: Colors.white,
+                        fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+                  )
               ),
             ),
+          ),
+          Expanded(
+            flex: 3,
+            child: new Padding(padding: EdgeInsets.only(left: 10),
+              child: InkWell(
+                onTap: (){
+                  _provide.setInitData();
+                  _cartProvide.setInitCount();
+                  _provide.isBuy = true;
+                  // 存储当前商品信息
+                  CommodityModalBottom.showBottomModal(context:context);
+                },
+                child: new Container(
+                  width: ScreenAdapter.width(230),
+                  height: ScreenAdapter.height(80),
+                  color: AppConfig.blueBtnColor,
+                  alignment: Alignment.center,
+                  child: new Text("立即购买",style: TextStyle(color: AppConfig.whiteBtnColor,
+                      fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+                ),
+              ),
+            )
           )
         ],
       ),
@@ -425,13 +424,19 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   }
 
   /// 图片和文字结合，垂直布局
-  Widget _iconAndTextMerge({title,icon}){
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Image.asset(icon,width: ScreenAdapter.width(40),height: ScreenAdapter.height(40),),
-          new Text(title)
-        ],
+  Widget _iconAndTextMerge({String title,String icon,Function() onTap}){
+    return InkWell(
+      onTap: (){
+        onTap();
+      },
+      child: new Container(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Image.asset(icon,width: ScreenAdapter.width(32),height: ScreenAdapter.height(32),fit: BoxFit.fitWidth,),
+            new Text(title,style: TextStyle(fontSize: ScreenAdapter.size(18)),)
+          ],
+        ),
       ),
     );
   }
@@ -455,9 +460,11 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   _loadHtml() async{
     await _provide.getDetailHtml().then((item){
       print(item);
-      setState(() {
-        html = item.data;
-      });
+      if(item.data!=null){
+        setState(() {
+          html = item.data;
+        });
+      }
     });
   }
 

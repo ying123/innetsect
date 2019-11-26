@@ -35,10 +35,6 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
 
   bool isSelected = false;
   AddressManagementProvide _addressManagementProvide;
-  // 手机号
-  TextEditingController _phoneText = TextEditingController();
-  // 收货人
-  TextEditingController _nameText = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -130,8 +126,6 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
   Provide<NewAddressProvide> _setupNewGoodsAddress() {
     return Provide<NewAddressProvide>(
       builder: (BuildContext context, Widget child, NewAddressProvide provide) {
-        _phoneText.text = provide.tel;
-        _nameText.text = provide.name;
         return Column(
           children: <Widget>[
             Container(
@@ -152,7 +146,13 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           width: ScreenAdapter.width(500),
                           margin: EdgeInsets.only(left: 20),
                           child: TextField(
-                            controller: _nameText,
+                            controller: TextEditingController.fromValue(TextEditingValue(
+                              text: provide.name!=null?provide.name:'',
+                              selection: TextSelection.fromPosition(TextPosition(
+                                affinity: TextAffinity.downstream,
+                                offset: provide.name!=null?provide.name.toString().length:''.length
+                              ))
+                            )),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.name:"请输入收货人姓名"
@@ -183,7 +183,13 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           width: ScreenAdapter.width(500),
                           margin: EdgeInsets.only(left: 20),
                           child: TextField(
-                            controller: _phoneText,
+                            controller: TextEditingController.fromValue(TextEditingValue(
+                                text: provide.tel!=null?provide.tel:'',
+                                selection: TextSelection.fromPosition(TextPosition(
+                                    affinity: TextAffinity.downstream,
+                                    offset: provide.tel!=null?provide.tel.toString().length:''.length
+                                ))
+                            )),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.tel:"请输入收货人手机号"
@@ -269,6 +275,13 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           width: ScreenAdapter.width(500),
                           margin: EdgeInsets.only(left: 20),
                           child: TextField(
+                            controller: TextEditingController.fromValue(TextEditingValue(
+                                text: provide.addressDetail!=null?provide.addressDetail:'',
+                                selection: TextSelection.fromPosition(TextPosition(
+                                    affinity: TextAffinity.downstream,
+                                    offset: provide.addressDetail!=null?provide.addressDetail.toString().length:''.length
+                                ))
+                            )),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.addressDetail:"请输入收货地址"
@@ -332,8 +345,6 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     widget.provide.tel = null;
     widget.provide.name = null;
     widget.provide.addressDetail = null;
-    _nameText.dispose();
-    _phoneText.dispose();
   }
 
   Provide<NewAddressProvide> _setupBottomBtn() {

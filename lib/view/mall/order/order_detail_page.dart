@@ -92,8 +92,12 @@ class _OrderContentState extends State<OrderContent> {
                     &&provide.orderDetailModel.status==0){
                   return this.payBtn();
                 }else if(provide.orderDetailModel!=null
-                    &&provide.orderDetailModel.status==-2){
-                  return Container();
+                    &&(
+                        provide.orderDetailModel.status==-1||
+                        provide.orderDetailModel.status==-2||
+                        provide.orderDetailModel.status==-4
+                    )){
+                  return Container(height: 0.0,width: 0.0,);
                 }else{
                   return this.logisticsBtn();
                 }
@@ -112,7 +116,7 @@ class _OrderContentState extends State<OrderContent> {
     _orderDetailProvide ??= widget._orderDetailProvide;
     _detailProvide ??= widget._detailProvide;
     _logisticsProvide ??= widget._logisticsProvide;
-    Future.delayed(Duration.zero,(){
+    Future.delayed(Duration(milliseconds: 200),(){
       Map<dynamic,dynamic> map = ModalRoute.of(context).settings.arguments;
       if(map!=null&&map['orderID']!=null){
         /// 订单详情请求
@@ -124,7 +128,9 @@ class _OrderContentState extends State<OrderContent> {
           ///加载数据
           print('listen data->$items');
           if(items!=null&&items.data!=null){
-            widget._orderDetailProvide.orderDetailModel = OrderDetailModel.fromJson(items.data);
+            setState(() {
+              _orderDetailProvide.orderDetailModel = OrderDetailModel.fromJson(items.data);
+            });
           }
         }, onError: (e) {});
       }
@@ -140,6 +146,7 @@ class _OrderContentState extends State<OrderContent> {
     ///默认支付宝
     _detailProvide.defaultPayMode();
   }
+
   /// 查询物流信息
   Widget logisticsBtn(){
     return  new RaisedButton(
@@ -415,7 +422,7 @@ class _OrderContentState extends State<OrderContent> {
                                       children: <Widget>[
                                         new Padding(padding: EdgeInsets.only(left:10),
                                           child: new Text("数量 x ${item.quantity} 件"),),
-                                        CustomsWidget().priceTitle(price: item.amount.toString())
+                                        CustomsWidget().priceTitle(price: item.salesPrice.toString())
                                       ],
                                     )
                                   ],
@@ -531,13 +538,13 @@ class _OrderContentState extends State<OrderContent> {
               new Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  new Text(model.payAmount!=null?"实际支付:":"应付金额"),
+                  new Text(model.status==0?"应付金额":"实际支付:"),
                   new Container(
                     padding: EdgeInsets.only(right: 10, top: 10),
                     child: new Row(
                       children: <Widget>[
-                        new CustomsWidget().priceTitle(price: model.payAmount!=null?
-                            model.payAmount.toString():model.payableAmount.toString(), color: AppConfig.blueBtnColor)
+                        new CustomsWidget().priceTitle(price: model.status==0?
+                            model.payableAmount.toString():model.payAmount.toString(), color: AppConfig.blueBtnColor)
                       ],
                     ),
                   )
