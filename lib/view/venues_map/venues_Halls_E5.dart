@@ -2,11 +2,12 @@ import 'package:azlistview/azlistview.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:innetsect/data/exhibition/halls_e5_model.dart';
 import 'package:innetsect/data/exhibition/halls_model.dart';
-import 'package:innetsect/data/exhibition/venue_halls_model.dart';
-import 'package:innetsect/data/series/approved_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+
 import 'package:innetsect/view/venues_map/venues_Halls_e5_provide.dart';
+
 import 'package:lpinyin/lpinyin.dart';
 import 'package:provide/provide.dart';
 
@@ -37,10 +38,14 @@ class _VenuesHallsE5ContentPageState extends State<VenuesHallsE5ContentPage> {
   VenuesHallsE5Provide _e5provide;
   List<HallsModel> venueHallsE5;
 
-  List<ApprovedModel> _list = [];
-  String _suspensionTag = "";
+//品牌
+  List<HallsE5Model> _list = [];
   int _itemHeight = 60;
+  //悬浮高度
   int _suspensionHeight = 40;
+  //悬浮目标
+  String _suspensionTag = "";
+
   @override
   void initState() {
     super.initState();
@@ -49,44 +54,35 @@ class _VenuesHallsE5ContentPageState extends State<VenuesHallsE5ContentPage> {
     _initLoadData();
   }
 
-
-
-  void _initLoadData(){
-    _e5provide.hallsData(venueHallsE5[0].exhibitionID, venueHallsE5[0].exhibitionHall).doOnListen((){
-
-    }).doOnCancel((){
-
-    }).listen((items){
-       ///加载数据
-      print('listen data->$items');
+  void _initLoadData() {
+    _e5provide
+        .hallsData(venueHallsE5[0].exhibitionID, venueHallsE5[0].exhibitionHall)
+        .doOnListen(() {})
+        .doOnCancel(() {})
+        .listen((items) {
+      ///加载数据
+      print('listen data-------->${items.data}');
       if (items != null && items.data != null) {
-        if (!mounted) return;
-        _list = ApprovedModelList.fromJson(items.data).list;
+        _list = HallsE5ModelList.fromJson(items.data).list;
+        for (var i = 0; i < _list.length; i++) {
+          if (_list[i].name == null || _list[i].name == '#') {
+            _list.removeAt(i);
+          }
+        }
+        print('_list =====>$_list');
         _handleList(_list);
-        print('_suspensionTag===----->${_list[0]}.getSuspensionTag()');
         setState(() {
           _suspensionTag = _list[0].getSuspensionTag();
         });
       }
-    });
+    }, onError: (e) {});
   }
 
-    @override
-  Widget build(BuildContext context) {
-    print('_list===>${_list[0].tagIndex}');
-    return AzListView(
-      data: _list,
-      isUseRealIndex: true,
-      itemBuilder: (context, model) => _buildListItem(model),
-      suspensionWidget: _buildSusWidget(_suspensionTag),
-      onSusTagChanged: _onSusTagChanged,
-    );
-  }
-
- /// 排序
-  void _handleList(List<ApprovedModel> list) {
+  /// 排序
+  void _handleList(List<HallsE5Model> list) {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
+      print('==========>list[$i] = ${list[i].name}');
       String pinyin = PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
@@ -107,7 +103,7 @@ class _VenuesHallsE5ContentPageState extends State<VenuesHallsE5ContentPage> {
     _sortListBySuspensionTag(_list);
   }
 
-   /// 重置排序
+  /// 重置排序
   void _sortListBySuspensionTag(List<ISuspensionBean> list) {
     if (list == null || list.isEmpty) return;
     list.sort((a, b) {
@@ -115,10 +111,9 @@ class _VenuesHallsE5ContentPageState extends State<VenuesHallsE5ContentPage> {
     });
   }
 
- 
-
   ///数据展示
-  Widget _buildListItem(ApprovedModel model) {
+  Widget _buildListItem(HallsE5Model model) {
+    print('model----------->model.name');
     String susTag = model.getSuspensionTag();
     return Column(
       children: <Widget>[
@@ -134,12 +129,24 @@ class _VenuesHallsE5ContentPageState extends State<VenuesHallsE5ContentPage> {
                 border: Border(
                     bottom: BorderSide(color: AppConfig.assistLineColor))),
             child: ListTile(
-              leading: CircleAvatar(
-                child: Image.network(model.brandLogo),
+              leading: Container(
+                width: ScreenAdapter.width(100),
+                height: ScreenAdapter.height(50),
+                color: Colors.black,
+                child: Center(
+                  child: Text(model.locCode, style: TextStyle(color: Colors.white),),
+                ),
               ),
+              //Icon(Icons.compare),
+              // CircleAvatar(
+              //   child: Image.network(model.brandLogo),
+              // ),
               title: Text(model.name),
               onTap: () {
                 print("OnItemClick: $model");
+                // 点击跳转筛选页
+                // _searchProvide.searchValue = model.name;
+                // _searchRequest(model.name);
               },
             ),
           ),
@@ -147,7 +154,6 @@ class _VenuesHallsE5ContentPageState extends State<VenuesHallsE5ContentPage> {
       ],
     );
   }
-
 
   /// 标签展示
   Widget _buildSusWidget(String susTag) {
@@ -176,4 +182,15 @@ class _VenuesHallsE5ContentPageState extends State<VenuesHallsE5ContentPage> {
     });
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return 
+    AzListView(
+      data: _list,
+      isUseRealIndex: true,
+      itemBuilder: (context, model) => _buildListItem(model),
+      suspensionWidget: _buildSusWidget(_suspensionTag),
+      onSusTagChanged: _onSusTagChanged,
+    );
+  }
 }

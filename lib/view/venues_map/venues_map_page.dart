@@ -111,8 +111,8 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
             ),
             Container(
               width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(900),
-              color: Colors.yellow,
+              height: ScreenAdapter.height(820),
+            //  color: Colors.yellow,
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[

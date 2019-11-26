@@ -76,7 +76,7 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
     _seriesProvide.seriesListData().doOnListen(() {}).doOnCancel(() {}).listen(
         (items) {
       ///加载数据
-      print('listen data->$items');
+      print('listen data->${items.data}');
       if (items != null && items.data != null) {
         if (!mounted) return;
         _list = ApprovedModelList.fromJson(items.data).list;
@@ -93,6 +93,7 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
   void _handleList(List<ApprovedModel> list) {
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
+      print('==========>list[$i] = ${list[i].name}');
       String pinyin = PinyinHelper.getPinyinE(list[i].name);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
