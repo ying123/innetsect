@@ -129,7 +129,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       onGenerateRoute: onGenerateRoute,
       localeResolutionCallback:(deviceLocale, supportedLocales) {
         UserTools().setLocal(deviceLocale.toString());
-        return locale;
+//        return locale;
       },
       home: App(),
 
