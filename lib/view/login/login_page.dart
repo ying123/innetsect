@@ -59,14 +59,14 @@ class _LoginContentPageState extends State<LoginContentPage> {
         leading: InkWell(
             onTap: () {
               // 返回按钮
-              if(pages is AppNavigationContentBar){
+              if(pages is AppNavigationContentBar||_provide.pages=="exhibition"){
                 _appNavigationBarProvide.currentIndex = 2;
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                     builder: (context){
                       return AppNavigationBar();
                     }
                 ), (Route<dynamic> route)=>false );
-              }else if(pages is MallContentPage){
+              }else if(pages is MallContentPage||_provide.pages=="mall"){
                 _mallProvide.currentIndex = 2;
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                   builder: (context){

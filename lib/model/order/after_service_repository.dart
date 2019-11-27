@@ -52,7 +52,7 @@ class AfterService{
     var json = {
       "waybillNo":waybillNo,
       "shipperCode":shipperCode,
-      "$reasonType":reasonType
+      "reasonType":reasonType
     };
     var response = put(url,body: json);
     return response;
@@ -76,7 +76,6 @@ class AfterService{
   }){
     var url = '/api/boms/$rmaID/$syncStatus/rmaKuaidiInfo?shipperCode=$shipperCode'
         '&waybillNo=$waybillNo&phone=$phone';
-    ///api/boms/399/2/rmaKuaidiInfo?shipperCode=SF&waybillNo=SF1013107605672&phone=17717300775
     var response = get(url);
     return response;
   }

@@ -75,7 +75,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
     { 'isBack':false } : ModalRoute.of(context).settings.arguments;
     return new Scaffold(
       appBar: new AppBar(
-        leading: mapData['isBack']? new GestureDetector(
+        leading: mapData['isBack']? new InkWell(
           onTap: (){
             // 返回
             Navigator.pop(context);
@@ -273,7 +273,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                 new Expanded(
                                     flex: 3,
                                     child: new Container(
-                                      margin: EdgeInsets.all(5),
+                                      margin: EdgeInsets.only(top: 5,bottom: 5),
                                       child: new Column(
                                         children: <Widget>[
                                           // 商品描述

@@ -132,6 +132,11 @@ class CommodityDetailProvide extends BaseProvide {
     if(_skusList.length>0)_skusList.clear();
     // 获取选中size
     String code="";
+    if(_skusModel==null){
+      //如果没有默认sku，默认拿第一个sku为默认sku
+      _skusModel = _commodityModels.skus[0];
+      _commodityModels.defSkuCode = _commodityModels.skus[0].skuCode;
+    }
     _skusModel.features.forEach((item){
       if(item.featureGroup=="尺码"){
         code = item.featureCode;

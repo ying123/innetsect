@@ -5,6 +5,21 @@ import 'package:rxdart/rxdart.dart';
 import 'package:innetsect/data/user_info_model.dart';
 
 class LoginProvide extends BaseProvide {
+  String _pages = "";
+  String get pages => _pages;
+  set pages(String pages){
+    _pages = pages;
+    notifyListeners();
+  }
+
+  /// 邮箱
+  String _emailText;
+  String get emailText => _emailText;
+  set emailText(String emailText){
+    _emailText = emailText;
+    notifyListeners();
+  }
+
   List placeHoderText = [
     '手机号/邮箱/昵称',
     '密码',
@@ -145,5 +160,40 @@ class LoginProvide extends BaseProvide {
         .doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
+  }
+
+  /// 邮箱获取验证码
+  Future getEmailValidCode (){
+    return _repo.getEmailValidCode(_emailText);
+  }
+
+  /// 邮箱验证
+  Observable validEmail(){
+    return _repo.validEmail(_emailText).doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 修改邮箱
+  Future editEmail(){
+    return _repo.editEmail(_emailText, _vaildCode);
+  }
+
+  /// 验证手机号
+  Observable getVaildPhone(){
+    return _repo.getVaildPhone(_userCode).doOnData((result) {
+
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
+  /// 修改手机号
+  Future editPhone(){
+    return _repo.editPhone(_userCode, _vaildCode);
   }
 }

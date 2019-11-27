@@ -67,4 +67,20 @@ set imagePath(var imagePath){
     _birthday = birthday;
     notifyListeners();
   }
+
+  ///工厂模式
+  factory PersonalCenterProvide()=> _getInstance();
+  static PersonalCenterProvide get instance => _getInstance();
+  static PersonalCenterProvide _instance;
+  static PersonalCenterProvide _getInstance(){
+    if (_instance == null) {
+      _instance = new PersonalCenterProvide._internal();
+    }
+    return _instance;
+  }
+
+  PersonalCenterProvide._internal() {
+    print('PersonalCenterProvide init');
+    // 初始化
+  }
 }

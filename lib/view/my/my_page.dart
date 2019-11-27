@@ -51,6 +51,7 @@ class _MyContentPageState extends State<MyContentPage> {
 
     this._loginProvide??=widget._loginProvide;
     page = widget.page;
+    _loginProvide.pages = widget.page;
   }
 
 //  Future _loginPage() async {

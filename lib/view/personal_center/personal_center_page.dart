@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
-import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/personal_center/edit_email_page.dart';
 import 'package:innetsect/view/personal_center/edit_nick_name_page.dart';
+import 'package:innetsect/view/personal_center/edit_phone_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/personal_center/personal_center_provide.dart';
@@ -80,15 +81,29 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
           ),
           Divider(color: AppConfig.assistLineColor,height: 10,indent: 10,endIndent: 10,),
           CustomsWidget().listSlider(
-              title: "更换手机号",rightTitle: true,
-              rightDesc: userModel.mobile,titleFont: FontWeight.w800,
-              titleFontSize: ScreenAdapter.size(28),titleColor: Colors.black
+            title: "更换手机号",rightTitle: true,
+            rightDesc: userModel.mobile,titleFont: FontWeight.w800,
+            titleFontSize: ScreenAdapter.size(28),titleColor: Colors.black,
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return EditPhonePage();
+                  }
+              ));
+            }
           ),
           Divider(color: AppConfig.assistLineColor,height: 10,indent: 10,endIndent: 10,),
           CustomsWidget().listSlider(
-              title: "换绑邮箱",rightTitle: true,
-              rightDesc: userModel.email==null?"":userModel.email,titleFont: FontWeight.w800,
-              titleFontSize: ScreenAdapter.size(28),titleColor: Colors.black
+            title: "换绑邮箱",rightTitle: true,
+            rightDesc: userModel.email==null?"":userModel.email,titleFont: FontWeight.w800,
+            titleFontSize: ScreenAdapter.size(28),titleColor: Colors.black,
+            onTap: (){
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return EditEmailPage();
+                  }
+                ));
+            }
           ),
           Divider(color: AppConfig.assistLineColor,height: 10,indent: 10,endIndent: 10,)
 //          InkWell(

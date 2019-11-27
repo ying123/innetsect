@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
@@ -88,27 +90,30 @@ class _EditNickNameContentState extends State<EditNickNameContent> {
     super.dispose();
   }
 
+  /// 修改昵称
   void _editName(){
     print("_nickName--------$_nickName");
-    _loginProvide.editUserNick(_nickName).then((item){
-      if(item!=null&&item.data){
-        _loginProvide.getVaildNick(_nickName).doOnListen(() {
-          print('doOnListen');
-        }).doOnCancel(() {}).listen((item) {
-          ///加载数据
-          print('listen data->$item');
-          if(item!=null&&item.data!=null){
-            if(item.data['passed']){
-              CustomsWidget().showToast(title: "修改成功");
-              UserInfoModel userModel = _loginProvide.userInfoModel;
-              userModel.nickName = _nickName;
-              Navigator.pop(context);
-            }else{
-              CustomsWidget().showToast(title: item.data['error']);
+    _loginProvide.getVaildNick(_nickName).doOnListen(() {
+      print('doOnListen');
+    }).doOnCancel(() {}).listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+        if(item.data['passed']){
+          _loginProvide.editUserNick(_nickName).then((item){
+            if(item!=null&&item.data){
+              UserTools().clearUserInfo();
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (context){
+                  return LoginPage();
+                }
+              ));
             }
-          }
-        }, onError: (e) {});
+          });
+        }else{
+          CustomsWidget().showToast(title: item.data['error']);
+        }
       }
-    });
+    }, onError: (e) {});
   }
 }
