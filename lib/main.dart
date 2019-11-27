@@ -13,6 +13,7 @@ import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
 
+//import 'package:rammus/rammus.dart' as rammus;
 
 
 GlobalKey<NavigatorState> gNavKey = GlobalKey();
@@ -76,6 +77,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     setLocalizedValues(localizedValues);
     //初始化配置文件
     initLocale();
+
+    // 配置阿里推送
   }
 
   void initLocale() async {

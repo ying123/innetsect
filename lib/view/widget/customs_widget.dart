@@ -218,7 +218,8 @@ class CustomsWidget{
                     child: Image.asset(icon),
                   ),
                 ):Container(),
-                Center(
+                Container(
+                  margin: EdgeInsets.only(left: 10),
                   child: Text(
                     title,
                     style: TextStyle(

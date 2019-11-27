@@ -369,64 +369,68 @@ class _SearchScreenContentState extends State<SearchScreenContent>
   }
 
   /// 筛选商品数据列表展示
-  Widget _listWidget(){
+  Provide<CommodityListProvide> _listWidget(){
     double itemWidth = (ScreenAdapter.getScreenWidth()-30)/2;
-    return new ListWidgetPage(
-      controller: _easyRefreshController,
-      onRefresh:() async{
-        print('onRefresh');
-        this.pageNo = 1;
-        _commodityListProvide.clearList();
-        await _loadList(pageNos: pageNo);
-      },
-      onLoad: () async{
-        await _loadList(pageNos: ++ pageNo);
-      },
-      child: <Widget>[
-        // 数据内容
-        SliverList(
-            delegate:
-            SliverChildListDelegate([
-              new Container(
-                padding: EdgeInsets.only(left: 10,right: 10),
-                child: new Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: _commodityListProvide.list.length>0? _commodityListProvide.list.map((item){
-                    print(item);
-                    return new InkWell(
-                      onTap: (){
-                        /// 跳转详情
-                        _loadDetail(item.prodID);
-                        Navigator.push(context, MaterialPageRoute(
-                            builder:(context){
-                              return new CommodityDetailPage();
-                            }
-                        )
+    return Provide<CommodityListProvide>(
+      builder: (BuildContext context,Widget widget,CommodityListProvide provide){
+        return new ListWidgetPage(
+          controller: _easyRefreshController,
+          onRefresh:() async{
+            print('onRefresh');
+            this.pageNo = 1;
+            _commodityListProvide.clearList();
+            await _loadList(pageNos: pageNo);
+          },
+          onLoad: () async{
+            await _loadList(pageNos: ++ pageNo);
+          },
+          child: <Widget>[
+            // 数据内容
+            SliverList(
+                delegate:
+                SliverChildListDelegate([
+                  new Container(
+                    padding: EdgeInsets.only(left: 10,right: 10),
+                    child: new Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: _commodityListProvide.list.length>0? _commodityListProvide.list.map((item){
+                        print(item);
+                        return new InkWell(
+                          onTap: (){
+                            /// 跳转详情
+                            _loadDetail(item.prodID);
+                            Navigator.push(context, MaterialPageRoute(
+                                builder:(context){
+                                  return new CommodityDetailPage();
+                                }
+                            )
+                            );
+                          },
+                          child: new Container(
+                            width: itemWidth,
+                            color: Colors.white,
+                            padding: EdgeInsets.all(5),
+                            child: new Column(
+                              children: <Widget>[
+                                // 商品图片
+                                _imageWidget(item.prodPic),
+                                // 价格 购物车图标
+                                _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID),
+                                // 描述
+                                _textWidget(item.prodName)
+                              ],
+                            ),
+                          ),
                         );
-                      },
-                      child: new Container(
-                        width: itemWidth,
-                        color: Colors.white,
-                        padding: EdgeInsets.all(5),
-                        child: new Column(
-                          children: <Widget>[
-                            // 商品图片
-                            _imageWidget(item.prodPic),
-                            // 价格 购物车图标
-                            _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID),
-                            // 描述
-                            _textWidget(item.prodName)
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList():[],
-                ),
-              )
-            ])
-        ),
-      ],
+                      }).toList():[],
+                    ),
+                  )
+                ])
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:innetsect/utils/animation_util.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
+import 'package:innetsect/view/my/feedback/feedback_page.dart';
 import 'package:innetsect/view/my/notice/notice_page.dart';
 import 'package:innetsect/view/my/settings/my_settings_page.dart';
 import 'package:innetsect/view/my_order/after_service_page.dart';
@@ -270,7 +271,14 @@ class _MyContentPageState extends State<MyContentPage> {
             new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
             CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/联系客服@2x.png', title: '联系客服'),
             new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
-            CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/反馈意@2x.png', title: '反馈意见'),
+            CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/反馈意@2x.png',
+                title: '反馈意见',onTap: (){
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context){
+                  return FeedBackPage();
+                }
+              ));
+                }),
             new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
           ],
         ));
