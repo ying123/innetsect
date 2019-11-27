@@ -4,6 +4,7 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/exhibition/brand_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/brand/brand_mall_page.dart';
 import 'package:innetsect/view_model/brand/brand_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:lpinyin/lpinyin.dart';
@@ -145,7 +146,8 @@ class _BrandContentPageState extends State<BrandContentPage>
                 print("OnItemClick: ${model.brandName}");
                 // 点击跳转筛选页
                 // _searchProvide.searchValue = model.name;
-                // _searchRequest(model.name);
+                 _searchRequest(model.brandName);
+             //  Navigator.pushNamed(context, '/brandMallPage');
               },
             ),
           ),
@@ -194,11 +196,11 @@ class _BrandContentPageState extends State<BrandContentPage>
 
    // }, onError: (e) {});
 
-    // Navigator.push(context, MaterialPageRoute(
-    //     builder: (context){
-    //       return SearchScreenPage();
-    //     }
-    // ));
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context){
+          return BrandMallPage(name);
+        }
+    ));
   }
 
   @override

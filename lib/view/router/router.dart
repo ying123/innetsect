@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/app.dart';
 import 'package:innetsect/app_navigation_bar.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
+import 'package:innetsect/view/brand/brand_mall_page.dart';
 import 'package:innetsect/view/exhibition/home_portlets_details_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/login/login_page.dart';
@@ -34,6 +35,7 @@ final routes = {
   '/myOrderPage':(context)=>MyOrderPage(),
   '/venuesMapPage':(context,{arguments})=>VenuesMapPage(hallsData: arguments,),
   '/showTickets':(context,{arguments})=>ShowTicketsPage(showId: arguments,),
+  // '/brandMallPage':(context)=>BrandMallPage(),
   '/homePortletsDetailsPage':(context,{arguments})=>HomePortletsDetailsPage(contentID: arguments,)
 };
 

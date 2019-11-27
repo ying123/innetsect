@@ -17,6 +17,14 @@ class BrandService {
   }
 
 
+///品牌商场
+ Observable brandMallModel ( String branName ,int pageNo){
+    var url = '/api/event/exhibitions/201058021/products/preview?brand=$branName&pageNo=$pageNo';
+    var response = get(url);
+    return response;
+  }
+
+
   }
 
 
@@ -31,5 +39,12 @@ class BrandRepo {
   Observable brandModel (int exhibitionID){
     return _remote.brandModel( exhibitionID );
   }
+
+///品牌商场
+  Observable brandMallModel (String branName, int exhibitionID){
+    return _remote.brandMallModel( branName ,exhibitionID );
+  }
+
+
 
   }
