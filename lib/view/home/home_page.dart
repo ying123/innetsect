@@ -106,7 +106,7 @@ class _HomeContentPageState extends State<HomeContentPage>
 
   _loadListData(){
     _provide.listData(pageNo++).doOnListen((){}).doOnCancel((){}).listen((item){
-    _provide.addPortlets(HomePortletsModelList.fromJson(item.data).list);
+   // _provide.addPortlets(HomePortletsModelList.fromJson(item.data).list);
     },onError: (e){});
   }
 
