@@ -135,10 +135,12 @@ void clearUserInfo(){
   ///存储搜索历史记录
   Future<bool> saveSearchHistory(String searchText){
       List<String> list = _spf.getStringList(ConstConfig.SEARCH_LIST);
-      if(list==null){
-        list = List();
+      if(list.where((item)=>item==searchText).length==0){
+        if(list==null){
+          list = List();
+        }
+        list.add(searchText);
       }
-      list.add(searchText);
       return _spf.setStringList(ConstConfig.SEARCH_LIST, list);
   }
 

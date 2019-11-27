@@ -363,8 +363,10 @@ class _LoginContentPageState extends State<LoginContentPage> {
           onTap: (){
             // 登录
             String pwd = '';
-            if(provide.userCode.isEmpty){
+            if(provide.userCode.isEmpty&&!isPhone){
               CustomsWidget().showToast(title: "请输入账号");
+            }else if(provide.userCode.isEmpty&&isPhone){
+              CustomsWidget().showToast(title: "请输入注册手机号");
             }else if(isPhone && provide.vaildCode.toString().isEmpty){
               CustomsWidget().showToast(title: "请输入验证码");
             }else if(!isPhone && provide.password.toString().isEmpty){

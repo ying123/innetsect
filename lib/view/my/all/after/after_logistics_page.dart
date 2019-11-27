@@ -47,7 +47,7 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
               child: new Container(
                 color: Colors.white,
                 padding: EdgeInsets.only(left: 20,bottom: 10),
-                child: CustomsWidget().subTitle(title: "订单编号:  ${_afterServiceProvide.afterOrderModel.orderNo}",
+                child: CustomsWidget().subTitle(title: "售后编号:  ${_afterServiceProvide.afterOrderModel.rmaNo}",
                     color: AppConfig.blueBtnColor),
               )
           ),
@@ -58,7 +58,8 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
               child: new Container(
                 width: double.infinity,
                 height: ScreenAdapter.getScreenHeight()-40,
-                child: _afterServiceProvide.logisticeModelList.length>0?ListView.builder(
+                child: _afterServiceProvide.logisticeModelList!=null&&
+                    _afterServiceProvide.logisticeModelList.length>0?ListView.builder(
                     itemCount: _afterServiceProvide.logisticeModelList.length,
                     itemBuilder: (BuildContext context, int index){
                       return new Row(
@@ -96,7 +97,9 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
                           )
                         ],
                       );
-                    }): CustomsWidget().noDataWidget(),
+                    }): Column(
+                  children: CustomsWidget().noDataWidget(),
+                ),
               )
           )
         ],
@@ -114,5 +117,6 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    _afterServiceProvide.clearLogisticeModelList();
   }
 }

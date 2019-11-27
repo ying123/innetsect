@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/enum/order_status.dart';
@@ -417,7 +418,7 @@ class _OrderContentState extends State<OrderContent> {
                           child: new Container(
                             width: ScreenAdapter.width(80),
                             height: ScreenAdapter.height(80),
-                            child: new Image.network(item.skuPic,fit: BoxFit.fill,),
+                            child: new Image.network(item.skuPic+ConstConfig.LIST_IMAGE_SIZE,fit: BoxFit.fill,),
                           )
                       ),
                       new Expanded(

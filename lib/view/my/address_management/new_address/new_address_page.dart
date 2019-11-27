@@ -3,8 +3,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/country_model.dart';
+import 'package:innetsect/data/provinces_model.dart';
+import 'package:innetsect/data/series/approved_country_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/city/country_page.dart';
+import 'package:innetsect/view/my/address_management/city/provinces_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/my/address_management/address_management_provide.dart';
 import 'package:innetsect/view_model/my/address_management/new_address/new_address_provide.dart';
@@ -24,9 +27,9 @@ class NewAddressPage extends PageProvideNode {
 }
 
 class NewAddressContentPage extends StatefulWidget {
-  final NewAddressProvide provide;
+  final NewAddressProvide _provide;
   final AddressManagementProvide _addressManagementProvide;
-  NewAddressContentPage(this.provide,this._addressManagementProvide);
+  NewAddressContentPage(this._provide,this._addressManagementProvide);
   @override
   _NewAddressContentPageState createState() => _NewAddressContentPageState();
 }
@@ -34,6 +37,7 @@ class NewAddressContentPage extends StatefulWidget {
 class _NewAddressContentPageState extends State<NewAddressContentPage> {
 
   bool isSelected = false;
+  NewAddressProvide _provide;
   AddressManagementProvide _addressManagementProvide;
 
   @override
@@ -77,45 +81,60 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     // TODO: implement initState
     super.initState();
     _addressManagementProvide ??= widget._addressManagementProvide;
+    _provide ??= widget._provide;
     // 获取国家
     _getCountries();
+    // 初始化参数
+    if(widget._addressManagementProvide.addressModel==null){
+      _provide.initCountryModel();
+    }
+//    _getCountries();
     // 编辑时
     if(widget._addressManagementProvide.addressModel!=null){
-      widget.provide.addressID = widget._addressManagementProvide.addressModel.addressID;
+      _provide.addressID = widget._addressManagementProvide.addressModel.addressID;
       // 国家
-      widget.provide.countryList.forEach((item){
+      _provide.countryList.forEach((item){
+        print(item.countryCode);
         if(item.countryCode == widget._addressManagementProvide.addressModel.countryCode){
-          widget.provide.selectCountry(item);
+          _provide.selectCountry(item);
         }
       });
-      // 城市
-      if(widget.provide.provincesList.length>0){
-        widget.provide.provincesList.forEach((item){
-          if(item.regionName==widget._addressManagementProvide.addressModel.province){
-            widget.provide.selectProvinces(item);
-          }
-        });
+      String province = widget._addressManagementProvide.addressModel.province;
+      String city = widget._addressManagementProvide.addressModel.city;
+      String areaCode = widget._addressManagementProvide.addressModel.areaCode;
+      if(widget._addressManagementProvide.addressModel.areaCode == '000000'){
+        _provide.setForeignAddressModel();
+      }else{
+        // 城市
+        if(_provide.provincesList.length>0){
+          _provide.provincesList.forEach((item){
+            if(item.regionName==province){
+              _provide.selectProvinces(item);
+            }
+          });
+        }
+        // 省
+        if(_provide.cityList.length>0){
+          _provide.cityList.forEach((item){
+            if(item.regionName==city){
+              _provide.selectCity(item);
+            }
+          });
+        }
+        // 区
+        if(_provide.countyList.length>0){
+          _provide.countyList.forEach((item){
+            if(item.regionCode==areaCode){
+              _provide.selectCounty(item);
+            }
+          });
+        }
       }
-      // 省
-      if(widget.provide.cityList.length>0){
-        widget.provide.cityList.forEach((item){
-          if(item.regionName==widget._addressManagementProvide.addressModel.city){
-            widget.provide.selectCity(item);
-          }
-        });
-      }
-      // 区
-      if(widget.provide.countyList.length>0){
-        widget.provide.countyList.forEach((item){
-          if(item.regionCode==widget._addressManagementProvide.addressModel.areaCode){
-            widget.provide.selectCounty(item);
-          }
-        });
-      }
-      widget.provide.name = widget._addressManagementProvide.addressModel.name;
-      widget.provide.tel = widget._addressManagementProvide.addressModel.tel;
-      widget.provide.addressDetail = widget._addressManagementProvide.addressModel.addressDetail;
-      widget.provide.lastUsed = widget._addressManagementProvide.addressModel.lastUsed;
+
+      _provide.name = widget._addressManagementProvide.addressModel.name;
+      _provide.tel = widget._addressManagementProvide.addressModel.tel;
+      _provide.addressDetail = widget._addressManagementProvide.addressModel.addressDetail;
+      _provide.lastUsed = widget._addressManagementProvide.addressModel.lastUsed;
       setState(() {
         isSelected = widget._addressManagementProvide.addressModel.lastUsed;
       });
@@ -123,214 +142,259 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
   }
 
 
-  Provide<NewAddressProvide> _setupNewGoodsAddress() {
-    return Provide<NewAddressProvide>(
-      builder: (BuildContext context, Widget child, NewAddressProvide provide) {
-        return Column(
-          children: <Widget>[
-            Container(
-              width: ScreenAdapter.width(700),
-              height: ScreenAdapter.height(100),
-              // color: Colors.yellow,
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
-                      top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
-                      ),
-                    child: Row(
-                      children: <Widget>[
-                        Center(
-                          child: Text('收货人姓名',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
-                        ),
-                        Container(
-                          width: ScreenAdapter.width(500),
-                          margin: EdgeInsets.only(left: 20),
-                          child: TextField(
-                            controller: TextEditingController.fromValue(TextEditingValue(
-                              text: provide.name!=null?provide.name:'',
-                              selection: TextSelection.fromPosition(TextPosition(
-                                affinity: TextAffinity.downstream,
-                                offset: provide.name!=null?provide.name.toString().length:''.length
-                              ))
-                            )),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.name:"请输入收货人姓名"
-                            ),
-                            onChanged: (text){
-                              provide.name = text;
-                            },
-                          ),
-                        )
-                      ],
-                    )
-            ),
-            Container(
-              width: ScreenAdapter.width(700),
-              height: ScreenAdapter.height(100),
-              // color: Colors.yellow,
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
-                      top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
-                      ),
-                    child: Row(
-                      children: <Widget>[
-                        Center(
-                          child: Text('手机号码',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
-                        ),
-                        Container(
-                          width: ScreenAdapter.width(500),
-                          margin: EdgeInsets.only(left: 20),
-                          child: TextField(
-                            controller: TextEditingController.fromValue(TextEditingValue(
-                                text: provide.tel!=null?provide.tel:'',
-                                selection: TextSelection.fromPosition(TextPosition(
-                                    affinity: TextAffinity.downstream,
-                                    offset: provide.tel!=null?provide.tel.toString().length:''.length
-                                ))
-                            )),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.tel:"请输入收货人手机号"
-                            ),
-                            onChanged: (text){
-                              provide.tel=text;
-                            },
-                          ),
-                        )
-                      ],
-                    )
-            ),
-            InkWell(
-              onTap: () {
-                //弹出国家
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (BuildContext context){
-                    return CountryPage();
-                  }
-                ));
-              },
-              child: Container(
-                  width: ScreenAdapter.width(700),
-                  height: ScreenAdapter.height(100),
-                  // color: Colors.yellow,
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
-                          top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
-                  ),
+  Widget _setupNewGoodsAddress() {
+      return Column(
+        children: <Widget>[
+          Container(
+            width: ScreenAdapter.width(700),
+            height: ScreenAdapter.height(100),
+            // color: Colors.yellow,
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
+                    top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+                    ),
                   child: Row(
                     children: <Widget>[
                       Center(
-                        child: Text('所在国家',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                        child: Text('收货人姓名',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 40),
-                        child: Text(provide.countryModel!=null?provide.countryModel.briefName:
-//                        widget._addressManagementProvide.addressModel!=null?
-//                        widget._addressManagementProvide.addressModel.:
-                            ""),
+                      Container(
+                        width: ScreenAdapter.width(500),
+                        margin: EdgeInsets.only(left: 20),
+                        child: Provide<NewAddressProvide>(
+                          builder: (BuildContext context, Widget child, NewAddressProvide provide) {
+                            return TextField(
+                              controller: TextEditingController.fromValue(TextEditingValue(
+                                  text: provide.name!=null?provide.name:'',
+                                  selection: TextSelection.fromPosition(TextPosition(
+                                      affinity: TextAffinity.downstream,
+                                      offset: provide.name!=null?provide.name.toString().length:''.length
+                                  ))
+                              )),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.name:"请输入收货人姓名"
+                              ),
+                              onChanged: (text){
+                                provide.name = text;
+                              },
+                            );
+                          })
                       )
                     ],
                   )
-              ),
-            ),
-            Container(
-              width: ScreenAdapter.width(700),
-              height: ScreenAdapter.height(100),
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
-                      top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+          ),
+          Container(
+            width: ScreenAdapter.width(700),
+            height: ScreenAdapter.height(100),
+            // color: Colors.yellow,
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
+                    top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+                    ),
+                  child: Row(
+                    children: <Widget>[
+                      Center(
+                        child: Text('手机号码',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                       ),
-                    child: Row(
-                      children: <Widget>[
-                        Center(
-                          child: Text('所在地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
-                        ),
-                        provide.provincesModel!=null||provide.cityModel!=null||provide.countyModel!=null?
-                        Padding(
-                          padding: EdgeInsets.only(left: 40),
-                          child: Text("${provide.provincesModel.regionName} ${provide.cityModel.regionName} ${provide.countyModel.regionName}"),
-                        ):new Container()
-                      ],
+                      Container(
+                        width: ScreenAdapter.width(500),
+                        margin: EdgeInsets.only(left: 20),
+                        child: Provide<NewAddressProvide>(
+                          builder: (BuildContext context, Widget child, NewAddressProvide provide) {
+                            return TextField(
+                              controller: TextEditingController.fromValue(TextEditingValue(
+                                  text: provide.tel!=null?provide.tel:'',
+                                  selection: TextSelection.fromPosition(TextPosition(
+                                      affinity: TextAffinity.downstream,
+                                      offset: provide.tel!=null?provide.tel.toString().length:''.length
+                                  ))
+                              )),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.tel:"请输入收货人手机号"
+                              ),
+                              onChanged: (text){
+                                provide.tel=text;
+                              },
+                            );
+                          })
+                      )
+                    ],
+                  )
+          ),
+          InkWell(
+            onTap: () {
+              //弹出国家
+              Navigator.push(context, MaterialPageRoute(
+                builder: (BuildContext context){
+                  return CountryPage();
+                }
+              ));
+            },
+            child: Container(
+                width: ScreenAdapter.width(700),
+                height: ScreenAdapter.height(100),
+                // color: Colors.yellow,
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
+                        top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Center(
+                      child: Text('所在国家',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 40),
+                      child:Provide<NewAddressProvide>(
+                        builder: (BuildContext context, Widget child, NewAddressProvide provide) {
+                          return Text(provide.countryModel!=null?
+                          "+ ${provide.countryModel.telPrefix} | ${provide.countryModel.briefName}":
+                //                        widget._addressManagementProvide.addressModel!=null?
+                //                        widget._addressManagementProvide.addressModel.:
+                          "");
+                        })
                     )
+                  ],
+                )
             ),
-            Container(
-              width: ScreenAdapter.width(700),
-              height: ScreenAdapter.height(100),
-              // color: Colors.yellow,
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
-                      top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
-                      ),
-                    child: Row(
-                      children: <Widget>[
-                        Center(
-                          child: Text('详细地址',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
-                        ),
-                        Container(
-                          width: ScreenAdapter.width(500),
-                          margin: EdgeInsets.only(left: 20),
-                          child: TextField(
-                            controller: TextEditingController.fromValue(TextEditingValue(
-                                text: provide.addressDetail!=null?provide.addressDetail:'',
-                                selection: TextSelection.fromPosition(TextPosition(
-                                    affinity: TextAffinity.downstream,
-                                    offset: provide.addressDetail!=null?provide.addressDetail.toString().length:''.length
-                                ))
-                            )),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.addressDetail:"请输入收货地址"
-                            ),
-                            onChanged: (text){
-                              provide.addressDetail=text;
-                            },
+          ),
+          Container(
+            width: ScreenAdapter.width(700),
+            height: ScreenAdapter.height(100),
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
+                    top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+                    ),
+                  child:InkWell(
+                      onTap: (){
+                        if(_provide.countryModel.countryCode=='HK'||_provide.countryModel.countryCode=='TW'
+                            ||_provide.countryModel.countryCode=='MO'||_provide.countryModel.countryCode=='CN'){
+                          // 选中国家
+                          _provide.getProvices(_provide.countryModel.countryCode)
+                              .doOnListen(() {}).doOnCancel(() {})
+                              .listen((items) {
+                            if(items.data!=null&&items.data.length>0){
+                              // 跳转到省份界面
+                              _provide.addProvincesList(ProvincesModelList.fromJson(items.data).list);
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (BuildContext context){
+                                    return ProvincesPage();
+                                  }
+                              ));
+                            }
+                            print('listen data->$items');
+                          }, onError: (e) {});
+                        }
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Center(
+                            child: Text('所在地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                           ),
-                        )
-                      ],
-                    )
-            ),
-            Container(
-              width: ScreenAdapter.width(700),
-              height: ScreenAdapter.height(100),
-              // color: Colors.yellow,
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
-                      top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+                          Provide<NewAddressProvide>(
+                              builder: (BuildContext context, Widget child, NewAddressProvide provide) {
+                                Widget widget = new Container();
+                                if(provide.provincesModel!=null||provide.cityModel!=null||provide.countyModel!=null){
+                                  if(provide.provincesModel!=null&&provide.cityModel!=null
+                                      &&provide.countyModel!=null){
+                                    widget= Padding(
+                                      padding: EdgeInsets.only(left: 40),
+                                      child: Text("${provide.provincesModel.regionName} "
+                                          "${provide.cityModel.regionName} "
+                                          "${provide.countyModel.regionName}"),
+                                    );
+                                  }
+                                }
+                                return widget;
+                              })
+                        ],
                       ),
-                    child: Row(
-                      children: <Widget>[
-                        CustomsWidget().customRoundedWidget(isSelected: isSelected,iconSize: 20,
+                    )
+          ),
+          Container(
+            width: ScreenAdapter.width(700),
+            height: ScreenAdapter.height(100),
+            // color: Colors.yellow,
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
+                    top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+                    ),
+                  child: Row(
+                    children: <Widget>[
+                      Center(
+                        child: Text('详细地址',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                      ),
+                      Container(
+                        width: ScreenAdapter.width(500),
+                        margin: EdgeInsets.only(left: 20),
+                        child: Provide<NewAddressProvide>(
+                            builder: (BuildContext context, Widget child, NewAddressProvide provide) {
+                              return TextField(
+                                controller: TextEditingController.fromValue(TextEditingValue(
+                                    text: provide.addressDetail!=null?provide.addressDetail:'',
+                                    selection: TextSelection.fromPosition(TextPosition(
+                                        affinity: TextAffinity.downstream,
+                                        offset: provide.addressDetail!=null?provide.addressDetail.toString().length:''.length
+                                    ))
+                                )),
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.addressDetail:"请输入详细地址"
+                                ),
+                                onChanged: (text){
+                                  provide.addressDetail=text;
+                                },
+                              );
+                            })
+                      )
+                    ],
+                  )
+          ),
+          Container(
+            width: ScreenAdapter.width(700),
+            height: ScreenAdapter.height(100),
+            // color: Colors.yellow,
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
+                    top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+                    ),
+                  child: Row(
+                    children: <Widget>[
+                      Provide<NewAddressProvide>(
+                      builder: (BuildContext context, Widget child, NewAddressProvide provide) {
+                        return CustomsWidget().customRoundedWidget(isSelected: isSelected,iconSize: 20,
                             onSelectedCallback: (){
                               setState(() {
                                 isSelected = !isSelected;
                               });
                               provide.lastUsed = isSelected;
-                        }),
-                        Padding(
-                          padding: EdgeInsets.only(left:10),
-                          child: Text('设为默认',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
-                        )
-                      ],
-                    )
-            ),
-          ],
-        );
-      },
-    );
-  }
+                            });
+                      }) ,
+                      Padding(
+                        padding: EdgeInsets.only(left:10),
+                        child: Text('设为默认',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                      )
+                    ],
+                  )
+          ),
+        ],
+      );
+    }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     /// 清空选中国家城市
-    widget.provide.clearSelect();
+    _provide.clearSelect();
     widget._addressManagementProvide.addressModel = null;
     widget._addressManagementProvide.listData().doOnListen(() {
       print('doOnListen');
@@ -342,9 +406,9 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
           .list;
       widget._addressManagementProvide.addListAddress(list);
     }, onError: (e) {});
-    widget.provide.tel = null;
-    widget.provide.name = null;
-    widget.provide.addressDetail = null;
+    _provide.tel = null;
+    _provide.name = null;
+    _provide.addressDetail = null;
   }
 
   Provide<NewAddressProvide> _setupBottomBtn() {
@@ -360,7 +424,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                 CustomsWidget().showToast(title: "请填写详细地址");
               }else if(widget._addressManagementProvide.addressModel!=null){
                 provide.createAndEditAddresses(context,isEdit: true,
-                addressModel:widget._addressManagementProvide.addressModel)
+                    addressModel:widget._addressManagementProvide.addressModel)
                     .doOnListen(() {}).doOnCancel(() {})
                     .listen((items) {
                   print(items.data);
@@ -407,9 +471,10 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
 
   ///获取国家
   void _getCountries(){
-    widget.provide.getCountriess().doOnListen(() {}).doOnCancel(() {}).listen((items) {
+    _provide.getCountriess().doOnListen(() {}).doOnCancel(() {}).listen((items) {
       print('listen data->$items');
-      widget.provide.addCountryList(CountryModelList.fromJson(items.data).list);
+      _provide.addCountryList(CountryModelList.fromJson(items.data).list);
+      _provide.countryPageList = ApprovedCountryModelList.fromJson(items.data).list;
     }, onError: (e) {});
   }
 }

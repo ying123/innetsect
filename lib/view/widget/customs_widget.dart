@@ -165,7 +165,6 @@ class CustomsWidget{
         },
         child: new Container(
             padding: EdgeInsets.all(20),
-            color: Colors.orange,
             child: new Image.asset("assets/images/mall/arrow_down.png",
               fit: BoxFit.fitWidth,
             )

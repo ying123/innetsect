@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
@@ -434,10 +435,10 @@ class _SearchScreenContentState extends State<SearchScreenContent>
     return new Container(
         width: double.infinity,
         height: ScreenAdapter.height(320),
-        child: Image.network(
-          image,
+        child: image!=null? Image.network(
+          image+ConstConfig.LIST_IMAGE_SIZE,
           fit: BoxFit.fitWidth,
-        )
+        ):Image.asset("assets/images/user/header.png",fit: BoxFit.fitWidth,)
     );
   }
 

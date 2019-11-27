@@ -51,7 +51,6 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
 
   @override
   Widget build(BuildContext context) {
-    print('_list===>${_list[2].tagIndex}');
     return AzListView(
       data: _list,
       isUseRealIndex: true,

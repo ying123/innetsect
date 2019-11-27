@@ -35,6 +35,7 @@ class CountryModel{
     'telPrefix': telPrefix,
     'timeDiff': timeDiff
   };
+
 }
 
 class CountryModelList{

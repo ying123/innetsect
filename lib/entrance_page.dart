@@ -20,11 +20,11 @@ class _EntrancePageState extends State<EntrancePage> {
             new InkWell(
               onTap: (){
                 // 展会
-                Navigator.pushReplacement(context, MaterialPageRoute(
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                   builder: (context){
                     return AppNavigationBar();
                   }
-                ));
+                ),(Route<dynamic> route) => false);
               },
               child: new Container(
                 width: double.infinity,
@@ -35,11 +35,11 @@ class _EntrancePageState extends State<EntrancePage> {
             new InkWell(
               onTap: (){
                 // 商城
-                Navigator.pushReplacement(context, MaterialPageRoute(
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                     builder: (context){
                       return MallPage();
                     }
-                ));
+                ),(Route<dynamic> route) => false);
               },
               child: new Container(
                 width: double.infinity,

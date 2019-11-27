@@ -220,9 +220,9 @@ class CommodityDetailProvide extends BaseProvide {
   final CommodityRepo _repo = CommodityRepo();
 
   /// 详情数据
-  Observable detailData() {
+  Observable detailData({int types,int prodId}) {
     return _repo
-        .detailData(37, this.prodId)
+        .detailData(types, prodId)
         .doOnData((result) {
 
     })

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
 import 'package:innetsect/utils/common_util.dart';
@@ -182,11 +183,19 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         CommoditySkusModel skuModel = provide.skusModel;
         return new Swiper(
           itemBuilder: (BuildContext context,int index){
-            return skuModel!=null?Image.network(skuModel.pics[index].skuPicUrl):new Container();
+            return skuModel!=null?Image.network(skuModel.pics[index].skuPicUrl+ConstConfig.BANNER_SIZE):new Container();
           },
           loop: true,
           itemCount: skuModel!=null?skuModel.pics.length:1,
-          pagination: new SwiperPagination(),
+          pagination: new SwiperPagination(
+              builder: DotSwiperPaginationBuilder(
+                  color: Colors.white70,              // 其他点的颜色
+                  activeColor: AppConfig.blueBtnColor,      // 当前点的颜色
+                  space: 2,                           // 点与点之间的距离
+                  activeSize: 5,                      // 当前点的大小
+                  size: 5
+              )
+          ),
         );
       },
     );

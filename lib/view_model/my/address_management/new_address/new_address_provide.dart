@@ -3,6 +3,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/country_model.dart';
 import 'package:innetsect/data/provinces_model.dart';
+import 'package:innetsect/data/series/approved_country_model.dart';
 import 'package:innetsect/model/address_repository.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:rxdart/rxdart.dart';
@@ -46,12 +47,19 @@ class  NewAddressProvide extends BaseProvide{
   List<ProvincesModel> _provincesList=[];
   List<ProvincesModel> _cityList=[];
   List<ProvincesModel> _countyList=[];
-
+  // 国家页面使用
+  List<ApprovedCountryModel> _countryPageList=[];
 
   List<CountryModel> get countryList => _countryList;
   List<ProvincesModel> get provincesList => _provincesList;
   List<ProvincesModel> get cityList => _cityList;
   List<ProvincesModel> get countyList => _countyList;
+  List<ApprovedCountryModel> get countryPageList => _countryPageList;
+
+  set countryPageList(List<ApprovedCountryModel> list){
+    _countryPageList = list;
+    notifyListeners();
+  }
 
   // 选中国家
   CountryModel _countryModel;
@@ -66,6 +74,37 @@ class  NewAddressProvide extends BaseProvide{
   ProvincesModel get provincesModel => _provincesModel;
   ProvincesModel get cityModel => _cityModel;
   ProvincesModel get countyModel => _countyModel;
+  set countryModel(CountryModel model){
+    _countryModel = model;
+    notifyListeners();
+  }
+  void setCountryModle(ApprovedCountryModel model){
+    _countryModel.telPrefix = model.telPrefix;
+    _countryModel.briefName = model.name;
+    _countryModel.countryCode = model.countryCode;
+    notifyListeners();
+  }
+
+  void initCountryModel(){
+    CountryModel model = new CountryModel();
+    //初始化参数
+    model.countryCode = "CN";
+    model.briefName = "中国";
+    model.telPrefix = "86";
+    _countryModel = model;
+    notifyListeners();
+  }
+  // 选外国的时候赋值
+  void setForeignAddressModel(){
+    _provincesModel = new ProvincesModel();
+    _cityModel = new ProvincesModel();
+    _countyModel = new ProvincesModel();
+    _provincesModel.regionName = "外国";
+    _cityModel.regionName = "外国";
+    _countyModel.regionName = "外国";
+    _countyModel.regionCode = "000000";
+    notifyListeners();
+  }
 
   void addCountryList(List<CountryModel> list){
     _countryList = list;
@@ -153,8 +192,8 @@ class  NewAddressProvide extends BaseProvide{
     json['addressDetail'] = _addressDetail;
     json['tel'] = _tel;
     json['lastUsed'] = _lastUsed==null?false:_lastUsed;
-    json['province'] = _provincesModel!=null?_provincesModel.regionName:"";
     json['countryCode'] = _countryModel.countryCode;
+    json['province'] = _provincesModel!=null?_provincesModel.regionName:"";
     json['city'] = _cityModel!=null?_cityModel.regionName:"";
     json['county'] = _countyModel!=null?_countyModel.regionName:"";
     json['areaCode'] =_countyModel!=null?_countyModel.regionCode:"";

@@ -60,6 +60,7 @@ class _ProvincesContentPageState extends State<ProvincesContentPage> {
                         if(items.data!=null&&items.data.length>0){
                           // 跳转到市界面
                           provide.addCityList(ProvincesModelList.fromJson(items.data).list);
+                          provide.countryModel = countryModel;
                           Navigator.pushReplacement(context, MaterialPageRoute(
                               builder: (BuildContext context){
                                 return CityPage();

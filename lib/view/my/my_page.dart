@@ -189,11 +189,11 @@ class _MyContentPageState extends State<MyContentPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        print('我的卡卷被点击');
+                        print('优惠券被点击');
                       },
                       child: _setupBtn(
                           'assets/images/newpersonalcentre/我的卡券@2x.png',
-                          '我的卡卷',
+                          '优惠券',
                           44.0,
                           40.0),
                     ),
@@ -257,7 +257,7 @@ class _MyContentPageState extends State<MyContentPage> {
           children: <Widget>[
             CustomsWidget().listSlider(
               icon: 'assets/images/newpersonalcentre/购买须知@2x.png',
-              title: '够买须知',
+              title: '购买须知',
               onTap: (){
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context){

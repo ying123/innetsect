@@ -130,6 +130,11 @@ class AfterServiceProvide extends BaseProvide{
     _list.clear();
     notifyListeners();
   }
+  // 清除物流信息
+  void clearLogisticeModelList(){
+    _logisticeModelList.clear();
+    notifyListeners();
+  }
   // 清除申请原因
   void clearReasonList(){
     if(_rmareasonsModelList!=null&&_rmareasonsModelList.length>0){
@@ -329,8 +334,10 @@ class AfterServiceProvide extends BaseProvide{
       syncStatus = 2;
     }
     return _repo.getShipperDetail(
-        rmaID: _afterOrderModel.rmaID,syncStatus: syncStatus,
-        shipperCode: _afterOrderModel.shipperCode,waybillNo: _afterOrderModel.waybillNo,
+        rmaID: _afterOrderModel.rmaID,
+        syncStatus: syncStatus,
+        shipperCode: _afterOrderModel.syncStatus<3?_afterOrderModel.shipperCode:_afterOrderModel.exShipperCode,
+        waybillNo: _afterOrderModel.syncStatus<3?_afterOrderModel.waybillNo:_afterOrderModel.exWaybillNo,
         phone: _afterOrderModel.exTel
     ).doOnData((result){})
         .doOnError((e, stacktrace) {})

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
@@ -237,7 +238,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                           ),
                         ),
                       );
-                    }).toList():[],
+                    }).toList():CustomsWidget().noDataWidget(),
                   ),
                 )
               ])
@@ -251,10 +252,10 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     return new Container(
         width: double.infinity,
         height: ScreenAdapter.height(320),
-        child:Image.network(
-          image,
+        child:image!=null? Image.network(
+          image+ConstConfig.LIST_IMAGE_SIZE,
           fit: BoxFit.fitWidth,
-        )
+        ):Image.asset("assets/images/user/header.png",fit: BoxFit.fitWidth,)
 
     );
   }
@@ -346,7 +347,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     _detailProvide.clearCommodityModels();
     _detailProvide.prodId = prodID;
     /// 加载详情数据
-    _detailProvide.detailData()
+    _detailProvide.detailData(types: 37,prodId:prodID )
         .doOnListen(() {
       print('doOnListen');
     })

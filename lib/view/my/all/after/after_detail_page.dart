@@ -42,71 +42,83 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
         widget: new Text("售后详情",style: TextStyle(fontSize: ScreenAdapter.size((30)),
             fontWeight: FontWeight.w900)),
       ),
-      body: _afterServiceProvide.afterOrderModel!=null? Center(
-        child: Column(
-          children: <Widget>[
-            // 商品详情
-            _orderDetail(),
-            // 申请数量
-            _applyCount(),
-            // 申请类型
-            Container(
-              width: double.infinity,
-              height: ScreenAdapter.height(8),
-              color: Color(0xFFFFFF),
-            ),
-            _applyType(),
-            // 申请原因
-            Container(
-              width: double.infinity,
-              height: ScreenAdapter.height(8),
-              color: Color(0xFFFFFF),
-            ),
-            _applyCause(),
-            // 备注
-            Container(
-              width: double.infinity,
-              height: ScreenAdapter.height(8),
-              color: Color(0xFFFFFF),
-            ),
-            _remarkWidget(),
-            // 退款方式
-            Container(
-              width: double.infinity,
-              height: ScreenAdapter.height(8),
-              color: Color(0xFFFFFF),
-            ),
-            _payRefundWidget(),
-            // 查看物流
-            Container(
-              width: double.infinity,
-              height: ScreenAdapter.height(8),
-              color: Color(0xFFFFFF),
-            ),
-            _logisticsWidget(),
-            // 地址
-            _afterServiceProvide.afterOrderModel.exAddressID==null?Container():Container(
-              width: double.infinity,
-              height: ScreenAdapter.height(8),
-              color: Color(0xFFFFFF),
-            ),
-            _afterServiceProvide.afterOrderModel.exAddressID==null?Container():_addressWidget(),
-            // 订单编号
-            Container(
-              width: double.infinity,
-              height: ScreenAdapter.height(8),
-              color: Color(0xFFFFFF),
-            ),
-            _afterOrderNo(),
-            // 创建日期
-            Container(
-              width: double.infinity,
-              height: ScreenAdapter.height(8),
-              color: Color(0xFFFFFF),
-            ),
-            _afterDate()
-          ],
-        ),
+      body: _afterServiceProvide.afterOrderModel!=null?ListView(
+        children: <Widget>[
+          // 商品详情
+          _orderDetail(),
+          // 驳回原因
+          _orderReject(),
+          // 申请数量
+          Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _applyCount(),
+          // 申请类型
+          Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _applyType(),
+          // 换货
+          _afterServiceProvide.afterOrderModel.rmaType==2?Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ):Container(),
+          _afterServiceProvide.afterOrderModel.rmaType==2?_applySkuModel():Container(),
+          // 申请原因
+          Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _applyCause(),
+          // 备注
+          Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _remarkWidget(),
+          // 退款方式
+          Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _payRefundWidget(),
+          // 查看物流
+          Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _logisticsWidget(),
+          // 地址
+          _afterServiceProvide.afterOrderModel.exAddressID==null?Container():Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _afterServiceProvide.afterOrderModel.exAddressID==null?Container():_addressWidget(),
+          // 订单编号
+          Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _afterOrderNo(),
+          // 创建日期
+          Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(8),
+            color: Color(0xFFFFFF),
+          ),
+          _afterDate()
+        ],
       ):Center(),
     );
   }
@@ -115,7 +127,9 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
     // TODO: implement initState
     super.initState();
     _afterServiceProvide ??= widget._afterServiceProvide;
-
+    if(_afterServiceProvide.afterOrderModel!=null){
+      setState(() {});
+    }
   }
 
   @override
@@ -126,49 +140,98 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
   }
 
   /// 订单信息
-  Provide<AfterServiceProvide> _orderDetail(){
+  Widget _orderDetail(){
+      return new Container(
+        width: double.infinity,
+        color: Colors.white,
+        padding: EdgeInsets.all(10),
+        margin: EdgeInsets.only(bottom: 5),
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            // 订单号
+            new Container(
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              child: Provide<AfterServiceProvide>(
+                builder: (BuildContext context,Widget widget,AfterServiceProvide provide) {
+                  String status = CommonUtil.afterStatusName(
+                      provide.afterOrderModel.status);
+                  if (provide.afterOrderModel.syncStatus >= 3 &&
+                      provide.afterOrderModel.status == 40) {
+                    status = "已发出换货";
+                  } else if (provide.afterOrderModel.syncStatus >= 3 &&
+                      provide.afterOrderModel.status == 50) {
+                    status = "换货已完成";
+                  }
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      new Text("售后单号:  ${provide.afterOrderModel.rmaNo}",
+                        style: TextStyle(fontSize: ScreenAdapter.size(24)),),
+                      new Text(status,
+                          style: TextStyle(fontSize: ScreenAdapter.size(24),color: AppConfig.blueBtnColor))
+                    ],
+                  );
+                }),
+            ),
+            // 商品展示
+            _commodityContent(),
+          ],
+        ),
+      );
+  }
+
+  /// 驳回原因
+  Provide<AfterServiceProvide>  _orderReject(){
     return Provide<AfterServiceProvide>(
-      builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-        String status = CommonUtil.afterStatusName(provide.afterOrderModel.status);
-        if(provide.afterOrderModel.syncStatus>=3&&provide.afterOrderModel.status==40){
-          status = "已发出换货";
-        }else if(provide.afterOrderModel.syncStatus>=3&&provide.afterOrderModel.status==50){
-          status = "换货已完成";
-        }
-        return new Container(
-          width: double.infinity,
+        builder: (BuildContext context,Widget widget,AfterServiceProvide provide)
+    {
+      if(provide.afterOrderModel.status==34){
+        return Container(
           color: Colors.white,
-          padding: EdgeInsets.all(10),
-          margin: EdgeInsets.only(bottom: 5),
-          child: new Column(
+          padding: EdgeInsets.only(left: 20,right: 10,top: 10,bottom: 10),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // 订单号
-              new Container(
-                width: double.infinity,
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    new Text("售后单号:  ${provide.afterOrderModel.rmaNo}",
-                      style: TextStyle(fontSize: ScreenAdapter.size(24)),),
-                    new Text(status,
-                        style: TextStyle(fontSize: ScreenAdapter.size(24),color: AppConfig.blueBtnColor))
-                  ],
+              Expanded(
+                flex: 2,
+                child: Text(
+                  "驳回原因",
+                  style: TextStyle(
+                      color: Color.fromRGBO(95, 95, 95, 1.0),
+                      fontSize: ScreenAdapter.size(28),
+                      fontWeight: FontWeight.w500
+                  ),
                 ),
               ),
-              // 商品展示
-              _commodityContent(provide.afterOrderModel),
+              Expanded(
+                flex: 6,
+                child: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20),
+                    child:Text(provide.afterOrderModel.remark!=null?provide.afterOrderModel.remark:"",
+                      maxLines: 10,
+                      softWrap: true,
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: ScreenAdapter.size(24)
+                      ),)
+                ),
+              ),
             ],
           ),
         );
-      },
-    );
+      }else{
+        return Container();
+      }
+    });
   }
 
   /// 商品展示
-  Widget _commodityContent(AfterOrderModel model){
-    List list = CommonUtil.skuNameSplit(model.skuName);
+  Widget _commodityContent(){
     return new Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 5),
@@ -180,37 +243,53 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
               width: ScreenAdapter.width(120),
               height: ScreenAdapter.height(120),
               alignment: Alignment.center,
-              child: new Image.network(model.skuPic,fit: BoxFit.fill,
-                width: ScreenAdapter.width(100),height: ScreenAdapter.height(100),)
+              child: Provide<AfterServiceProvide>(
+                  builder: (BuildContext context,Widget widget,AfterServiceProvide provide) {
+                    return new Image.network(provide.afterOrderModel.skuPic,fit: BoxFit.fill,
+                      width: ScreenAdapter.width(100),height: ScreenAdapter.height(100),);
+                  }
+              )
           ),
           // 商品描述
           new Container(
               width: (ScreenAdapter.getScreenWidth()/1.7)-4,
               padding: EdgeInsets.only(left: 10,top: 5),
-              child: list!=null? new Column(
-                children: <Widget>[
-                  new Container(
-                    width: double.infinity,
-                    child: new Text(list[0],softWrap: true,style: TextStyle(fontSize: ScreenAdapter.size(26),fontWeight: FontWeight.w600),),
-                  ),
-                  new Container(
-                      width: double.infinity,
-                      child: new Text(list[1],style: TextStyle(color: Colors.grey),)
-                  ),
-                  new Container(
-                      padding:EdgeInsets.only(top: 10),
-                      alignment: Alignment.centerLeft,
-                      child: new Text("可申请数量: ${model.quantity} 件")
-                  )
-                ],
-              ): new Text(model.skuName,softWrap: true,)
+              child:  Provide<AfterServiceProvide>(
+                builder: (BuildContext context,Widget widget,AfterServiceProvide provide) {
+                  List list = CommonUtil.skuNameSplit(provide.afterOrderModel.skuName);
+                  if(list!=null){
+                    return new Column(
+                      children: <Widget>[
+                        new Container(
+                          width: double.infinity,
+                          child: new Text(list[0],softWrap: true,style: TextStyle(fontSize: ScreenAdapter.size(26),fontWeight: FontWeight.w600),),
+                        ),
+                        new Container(
+                            width: double.infinity,
+                            child: new Text(list[1],style: TextStyle(color: Colors.grey),)
+                        ),
+                        new Container(
+                            padding:EdgeInsets.only(top: 10),
+                            alignment: Alignment.centerLeft,
+                            child: new Text("可申请数量: ${provide.afterOrderModel.quantity} 件")
+                        )
+                      ],
+                    );
+                  }else{
+                    return new Text(provide.afterOrderModel.skuName,softWrap: true,);
+                  }
+                }
+              )
           ),
           // 价格
           new Container(
             child: new Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                new CustomsWidget().priceTitle(price: model.salesPrice.toString())
+                Provide<AfterServiceProvide>(
+                  builder: (BuildContext context,Widget widget,AfterServiceProvide provide) {
+                    return new CustomsWidget().priceTitle(price: provide.afterOrderModel.salesPrice.toString());
+                })
               ],
             ),
           )
@@ -220,45 +299,38 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
   }
 
   /// 申请数量
-  Provide<AfterServiceProvide> _applyCount(){
-    return Provide<AfterServiceProvide>(
-      builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-        return Row(
-          children: <Widget>[
-            Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(80),
-              padding:EdgeInsets.only(left: 20),
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Center(
-                    child: Text(
-                      "申请数量",
-                      style: TextStyle(
-                          color: Color.fromRGBO(95, 95, 95, 1.0),
-                          fontSize: ScreenAdapter.size(28),
-                          fontWeight: FontWeight.w500
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      padding: EdgeInsets.only(right: 20),
-                      child: Text(provide.afterOrderModel.quantity.toString(),style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: ScreenAdapter.size(24)
-                      ),),
-                    ),
-                  ),
-                ],
+  Widget _applyCount(){
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(left: 20,top: 10,bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              "申请数量",
+              style: TextStyle(
+                  color: Color.fromRGBO(95, 95, 95, 1.0),
+                  fontSize: ScreenAdapter.size(28),
+                  fontWeight: FontWeight.w500
               ),
-            )
-          ],
-        );
-      },
+            ),
+          ),
+          Expanded(
+            child: Container(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 20),
+                child: Provide<AfterServiceProvide>(
+                    builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+                      return Text(provide.afterOrderModel.quantity.toString(),style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: ScreenAdapter.size(24)
+                      ),);
+                    })
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -337,6 +409,48 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
     );
   }
 
+  /// 换货类型
+  Widget _applySkuModel(){
+    return Container(
+      width: double.infinity,
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(left: 20,top: 10,bottom: 10),
+              child: Text( "已选",
+                style: TextStyle(
+                    color: Color.fromRGBO(95, 95, 95, 1.0),
+                    fontSize: ScreenAdapter.size(28),
+                    fontWeight: FontWeight.w500
+                ),
+              )
+          ),
+          Provide<AfterServiceProvide>(
+              builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+                String skuName="";
+                if(provide.afterOrderModel.skuName!=null){
+                  List list = CommonUtil.skuNameSplit(provide.afterOrderModel.skuName);
+                  skuName = list[1];
+                  return Expanded(
+                    flex: 8,
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(right: 10),
+                      child: Text(skuName,style: TextStyle(color:Color.fromRGBO(95, 95, 95, 1.0)),),
+                    ),
+                  );
+                }else{
+                  return Container();
+                }
+              }
+          )
+        ],
+      ),
+    );
+  }
+
   /// 申请原因,_applyCause
   Widget _applyCause(){
     return Container(
@@ -402,7 +516,7 @@ class _AfterDetailContentState extends State<AfterDetailContent> {
                 alignment: Alignment.centerRight,
                 child: Provide<AfterServiceProvide>(
                   builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-                    return new Text(provide.afterOrderModel.reason.isEmpty
+                    return new Text(provide.afterOrderModel.reason!=null
                         ?provide.afterOrderModel.reason:'',softWrap: true,
                       maxLines: 10,
                       style: TextStyle(color: Color.fromRGBO(95, 95, 95, 1.0),

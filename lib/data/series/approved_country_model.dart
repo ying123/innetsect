@@ -7,19 +7,22 @@ class ApprovedCountryModel extends ISuspensionBean{
   String tagIndexTwo;
   String telPrefix;
   String namePinyin;
+  String countryCode;
 
   ApprovedCountryModel({
     this.name,
     this.tagIndex,
     this.tagIndexTwo,
     this.telPrefix,
-    this.namePinyin
+    this.namePinyin,
+    this.countryCode
   });
 
   factory ApprovedCountryModel.fromJson(Map<String,dynamic> json){
     return ApprovedCountryModel(
         telPrefix: json['telPrefix'],
-        name: json['briefName']
+        name: json['briefName'],
+        countryCode: json['countryCode']
     );
   }
 
@@ -29,7 +32,8 @@ class ApprovedCountryModel extends ISuspensionBean{
     'tagIndex': tagIndex,
     'tagIndexTwo': tagIndexTwo,
     'namePinyin': namePinyin,
-    'isShowSuspension': isShowSuspension
+    'isShowSuspension': isShowSuspension,
+    'countryCode': countryCode
   };
 
   @override

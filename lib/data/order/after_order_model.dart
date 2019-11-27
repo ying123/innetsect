@@ -60,6 +60,12 @@ class AfterOrderModel{
   String waybillNo;
   // 物流公司code
   String shipperCode;
+  // 驳回原因
+  String remark;
+  // 换货单号
+  String exWaybillNo;
+  // 换货code
+  String exShipperCode;
 
   AfterOrderModel({
     this.exAddressID,
@@ -92,7 +98,10 @@ class AfterOrderModel{
     this.orderNo,
     this.syncStatus,
     this.waybillNo,
-    this.shipperCode
+    this.shipperCode,
+    this.remark,
+    this.exShipperCode,
+    this.exWaybillNo
   });
 
   factory AfterOrderModel.fromJson(Map<String,dynamic> json){
@@ -127,7 +136,10 @@ class AfterOrderModel{
         orderNo: json['orderNo'],
         syncStatus: json['syncStatus'],
         waybillNo: json['waybillNo'],
-        shipperCode: json['shipperCode']
+        shipperCode: json['shipperCode'],
+        remark: json['remark'],
+        exShipperCode: json['exShipperCode'],
+        exWaybillNo: json['exWaybillNo']
     );
   }
 
@@ -162,7 +174,10 @@ class AfterOrderModel{
     'orderNo': orderNo,
     'syncStatus': syncStatus,
     'waybillNo': waybillNo,
-    'shipperCode': shipperCode
+    'shipperCode': shipperCode,
+    'remark': remark,
+    'exShipperCode': exShipperCode,
+    'exWaybillNo': exWaybillNo
   };
 }
 
