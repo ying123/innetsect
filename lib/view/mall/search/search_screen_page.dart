@@ -4,7 +4,6 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
-import 'package:innetsect/view/mall/search/custom_sliver_header_delegate.dart';
 import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
@@ -67,175 +66,280 @@ class _SearchScreenContentState extends State<SearchScreenContent>
         _searchProvide.searchValue,style: TextStyle(fontSize: ScreenAdapter.size((30)),
           fontWeight: FontWeight.w900 ),) ,
       ),
-      body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled){
-            return <Widget>[
-//              SliverAppBar(
-//                elevation: 0,
-//                automaticallyImplyLeading: false,
-//                expandedHeight: 200.0,
-//                floating: true,
-//                pinned: true,
-//                flexibleSpace: FlexibleSpaceBar(
-//                    centerTitle: true,
-//                    title: Text(
-//                      "我是可以跟着滑动的title",
-//                    ),
-//                    background: Image.network(
-//                      "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531798262708&di=53d278a8427f482c5b836fa0e057f4ea&imgtype=0&src=http%3A%2F%2Fh.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2F342ac65c103853434cc02dda9f13b07eca80883a.jpg",
-//                      fit: BoxFit.fill,
+      body:
+//      NestedScrollView(
+//          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled){
+//            return <Widget>[
+////              SliverAppBar(
+////                elevation: 0,
+////                automaticallyImplyLeading: false,
+////                expandedHeight: 200.0,
+////                floating: true,
+////                pinned: true,
+////                flexibleSpace: FlexibleSpaceBar(
+////                    centerTitle: true,
+////                    title: Text(
+////                      "我是可以跟着滑动的title",
+////                    ),
+////                    background: Image.network(
+////                      "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531798262708&di=53d278a8427f482c5b836fa0e057f4ea&imgtype=0&src=http%3A%2F%2Fh.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2F342ac65c103853434cc02dda9f13b07eca80883a.jpg",
+////                      fit: BoxFit.fill,
+////                    )
+////                ),
+////                bottom: TabBar(
+////                  isScrollable: true,
+////                  controller: _tabController,
+////                  tabs: <Widget>[
+////                    Tab(text: "111",),
+////                    Tab(text: "222",)
+////                  ],
+////                ),
+////              ),
+//              SliverPersistentHeader(
+//                delegate: CustomSliverHeaderDelegate(
+//                    max: 60,
+//                    min: 60,
+//                    child: new Container(
+//                      width: double.infinity,
+//                      color: Colors.white,
+//                      height: ScreenAdapter.height(80),
+//                      child: new Row(
+//                        mainAxisAlignment: MainAxisAlignment.center,
+//                        children: navList.map((item){
+//                          if(item['index']==1){
+//                            return Expanded(
+//                              child: InkWell(
+//                                onTap: (){
+//                                  // 判断价格点击
+//                                  navList[0]['isSelected']=false;
+//                                  navList[2]['isSelected']=false;
+//                                  item['isSelected'] = !item['isSelected'];
+//                                  if(item['isSelected']){
+//                                    setState(() {
+//                                      item['direction'] = 'up';
+//                                      sort = "p.defSalesPrice ASC";
+//                                    });
+//                                  }
+//
+//                                  if(!item['isSelected']){
+//                                    setState(() {
+//                                      item['direction'] = 'down';
+//                                      sort = "p.defSalesPrice DESC";
+//                                    });
+//                                  }
+//                                  pageNo = 1;
+//                                  _commodityListProvide.clearList();
+//                                  _loadList(pageNos: pageNo);
+//                                },
+//                                child: Row(
+//                                  mainAxisAlignment: MainAxisAlignment.center,
+//                                  crossAxisAlignment: CrossAxisAlignment.center,
+//                                  children: <Widget>[
+//                                    Expanded(
+//                                      flex: 1,
+//                                      child: Container(
+//                                        alignment: Alignment.centerRight,
+//                                        child: Text(item['title'],style: TextStyle(color: item['direction']!=null?Colors.black:Colors.black26)),
+//                                      ),
+//                                    ),
+//                                    Expanded(
+//                                      flex: 1,
+//                                      child: Column(
+//                                        mainAxisAlignment: MainAxisAlignment.center,
+//                                        crossAxisAlignment: CrossAxisAlignment.center,
+//                                        children: <Widget>[
+//                                          Container(
+//                                            height: ScreenAdapter.height(10),
+//                                            alignment: Alignment.bottomLeft,
+//                                            child: Icon(Icons.arrow_drop_up,size: 16,color: item['isSelected']&&item['direction']!=null&&item['direction']=="up"?Colors.black:Colors.black26,),
+//                                          ),
+//                                          Container(
+//                                            height: ScreenAdapter.height(10),
+//                                            margin: EdgeInsets.only(bottom: 6),
+//                                            alignment: Alignment.topLeft,
+//                                            child: Icon(Icons.arrow_drop_down,size: 16,color: !item['isSelected']&&item['direction']!=null&&item['direction']=="down"?Colors.black:Colors.black26),
+//                                          )
+//                                        ],
+//                                      ),
+//                                    )
+//                                  ],
+//                                ),
+//                              ),
+//                            );
+//                          }else{
+//                            return Expanded(
+//                              child: InkWell(
+//                                onTap: (){
+//                                  navList.forEach((val){
+//                                    val['isSelected']=false;
+//                                    val['direction']=null;
+//                                  });
+//
+//                                  // 筛选点击
+//                                  String sorts;
+//                                  switch(item['index']){
+//                                    case 0:
+//                                      sorts = 'c.soldCount DESC';
+//                                      break;
+//                                    case 2:
+//                                      sorts = 'arrivingDate DESC';
+//                                      break;
+//                                  }
+//                                  setState(() {
+//                                    item['isSelected'] = !item['isSelected'];
+//                                    sort = sorts;
+//                                  });
+//                                  pageNo = 1;
+//                                  _commodityListProvide.clearList();
+//                                  _loadList(pageNos: pageNo);
+//                                },
+//                                child: Container(
+//                                  color: Colors.white,
+//                                  alignment: Alignment.center,
+//                                  child: Text(item['title'],style: TextStyle(color: item['isSelected']?Colors.black:Colors.black26),),
+//                                ),
+//                              ),
+//                            );
+//                          }
+//                        }).toList(),
+//                      ),
 //                    )
 //                ),
-//                bottom: TabBar(
-//                  isScrollable: true,
-//                  controller: _tabController,
-//                  tabs: <Widget>[
-//                    Tab(text: "111",),
-//                    Tab(text: "222",)
-//                  ],
-//                ),
-//              ),
-              SliverPersistentHeader(
-                delegate: CustomSliverHeaderDelegate(
-                    max: 60,
-                    min: 60,
-                    child: new Container(
-                      width: double.infinity,
-                      color: Colors.white,
-                      height: ScreenAdapter.height(80),
-                      child: new Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: navList.map((item){
-                          if(item['index']==1){
-                            return Expanded(
-                              child: InkWell(
-                                onTap: (){
-                                  // 判断价格点击
-                                  navList[0]['isSelected']=false;
-                                  navList[2]['isSelected']=false;
-                                  item['isSelected'] = !item['isSelected'];
-                                  if(item['isSelected']){
-                                    setState(() {
-                                      item['direction'] = 'up';
-                                      sort = "p.defSalesPrice ASC";
-                                    });
-                                  }
+//                pinned: true,
+//              )
+//            ];
+//          },
+////        body: TabBarView(
+////          controller: _tabController,
+////          children: <Widget>[
+////            _listWidget(),
+////            _listWidget()
+////          ],
+////        ),
+//          body: _listWidget(),
+//      )
 
-                                  if(!item['isSelected']){
-                                    setState(() {
-                                      item['direction'] = 'down';
-                                      sort = "p.defSalesPrice DESC";
-                                    });
-                                  }
-                                  pageNo = 1;
-                                  _commodityListProvide.clearList();
-                                  _loadList(pageNos: pageNo);
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Expanded(
-                                      flex: 1,
-                                      child: Container(
-                                        alignment: Alignment.centerRight,
-                                        child: Text(item['title'],style: TextStyle(color: item['direction']!=null?Colors.black:Colors.black26)),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Container(
-                                            height: ScreenAdapter.height(10),
-                                            alignment: Alignment.bottomLeft,
-                                            child: Icon(Icons.arrow_drop_up,size: 16,color: item['isSelected']&&item['direction']!=null&&item['direction']=="up"?Colors.black:Colors.black26,),
-                                          ),
-                                          Container(
-                                            height: ScreenAdapter.height(10),
-                                            margin: EdgeInsets.only(bottom: 6),
-                                            alignment: Alignment.topLeft,
-                                            child: Icon(Icons.arrow_drop_down,size: 16,color: !item['isSelected']&&item['direction']!=null&&item['direction']=="down"?Colors.black:Colors.black26),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          }else{
-                            return Expanded(
-                              child: InkWell(
-                                onTap: (){
-                                  navList.forEach((val){
-                                    val['isSelected']=false;
-                                    val['direction']=null;
-                                  });
 
-                                  // 筛选点击
-                                  String sorts;
-                                  switch(item['index']){
-                                    case 0:
-                                      sorts = 'c.soldCount DESC';
-                                      break;
-                                    case 2:
-                                      sorts = 'arrivingDate DESC';
-                                      break;
-                                  }
-                                  setState(() {
-                                    item['isSelected'] = !item['isSelected'];
-                                    sort = sorts;
-                                  });
-                                  pageNo = 1;
-                                  _commodityListProvide.clearList();
-                                  _loadList(pageNos: pageNo);
-                                },
-                                child: Container(
-                                  color: Colors.white,
-                                  alignment: Alignment.center,
-                                  child: Text(item['title'],style: TextStyle(color: item['isSelected']?Colors.black:Colors.black26),),
-                                ),
-                              ),
-                            );
+      Stack(
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(top: ScreenAdapter.height(80)),
+            padding: EdgeInsets.only(top: 10),
+            child: _listWidget(),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: new Container(
+              width: double.infinity,
+              color: Colors.white,
+              height: ScreenAdapter.height(80),
+              child: new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: navList.map((item){
+                  if(item['index']==1){
+                    return Expanded(
+                      child: InkWell(
+                        onTap: (){
+                          // 判断价格点击
+                          navList[0]['isSelected']=false;
+                          navList[2]['isSelected']=false;
+                          item['isSelected'] = !item['isSelected'];
+                          if(item['isSelected']){
+                            setState(() {
+                              item['direction'] = 'up';
+                              sort = "p.defSalesPrice ASC";
+                            });
                           }
-                        }).toList(),
+
+                          if(!item['isSelected']){
+                            setState(() {
+                              item['direction'] = 'down';
+                              sort = "p.defSalesPrice DESC";
+                            });
+                          }
+                          pageNo = 1;
+                          _commodityListProvide.clearList();
+                          _loadList(pageNos: pageNo);
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                alignment: Alignment.centerRight,
+                                child: Text(item['title'],style: TextStyle(color: item['direction']!=null?Colors.black:Colors.black26)),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    height: ScreenAdapter.height(10),
+                                    alignment: Alignment.bottomLeft,
+                                    child: Icon(Icons.arrow_drop_up,size: 16,color: item['isSelected']&&item['direction']!=null&&item['direction']=="up"?Colors.black:Colors.black26,),
+                                  ),
+                                  Container(
+                                    height: ScreenAdapter.height(10),
+                                    margin: EdgeInsets.only(bottom: 6),
+                                    alignment: Alignment.topLeft,
+                                    child: Icon(Icons.arrow_drop_down,size: 16,color: !item['isSelected']&&item['direction']!=null&&item['direction']=="down"?Colors.black:Colors.black26),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    )
-                ),
-                pinned: true,
-              )
-            ];
-          },
-//        body: TabBarView(
-//          controller: _tabController,
-//          children: <Widget>[
-//            _listWidget(),
-//            _listWidget()
-//          ],
-//        ),
-          body: _listWidget(),
-      )
+                    );
+                  }else{
+                    return Expanded(
+                      child: InkWell(
+                        onTap: (){
+                          navList.forEach((val){
+                            val['isSelected']=false;
+                            val['direction']=null;
+                          });
 
-
-//      Stack(
-//        children: <Widget>[
-//          Container(
-//            width: double.infinity,
-//            margin: EdgeInsets.only(top: ScreenAdapter.height(80)),
-//            padding: EdgeInsets.only(top: 10),
-//            child: _listWidget(),
-//          ),
-//          Positioned(
-//            top: 0,
-//            left: 0,
-//            right: 0,
-//            child: ,
-//          )
-//        ],
-//      ),
+                          // 筛选点击
+                          String sorts;
+                          switch(item['index']){
+                            case 0:
+                              sorts = 'c.soldCount DESC';
+                              break;
+                            case 2:
+                              sorts = 'arrivingDate DESC';
+                              break;
+                          }
+                          setState(() {
+                            item['isSelected'] = !item['isSelected'];
+                            sort = sorts;
+                          });
+                          pageNo = 1;
+                          _commodityListProvide.clearList();
+                          _loadList(pageNos: pageNo);
+                        },
+                        child: Container(
+                          color: Colors.white,
+                          alignment: Alignment.center,
+                          child: Text(item['title'],style: TextStyle(color: item['isSelected']?Colors.black:Colors.black26),),
+                        ),
+                      ),
+                    );
+                  }
+                }).toList(),
+              ),
+            )
+          )
+        ],
+      ),
     );
   }
 
@@ -264,68 +368,64 @@ class _SearchScreenContentState extends State<SearchScreenContent>
   }
 
   /// 筛选商品数据列表展示
-  Provide<CommodityListProvide> _listWidget(){
-    return Provide<CommodityListProvide>(
-      builder: (BuildContext context,Widget widget,CommodityListProvide provide){
-        double itemWidth = (ScreenAdapter.getScreenWidth()-30)/2;
-        return new ListWidgetPage(
-          controller: _easyRefreshController,
-          onRefresh:() async{
-            print('onRefresh');
-            this.pageNo = 1;
-            provide.clearList();
-            await _loadList(pageNos: pageNo);
-          },
-          onLoad: () async{
-            await _loadList(pageNos: ++ pageNo);
-          },
-          child: <Widget>[
-            // 数据内容
-            SliverList(
-                delegate:
-                SliverChildListDelegate([
-                  new Container(
-                    padding: EdgeInsets.only(left: 10,right: 10),
-                    child: new Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: provide.list.length>0? provide.list.map((item){
-                        print(item);
-                        return new InkWell(
-                          onTap: (){
-                            /// 跳转详情
-                            _loadDetail(item.prodID);
-                            Navigator.push(context, MaterialPageRoute(
-                                builder:(context){
-                                  return new CommodityDetailPage();
-                                }
-                            )
-                            );
-                          },
-                          child: new Container(
-                            width: itemWidth,
-                            color: Colors.white,
-                            padding: EdgeInsets.all(5),
-                            child: new Column(
-                              children: <Widget>[
-                                // 商品图片
-                                _imageWidget(item.prodPic),
-                                // 价格 购物车图标
-                                _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID),
-                                // 描述
-                                _textWidget(item.prodName)
-                              ],
-                            ),
-                          ),
-                        );
-                      }).toList():[],
-                    ),
-                  )
-                ])
-            ),
-          ],
-        );
+  Widget _listWidget(){
+    double itemWidth = (ScreenAdapter.getScreenWidth()-30)/2;
+    return new ListWidgetPage(
+      controller: _easyRefreshController,
+      onRefresh:() async{
+        print('onRefresh');
+        this.pageNo = 1;
+        _commodityListProvide.clearList();
+        await _loadList(pageNos: pageNo);
       },
+      onLoad: () async{
+        await _loadList(pageNos: ++ pageNo);
+      },
+      child: <Widget>[
+        // 数据内容
+        SliverList(
+            delegate:
+            SliverChildListDelegate([
+              new Container(
+                padding: EdgeInsets.only(left: 10,right: 10),
+                child: new Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: _commodityListProvide.list.length>0? _commodityListProvide.list.map((item){
+                    print(item);
+                    return new InkWell(
+                      onTap: (){
+                        /// 跳转详情
+                        _loadDetail(item.prodID);
+                        Navigator.push(context, MaterialPageRoute(
+                            builder:(context){
+                              return new CommodityDetailPage();
+                            }
+                        )
+                        );
+                      },
+                      child: new Container(
+                        width: itemWidth,
+                        color: Colors.white,
+                        padding: EdgeInsets.all(5),
+                        child: new Column(
+                          children: <Widget>[
+                            // 商品图片
+                            _imageWidget(item.prodPic),
+                            // 价格 购物车图标
+                            _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID),
+                            // 描述
+                            _textWidget(item.prodName)
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList():[],
+                ),
+              )
+            ])
+        ),
+      ],
     );
   }
 
@@ -392,9 +492,15 @@ class _SearchScreenContentState extends State<SearchScreenContent>
       print('listen data->$items');
       if(items!=null&&items.data!=null){
         if(!mounted) return;
-        setState(() {
-          _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
-        });
+        if(url.indexOf("/api/promotion")>-1){
+          setState(() {
+            _commodityListProvide.addList(CommodityList.fromJson(items.data['products']).list);
+          });
+        }else{
+          setState(() {
+            _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
+          });
+        }
       }
 
     }, onError: (e) {});

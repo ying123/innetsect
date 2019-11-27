@@ -61,18 +61,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           widget: Container(),
           width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-120)
       ),
-      body: new Stack(
-        children: <Widget>[
-          _contentWidget(),
-//          _tabBarView(),
-          new Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: _bottomBar(context)
-          )
-        ],
-      )
+      body: _contentWidget(),
+      bottomSheet: _bottomBar(context),
     );
   }
 
@@ -147,7 +137,12 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           children: <Widget>[
-            _swiperWidget(),
+            new Container(
+              width: ScreenAdapter.width(750),
+              height: ScreenAdapter.height(563),
+              color: Colors.white,
+              child: _swiperWidget(),
+            ),
             new Padding(padding: EdgeInsets.only(top: 10),
               child: _comTitle(),
             ),
@@ -185,94 +180,109 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     return Provide<CommodityDetailProvide>(
       builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
         CommoditySkusModel skuModel = provide.skusModel;
-        return Container(
-            width: ScreenAdapter.width(750),
-            height: ScreenAdapter.height(563),
-            color: Colors.white,
-            child:new Swiper(
-              itemBuilder: (BuildContext context,int index){
-                return skuModel!=null?Image.network(skuModel.pics[index].skuPicUrl):new Container();
-              },
-              loop: true,
-              itemCount: skuModel!=null?skuModel.pics.length:1,
-              pagination: new SwiperPagination(),
-            )
+        return new Swiper(
+          itemBuilder: (BuildContext context,int index){
+            return skuModel!=null?Image.network(skuModel.pics[index].skuPicUrl):new Container();
+          },
+          loop: true,
+          itemCount: skuModel!=null?skuModel.pics.length:1,
+          pagination: new SwiperPagination(),
         );
       },
     );
   }
 
   /// 标题
-  Provide<CommodityDetailProvide> _comTitle(){
+  Widget _comTitle(){
+    return new Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(10),
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _comTitleProdName(),
+          new Padding(padding: EdgeInsets.only(top: 10),
+            child: new Container(
+              child: _comTitleSalesPrice()
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  /// 标题 prodName
+  Provide<CommodityDetailProvide> _comTitleProdName() {
     return Provide<CommodityDetailProvide>(
-      builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
-        CommodityModels models = provide.commodityModels;
-        return new Container(
-          color: Colors.white,
-          padding: EdgeInsets.all(10),
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Text(models!=null?models.prodName:"",style: TextStyle(fontSize: ScreenAdapter.size(38),
-                  fontWeight: FontWeight.w800
-              ),),
-              new Padding(padding: EdgeInsets.only(top: 10),
-                child: new Container(
-                  child: CustomsWidget().priceTitle(price: models!=null?models.salesPriceRange:""),
-                ),
-              )
-            ],
-          ),
-        );
-      },
+        builder: (BuildContext context, Widget widget,
+            CommodityDetailProvide provide) {
+          CommodityModels models = provide.commodityModels;
+          return new Text(models!=null?models.prodName:"",style: TextStyle(fontSize: ScreenAdapter.size(38),
+              fontWeight: FontWeight.w800
+          ),);
+        }
+    );
+  }
+  /// 标题价格
+  Provide<CommodityDetailProvide> _comTitleSalesPrice() {
+    return Provide<CommodityDetailProvide>(
+        builder: (BuildContext context, Widget widget,
+            CommodityDetailProvide provide) {
+          CommodityModels models = provide.commodityModels;
+          return CustomsWidget().priceTitle(price: models!=null?models.salesPrice.toString():"");
+        }
     );
   }
 
   /// 已选栏目
-  Provide<CommodityDetailProvide> _selCol(){
+  Widget _selCol(){
+    return new InkWell(
+      onTap: (){
+        /// 弹出颜色，尺码选择
+        _provide.setInitData();
+        _cartProvide.setInitCount();
+        _provide.isBuy = false;
+        CommodityModalBottom.showBottomModal(context:context);
+      },
+      child: new Container(
+        height: ScreenAdapter.height(110),
+        color: Colors.white,
+        padding: EdgeInsets.all(10),
+        child: new Row(
+          children: <Widget>[
+            new Container(
+              child: CustomsWidget().subTitle(
+                title: "已选", color: AppConfig.primaryColor,
+              ),
+            ),
+            new Container(
+              width: ScreenAdapter.getScreenWidth()-150,
+              padding: EdgeInsets.only(left: 20,right: 20),
+              child: _selColSkuName(),
+            ),
+            new Expanded(
+              flex:1,
+              child: new Icon(Icons.more_horiz),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 已选skuName
+  Provide<CommodityDetailProvide> _selColSkuName() {
     return Provide<CommodityDetailProvide>(
-        builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
+        builder: (BuildContext context, Widget widget,CommodityDetailProvide provide) {
           CommoditySkusModel model = provide.skusModel;
           List list;
           if(model!=null){
             list = CommonUtil.skuNameSplit(model.skuName);
           }
-          return new InkWell(
-            onTap: (){
-              /// 弹出颜色，尺码选择
-              _provide.setInitData();
-              _cartProvide.setInitCount();
-              _provide.isBuy = false;
-              CommodityModalBottom.showBottomModal(context:context);
-            },
-            child: new Container(
-              height: ScreenAdapter.height(110),
-              color: Colors.white,
-              padding: EdgeInsets.all(10),
-              child: new Row(
-                children: <Widget>[
-                  new Container(
-                    child: CustomsWidget().subTitle(
-                      title: "已选", color: AppConfig.primaryColor,
-                    ),
-                  ),
-                  new Container(
-                    width: ScreenAdapter.getScreenWidth()-150,
-                    padding: EdgeInsets.only(left: 20,right: 20),
-                    child: new Text(list!=null?list[1]:model!=null?model.skuName:""),
-                  ),
-                  new Expanded(
-                    flex:1,
-                    child: new Icon(Icons.more_horiz),
-                  )
-                ],
-              ),
-            ),
-          );
+          return new Text(list!=null?list[1]:model!=null?model.skuName:"");
         }
     );
   }
-  
   ///TODO 推荐（暂时隐藏)
   /**Widget _recommendWidget(){
     double childHeight = ScreenAdapter.getScreenHeight()/1.5;
@@ -357,67 +367,76 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   /// 底部：客服、购物车、加入购物车、立即购买
   Widget _bottomBar(BuildContext context){
     return new Container(
+      width: double.infinity,
+      height: ScreenAdapter.height(100),
       color: Colors.white,
       padding: EdgeInsets.only(left: 12,right: 12,top: 10,bottom: 12),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"),
-//          new Padding(padding: EdgeInsets.only(left: 12),
-//            child: _iconAndTextMerge(title:"心愿单",icon: "assets/images/mall/wish_icon.png")
-//          ),
-          new Padding(padding: EdgeInsets.only(left: 24),
-            child: InkWell(
-              onTap: (){
-                // 跳转到购物车
-                // 如果需要返回，设置isBack为true,
-                // 设置settings为传参
-                // 默认为false,不返回
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context){
-                    return CommodityCartPage();
-                  },settings: RouteSettings(arguments: {'isBack': true,'page':'mall'})
-                ));
-              },
-              child: _iconAndTextMerge(title:"购物车",icon: "assets/images/mall/cart_icon.png"),
-            )
+          Expanded(
+            flex: 1,
+            child: _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"),
           ),
-          new Padding(padding: EdgeInsets.only(left: 17),
-            child: new InkWell(
-              onTap: (){
-                _provide.setInitData();
-                _cartProvide.setInitCount();
-                _provide.isBuy = false;
-                CommodityModalBottom.showBottomModal(context:context);
-              },
-              child: new Container(
-                width: ScreenAdapter.width(230),
-                height: ScreenAdapter.height(90),
-                color: Colors.black,
-                alignment: Alignment.center,
-                child: new Text("加入购物车",style: TextStyle(color: Colors.white,
-                    fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
-              )
+          Expanded(
+            flex: 1,
+            child: new Padding(padding: EdgeInsets.only(left: 10),
+                child: _iconAndTextMerge(title:"购物车",icon: "assets/images/mall/cart_icon.png",
+                onTap: (){
+                  // 跳转到购物车
+                  // 如果需要返回，设置isBack为true,
+                  // 设置settings为传参
+                  // 默认为false,不返回
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return CommodityCartPage();
+                      },settings: RouteSettings(arguments: {'isBack': true,'page':'mall'})
+                  ));
+                }),
             ),
           ),
-          new Padding(padding: EdgeInsets.only(left: 15),
-            child: InkWell(
-              onTap: (){
-                _provide.setInitData();
-                _cartProvide.setInitCount();
-                _provide.isBuy = true;
-                // 存储当前商品信息
-                CommodityModalBottom.showBottomModal(context:context);
-              },
-              child: new Container(
-                width: ScreenAdapter.width(230),
-                height: ScreenAdapter.height(90),
-                color: AppConfig.blueBtnColor,
-                alignment: Alignment.center,
-                child: new Text("立即购买",style: TextStyle(color: AppConfig.whiteBtnColor,
-                    fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+          Expanded(
+            flex: 3,
+            child: new Padding(padding: EdgeInsets.only(left: 10),
+              child: new InkWell(
+                  onTap: (){
+                    _provide.setInitData();
+                    _cartProvide.setInitCount();
+                    _provide.isBuy = false;
+                    CommodityModalBottom.showBottomModal(context:context);
+                  },
+                  child: new Container(
+                    width: ScreenAdapter.width(230),
+                    height: ScreenAdapter.height(80),
+                    color: Colors.black,
+                    alignment: Alignment.center,
+                    child: new Text("加入购物车",style: TextStyle(color: Colors.white,
+                        fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+                  )
               ),
             ),
+          ),
+          Expanded(
+            flex: 3,
+            child: new Padding(padding: EdgeInsets.only(left: 10),
+              child: InkWell(
+                onTap: (){
+                  _provide.setInitData();
+                  _cartProvide.setInitCount();
+                  _provide.isBuy = true;
+                  // 存储当前商品信息
+                  CommodityModalBottom.showBottomModal(context:context);
+                },
+                child: new Container(
+                  width: ScreenAdapter.width(230),
+                  height: ScreenAdapter.height(80),
+                  color: AppConfig.blueBtnColor,
+                  alignment: Alignment.center,
+                  child: new Text("立即购买",style: TextStyle(color: AppConfig.whiteBtnColor,
+                      fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+                ),
+              ),
+            )
           )
         ],
       ),
@@ -425,13 +444,19 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   }
 
   /// 图片和文字结合，垂直布局
-  Widget _iconAndTextMerge({title,icon}){
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Image.asset(icon,width: ScreenAdapter.width(40),height: ScreenAdapter.height(40),),
-          new Text(title)
-        ],
+  Widget _iconAndTextMerge({String title,String icon,Function() onTap}){
+    return InkWell(
+      onTap: (){
+        onTap();
+      },
+      child: new Container(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Image.asset(icon,width: ScreenAdapter.width(32),height: ScreenAdapter.height(32),fit: BoxFit.fitWidth,),
+            new Text(title,style: TextStyle(fontSize: ScreenAdapter.size(18)),)
+          ],
+        ),
       ),
     );
   }
@@ -455,9 +480,11 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   _loadHtml() async{
     await _provide.getDetailHtml().then((item){
       print(item);
-      setState(() {
-        html = item.data;
-      });
+      if(item.data!=null){
+        setState(() {
+          html = item.data;
+        });
+      }
     });
   }
 

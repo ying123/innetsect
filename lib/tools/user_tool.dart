@@ -95,6 +95,14 @@ void clearUserInfo(){
     }
   }
 
+  void setLocal(String local){
+      _spf.setString("local", local);
+  }
+
+  String getLocal(){
+      return _spf.getString("local");
+  }
+
   
 ///从本地获取国家
   String getIniCountry(String iniCountry){

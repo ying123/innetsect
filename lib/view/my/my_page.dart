@@ -346,9 +346,11 @@ class _MyContentPageState extends State<MyContentPage> {
                 child: GestureDetector(
                   onTap: () {
                     print('个人中心被点击');
-                    Navigator.of(context).push(CommonUtil.createRoute(
-                        AnimationUtil.getBottominAnilmation(),
-                        PersonalCenterPage()));
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return PersonalCenterPage();
+                      }
+                    ));
                   },
                   child: Container(
                     width: ScreenAdapter.width(190),

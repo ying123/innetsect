@@ -2,7 +2,6 @@
 
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/base.dart';
-import 'package:innetsect/tools/user_tool.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// 注册
@@ -16,10 +15,14 @@ class RegisteredService{
 
   /// 注册
   /// *referer 推荐人
-  Observable<BaseResponse> onRegistered(String vaildCode){
-    UserTools().clearUserInfo();
-    var url = '/api/accounts/register?referer=admin&vcode=$vaildCode';
-    var response = post(url);
+  Observable<BaseResponse> onRegistered(String vaildCode,String telPrefix){
+    var url = '/api/accounts/register';
+    var json={
+      'referer':'admin',
+      'vcode':vaildCode,
+      'telPrefix': telPrefix
+    };
+    var response = post(url,body: json);
     return response;
   }
 }
@@ -31,7 +34,7 @@ class RegisteredRepo{
     return _remote.registeredPhone(phone);
   }
 
-  Observable<BaseResponse> onRegistered(String vaildCode){
-    return _remote.onRegistered(vaildCode);
+  Observable<BaseResponse> onRegistered(String vaildCode,String telPrefix){
+    return _remote.onRegistered(vaildCode, telPrefix);
   }
 }

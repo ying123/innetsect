@@ -6,6 +6,7 @@ import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/my/settings/about_us_page.dart';
 import 'package:innetsect/view/my/settings/edit_pwd_page.dart';
+import 'package:innetsect/view/personal_center/personal_center_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/mall/user/user_provide.dart';
@@ -45,7 +46,13 @@ class _MySettingsContentState extends State<MySettingsContent> {
         child: new Column(
           children: <Widget>[
             // 个人资料
-            _listWidgets(icon: Icons.account_circle,title: "个人资料"),
+            _listWidgets(icon: Icons.account_circle,title: "个人资料",onTap: (){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return PersonalCenterPage();
+                  }
+              ));
+            }),
             new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
             // 抽签登记
             // 修改密码
@@ -84,7 +91,7 @@ class _MySettingsContentState extends State<MySettingsContent> {
     super.dispose();
   }
 
-  Widget _listWidgets({GestureTapCallback onTap,
+  Widget _listWidgets({Function() onTap,
     IconData icon,
     String title
   }){

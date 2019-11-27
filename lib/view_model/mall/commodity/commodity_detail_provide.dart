@@ -94,7 +94,9 @@ class CommodityDetailProvide extends BaseProvide {
 
   // 设置支付类型
   void setPayModel(int payModel){
-    _commodityModels.payMode = payModel;
+    if(_commodityModels!=null){
+      _commodityModels.payMode = payModel;
+    }
     notifyListeners();
   }
 

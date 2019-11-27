@@ -8,7 +8,6 @@ import 'package:innetsect/view/mall/order/order_pay_result_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:provide/provide.dart';
-//import 'package:fluwx/fluwx.dart' as fluwx;
 import 'package:sy_flutter_wechat/sy_flutter_wechat.dart';
 
 class OrderPayPage extends PageProvideNode{
@@ -34,6 +33,8 @@ class OrderPayContent extends StatefulWidget {
 }
 
 class _OrderPayContentState extends State<OrderPayContent> {
+  CommodityDetailProvide _provide;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -168,45 +169,41 @@ class _OrderPayContentState extends State<OrderPayContent> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    _provide ??= widget._provide;
   }
 
   /// 选择支付方式
-  Provide<CommodityDetailProvide> _payWidget(){
-    return Provide<CommodityDetailProvide>(
-      builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
-        return new Column(
-            children: provide.payList.asMap().keys.map((keys){
-              return GestureDetector(
-                onTap: (){
-                  provide.onChangePayMode(keys);
-                },
-                child: new Container(
-                  padding: EdgeInsets.only(left: 20,right: 20),
-                  height: ScreenAdapter.height(120),
-                  decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      new Text(provide.payList[keys]['name'],style: TextStyle(fontSize: ScreenAdapter.height(28)),),
-                      new Container(
-                        child: provide.payList[keys]['isSelected']? new Icon(
-                          Icons.check_circle,
-                          size: 25.0,
-                          color: AppConfig.fontBackColor,
-                        ) : new Icon(Icons.panorama_fish_eye,
-                          size: 25.0,
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              );
-            }).toList()
-        );
-      },
+  Widget _payWidget(){
+    return new Column(
+        children: _provide.payList.asMap().keys.map((keys){
+          return GestureDetector(
+              onTap: (){
+                _provide.onChangePayMode(keys);
+              },
+              child: new Container(
+                padding: EdgeInsets.only(left: 20,right: 20),
+                height: ScreenAdapter.height(120),
+                decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new Text(_provide.payList[keys]['name'],style: TextStyle(fontSize: ScreenAdapter.height(28)),),
+                    new Container(
+                      child: _provide.payList[keys]['isSelected']? new Icon(
+                        Icons.check_circle,
+                        size: 25.0,
+                        color: AppConfig.fontBackColor,
+                      ) : new Icon(Icons.panorama_fish_eye,
+                        size: 25.0,
+                      ),
+                    )
+                  ],
+                ),
+              )
+          );
+        }).toList()
     );
   }
 

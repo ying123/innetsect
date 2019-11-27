@@ -97,85 +97,81 @@ class _SearchContentState extends State<SearchContent> {
   }
 
   /// 顶部搜索栏
-  Provide<SearchProvide> _searchHeader(){
-    return Provide<SearchProvide>(
-      builder: (BuildContext context,Widget widget,SearchProvide provide){
-        return new Container(
-          color: AppConfig.assistLineColor,
-          margin: EdgeInsets.all(20),
-          child: new TextField(
-            controller: _selectionController,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: "请输入关键词",
-              filled: true,
-              prefixIcon: Icon(Icons.search),
-              prefixStyle: TextStyle(color: Colors.grey),
-              suffix: InkWell(
-                onTap: (){
-                  // 搜索
-                  if(provide.searchValue==null){
-                    CustomsWidget().showToast(title: "请输入关键词");
-                    return;
-                  }
+  Widget _searchHeader(){
+    return new Container(
+      color: AppConfig.assistLineColor,
+      margin: EdgeInsets.all(20),
+      child: new TextField(
+        controller: _selectionController,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "请输入关键词",
+          filled: true,
+          prefixIcon: Icon(Icons.search),
+          prefixStyle: TextStyle(color: Colors.grey),
+          suffix: InkWell(
+            onTap: (){
+              // 搜索
+              if(_provide.searchValue==null){
+                CustomsWidget().showToast(title: "请输入关键词");
+                return;
+              }
 
-                  // 存储搜索记录
-                  UserTools().saveSearchHistory(provide.searchValue);
-                  setState(() {
-                    _historyList = UserTools().getSearchHistory();
-                  });
-                  _searchRequest(provide.searchValue);
-                },
-                child: Padding(padding: EdgeInsets.only(right: 20),
-                  child: new Text("搜索"),),
-              ),
-            ),
-            onChanged: (val){
-              provide.searchValue = val;
+              // 存储搜索记录
+              UserTools().saveSearchHistory(_provide.searchValue);
+              setState(() {
+                _historyList = UserTools().getSearchHistory();
+              });
+              _searchRequest(_provide.searchValue);
             },
+            child: Padding(padding: EdgeInsets.only(right: 20),
+              child: new Text("搜索"),),
           ),
-        );
-      },
+        ),
+        onChanged: (val){
+          _provide.searchValue = val;
+        },
+      ),
     );
   }
 
   /// 推荐标签
-  Provide<SearchProvide> _recommendTags(){
-    return Provide<SearchProvide>(
-      builder: (BuildContext context,Widget widget,SearchProvide provide){
-        return _list.length>0 ?Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(left: 10,right: 10),
-          child: Wrap(
-            spacing: 10,
-            children: _list.map((item){
-              return InkWell(
-                onTap: (){
-                  // 点击搜索
-                  provide.searchValue = item;
-                  _selectionController.text = item;
-                  // 存储搜索记录
-                  UserTools().saveSearchHistory(provide.searchValue);
-                  setState(() {
-                    _historyList = UserTools().getSearchHistory();
-                  });
-                  _searchRequest(provide.searchValue);
-                },
-                child: Container(
-                  margin: EdgeInsets.only(top: 10),
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: AppConfig.assistLineColor,
-                      borderRadius: BorderRadius.all(Radius.circular(5))
-                  ),
-                  child: Text(item,softWrap: false,style: TextStyle(fontSize: ScreenAdapter.size(26)),),
+  Widget _recommendTags(){
+    return _list.length>0 ?Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(left: 10,right: 10),
+      child: Wrap(
+        spacing: 10,
+        children: _list.map((item){
+          if(item==""||item=="undefined"||item.toString().isEmpty){
+            return Container(height: 0.0,width: 0.0,);
+          }else {
+            return InkWell(
+              onTap: (){
+                // 点击搜索
+                _provide.searchValue = item;
+                _selectionController.text = item;
+                // 存储搜索记录
+                UserTools().saveSearchHistory(_provide.searchValue);
+                setState(() {
+                  _historyList = UserTools().getSearchHistory();
+                });
+                _searchRequest(_provide.searchValue);
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 10),
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: AppConfig.assistLineColor,
+                    borderRadius: BorderRadius.all(Radius.circular(5))
                 ),
-              );
-            }).toList(),
-          ),
-        ):new Container();
-      },
-    );
+                child: Text(item,softWrap: false,style: TextStyle(fontSize: ScreenAdapter.size(26)),),
+              ),
+            );
+          }
+        }).toList(),
+      ),
+    ):new Container();
   }
 
   /// 历史记录
@@ -239,14 +235,13 @@ class _SearchContentState extends State<SearchContent> {
       print('listen data->$items');
       if(items!=null&&items.data!=null){
         _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context){
+              return SearchScreenPage();
+            }
+        ));
       }
 
     }, onError: (e) {});
-
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context){
-          return SearchScreenPage();
-        }
-    ));
   }
 }

@@ -167,9 +167,9 @@ class _AllContentPageState extends State<AllContentPage> {
 
   Widget _commodityContent(OrderDetailModel model){
     List<CommodityModels> skuList = model.skuModels;
-    double price;
+    String price;
     skuList.forEach((items){
-      price = items.salesPrice*skuList.length;
+      price = items.amount.toString();
     });
     return new Container(
       padding: EdgeInsets.only(bottom: 10),
@@ -196,7 +196,7 @@ class _AllContentPageState extends State<AllContentPage> {
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      new CustomsWidget().priceTitle(price: price.toString()),
+                      new CustomsWidget().priceTitle(price: price),
                       new Text("共 ${skuList.length} 件")
                     ],
                   ))
@@ -241,7 +241,7 @@ class _AllContentPageState extends State<AllContentPage> {
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      new CustomsWidget().priceTitle(price: skuItem.salesPrice.toString()),
+                      new CustomsWidget().priceTitle(price: skuItem.amount.toString()),
                       new Text("共 ${skuItem.quantity} 件")
                     ],
                   ))
@@ -256,7 +256,7 @@ class _AllContentPageState extends State<AllContentPage> {
   Widget _bottomAction(OrderDetailModel model){
     Widget widget;
     //0待支付 1待收货 2已完成 -1已取消 -2已取消待退款 -4已取消已退款
-    if((model.status==0||model.status==1)&&model.syncStatus<3){
+    if(model.status==1&&model.syncStatus<3){
       widget = new Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[

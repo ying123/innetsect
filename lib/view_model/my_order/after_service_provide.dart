@@ -61,6 +61,7 @@ class AfterServiceProvide extends BaseProvide{
   }
 
   set afterOrderModel(AfterOrderModel model){
+    _afterOrderModel = null;
     _applyTypeList.forEach((item){
       if(item['val']==model.rmaType){
         item['isSelected']=true;

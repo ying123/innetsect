@@ -8,6 +8,7 @@ import 'package:innetsect/app.dart';
 
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/res/const_defines.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
@@ -126,6 +127,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ),
       initialRoute: '/',
       onGenerateRoute: onGenerateRoute,
+      localeResolutionCallback:(deviceLocale, supportedLocales) {
+        UserTools().setLocal(deviceLocale.toString());
+        return locale;
+      },
       home: App(),
 
       //navigatorKey: gNavKey,

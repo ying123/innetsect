@@ -5,10 +5,13 @@ import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/data/mall/portlets_model.dart';
 import 'package:innetsect/data/mall/promotion_model.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
+import 'package:innetsect/view/mall/search/search_screen_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_list_provide.dart';
 import 'package:innetsect/view_model/mall/home/mall_home_provide.dart';
+import 'package:innetsect/view_model/mall/search/search_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/base/app_config.dart';
@@ -18,15 +21,19 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 
 class MallHomePage extends PageProvideNode {
   final MallHomeProvide _provide = MallHomeProvide();
+  final SearchProvide _searchProvide = SearchProvide();
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final CommodityListProvide _commodityListProvide = CommodityListProvide.instance;
   MallHomePage(){
     mProviders.provide(Provider<MallHomeProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+    mProviders.provide(Provider<CommodityListProvide>.value(_commodityListProvide));
+    mProviders.provide(Provider<SearchProvide>.value(_searchProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
 
-    return MallHomeContent(_provide,_detailProvide);
+    return MallHomeContent(_provide,_detailProvide,_commodityListProvide,_searchProvide);
   }
 
 }
@@ -35,8 +42,10 @@ class MallHomeContent extends StatefulWidget {
 
   final MallHomeProvide _provide;
   final CommodityDetailProvide _detailProvide;
+  final CommodityListProvide _commodityListProvide;
+  final SearchProvide _searchProvide;
 
-  MallHomeContent(this._provide,this._detailProvide);
+  MallHomeContent(this._provide,this._detailProvide,this._commodityListProvide,this._searchProvide);
 
   @override
   _MallHomeContentState createState() => new _MallHomeContentState();
@@ -45,6 +54,8 @@ class MallHomeContent extends StatefulWidget {
 class _MallHomeContentState extends State<MallHomeContent> {
 
   CommodityDetailProvide _detailProvide;
+  CommodityListProvide _commodityListProvide;
+  SearchProvide _searchProvide;
   // 控制器
   EasyRefreshController _controller;
   // 分页
@@ -120,6 +131,8 @@ class _MallHomeContentState extends State<MallHomeContent> {
     super.initState();
     _controller = new EasyRefreshController();
     _detailProvide ??= widget._detailProvide;
+    _commodityListProvide ??= widget._commodityListProvide;
+    _searchProvide ??= widget._searchProvide;
     // 加载首页数据
     _loadBannerData();
   }
@@ -199,7 +212,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
         children: <Widget>[
           _headerContent(model.promotion),
           model.promotion!=null?_commodityContent(model.promotion.products):Container(),
-          model.promotion!=null?_bottomContent(model.promotion.promotionCode):Container()
+          model.promotion!=null?_bottomContent(model.promotion.promotionCode,model.promotion.promotionName):Container()
         ],
       ):new Container(),
     );
@@ -208,27 +221,32 @@ class _MallHomeContentState extends State<MallHomeContent> {
   /// 商品集合--头部样式
   Widget _headerContent(PromotionModel model){
     return model!=null?new IntrinsicHeight(
-      child: new Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          new Padding(padding: EdgeInsets.only(bottom: 10),
-          child: new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _dividerWidget(width: ScreenAdapter.getScreenWidth()/4,padding: EdgeInsets.only(right: 10),indent: 60),
-                new Text(model.promotionName,softWrap: false,
-                  style: TextStyle(color: AppConfig.fontBackColor,fontWeight:FontWeight.w600,fontSize: ScreenAdapter.size(32)),),
-                _dividerWidget(width: ScreenAdapter.getScreenWidth()/4,padding: EdgeInsets.only(left: 10),endIndent: 60),
-              ],
+      child: InkWell(
+        onTap: (){
+          _searchRequest(model.promotionCode,model.promotionName);
+        },
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Padding(padding: EdgeInsets.only(bottom: 10),
+              child: new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _dividerWidget(width: ScreenAdapter.getScreenWidth()/4,padding: EdgeInsets.only(right: 10),indent: 60),
+                  new Text(model.promotionName,softWrap: false,
+                    style: TextStyle(color: AppConfig.fontBackColor,fontWeight:FontWeight.w600,fontSize: ScreenAdapter.size(32)),),
+                  _dividerWidget(width: ScreenAdapter.getScreenWidth()/4,padding: EdgeInsets.only(left: 10),endIndent: 60),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            height: ScreenAdapter.height(340),
-            child: CachedNetworkImage(imageUrl: model.promotionPic,),
-          )
-        ],
-      ),
+            SizedBox(
+              width: double.infinity,
+              height: ScreenAdapter.height(340),
+              child: CachedNetworkImage(imageUrl: model.promotionPic,),
+            )
+          ],
+        ),
+      )
     ):Container();
   }
 
@@ -297,17 +315,22 @@ class _MallHomeContentState extends State<MallHomeContent> {
     );
   }
   
-  Widget _bottomContent(String promotionCode){
+  Widget _bottomContent(String promotionCode,String name){
     return Container(
       color: Colors.white,
       padding: EdgeInsets.only(bottom: 10),
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          new Text("查看全部",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: ScreenAdapter.size(26)),),
-          new Icon(Icons.arrow_right)
-        ],
-      ),
+      child: InkWell(
+        onTap: (){
+          _searchRequest(promotionCode,name);
+        },
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Text("查看全部",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: ScreenAdapter.size(26)),),
+            new Icon(Icons.arrow_right)
+          ],
+        ),
+      )
     );
   }
 
@@ -429,5 +452,27 @@ class _MallHomeContentState extends State<MallHomeContent> {
       _bannersList.clear();
       _portletsModelList.clear();
     });
+  }
+
+  /// 搜索请求
+  void _searchRequest(String code,String name){
+    // 清除原数据
+    _commodityListProvide.clearList();
+    _commodityListProvide.requestUrl = "/api/promotion/promotions/$code/products?";
+
+    _searchProvide.onSearch(_commodityListProvide.requestUrl+'pageNo=1&sort=&pageSize=8').doOnListen(() { }).doOnCancel(() {}).listen((items) {
+    ///加载数据
+    print('listen data->$items');
+    if(items!=null&&items.data!=null){
+    _searchProvide.searchValue = name;
+    _commodityListProvide.addList(CommodityList.fromJson(items.data['products']).list);
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context){
+        return SearchScreenPage();
+      }
+    ));
+    }
+
+    }, onError: (e) {});
   }
 }

@@ -7,12 +7,12 @@ class SearchService {
 
   /// 标签请求
   Observable<BaseResponse> onRecommendedTags (){
-    var url = '/api/eshop/products/recommended/tags';
+    var url = '/api/eshop/app/products/words/hotest';
     var response = get(url);
     return response;
   }
 
-  /// 品类搜索
+  /// 搜索
   Observable<BaseResponse> onSearch (String url){
     var response = get(url);
     return response;
@@ -28,7 +28,7 @@ class SearchRepo {
     return _remote.onRecommendedTags();
   }
 
-  /// 品类搜索
+  /// 搜索
   Observable<BaseResponse> onSearch (String url){
     return _remote.onSearch(url);
   }

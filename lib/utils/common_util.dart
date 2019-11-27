@@ -68,7 +68,7 @@ static Route createRoute(Tween<Offset> tween, Widget child) {
         name = "已收到退货";
         break;
       case 50:
-        name="已完成";
+        name="退货已完成";
         break;
       case 60:
         name="已协商取消";

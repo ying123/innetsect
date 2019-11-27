@@ -10,6 +10,13 @@ class RegisteredProvide extends BaseProvide{
     '请输入账号',
     '请输入验证码',
   ];
+
+  String _telPrefix="86";
+  String get telPrefix => _telPrefix;
+  set telPrefix(String telPrefix){
+    _telPrefix = telPrefix;
+    notifyListeners();
+  }
   
  ///账号
   String _userCode = '';
@@ -69,7 +76,7 @@ class RegisteredProvide extends BaseProvide{
 
   final RegisteredRepo _repo = RegisteredRepo();
 
-  /// 获取验证码
+  /// 验证手机号是否注册过
   Observable registeredPhone() {
     return _repo.registeredPhone(_userCode)
         .doOnData((result) {
@@ -81,14 +88,30 @@ class RegisteredProvide extends BaseProvide{
   }
 
   /// 注册
-  Observable onRegistered() {
-    return _repo.onRegistered(_vaildCode)
+  Observable onRegistered(String vaildCode,String telPrefix) {
+    return _repo.onRegistered(vaildCode,telPrefix)
         .doOnData((result) {
 
     })
         .doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
+  }
+
+  ///工厂模式
+  factory RegisteredProvide()=> _getInstance();
+  static RegisteredProvide get instance => _getInstance();
+  static RegisteredProvide _instance;
+  static RegisteredProvide _getInstance(){
+    if (_instance == null) {
+      _instance = new RegisteredProvide._internal();
+    }
+    return _instance;
+  }
+
+  RegisteredProvide._internal() {
+    print('RegisteredProvide init');
+    // 初始化
   }
 
 

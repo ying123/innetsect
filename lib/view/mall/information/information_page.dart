@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
@@ -68,7 +69,7 @@ class _InformationContentState extends State<InformationContent> {
                       child: new Container(
                         child: new Column(
                           children: <Widget>[
-                            new Image.network(item.poster,fit: BoxFit.cover,width: double.infinity,
+                            new CachedNetworkImage(imageUrl: item.poster,fit: BoxFit.cover,width: double.infinity,
                               height:ScreenAdapter.height(420),),
                             new Container(
                               width: double.infinity,
