@@ -15,6 +15,11 @@ class BrandMallPrvide extends BaseProvide {
     notifyListeners();
   }
 
+  void clranBrandMall(){
+    _brandMallList.clear();
+    notifyListeners();
+  }
+
 
   BrandRepo _repo = BrandRepo();
 ///品牌商城数据
