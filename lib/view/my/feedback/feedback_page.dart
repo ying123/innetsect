@@ -115,12 +115,13 @@ class _FeedBackContentState extends State<FeedBackContent> {
   Widget _headerWidget(){
     return Row(
       children: <Widget>[
-        Padding(
+        Container(
           padding: EdgeInsets.only(left: 20),
-          child: Icon(Icons.record_voice_over)
+          child: Image.asset("assets/images/user/feedback.png",
+          fit: BoxFit.fitWidth, width: ScreenAdapter.width(60),)
         ),
         Padding(
-          padding: EdgeInsets.only(left: 30),
+          padding: EdgeInsets.only(left: 20),
           child: Text('HI,有什么需要反馈?',style: TextStyle(
             color: Colors.black,fontWeight: FontWeight.w800,
             fontSize: ScreenAdapter.size(28)

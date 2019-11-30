@@ -11,7 +11,7 @@ class FeedBackService {
       "mobile": mobile,
       "question": question,
       "status": "0",
-      "askDate": new DateTime.now(),
+      "askDate": DateTime.now().toString().split(".")[0],
     };
     var response = post(url,body: json);
     return response;

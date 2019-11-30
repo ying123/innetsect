@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/base/base.dart';
@@ -19,15 +20,18 @@ class CommodityDetailPage extends PageProvideNode{
 
   final CommodityDetailProvide _provide = CommodityDetailProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final String pages;
 
-  CommodityDetailPage(){
+  CommodityDetailPage({
+    this.pages
+  }){
     mProviders.provide(Provider<CommodityDetailProvide>.value(_provide));
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return CommodityDetailContent(_provide,_cartProvide);
+    return CommodityDetailContent(_provide,_cartProvide,pages:this.pages);
   }
   
 }
@@ -35,7 +39,8 @@ class CommodityDetailPage extends PageProvideNode{
 class CommodityDetailContent extends StatefulWidget {
   final CommodityDetailProvide _provide;
   final CommodityAndCartProvide _cartProvide;
-  CommodityDetailContent(this._provide,this._cartProvide);
+  final String pages;
+  CommodityDetailContent(this._provide,this._cartProvide,{this.pages});
   @override
   _CommodityDetailContentState createState() => new _CommodityDetailContentState();
 }
@@ -132,47 +137,25 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 
   /// 商品详情内容区域
   Widget _contentWidget(){
-    return new Container(
-      color: AppConfig.backGroundColor,
-      child: new ListView(
-          controller: _scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          children: <Widget>[
-            new Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(563),
-              color: Colors.white,
-              child: _swiperWidget(),
-            ),
-            new Padding(padding: EdgeInsets.only(top: 10),
-              child: _comTitle(),
-            ),
-            new Padding(padding: EdgeInsets.only(top: 10),
-              child: _selCol(),
-            ),
-//            new Padding(padding: EdgeInsets.only(top: 10),
-//              child: _recommendWidget(),
-//            ),
-//            new Padding(padding: EdgeInsets.only(top: 10),
-//              child: new Container(
-//                color: Colors.white,
-//                padding: EdgeInsets.all(10),
-//                margin: EdgeInsets.only(bottom: 10),
-//                alignment: Alignment.center,
-//                child: new Text("上拉显示商品详情",style: TextStyle(
-//                    fontSize: ScreenAdapter.size(26),
-//                    fontWeight: FontWeight.w600),
-//                ),
-//              )
-//            ),
-            html!=null?new Container(
-              child: Html(
-                data: html,
-              ),
-            ):new Container(),
-            SizedBox(width: double.infinity,height: ScreenAdapter.height(80),)
-          ],
+    return new ListView(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: <Widget>[
+        new Container(
+          width: ScreenAdapter.width(750),
+          height: ScreenAdapter.height(563),
+          color: Colors.white,
+          child: _swiperWidget(),
         ),
+        _comTitle(),
+        _selCol(),
+        html!=null?new Container(
+          child: Html(
+            data: html,
+          ),
+        ):new Container(),
+        SizedBox(width: double.infinity,height: ScreenAdapter.height(80),)
+      ],
     );
   }
 
@@ -183,7 +166,9 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         CommoditySkusModel skuModel = provide.skusModel;
         return new Swiper(
           itemBuilder: (BuildContext context,int index){
-            return skuModel!=null?Image.network(skuModel.pics[index].skuPicUrl+ConstConfig.BANNER_SIZE):new Container();
+            return skuModel!=null?
+            CachedNetworkImage(imageUrl: skuModel.pics[index].skuPicUrl+ConstConfig.LIST_IMAGE_SIZE,)
+            :new Container();
           },
           loop: true,
           itemCount: skuModel!=null?skuModel.pics.length:1,
@@ -205,16 +190,15 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   Widget _comTitle(){
     return new Container(
       color: Colors.white,
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.only(top: 20,left: 10,right: 10,bottom: 10),
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _comTitleProdName(),
-          new Padding(padding: EdgeInsets.only(top: 10),
-            child: new Container(
-              child: _comTitleSalesPrice()
-            ),
-          )
+          new Container(
+            padding: EdgeInsets.only(top: 10),
+            child: _comTitleSalesPrice()
+          ),
         ],
       ),
     );
@@ -256,12 +240,12 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       child: new Container(
         height: ScreenAdapter.height(110),
         color: Colors.white,
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.only(top: 20,left: 10,right: 10,bottom: 10),
         child: new Row(
           children: <Widget>[
             new Container(
               child: CustomsWidget().subTitle(
-                title: "已选", color: AppConfig.primaryColor,
+                title: "已选", color: AppConfig.blueBtnColor,
               ),
             ),
             new Container(
@@ -375,6 +359,9 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 
   /// 底部：客服、购物车、加入购物车、立即购买
   Widget _bottomBar(BuildContext context){
+//    if(widget.pages=="EXHIBIT_PRODUCT"){
+//      return new Container(height: 0.0,width: 0.0,);
+//    }
     return new Container(
       width: double.infinity,
       height: ScreenAdapter.height(100),

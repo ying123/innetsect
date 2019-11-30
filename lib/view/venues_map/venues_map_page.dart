@@ -36,10 +36,19 @@ class VenuesMapContentPage extends StatefulWidget {
 class _VenuesMapContentPageState extends State<VenuesMapContentPage>
     with TickerProviderStateMixin {
   TabController _tabController;
+  String _image;
   @override
   void initState() {
     super.initState();
     _tabController = new TabController(length: widget._provide.menu.length, vsync: this);
+    if(_tabController.index.toDouble() == _tabController.animation.value) {
+      if (_tabController.index == 0) {
+        _image = widget._provide.menu[0].overviewPic;
+      }
+      if(_tabController.index==1){
+        _image = widget._provide.menu[1].overviewPic;
+      }
+    }
     widget._provide.hallsData(widget._provide.menu[0].exhibitionID, widget._provide.menu[0].exhibitionHall)
         .doOnListen((){}).doOnError((e,stack){
 
@@ -63,7 +72,7 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
           }
         });
         
-      }
+  }
     
   
 
@@ -79,7 +88,7 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
                   width: ScreenAdapter.width(750),
                   height: ScreenAdapter.height(425),
                   child: Image.network(
-                    widget.hallsData['locOverview'],
+                    _image,
                     fit: BoxFit.cover,
                   ),
                 ),

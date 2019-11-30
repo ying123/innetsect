@@ -89,19 +89,17 @@ class _OrderContentState extends State<OrderContent> {
           margin: EdgeInsets.only(left: 20,right: 20),
           child: Provide<OrderDetailProvide>(
               builder: (BuildContext context,Widget widget, OrderDetailProvide provide){
+                Widget widget =Container(height: 0.0,width: 0.0,);
                 if(provide.orderDetailModel!=null
                     &&provide.orderDetailModel.status==0){
-                  return this.payBtn();
-                }else if(provide.orderDetailModel!=null
-                    &&(
-                        provide.orderDetailModel.status==-1||
-                        provide.orderDetailModel.status==-2||
-                        provide.orderDetailModel.status==-4
-                    )){
-                  return Container(height: 0.0,width: 0.0,);
-                }else{
-                  return this.logisticsBtn();
+                  widget= this.payBtn();
                 }
+                if(provide.orderDetailModel!=null
+                    &&(provide.orderDetailModel.status==1
+                    ||provide.orderDetailModel.status==2)){
+                  widget= this.logisticsBtn();
+                }
+                return widget;
               }
           ),
         ),
@@ -355,9 +353,9 @@ class _OrderContentState extends State<OrderContent> {
                     child: Provide<OrderDetailProvide>(
                         builder: (BuildContext context,Widget widget, OrderDetailProvide provide) {
                           OrderDetailModel model = provide.orderDetailModel;
-                          String tel = model.tel;
+                          String tel = model.tel!=null?model.tel:"";
                           if(model.addressModel!=null){
-                            tel = model.addressModel.tel;
+                            tel = model.addressModel.tel!=null?model.addressModel.tel:"";
                           }
                           return new Text(tel,maxLines: 1,);
                         }),

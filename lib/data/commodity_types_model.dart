@@ -26,8 +26,8 @@ class CommodityTypesModel{
 
   String getTypes(String types){
     String title = "";
-    if(types == CommodityCartTypes.exhibition.toString()) return title="展会";
-    if(types == CommodityCartTypes.commodity.toString()) return title="商城";
+    if(types == CommodityCartTypes.exhibition.toString()) return title="展会商城";
+    if(types == CommodityCartTypes.commodity.toString()) return title="官方商城";
     return title;
   }
 }

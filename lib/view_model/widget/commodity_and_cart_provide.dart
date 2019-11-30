@@ -6,6 +6,7 @@ import 'package:innetsect/data/commodity_size_model.dart';
 import 'package:innetsect/data/commodity_types_model.dart';
 import 'package:innetsect/enum/commodity_cart_types.dart';
 import 'package:innetsect/model/commodity_repository.dart';
+import 'package:lpinyin/lpinyin.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// 商品、购物车、计数器 provide
@@ -43,19 +44,33 @@ class CommodityAndCartProvide extends BaseProvide{
   void addCarts(CommodityModels model){
     String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
     model.isDisable = false;
-    if(_commodityTypesModelLists.length==0){
+    int index = _commodityTypesModelLists.indexWhere((item)=>item.types==types);
+    if(index>-1){
+      CommodityTypesModel typesModel = _commodityTypesModelLists[index];
+      typesModel.commodityModelList.add(model);
+      typesModel.commodityModelList.sort((a,b){
+        String pinyinA = PinyinHelper.getPinyinE(a.skuName);
+        String pinyinB = PinyinHelper.getPinyinE(b.skuName);
+        String tagA = pinyinA.substring(0, 1).toUpperCase();
+        String tagB = pinyinB.substring(0, 1).toUpperCase();
+        return tagA.compareTo(tagB);
+      });
+    }else{
       CommodityTypesModel typesModel = new CommodityTypesModel();
       typesModel.types = types;
       typesModel.commodityModelList = new List();
       typesModel.commodityModelList.add(model);
       _commodityTypesModelLists.add(typesModel);
-    }else{
-      for(CommodityTypesModel item in _commodityTypesModelLists){
-        if(item.types==types){
-          item.commodityModelList.add(model);
-        }
-      }
     }
+
+    _commodityTypesModelLists.sort((a,b){
+      String pinyinA = PinyinHelper.getPinyinE(a.types.split('.')[1]);
+      String pinyinB = PinyinHelper.getPinyinE(b.types.split('.')[1]);
+      String tagA = pinyinA.substring(0, 1).toUpperCase();
+      String tagB = pinyinB.substring(0, 1).toUpperCase();
+      return tagA.compareTo(tagB);
+    });
+
     notifyListeners();
   }
 
@@ -149,15 +164,22 @@ class CommodityAndCartProvide extends BaseProvide{
 
         item.commodityModelList[idx].isChecked = !isSelected;
 
-        double price =  (item.commodityModelList[idx].salesPrice * item.commodityModelList[idx].quantity).toDouble();
-        // 结算计算
-        if(item.commodityModelList[idx].isChecked){
-          _sum += price;
-        }else{
-          _sum -= price;
-        }
-      }else{
+        _sum = 0;
+        item.commodityModelList.where((vl)=>vl.isChecked==true).forEach((res){
+          double price =  (res.salesPrice * res.quantity).toDouble();
+          // 结算计算
+          if(res.isChecked){
+            _sum += price;
+          }
+        });
 
+      }else{
+        // 类型不同，只能选同一类型的商品
+        item.commodityModelList.forEach((vl)=>vl.isChecked=false);
+        int index = item.commodityModelList.indexWhere((vl)=>vl.prodID==model.prodID);
+        if(index > -1){
+          item.commodityModelList[index].isChecked = !isSelected;
+        }
       }
 
       // 判断是否全选

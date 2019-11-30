@@ -188,7 +188,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
             child: new Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                new CustomsWidget().priceTitle(price: item.salesPrice.toString())
+                new CustomsWidget().priceTitle(price: (item.salesPrice*item.quantity).toString())
               ],
             ),
           )

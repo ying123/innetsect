@@ -38,6 +38,7 @@ class CustomsWidget{
     String content,
     VoidCallback onPressed,
     VoidCallback onCancel,
+    bool isCancel=true,
     String cancelTitle = "放弃",
     String submitTitle="确认"
   }){
@@ -55,7 +56,7 @@ class CustomsWidget{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                new FlatButton(
+                isCancel?new FlatButton(
                   color:Colors.white,
                   textColor: Colors.blue,
                   onPressed: () {
@@ -66,13 +67,16 @@ class CustomsWidget{
                     }
                   },
                   child: new Text(cancelTitle),
-                ),
+                ):Container(width: 0.0,height: 0.0,),
                 new FlatButton(
                   color:Colors.white,
                   textColor: Colors.blue,
                   onPressed: () {
-                    onPressed();
-                    Navigator.of(context).pop();
+                    if(onPressed!=null){
+                      onPressed();
+                    }else{
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: new Text(submitTitle,style: TextStyle(color: AppConfig.blueBtnColor),),
                 )
@@ -155,7 +159,7 @@ class CustomsWidget{
     bool automaticallyImplyLeading = false,
     List<Widget> actions,
     Function() onTap,
-    PreferredSizeWidget bottom
+    PreferredSizeWidget bottom,
   }){
     return new AppBar(
       leading: leading ?new InkWell(

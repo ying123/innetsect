@@ -30,6 +30,7 @@ class _ListWidgetPageState extends State<ListWidgetPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      backgroundColor: Colors.white,
       body: new EasyRefresh.custom(
         shrinkWrap:false,
         header: ListHeader(),

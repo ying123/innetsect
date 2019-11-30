@@ -131,7 +131,7 @@ class _AllContentPageState extends State<AllContentPage> {
                           border: Border(top: BorderSide(color: AppConfig.assistLineColor)),
                         ),
                         child: _bottomAction(item),
-                      ):new Container()
+                      ):new Divider(height: 5,color: AppConfig.assistLineColor,)
                     ],
                   ),
                 ),
@@ -331,15 +331,13 @@ class _AllContentPageState extends State<AllContentPage> {
                 onPressed: () async{
                   await _provide.cancelOrder(orderID).then((item){
                     if(item.data){
-                      _orderDetailList.asMap().keys.forEach((keys){
-                        if(orderID==_orderDetailList[keys].orderID){
-                          if(_orderDetailList[keys].status==0){
-                            _orderDetailList[keys].status = -1;
-                          }else if(_orderDetailList[keys].status==1){
-                            _orderDetailList[keys].status = -2;
-                          }
-                        }
-                      });
+                      int index=_orderDetailList.indexWhere((val)=>val.orderID==orderID);
+                      if(_orderDetailList[index].status==0){
+                        _orderDetailList[index].status = -1;
+                      }else if(_orderDetailList[index].status==1){
+                        _orderDetailList[index].status = -2;
+                      }
+                      Navigator.pop(context);
                       this.setState((){});
                     }
                   });

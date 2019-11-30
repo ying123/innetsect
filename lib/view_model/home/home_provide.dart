@@ -64,6 +64,16 @@ class HomeProvide extends BaseProvide {
 
     });
   }
+  /// 扫码
+  Observable qrCodeWhisk(Map<String,dynamic> json){
+    return _repo.qrCodeWhisk(json).doOnData((item){
+
+    }).doOnError((e, sitack){
+
+    }).doOnDone((){
+
+    });
+  }
 ///首页banner
   List<HomeBannersModel> _bannersList = [];
   List<HomeBannersModel> get bannersList => _bannersList;

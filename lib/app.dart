@@ -1,29 +1,42 @@
 import 'dart:async';
 
+import 'package:device_info/device_info.dart';
+import 'package:innetsect/app_navigation_bar.dart';
+import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/base/const_config.dart';
+import 'package:innetsect/data/main/activity_model.dart';
+import 'package:innetsect/data/main/splash_model.dart';
 import 'package:innetsect/entrance_page.dart';
 import 'package:innetsect/main_provide.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/web_view.dart';
+import 'package:innetsect/view/widget/video_widget_page.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
+import 'package:rammus/rammus.dart' as rammus;
 
 class App extends PageProvideNode {
   final MainProvide _provide = MainProvide.instance;
+  final AppNavigationBarProvide _appNavigationBarProvide = AppNavigationBarProvide.instance;
   App() {
     mProviders.provide(Provider<MainProvide>.value(_provide));
+    mProviders.provide(Provider<AppNavigationBarProvide>.value(_appNavigationBarProvide));
     //可以添加多个数据
     // mProviders.provideAll({MainProvide: Provider.value(MainProvide()), double : Provider.value(30.0)});
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return _AppContentPage(_provide);
+    return _AppContentPage(_provide,_appNavigationBarProvide);
   }
 }
 
 class _AppContentPage extends StatefulWidget {
   final MainProvide _provide;
-  _AppContentPage(this._provide);
+  final AppNavigationBarProvide _appNavigationBarProvide;
+  _AppContentPage(this._provide,this._appNavigationBarProvide);
   @override
   __AppContentPageState createState() => __AppContentPageState();
 }
@@ -32,37 +45,53 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
   MainProvide _provide;
   // 可见图片透明
   double opacityLevel = 1.0;
+  AppNavigationBarProvide _appNavigationBarProvide;
   // 扩散动画
 //  AnimationController _animationController;
   @override
   void initState() {
     _provide ??= widget._provide;
+    _appNavigationBarProvide ??= widget._appNavigationBarProvide;
     super.initState();
-//    _provide.img = ExactAssetImage('assets/images/mall/welcome.png');
-    _provide.countdown = _provide.WELCOME_TIMER_OUT_IN_SECS;
 
-    //退出计时器
-    _provide.timerDone =
-        Timer(Duration(seconds: _provide.WELCOME_TIMER_OUT_IN_SECS), () {
-      onDone();
+    _loadAndroidDevice().then((item){
+      _deviceID().then((val){
+        UserTools().setDeviceInfo(deviceInfo: item,deviceID:val);
+      });
     });
+//    _provide.img = ExactAssetImage('assets/images/mall/welcome.png');
+    _loadData();
+  }
 
-    ///计时器开始倒计时
-    _provide.startTimerCountdown();
+  Future<String> _deviceID() async{
+    String device = await rammus.deviceId;
+    return device;
   }
 
   ///完成
   void onDone() {
+//    Navigator.of(context).pushNamed('/appNavigationBarPage');
+    if(_provide.splashModel.attended){
+      _appNavigationBarProvide.currentIndex = 2;
+      Navigator.of(context).pushNamed('/appNavigationBarPage');
+    }else{
+      Navigator.of(context).pushNamedAndRemoveUntil('/entrancePage',
+          (Route route)=>true);
+//      Navigator.pushReplacement(context, MaterialPageRoute(
+//          builder: (context){
+//            return EntrancePage();
+//          }
+//      ));
+    }
+    _provide.isDone = true;
     setState(() {
       opacityLevel = 0.0;
     });
-    _provide.isDone = true;
-//    Navigator.of(context).pushNamed('/appNavigationBarPage');
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context){
-        return new EntrancePage();
-      }
-    ));
+  }
+
+  Future<AndroidDeviceInfo> _loadAndroidDevice() async{
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    return await deviceInfo.androidInfo;
   }
 
   @override
@@ -84,18 +113,69 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
   Provide<MainProvide> welcomeAnimation() {
     return Provide<MainProvide>(
       builder: (BuildContext context, Widget child, MainProvide provide) {
-        return new Container(
-            width: double.infinity,
-            height: double.infinity,
-            child:provide.isDone
-                ? Container()
-                : Image.asset("assets/images/main/open_app.jpg",fit: BoxFit.fill,)
-        );
-//                  VideoWidgetPage(
-//                    url: "assets/res/welcome.mp4",
-//                    previewImgUrl: 'assets/res/welcome.jpg',
-//                    positionTag: 0,
-//                  ));
+        if(provide.openImage.indexOf(".mp4")>-1){
+          return InkWell(
+            onTap: (){
+              if(provide.splashModel.splashes!=null
+                  && provide.splashModel.splashes[0].redirectType!=null
+                  && provide.splashModel.splashes[0].redirectTo!=null){
+                if(provide.splashModel.splashes[0].redirectType ==
+                ConstConfig.URL){
+                  Navigator.pushReplacement(context, MaterialPageRoute(
+                    builder: (context){
+                      return WebView(
+                        url: _provide.splashModel.splashes[0].redirectTo,
+                        pages: "main",
+                        attended: _provide.splashModel.attended,
+                        appProvide: _appNavigationBarProvide
+                      );
+                    }
+                  ));
+                }
+              }
+            },
+            child: new Container(
+                width: double.infinity,
+                height: double.infinity,
+                child:provide.isDone
+                    ? Container()
+                    : VideoWidgetPage(
+                  url: provide.openImage,
+                  previewImgUrl: 'assets/res/welcome.jpg',
+                  positionTag: 0,
+                )
+            )
+          );
+        }else{
+          return InkWell(
+            onTap: (){
+              if(provide.splashModel.splashes!=null
+                  && provide.splashModel.splashes[0].redirectType!=null
+                  && provide.splashModel.splashes[0].redirectTo!=null){
+                if(provide.splashModel.splashes[0].redirectType ==
+                    ConstConfig.URL){
+                  Navigator.pushReplacement(context, MaterialPageRoute(
+                      builder: (context){
+                        return WebView(
+                          url: _provide.splashModel.splashes[0].redirectTo,
+                          pages: "main",
+                          attended: _provide.splashModel.attended,
+                          appProvide: _appNavigationBarProvide
+                        );
+                      }
+                  ));
+                }
+              }
+            },
+            child: new Container(
+                width: double.infinity,
+                height: double.infinity,
+                child:provide.isDone
+                    ? Container()
+                    : Image.network(provide.openImage,fit: BoxFit.fill,)
+            )
+          );
+        }
       },
     );
   }
@@ -137,5 +217,72 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
       _provide.timerCountdown.cancel();
     }
     super.dispose();
+  }
+
+  _loadData(){
+    _provide.getSplash()
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+        SplashModel model = SplashModel.fromJson(item.data);
+        _provide.splashModel = model;
+        // 活动请求
+        _loadExhibition(model.exhibitionID);
+        if(model.splashes!=null&&model.splashes.length>0){
+
+          _provide.countdown = model.splashes[0].playSeconds;
+          _provide.openImage = model.splashes[0].splashFile;
+
+          //退出计时器
+          _provide.timerDone =
+              Timer(Duration(seconds: model.splashes[0].playSeconds), () {
+                onDone();
+              });
+
+          ///计时器开始倒计时
+          _provide.startTimerCountdown();
+        }else{
+          if(model.attended){
+            Future.delayed(Duration(seconds: 1),(){
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context){
+                    _appNavigationBarProvide.currentIndex = 2;
+                    return AppNavigationBar();
+                  }
+              ), ModalRoute.withName('/appNavigationBarPage'));
+            });
+          }else{
+            Future.delayed(Duration(seconds: 1),(){
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context){
+                    return EntrancePage();
+                  }
+              ));
+            });
+          }
+        }
+      }
+
+    }, onError: (e) {});
+  }
+
+  _loadExhibition(int exhibitionID){
+    _provide.getExhibition(exhibitionID)
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+       _appNavigationBarProvide.activityList = ActivityModelList.fromJson(item.data['sessions']).list;
+      }
+    }, onError: (e) {});
   }
 }

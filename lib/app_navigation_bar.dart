@@ -10,6 +10,8 @@ import 'package:innetsect/view/shopping/shopping_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
 
+import 'package:rammus/rammus.dart' as rammus;
+
 class AppNavigationBar extends PageProvideNode {
   final AppNavigationBarProvide _provide = AppNavigationBarProvide.instance;
   final LoginProvide _loginProvide = LoginProvide();
@@ -62,7 +64,10 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
           Future.delayed(Duration.zero,(){
             _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
               if(userItem!=null&&userItem.data!=null){
-                _loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
+                // 注册阿里云账号绑定
+                UserInfoModel model = UserInfoModel.fromJson(userItem.data);
+                rammus.bindAccount(model.acctID.toString());
+                _loginProvide.setUserInfoModel(model);
               }
             },onError: (e){
             });
@@ -77,6 +82,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
     _animation =
         new CurvedAnimation(parent: _animationController, curve: Curves.linear);
   }
+
 
   @override
   void dispose() {

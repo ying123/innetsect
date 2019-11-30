@@ -13,7 +13,7 @@ import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
 
-//import 'package:rammus/rammus.dart' as rammus;
+import 'package:rammus/rammus.dart' as rammus;
 
 
 GlobalKey<NavigatorState> gNavKey = GlobalKey();
@@ -43,6 +43,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // 语言包
   Locale locale = null;
+  String _deviceId = "Unknown device";
 
   static final CHANNEL_FLUTTER_to_ANDROID = "channel_flutter2android";
   var m_channel_flutter2android = MethodChannel(CHANNEL_FLUTTER_to_ANDROID);
@@ -79,7 +80,44 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     initLocale();
 
     // 配置阿里推送
+//    initPlatformState();
+    rammus.setupNotificationManager(name: "innerset",id: "innetsect push");
+//    rammus.initCloudChannelResult.listen((data){
+//      print("----------->init successful ${data.isSuccessful} ${data.errorCode} ${data.errorMessage}");
+//    });
+
+    rammus.onNotification.listen((data){
+      print("----------->notification here ${data.summary}");
+      print("----------->device here $_deviceId");
+
+    });
+    rammus.onNotificationOpened.listen((data){
+      print("-----------> ${data.summary} 被点了");
+
+    });
+
+    rammus.onNotificationClickedWithNoAction.listen((data){
+      print("${data.summary} no action");
+
+    });
+
   }
+
+//  Future<void> initPlatformState() async {
+//    String deviceId;
+//    try {
+//      deviceId = await rammus.deviceId;
+//    } on PlatformException {
+//      deviceId = 'Failed to get device id.';
+//    }
+//    if (!mounted) return;
+//    setState(() {
+//      _deviceId = deviceId;
+//      //接下来你要做的事情
+//      //1.将device id通过接口post给后台，然后进行指定设备的推送
+//      //2.推送的时候，在Android8.0以上的设备都要设置通知通道
+//    });
+//  }
 
   void initLocale() async {
     if (!mounted) {

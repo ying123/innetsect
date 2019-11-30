@@ -90,7 +90,7 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
 
   /// 排序
   void _handleList(List<ApprovedModel> list) {
-    if (list == null || list.isEmpty) return;
+    if (list == null || list.length==0) return;
     for (int i = 0, length = list.length; i < length; i++) {
       print('==========>list[$i] = ${list[i].name}');
       String pinyin = PinyinHelper.getPinyinE(list[i].name);
@@ -115,7 +115,7 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
 
   /// 重置排序
   void _sortListBySuspensionTag(List<ISuspensionBean> list) {
-    if (list == null || list.isEmpty) return;
+    if (list == null || list.length==0) return;
     list.sort((a, b) {
       return a.getSuspensionTag().compareTo(b.getSuspensionTag());
     });

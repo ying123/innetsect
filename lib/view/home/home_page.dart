@@ -4,13 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/exhibition/halls_model.dart';
 import 'package:innetsect/data/exhibition/home_banners_model.dart';
 import 'package:innetsect/data/exhibition/home_portlets_model.dart';
+import 'package:innetsect/data/user_info_model.dart';
 
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
+import 'package:innetsect/view/my/vip_card/vip_card_page.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/home/home_provide.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:chewie/chewie.dart';
@@ -19,18 +26,28 @@ import 'package:qrscan/qrscan.dart' as scanner;
 
 class HomePage extends PageProvideNode {
   final HomeProvide _provide = HomeProvide();
+  final LoginProvide _loginProvide = LoginProvide();
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+
   HomePage() {
     mProviders.provide(Provider<HomeProvide>.value(_provide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+    mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return HomeContentPage(_provide);
+    return HomeContentPage(_provide,_loginProvide,_detailProvide,_cartProvide);
   }
 }
 
 class HomeContentPage extends StatefulWidget {
   final HomeProvide _provide;
-  HomeContentPage(this._provide);
+  final LoginProvide _loginProvide;
+  final CommodityDetailProvide _detailProvide;
+  final CommodityAndCartProvide _cartProvide;
+  HomeContentPage(this._provide,this._loginProvide,this._detailProvide,this._cartProvide);
   @override
   _HomeContentPageState createState() => _HomeContentPageState();
 }
@@ -38,6 +55,9 @@ class HomeContentPage extends StatefulWidget {
 class _HomeContentPageState extends State<HomeContentPage>
     with TickerProviderStateMixin {
   HomeProvide _provide;
+  LoginProvide _loginProvide;
+  CommodityDetailProvide _detailProvide;
+  CommodityAndCartProvide _cartProvide;
 
   ///控制器
   EasyRefreshController _controller;
@@ -52,6 +72,9 @@ class _HomeContentPageState extends State<HomeContentPage>
   void initState() {
     super.initState();
     _provide ??= widget._provide;
+    _loginProvide ??= widget._loginProvide;
+    _detailProvide ??= widget._detailProvide;
+    _cartProvide ??= widget._cartProvide;
     _controller = EasyRefreshController();
 
     //加载首页数据
@@ -110,6 +133,50 @@ class _HomeContentPageState extends State<HomeContentPage>
     },onError: (e){});
   }
 
+  /// 扫码
+  _loadQrCode(String result){
+    _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
+      if(userItem!=null&&userItem.data!=null){
+        _loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
+        // 解析二维码
+        List list = result.split("&&");
+        var json = {
+          "qrType":list[0],
+          "qrCode":list[1]
+        };
+        // 扫码
+        _provide.qrCodeWhisk(json).doOnListen((){}).doOnCancel((){}).listen((item){
+          if(item!=null&&item.data!=null){
+            if(list[0]=="EXHIBIT_PRODUCT"){
+              // 商品详情
+              CommodityModels models = CommodityModels.fromJson(item.data);
+              _detailProvide.clearCommodityModels();
+              _detailProvide.prodId = models.prodID;
+              /// 加载详情数据
+              _detailProvide.setCommodityModels(models);
+              _detailProvide.setInitData();
+              _cartProvide.setInitCount();
+              _detailProvide.isBuy = false;
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context){
+                  return CommodityDetailPage(pages: "EXHIBIT_PRODUCT",);
+                }
+              ));
+            }else{
+              // vip贵宾卡
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return VIPCardPage();
+                  }
+              ));
+            }
+          }
+        },onError: (e){});
+      }
+    },onError: (e){
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -135,7 +202,7 @@ class _HomeContentPageState extends State<HomeContentPage>
           centerTitle: true,
           leading: Container(),
           actions: <Widget>[
-            GestureDetector(
+            InkWell(
               child: Container(
                 alignment: Alignment.center,
                 child: Text(
@@ -253,10 +320,12 @@ class _HomeContentPageState extends State<HomeContentPage>
               ),
               InkWell(
                 onTap: ()async{
+                  // 必须登录才能扫码
                   try {
                     //扫码结果
                     String barcode = await scanner.scan();
                     print('扫码结果=>$barcode');
+                    _loadQrCode(barcode);
 
                   }on PlatformException catch(e){
                     if (e.code == scanner.CameraAccessDenied) {

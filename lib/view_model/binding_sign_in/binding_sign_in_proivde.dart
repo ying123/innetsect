@@ -4,7 +4,8 @@ import 'package:rxdart/rxdart.dart';
 
 class BingdingSignInProvide extends BaseProvide {
 
-
+  double _size = 100;
+  double get size => _size;
 
   String _qrCode = '';
   String get qrCode =>_qrCode;
@@ -23,5 +24,32 @@ class BingdingSignInProvide extends BaseProvide {
     }).doOnDone((){
 
     });
+  }
+  
+  /// 验证二维码
+  ///验证签到
+  Observable validQrcode (int exhibitionID){
+    return _repo.validQrcode(exhibitionID).doOnData((item){
+
+    }).doOnError((e, stack){
+
+    }).doOnDone((){
+
+    });
+  }
+
+  ///工厂模式
+  factory BingdingSignInProvide() => _getInstance();
+  static BingdingSignInProvide get instance => _getInstance();
+  static BingdingSignInProvide _instance;
+  static BingdingSignInProvide _getInstance() {
+    if (_instance == null) {
+      _instance = new BingdingSignInProvide._internal();
+    }
+    return _instance;
+  }
+  BingdingSignInProvide._internal() {
+    print('BingdingSignInProvide init');
+    // 初始化
   }
 }

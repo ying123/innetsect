@@ -5,6 +5,7 @@ import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/data/mall/portlets_model.dart';
 import 'package:innetsect/data/mall/promotion_model.dart';
+import 'package:innetsect/main_provide.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/mall/information/infor_web_page.dart';
 import 'package:innetsect/view/mall/search/search_screen_page.dart';
@@ -31,6 +32,7 @@ class MallHomePage extends PageProvideNode {
   final CommodityListProvide _commodityListProvide = CommodityListProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
   final InformationProvide _informationProvide = InformationProvide.instance;
+  final MainProvide _mainProvide = MainProvide.instance;
   MallHomePage(){
     mProviders.provide(Provider<MallHomeProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
@@ -38,12 +40,13 @@ class MallHomePage extends PageProvideNode {
     mProviders.provide(Provider<SearchProvide>.value(_searchProvide));
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
     mProviders.provide(Provider<InformationProvide>.value(_informationProvide));
+    mProviders.provide(Provider<MainProvide>.value(_mainProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
 
     return MallHomeContent(_provide,_detailProvide,_commodityListProvide,
-        _searchProvide,_cartProvide,_informationProvide);
+        _searchProvide,_cartProvide,_informationProvide,_mainProvide);
   }
 
 }
@@ -56,10 +59,12 @@ class MallHomeContent extends StatefulWidget {
   final SearchProvide _searchProvide;
   final CommodityAndCartProvide _cartProvide;
   final InformationProvide _informationProvide;
+  final MainProvide _mainProvide;
 
   MallHomeContent(this._provide,this._detailProvide,
       this._commodityListProvide,this._searchProvide,
-      this._cartProvide,this._informationProvide);
+      this._cartProvide,this._informationProvide,
+      this._mainProvide);
 
   @override
   _MallHomeContentState createState() => new _MallHomeContentState();
@@ -72,6 +77,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
   SearchProvide _searchProvide;
   CommodityAndCartProvide _cartProvide;
   InformationProvide _informationProvide;
+  MainProvide _mainProvide;
   // 控制器
   EasyRefreshController _controller;
   // 分页
@@ -96,9 +102,11 @@ class _MallHomeContentState extends State<MallHomeContent> {
         centerTitle: true,
         leading: Container(),
         actions: <Widget>[
-          GestureDetector(
+          _mainProvide.splashModel.attended?
+          InkWell(
             child: Container(
               alignment: Alignment.center,
+              padding: EdgeInsets.only(right: 20),
               child: Text(
                 '去展会',
                 textAlign: TextAlign.end,
@@ -111,10 +119,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
             onTap: () {
               Navigator.pushNamed(context, '/appNavigationBarPage');
             },
-          ),
-          SizedBox(
-            width: ScreenAdapter.width(20),
-          )
+          ):Container(height: 0.0,width: 0.0,)
         ],
       ),
       body: new ListWidgetPage(
@@ -151,6 +156,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
     _searchProvide ??= widget._searchProvide;
     _cartProvide ??= widget._cartProvide;
     _informationProvide ??= widget._informationProvide;
+    _mainProvide ??= widget._mainProvide;
     // 加载首页数据
     _loadBannerData();
   }
@@ -159,7 +165,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
   Widget _setupSwiperImage() {
     return Container(
       width: ScreenAdapter.width(750),
-      height: ScreenAdapter.getPixelRatio()*ScreenAdapter.height(125),
+      height: ScreenAdapter.getPixelRatio()*ScreenAdapter.height(135),
       color: Colors.white,
       margin:EdgeInsets.only(bottom: 20),
       child: Center(
@@ -475,11 +481,11 @@ class _MallHomeContentState extends State<MallHomeContent> {
   }
 
   _loadListData(){
-    widget._provide.listData(pageNo++).doOnListen((){}).doOnCancel((){})
+    widget._provide.listData(++pageNo).doOnListen((){}).doOnCancel((){})
         .listen((item){
-//        setState(() {
-//          _portletsModelList..addAll( PortletsModelList.fromJson(item.data).list);
-//        });
+        setState(() {
+          _portletsModelList..addAll( PortletsModelList.fromJson(item.data).list);
+        });
     },onError: (e){});
   }
 

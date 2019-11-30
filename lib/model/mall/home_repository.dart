@@ -14,7 +14,7 @@ class MallHomeService {
 
   /// 首页列表
   Observable<BaseResponse> listData (int pageNo){
-    var url = '/api/society/portals/home/portlets?$pageNo';
+    var url = '/api/society/portals/home/portlets?pageNo=$pageNo';
     var response = get(url);
     return response;
   }

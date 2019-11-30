@@ -399,13 +399,8 @@ class _SearchScreenContentState extends State<SearchScreenContent>
                         return new InkWell(
                           onTap: (){
                             /// 跳转详情
-                            _loadDetail(item.prodID);
-                            Navigator.push(context, MaterialPageRoute(
-                                builder:(context){
-                                  return new CommodityDetailPage();
-                                }
-                            )
-                            );
+                            _loadDetail(item.prodID,item.shopID);
+
                           },
                           child: new Container(
                             width: itemWidth,
@@ -416,7 +411,7 @@ class _SearchScreenContentState extends State<SearchScreenContent>
                                 // 商品图片
                                 _imageWidget(item.prodPic),
                                 // 价格 购物车图标
-                                _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID),
+                                _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID,item.shopID),
                                 // 描述
                                 _textWidget(item.prodName)
                               ],
@@ -447,7 +442,7 @@ class _SearchScreenContentState extends State<SearchScreenContent>
   }
 
   /// 价格和购物车
-  Widget _priceAndCartWidget(String price,int prodID){
+  Widget _priceAndCartWidget(String price,int prodID,int shopID){
     return new Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 10,left: 10,right: 10,bottom: 5),
@@ -463,7 +458,7 @@ class _SearchScreenContentState extends State<SearchScreenContent>
             child: new InkWell(
               onTap: (){
                 // 购物车
-                _loadDetail(prodID);
+                _loadDetail(prodID,shopID);
                 CommodityModalBottom.showBottomModal(context:context);
               },
               child: new Image.asset("assets/images/mall/shop_bucket.png",
@@ -511,11 +506,11 @@ class _SearchScreenContentState extends State<SearchScreenContent>
     }, onError: (e) {});
   }
 
-  _loadDetail(int prodID){
+  _loadDetail(int prodID,int shopID){
     _detailProvide.clearCommodityModels();
     _detailProvide.prodId = prodID;
     /// 加载详情数据
-    _detailProvide.detailData()
+    _detailProvide.detailData(prodId: prodID,types: shopID)
         .doOnListen(() {
       print('doOnListen');
     })
@@ -527,6 +522,12 @@ class _SearchScreenContentState extends State<SearchScreenContent>
       _detailProvide.setInitData();
       _cartProvide.setInitCount();
       _detailProvide.isBuy = false;
+      Navigator.push(context, MaterialPageRoute(
+          builder:(context){
+            return new CommodityDetailPage();
+          }
+      )
+      );
 //      _provide
     }, onError: (e) {});
   }

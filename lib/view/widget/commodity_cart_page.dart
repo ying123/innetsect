@@ -153,17 +153,13 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                     child: new Container(
                       width: double.infinity,
                       height: ScreenAdapter.getScreenHeight()-100,
-                      padding: EdgeInsets.all(10),
                       child: new ListView.builder(
                           itemCount: list.length,
                           itemBuilder: (BuildContext context, int index){
                             return new Container(
                               width: double.infinity,
-                              margin: EdgeInsets.only(left: 5,right: 5,top: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white
-                              ),
+                              margin: EdgeInsets.only(left: 5,right: 5),
+                              color: Colors.white,
                               child: list[index].commodityModelList.length>0? new Column(
                                 children: <Widget>[
                                   new Container(
@@ -171,12 +167,9 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                     height: ScreenAdapter.height(60),
                                     alignment: Alignment.centerLeft,
                                     margin: EdgeInsets.only(left: 10,right: 10),
-                                    decoration: BoxDecoration(
-                                      border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
-                                    ),
                                     child: CustomsWidget().subTitle(
                                       title: list[index].getTypes(list[index].types),
-                                      color: AppConfig.primaryColor
+                                      color: AppConfig.blueBtnColor
                                     ),
                                   ),
                                   _cartList(list[index].commodityModelList)
@@ -273,7 +266,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                 new Expanded(
                                     flex: 3,
                                     child: new Container(
-                                      margin: EdgeInsets.only(top: 5,bottom: 5),
+                                      margin: EdgeInsets.only(top: 15,bottom: 5),
                                       child: new Column(
                                         children: <Widget>[
                                           // 商品描述
@@ -464,8 +457,8 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
     return new Container(
       padding: EdgeInsets.only(left: 5),
       child: new RaisedButton(
-        textColor: this.isEdited?AppConfig.fontBackColor:Colors.white,
-        color: this.isEdited?AppConfig.primaryColor:AppConfig.fontBackColor,
+        textColor: Colors.white,
+        color: this.isEdited?AppConfig.blueBtnColor:AppConfig.fontBackColor,
         onPressed: (){
           callback();
         },
@@ -542,7 +535,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                         _mallProvide.currentIndex = 3;
                         _navigatorToPage(widget: MallPage(),navName: '/mallPage');
                       } else {
-                        _appNavigationBarProvide.currentIndex = 0;
+                        _appNavigationBarProvide.currentIndex = 2;
                         _navigatorToPage(widget: AppNavigationBar(),navName: '/appNavigationBarPage');
                       }
                     },

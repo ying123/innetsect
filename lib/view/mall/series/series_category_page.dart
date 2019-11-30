@@ -118,7 +118,7 @@ class _SeriesCategoryContentState extends State<SeriesCategoryContent> with Tick
             height: ScreenAdapter.height(80),
             child: TabBar(
               controller: _tabController,
-              isScrollable: false,
+              isScrollable: true,
               indicatorColor: AppConfig.blueBtnColor,
               unselectedLabelColor: Colors.grey,
               unselectedLabelStyle: new TextStyle(fontSize: 14.0),

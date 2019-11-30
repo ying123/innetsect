@@ -1,3 +1,4 @@
+import 'package:device_info/device_info.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,6 +79,25 @@ UserInfoModel getUserInfo(){
   }
 }
 
+Future<bool> setDeviceInfo({AndroidDeviceInfo deviceInfo,
+String deviceID}){
+  _spf.remove(ConstConfig.DEVICE_INFO);
+  var jsons = {
+    "deviceID": deviceID.toString(),
+    "platform": "android",
+    "manufacturer": deviceInfo.manufacturer.toString(),
+    "osVersion": deviceInfo.version.release.toString(),
+    "osModel": deviceInfo.model.toString(),
+    "locale": "CN",
+    "appVersion": "1.0.0"
+  };
+  return _spf.setString(ConstConfig.DEVICE_INFO, json.encode(jsons));
+}
+
+String getDeviceInfo(){
+  return _spf.getString(ConstConfig.DEVICE_INFO);
+}
+
 /// 清除本地用户详情
 void clearUserInfo(){
     _spf.remove(ConstConfig.CURRENT_USERDATA);
@@ -135,10 +155,10 @@ void clearUserInfo(){
   ///存储搜索历史记录
   Future<bool> saveSearchHistory(String searchText){
       List<String> list = _spf.getStringList(ConstConfig.SEARCH_LIST);
+      if(list==null){
+        list = List();
+      }
       if(list.where((item)=>item==searchText).length==0){
-        if(list==null){
-          list = List();
-        }
         list.add(searchText);
       }
       return _spf.setStringList(ConstConfig.SEARCH_LIST, list);

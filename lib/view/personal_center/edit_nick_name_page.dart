@@ -47,11 +47,17 @@ class _EditNickNameContentState extends State<EditNickNameContent> {
               child: Padding(
                 padding: EdgeInsets.only(right: 10,left: 10),
                 child: TextField(
-                  decoration: InputDecoration(
-                      hintText: userModel.nickName
-                  ),
+                  controller: TextEditingController.fromValue(
+                    TextEditingValue(
+                        text: userModel.nickName==null?'':userModel.nickName,
+                        selection: TextSelection.fromPosition(TextPosition(
+                            affinity: TextAffinity.downstream,
+                            offset: userModel.nickName.toString().length
+                        ))
+                    )),
                   onChanged: (val){
                     print(val);
+                    userModel.nickName = val;
                     setState(() {
                       _nickName = val;
                     });

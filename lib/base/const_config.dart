@@ -9,6 +9,8 @@ class ConstConfig {
   static const String WAREHOUSE_NAME = '_warehouseName_';
   // 搜索历史数据
   static const String SEARCH_LIST = '_searchList_';
+  // 设备信息
+  static const String DEVICE_INFO = 'DEVICE_INFO';
 
 
   // 商城banner跳转
@@ -22,6 +24,8 @@ class ConstConfig {
   static const String CONTENT_DETAIL = "CONTENT_DETAIL";
   // 展会活动
   static const String ACTIVITY = "ACTIVITY";
+  // 展会签到后跳转类型
+  static const String EXHIBITION_SIGNED_IN = "EXHIBITION_SIGNED_IN";
 
   // 图片尺寸
   static const String BANNER_SIZE = "?x-oss-process=image/resize,m_mfit,h_1125,w_582";

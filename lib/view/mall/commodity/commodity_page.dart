@@ -38,8 +38,8 @@ class CommodityPage extends PageProvideNode{
 class CommodityContent extends StatefulWidget {
   final CommodityProvide provide;
   final CommodityDetailProvide _detailProvide;
-  final LogisticsProvide _logisticsProvide;
   final CommodityAndCartProvide _cartProvide;
+  final LogisticsProvide _logisticsProvide;
   CommodityContent(this.provide,this._detailProvide,this._logisticsProvide,this._cartProvide);
 
   @override
@@ -214,7 +214,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                         onTap: (){
                           /// 跳转详情
                           /// 加载详情
-                          _loadDetail(item.prodID);
+                          _loadDetail(item.prodID,item.shopID);
                           Navigator.push(context, MaterialPageRoute(
                               builder:(context){
                                 return new CommodityDetailPage();
@@ -231,7 +231,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                               // 商品图片
                               _imageWidget(item.prodPic),
                               // 价格 购物车图标
-                              _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID),
+                              _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID,item.shopID),
                               // 描述
                               _textWidget(item.prodName)
                             ],
@@ -261,7 +261,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   }
 
   /// 价格和购物车
-  Widget _priceAndCartWidget(String price,int prodID){
+  Widget _priceAndCartWidget(String price,int prodID,int shopID){
     return new Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 10,left: 10,right: 10,bottom: 5),
@@ -277,7 +277,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
             child: new InkWell(
               onTap: (){
                 print("购物车");
-                _loadDetail(prodID);
+                _loadDetail(prodID,shopID);
                 CommodityModalBottom.showBottomModal(context:context);
               },
               child: new Image.asset("assets/images/mall/shop_bucket.png",
@@ -343,11 +343,11 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     }, onError: (e) {});
   }
 
-  _loadDetail(int prodID){
+  _loadDetail(int prodID,int shopID){
     _detailProvide.clearCommodityModels();
     _detailProvide.prodId = prodID;
     /// 加载详情数据
-    _detailProvide.detailData(types: 37,prodId:prodID )
+    _detailProvide.detailData(types: shopID,prodId:prodID )
         .doOnListen(() {
       print('doOnListen');
     })

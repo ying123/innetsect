@@ -79,6 +79,8 @@ dependencies:
   device_info: ^0.4.1+2
   #获取版本信息
   package_info: ^0.4.0+11
+  #阿里推送
+  rammus: ^0.0.5
 
 dev_dependencies:
   flutter_test:
@@ -129,6 +131,8 @@ flutter:
     - assets/images/ic_qrcode_preview_tiny.png
     - assets/images/default_nor_avatar.png
 
+    - assets/images/star.png
+    - assets/images/vip.png
     - assets/images/mars.png
     - assets/images/mars_big.jpg
     - assets/images/earth.png
@@ -155,7 +159,9 @@ flutter:
     - assets/images/我的.png
     - assets/images/我的选中.png
     - assets/images/erweima.png
-   
+    #二维码中间logo
+    - assets/images/main/logo180x180.png
+
 
     #刷新图标
     - assets/images/icon_arrow.png
@@ -196,14 +202,10 @@ flutter:
     - assets/images/showhome/展会商品.png
     - assets/images/showhome/签到绑定.png
     - assets/images/showhome/扫码购物.png
-    
-
-    
-
-
-    - assets/images/star.png
-    - assets/images/vip.png
-
+    #展会-我的-vipcard
+    - assets/images/user/vipcard/vip_card.png
+    #客服图标
+    - assets/images/user/feedback.png
     # 商城
     - assets/images/mall/welcome.png
     - assets/images/mall/bg.gif

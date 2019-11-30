@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/app.dart';
 import 'package:innetsect/app_navigation_bar.dart';
+import 'package:innetsect/entrance_page.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
 import 'package:innetsect/view/brand/brand_mall_page.dart';
 import 'package:innetsect/view/exhibition/home_portlets_details_page.dart';
@@ -14,6 +15,7 @@ import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/my/all/all_page.dart';
+import 'package:innetsect/view/my/profile/profile_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
 import 'package:innetsect/view/registered/registered_page.dart';
 import 'package:innetsect/view/show_tickets/show_tickets.dart';
@@ -21,6 +23,7 @@ import 'package:innetsect/view/venues_map/venues_map_page.dart';
 
 final routes = {
   '/':(context)=>App(),
+  '/entrancePage':(context)=>EntrancePage(),
   '/appNavigationBarPage':(context)=>AppNavigationBar(),
   '/mallPage':(context)=>MallPage(),
   '/mallSearchPage':(context)=>SearchPage(),
@@ -36,7 +39,8 @@ final routes = {
   '/venuesMapPage':(context,{arguments})=>VenuesMapPage(hallsData: arguments,),
   '/showTickets':(context,{arguments})=>ShowTicketsPage(showId: arguments,),
   // '/brandMallPage':(context)=>BrandMallPage(),
-  '/homePortletsDetailsPage':(context,{arguments})=>HomePortletsDetailsPage(contentID: arguments,)
+  '/homePortletsDetailsPage':(context,{arguments})=>HomePortletsDetailsPage(contentID: arguments,),
+  '/ProfilePage':(context)=>ProfilePage()
 };
 
 //固定写法

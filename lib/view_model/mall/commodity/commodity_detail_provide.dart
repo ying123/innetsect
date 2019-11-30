@@ -34,6 +34,12 @@ class CommodityDetailProvide extends BaseProvide {
   bool _resultStatus = false;
   /// 售后按钮显示
   bool _afterBtn = false;
+  int _types;
+  int get types=>_types;
+  set types(int types){
+    _types = types;
+    notifyListeners();
+  }
 
   CommodityModels get commodityModels => _commodityModels;
 
@@ -102,8 +108,10 @@ class CommodityDetailProvide extends BaseProvide {
 
   // 清除商品详情
   void clearCommodityModels(){
-    _commodityModels = null;
-    _skusModel = null;
+    if(_commodityModels!=null && _skusModel!=null){
+      _commodityModels = null;
+      _skusModel = null;
+    }
     notifyListeners();
   }
 

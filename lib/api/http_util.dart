@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:innetsect/base/app_config.dart';
-import 'package:device_info/device_info.dart';
 import 'package:innetsect/tools/user_tool.dart';
 
 class HttpUtil {
@@ -41,6 +42,7 @@ class HeaderInterceptor extends Interceptor {
       print('12312');
       options.headers.putIfAbsent('Authorization', ()=> 'Bearer' + ' '+token);
     }
+
     if(options.path=="/api/accounts/me"){
       ///deviceID: f37bc0e55fb942808b5ada371cd3e89b
       //platform: IOS
@@ -49,17 +51,20 @@ class HeaderInterceptor extends Interceptor {
       //osModel: plus
       //locale: chinese
       //appVersion: 2.3
-      _getDeviceInfo().then((item){
-        print(item);
-        options.headers.putIfAbsent("deviceID",() => item.androidId);
-        options.headers.putIfAbsent("platform", () => "android");
-        options.headers.putIfAbsent("manufacturer", () => item.manufacturer);
-        options.headers.putIfAbsent("osVersion", () => item.version);
-        options.headers.putIfAbsent("osModel", () => item.model);
-        options.headers.putIfAbsent("locale", () => UserTools().getLocal());
-        options.headers.putIfAbsent("appVersion", () => "1.0.0");
-      });
+      String jsons = UserTools().getDeviceInfo();
+      Map<String,dynamic> map = json.decode(jsons);
+      print(map);
+
+      options.headers.putIfAbsent("deviceID",() => map['deviceID']);
+      options.headers.putIfAbsent("platform", () => map['platform']);
+      options.headers.putIfAbsent("manufacturer", () => map['manufacturer']);
+      options.headers.putIfAbsent("osVersion", () => map['osVersion']);
+      options.headers.putIfAbsent("osModel", () => map['osModel']);
+      options.headers.putIfAbsent("locale", () => map['locale']);
+      options.headers.putIfAbsent("appVersion", () => map['appVersion']);
+
     }
+    print(options.headers);
     return super.onRequest(options);
   }
 
@@ -69,8 +74,4 @@ class HeaderInterceptor extends Interceptor {
     return super.onError(err);
   }
 
-  Future<AndroidDeviceInfo> _getDeviceInfo() async{
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    return deviceInfo.androidInfo;
-  }
 }

@@ -1,8 +1,16 @@
 
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/main/activity_model.dart';
 
 class AppNavigationBarProvide extends BaseProvide{
 
+  // 活动
+  List<ActivityModel> _activityList=new List();
+  List<ActivityModel> get activityList => _activityList;
+  set activityList(List<ActivityModel> list){
+    _activityList = list;
+    notifyListeners();
+  }
 
   ///工厂模式
   factory AppNavigationBarProvide()=> _getInstance();

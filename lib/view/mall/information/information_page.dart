@@ -67,10 +67,10 @@ class _InformationContentState extends State<InformationContent> {
                         this._navToWebPage();
                       },
                       child: new Container(
+                        width: ScreenAdapter.width(750),
                         child: new Column(
                           children: <Widget>[
-                            new CachedNetworkImage(imageUrl: item.poster,fit: BoxFit.cover,width: double.infinity,
-                              height:ScreenAdapter.height(420),),
+                            new CachedNetworkImage(imageUrl: item.poster,fit: BoxFit.fitWidth,),
                             new Container(
                               width: double.infinity,
                               alignment: Alignment.centerLeft,

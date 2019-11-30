@@ -24,6 +24,17 @@ class ExhibitionHomeService {
     var response = get(url);
     return response;
   }
+
+  /// 扫码
+  Observable<BaseResponse> qrCodeWhisk(Map<String,dynamic> json){
+    var url = '/api/promotion/vipCards/takeByQrCode';
+    if(json['qrType']=="EXHIBIT_PRODUCT"){
+      url="/api/eshop/47/products/panicBuy";
+    }
+    var response = post(url,body: json);
+    return response;
+  }
+
 }
 
 ///展会首页数据响应
@@ -42,5 +53,10 @@ class ExhibitionHomeRepo {
   ///展会
   Observable exhibitions(int exhibitionsiD){
     return _remote.exhibitions(exhibitionsiD);
+  }
+
+  /// 扫码
+  Observable<BaseResponse> qrCodeWhisk(Map<String,dynamic> json){
+    return _remote.qrCodeWhisk(json);
   }
 }

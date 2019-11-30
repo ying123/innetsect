@@ -12,6 +12,8 @@ import 'package:innetsect/view_model/mall/mall_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
 import 'package:innetsect/view/mall/commodity/commodity_page.dart';
 
+import 'package:rammus/rammus.dart' as rammus;
+
 ///商城页面
 class MallPage extends PageProvideNode{
   final MallProvide _provide = MallProvide.instance;
@@ -119,10 +121,14 @@ class _MallContentPageState extends State<MallContentPage> {
       if(index==4){
         this._loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
           if(userItem!=null&&userItem.data!=null){
-            this._loginProvide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
+            UserInfoModel model = UserInfoModel.fromJson(userItem.data);
+            rammus.bindAccount(model.acctID.toString());
+            this._loginProvide.setUserInfoModel(model);
           }
         },onError: (e){
         });
       }
   }
+
+
 }

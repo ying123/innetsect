@@ -1,14 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
-import 'package:innetsect/utils/animation_util.dart';
-import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/my/feedback/feedback_page.dart';
 import 'package:innetsect/view/my/notice/notice_page.dart';
 import 'package:innetsect/view/my/settings/my_settings_page.dart';
+import 'package:innetsect/view/my/vip_card/vip_card_page.dart';
 import 'package:innetsect/view/my_order/after_service_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
 
@@ -54,6 +52,8 @@ class _MyContentPageState extends State<MyContentPage> {
     page = widget.page;
     _loginProvide.pages = widget.page;
   }
+
+
 
 //  Future _loginPage() async {
 //    print('_loginPage');
@@ -101,7 +101,7 @@ class _MyContentPageState extends State<MyContentPage> {
                   SizedBox(
                     width: ScreenAdapter.width(50),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       // 购物车
                       Navigator.push(context, MaterialPageRoute(
@@ -119,7 +119,7 @@ class _MyContentPageState extends State<MyContentPage> {
                   Expanded(
                     child: Container(),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       print('我的订单被点击');
                       Navigator.push(context, MaterialPageRoute(
@@ -137,7 +137,7 @@ class _MyContentPageState extends State<MyContentPage> {
                   Expanded(
                     child: Container(),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       print('地址管理被点击');
                       Navigator.push(context, MaterialPageRoute(
@@ -155,7 +155,7 @@ class _MyContentPageState extends State<MyContentPage> {
                   Expanded(
                     child: Container(),
                   ),
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       // 我的售后
                       Navigator.push(context, MaterialPageRoute(
@@ -189,13 +189,18 @@ class _MyContentPageState extends State<MyContentPage> {
                     SizedBox(
                       width: ScreenAdapter.width(50),
                     ),
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
-                        print('优惠券被点击');
+                        print('贵宾卡');
+                        Navigator.push(context,MaterialPageRoute(
+                          builder: (context){
+                            return VIPCardPage();
+                          }
+                        ));
                       },
                       child: _setupBtn(
                           'assets/images/newpersonalcentre/我的卡券@2x.png',
-                          '优惠券',
+                          '贵宾卡',
                           44.0,
                           40.0),
                     ),
@@ -352,7 +357,7 @@ class _MyContentPageState extends State<MyContentPage> {
             Padding(
               padding: EdgeInsets.fromLTRB(0, ScreenAdapter.height(278), 0, 0),
               child: Center(
-                child: GestureDetector(
+                child: InkWell(
                   onTap: () {
                     print('个人中心被点击');
                     Navigator.push(context, MaterialPageRoute(

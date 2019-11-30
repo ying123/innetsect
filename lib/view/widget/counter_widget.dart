@@ -73,6 +73,7 @@ class _CounterWidgetState extends State<CounterWidget> {
                   content: "是否删除该商品",
                   onCancel:(){
                     this.provide.setQuantity(item.commodityModelList[widget.idx], widget.idx);
+                    Navigator.pop(context);
                   },
                   onPressed: (){
                     this.provide.removeCarts(item.commodityModelList[widget.idx]).doOnListen((){}).doOnCancel((){})

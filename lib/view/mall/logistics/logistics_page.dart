@@ -117,7 +117,7 @@ class _LogisticsContentState extends State<LogisticsContent> {
   /// 订单物流
   _loadData(){
     OrderDetailModel model = _detailProvide.orderDetailModel;
-    if(model.shipperCode!=null||model.waybillNo!=null){
+    if(model.shipperCode!=null&&model.waybillNo!=null){
       _provide.getLogisticsList(orderID: model.orderID,shipperCode: model.shipperCode,
           waybillNo: model.waybillNo,phone:model.tel).doOnListen(() {
         print('doOnListen');
