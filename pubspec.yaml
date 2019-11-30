@@ -81,6 +81,8 @@ dependencies:
   package_info: ^0.4.0+11
   #阿里推送
   rammus: ^0.0.5
+  #选择器
+  flutter_picker: ^1.1.0
 
 dev_dependencies:
   flutter_test:

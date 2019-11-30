@@ -59,7 +59,7 @@ class _BindingSignInContentPageState extends State<BindingSignInContentPage> {
             if(model.redirectType==ConstConfig.EXHIBITION_SIGNED_IN){
               _mainProvide.splashModel.attended = model.data.success;
               Future.delayed(Duration(milliseconds: 500),(){
-                Navigator.of(context).popAndPushNamed("/ProfilePage");
+                Navigator.of(context).popAndPushNamed("/SignProtocolPage");
               });
             }
           });
@@ -141,7 +141,15 @@ class _BindingSignInContentPageState extends State<BindingSignInContentPage> {
                 if(item!=null&&item.data!=null){
                   SignModel model = SignModel.fromJson(item.data);
                   if(model.success){
-                    Navigator.of(context).pushNamed("/ProfilePage");
+                    CustomsWidget().customShowDialog(context: context,
+                      title: model.welcomeTitle,
+                      content: model.welcomeText,
+                      isCancel: false,
+                      submitTitle: "下一步",
+                      onPressed: (){
+                        Navigator.of(context).popAndPushNamed("/SignProtocolPage");
+                      }
+                    );
                   }else{
                     CustomsWidget().customShowDialog(context: context,
                         title: model.welcomeTitle,

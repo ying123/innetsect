@@ -5,6 +5,7 @@ import 'package:innetsect/app.dart';
 import 'package:innetsect/app_navigation_bar.dart';
 import 'package:innetsect/entrance_page.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
+import 'package:innetsect/view/binding_sign_in/sign_protocol_page.dart';
 import 'package:innetsect/view/brand/brand_mall_page.dart';
 import 'package:innetsect/view/exhibition/home_portlets_details_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
@@ -40,7 +41,8 @@ final routes = {
   '/showTickets':(context,{arguments})=>ShowTicketsPage(showId: arguments,),
   // '/brandMallPage':(context)=>BrandMallPage(),
   '/homePortletsDetailsPage':(context,{arguments})=>HomePortletsDetailsPage(contentID: arguments,),
-  '/ProfilePage':(context)=>ProfilePage()
+  '/ProfilePage':(context)=>ProfilePage(),
+  '/SignProtocolPage':(context)=>SignProtocolPage()
 };
 
 //固定写法

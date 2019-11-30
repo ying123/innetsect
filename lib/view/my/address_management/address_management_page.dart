@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:innetsect/app_navigation_bar.dart';
+import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -16,16 +19,22 @@ class AddressManagementPage extends PageProvideNode {
   final AddressManagementProvide _provide = AddressManagementProvide();
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
   final AfterServiceProvide _afterServiceProvide = AfterServiceProvide.instance;
+  final AppNavigationBarProvide _appNavProvide = AppNavigationBarProvide.instance;
+  final String pages;
 
-  AddressManagementPage() {
+  AddressManagementPage({
+    this.pages
+  }) {
     mProviders.provide(Provider<AddressManagementProvide>.value(_provide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
     mProviders.provide(Provider<AfterServiceProvide>.value(_afterServiceProvide));
+    mProviders.provide(Provider<AppNavigationBarProvide>.value(_appNavProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return AddressManagementContentPage(_provide,_orderDetailProvide,_afterServiceProvide);
+    return AddressManagementContentPage(_provide,_orderDetailProvide,
+        _afterServiceProvide,_appNavProvide,pages: pages,);
   }
 }
 
@@ -33,7 +42,10 @@ class AddressManagementContentPage extends StatefulWidget {
   final AddressManagementProvide _provide;
   final OrderDetailProvide _orderDetailProvide;
   final AfterServiceProvide _afterServiceProvide;
-  AddressManagementContentPage(this._provide,this._orderDetailProvide,this._afterServiceProvide);
+  final AppNavigationBarProvide _appNavProvide;
+  final String pages;
+  AddressManagementContentPage(this._provide,this._orderDetailProvide,
+      this._afterServiceProvide,this._appNavProvide,{this.pages});
 
   @override
   _AddressManagementContentPageState createState() =>
@@ -45,6 +57,7 @@ class _AddressManagementContentPageState
   OrderDetailProvide _orderDetailProvide;
   AddressManagementProvide _provide;
   AfterServiceProvide _afterServiceProvide;
+  AppNavigationBarProvide _appNavProvide;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +74,23 @@ class _AddressManagementContentPageState
         centerTitle: true,
         leading: InkWell(
             onTap: () {
-              Navigator.pop(context);
+              if(widget.pages==ConstConfig.EXHIBITION_SIGNED_IN){
+                CustomsWidget().customShowDialog(context: context,
+                  title: "温馨提示",content: "确定地址填写完成?",
+                  cancelTitle: "继续填写",
+                  submitTitle: "确定",
+                  onPressed: (){
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                        builder: (context){
+                          _appNavProvide.currentIndex = 2;
+                          return AppNavigationBar();
+                        }
+                    ), (Route router)=>false);
+                  }
+                );
+              }else{
+                Navigator.pop(context);
+              }
             },
             child: Image.asset(
               'assets/images/xiangxia.png',
@@ -82,6 +111,7 @@ class _AddressManagementContentPageState
     _orderDetailProvide ??= widget._orderDetailProvide;
     _provide ??= widget._provide;
     _afterServiceProvide ??= widget._afterServiceProvide;
+    _appNavProvide ??= widget._appNavProvide;
     // 地址管理请求
     _provide.clearList();
     _listData();

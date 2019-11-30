@@ -3,6 +3,7 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/binding_sign_in/sortilege_page.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/my/settings/about_us_page.dart';
 import 'package:innetsect/view/my/settings/edit_pwd_page.dart';
@@ -55,6 +56,14 @@ class _MySettingsContentState extends State<MySettingsContent> {
             }),
             new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
             // 抽签登记
+            _listWidgets(icon: Icons.book,title: "抽签登记信息",onTap: (){
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return SortilegePage(pages: "mySetting",);
+                  }
+              ));
+            }),
+            new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
             // 修改密码
             _listWidgets(icon: Icons.lock_outline,title: "修改密码",onTap: (){
               Navigator.push(context, MaterialPageRoute(

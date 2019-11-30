@@ -38,6 +38,28 @@ class BingdingSignInProvide extends BaseProvide {
     });
   }
 
+  /// 提交信息
+  Observable submitInfo (dynamic json){
+    return _repo.submitInfo(json).doOnData((item){
+
+    }).doOnError((e, stack){
+
+    }).doOnDone((){
+
+    });
+  }
+
+  /// 获取信息
+  Observable getSignInfo (){
+    return _repo.getSignInfo().doOnData((item){
+
+    }).doOnError((e, stack){
+
+    }).doOnDone((){
+
+    });
+  }
+
   ///工厂模式
   factory BingdingSignInProvide() => _getInstance();
   static BingdingSignInProvide get instance => _getInstance();

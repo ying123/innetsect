@@ -374,7 +374,7 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                   onTap: (){
                     Navigator.push(context, MaterialPageRoute(
                         builder: (context){
-                          return ProtocolPage();
+                          return ProtocolPage(title: "innersect用户协议",leading: true,);
                         }
                     ));
                   },

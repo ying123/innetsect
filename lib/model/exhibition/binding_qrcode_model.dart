@@ -15,6 +15,19 @@ class QrcodeService {
     var response = get(url);
     return response;
   }
+
+  /// 提交信息
+  Observable submitInfo (dynamic json){
+    var url = '/api/accounts/myprofile';
+    var response = put(url,body: json);
+    return response;
+  }
+  /// 获取信息
+  Observable getSignInfo (){
+    var url = '/api/accounts/myprofile';
+    var response = get(url);
+    return response;
+  }
 }
 
   ///展会签到绑定二维数据
@@ -27,6 +40,14 @@ class QrcodeRepo {
   ///验证签到
   Observable validQrcode (int exhibitionID){
     return _remote.validQrcode(exhibitionID);
+  }
+  /// 提交信息
+  Observable submitInfo (dynamic json){
+    return _remote.submitInfo(json);
+  }
+  /// 获取信息
+  Observable getSignInfo (){
+    return _remote.getSignInfo();
   }
 
 }
