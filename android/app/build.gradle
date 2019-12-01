@@ -24,6 +24,15 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+//引用插件
+apply plugin: 'seal'
+def projectRoot = project.getRootProject().rootDir.absolutePath
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 android {
     compileSdkVersion 28
@@ -36,14 +45,66 @@ android {
         disable 'InvalidPackage'
     }
 
+    //添加
+    def manifestPath = [
+            // for AAR of Release
+            // see note below
+            projectRoot + '/build-cache',
+            projectRoot + '/rammus',
+            // for AAR of SNAPSHOT
+            projectRoot + '/app/build/intermediates/exploded-aar'
+    ]
+
+    //'android:theme'
+    def removeAttrs = [
+            'android:debuggable'
+    ]
+
+    def replaceValues = [
+            'android:allowBackup'
+    ]
+    def sweepXmlns = [
+            'android=\"http://schemas.android.com/apk/res/android\"'
+    ]
+
+    seal {
+        enabled = true
+        manifests = manifestPath
+
+        appAttrs {
+            enabled = true
+            attrsShouldRemove = removeAttrs
+        }
+
+        appReplaceValues {
+            enabled = true
+            valuesShouldRemove = replaceValues
+        }
+        xmlnsSweep {
+            enabled = true
+            xmlnsShouldSweep = sweepXmlns
+        }
+    }
+
+
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.innetsect"
+        applicationId "net.m3.innersect"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyPassword keystoreProperties['keyPassword']
+        }
+
     }
 
     buildTypes {
@@ -53,6 +114,7 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
 }
 
 flutter {
@@ -64,4 +126,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    compile 'com.aliyun.ams:huawei-push:2.6.3.305'
+    compile 'com.aliyun.ams:huawei-push-base:2.6.3.305'
 }
