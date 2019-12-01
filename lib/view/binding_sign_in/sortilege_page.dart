@@ -91,6 +91,7 @@ class _SortilegeContentState extends State<SortilegeContent> {
                       title: "温馨提示",content: "跳过'抽签登记信息'填写,将视为放弃抽签机会,"
                           "确定放弃离开?",
                       cancelTitle: "放弃离开",submitTitle: "继续填写",
+                      submitColor: Colors.blue,
                     onCancel: (){
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                         builder: (context){
@@ -209,6 +210,7 @@ class _SortilegeContentState extends State<SortilegeContent> {
                     content: "展会商品抢购在即,请及时填写设置'默认地址'",
                     cancelTitle: "放弃",
                     submitTitle: "去填写",
+                    submitColor: Colors.blue,
                     onCancel: (){
                       // 放弃
                       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(

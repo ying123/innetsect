@@ -55,6 +55,29 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
   Widget build(BuildContext context) {
     return Provide<CommodityDetailProvide>(
       builder: (BuildContext context,Widget widget,CommodityDetailProvide provide){
+        Widget widget =bottomBtn();
+        if(provide.afterBtn){
+          widget = Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(left: 20,right: 20,top: 20),
+            child: RaisedButton(
+              onPressed: (){
+                // 售后选择规格
+                _afterServiceProvide.skusModel = provide.skusModel;
+                Navigator.pop(context);
+              },
+              color: Colors.black,
+              textColor: Colors.white,
+              child: new Text("确认"),
+            ),
+          );
+        }else if(provide.pages=="highCommodity"){
+          widget = new Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(left: 20,right: 20,top: 5),
+            child: _buyWidget(),
+          );
+        }
         return new Column(
           children: <Widget>[
             // 返回按钮
@@ -62,22 +85,9 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
             // 中间部分
             contentWidget(),
             // 计数器
-            provide.afterBtn?Container(): counterWidget(),
+            provide.afterBtn?Container(): counterWidget(provide),
             // 加入购物车、立即购买
-            provide.afterBtn?Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(left: 20,right: 20),
-              child: RaisedButton(
-                onPressed: (){
-                  // 售后选择规格
-                  _afterServiceProvide.skusModel = provide.skusModel;
-                  Navigator.pop(context);
-                },
-                color: Colors.black,
-                textColor: Colors.white,
-                child: new Text("确认"),
-              ),
-            ):bottomBtn(),
+            widget
           ],
         );
       },
@@ -92,6 +102,14 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
     this._orderDetailProvide ??= widget._orderDetailProvide;
     this._afterServiceProvide ??= widget._afterServiceProvide;
     this._cartProvide.setMode();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+//    _tabController.dispose();
+    _detailProvide.pages = null;
   }
 
   /// 返回按钮
@@ -129,12 +147,11 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
   }
 
   /// 计数器
-  Widget counterWidget(){
+  Widget counterWidget(CommodityDetailProvide provide){
     return new Container(
       width: double.infinity,
-      height: ScreenAdapter.height(100),
       alignment: Alignment.center,
-      child: CounterWidget(provide: this._cartProvide,),
+      child: CounterWidget(provide: this._cartProvide,model: provide.commodityModels,),
     );
   }
 
@@ -142,7 +159,6 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
   Widget bottomBtn(){
     return new Container(
       width: double.infinity,
-      height: ScreenAdapter.height(60),
       color: Colors.white,
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,15 +167,13 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
           _detailProvide.isBuy?new Container():new Container(
             width: ScreenAdapter.getScreenWidth()/2-10,
             padding: EdgeInsets.only(left: 10,right: 10),
+            margin: EdgeInsets.only(top: 20),
             child: new RaisedButton(
               color: AppConfig.fontBackColor,
               textColor: Colors.white,
               onPressed: (){
                 //加入购物车
                 if(!isLogin()){
-                  this._detailProvide.commodityModels.types = CommodityCartTypes.commodity.toString();
-                  this._detailProvide.commodityModels.isChecked = false;
-                  this._detailProvide.commodityModels.quantity = this._cartProvide.count;
                   // 请求
                   if(this._detailProvide.skusModel.qtyInHand>0){
                     this._cartProvide.addCartsRequest(this._detailProvide.commodityModels)
@@ -171,6 +185,9 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                       ///加载数据
                       print('listen data->$item');
                       if(item.data!=null){
+                        this._detailProvide.commodityModels.types = CommodityCartTypes.commodity.toString();
+                        this._detailProvide.commodityModels.isChecked = false;
+                        this._detailProvide.commodityModels.quantity = this._cartProvide.count;
                         CustomsWidget().showToast(title: "添加成功");
                         Navigator.pop(context);
                       }
@@ -178,9 +195,14 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                   }else{
                     CustomsWidget().showToast(title: "库存不足");
                   }
-
+                }else{
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return LoginPage();
+                    }
+                  ));
                 }
-                
+
               },
               child: new Text("加入购物车",style: TextStyle(
                   fontSize: ScreenAdapter.size(30)
@@ -191,61 +213,66 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
           new Container(
             width: _detailProvide.isBuy?ScreenAdapter.getScreenWidth():ScreenAdapter.getScreenWidth()/2-10,
             padding: _detailProvide.isBuy?EdgeInsets.only(right: 10,left: 10):EdgeInsets.only(right: 5),
-            child: new RaisedButton(
-              color: AppConfig.blueBtnColor,
-              textColor: AppConfig.whiteBtnColor,
-              onPressed: (){
-                // 检测本地是否存在token
-                if(!isLogin()){
-                  if(_detailProvide.skusModel.qtyInHand ==0){
-                    CustomsWidget().showToast(title: "没有库存");
-                  }else{
-                    // 跳转订单详情
-                    List json = [{
-                      "acctID": UserTools().getUserData()['id'],
-                      "shopID":_detailProvide.commodityModels.shopID,
-                      "prodID":_detailProvide.commodityModels.prodID,
-                      "presale":_detailProvide.commodityModels.presale,
-                      "skuCode":_detailProvide.skusModel.skuCode,
-                      "skuName":_detailProvide.skusModel.skuName,
-                      "skuPic":_detailProvide.skusModel.skuPic,
-                      "quantity":_cartProvide.count,
-                      "unit": _detailProvide.commodityModels.unit,
-                      "prodCode": _detailProvide.commodityModels.prodCode,
-                      "salesPrice":_detailProvide.commodityModels.salesPrice,
-                      "allowPointRate":_detailProvide.commodityModels.allowPointRate
-                    }];
-                    _detailProvide.createShopping(json,context)
-                        .doOnListen(() {
-                      print('doOnListen');
-                    })
-                        .doOnCancel(() {})
-                        .listen((item) {
-                      ///加载数据,订单详情
-                      print('listen data->$item');
-                      if(item.data!=null){
-                        OrderDetailModel model = OrderDetailModel.fromJson(item.data);
-                        _orderDetailProvide.orderDetailModel = model;
-                      }
-                      Navigator.push(context, new MaterialPageRoute(
-                          builder: (context){
-                            return new OrderDetailPage();
-                          })
-                      );
-                      //      _provide
-                    }, onError: (e) {
-                      print(e);
-                    });
-                  }
-                }
-              },
-              child: new Text("立即购买",style: TextStyle(
-                  fontSize: ScreenAdapter.size(30)
-                ),
-              ),
-            ),
+            margin: EdgeInsets.only(top: 20),
+            child: _buyWidget(),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _buyWidget(){
+    return new RaisedButton(
+      color: AppConfig.blueBtnColor,
+      textColor: AppConfig.whiteBtnColor,
+      onPressed: (){
+        // 检测本地是否存在token
+        if(!isLogin()){
+          if(_detailProvide.skusModel.qtyInHand ==0){
+            CustomsWidget().showToast(title: "没有库存");
+          }else{
+            // 跳转订单详情
+            List json = [{
+              "acctID": UserTools().getUserData()['id'],
+              "shopID":_detailProvide.commodityModels.shopID,
+              "prodID":_detailProvide.commodityModels.prodID,
+              "presale":_detailProvide.commodityModels.presale,
+              "skuCode":_detailProvide.skusModel.skuCode,
+              "skuName":_detailProvide.skusModel.skuName,
+              "skuPic":_detailProvide.skusModel.skuPic,
+              "quantity":_cartProvide.count,
+              "unit": _detailProvide.commodityModels.unit,
+              "prodCode": _detailProvide.commodityModels.prodCode,
+              "salesPrice":_detailProvide.commodityModels.salesPrice,
+              "allowPointRate":_detailProvide.commodityModels.allowPointRate
+            }];
+            _detailProvide.createShopping(json,context)
+                .doOnListen(() {
+              print('doOnListen');
+            })
+                .doOnCancel(() {})
+                .listen((item) {
+              ///加载数据,订单详情
+              print('listen data->$item');
+              if(item.data!=null){
+                OrderDetailModel model = OrderDetailModel.fromJson(item.data);
+                _orderDetailProvide.orderDetailModel = model;
+              }
+              Navigator.push(context, new MaterialPageRoute(
+                  builder: (context){
+                    return new OrderDetailPage();
+                  })
+              );
+              //      _provide
+            }, onError: (e) {
+              print(e);
+            });
+          }
+        }
+      },
+      child: new Text("立即购买",style: TextStyle(
+          fontSize: ScreenAdapter.size(30)
+      ),
       ),
     );
   }

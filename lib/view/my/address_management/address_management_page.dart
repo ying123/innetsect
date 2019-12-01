@@ -80,6 +80,7 @@ class _AddressManagementContentPageState
                   title: "温馨提示",content: "确定地址填写完成?",
                   cancelTitle: "继续填写",
                   submitTitle: "确定",
+                  submitColor: Colors.blue,
                   onPressed: (){
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                         builder: (context){

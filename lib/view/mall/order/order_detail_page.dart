@@ -56,6 +56,8 @@ class _OrderContentState extends State<OrderContent> {
   OrderDetailProvide _orderDetailProvide;
   CommodityDetailProvide _detailProvide;
   LogisticsProvide _logisticsProvide;
+  bool isShowToast=false;
+  String pages;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,13 @@ class _OrderContentState extends State<OrderContent> {
       appBar: CustomsWidget().customNav(context: context,
         widget: new Text("订单详情",style: TextStyle(fontSize: ScreenAdapter.size((30)),
           fontWeight: FontWeight.w900 ),
-        )
+        ),onTap: (){
+            if(pages=="pay_result"){
+              Navigator.pushNamedAndRemoveUntil(context, "/mallPage", (Route routes)=>false);
+            }else{
+              Navigator.pop(context);
+            }
+          }
       ),
       body: Scaffold(
         body: new SingleChildScrollView(
@@ -74,6 +82,13 @@ class _OrderContentState extends State<OrderContent> {
               _addressWidget(),
               // 订单详情
               _orderDetailWidget(),
+              // orderType==2\3
+              isShowToast?
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    child: Text("恭喜您已成功抢到${_orderDetailProvide.orderDetailModel.orderSummary}",
+                    style: TextStyle(color: AppConfig.blueBtnColor),),
+                  ):Container(width: 0,height: 0,),
               // 商品总价
               _orderCountWidget(),
               // 底部
@@ -127,8 +142,13 @@ class _OrderContentState extends State<OrderContent> {
           ///加载数据
           print('listen data->$items');
           if(items!=null&&items.data!=null){
+            OrderDetailModel model = OrderDetailModel.fromJson(items.data);
+            if(model.orderType==2 || model.orderType==3){
+              isShowToast = true;
+            }
             setState(() {
-              _orderDetailProvide.orderDetailModel = OrderDetailModel.fromJson(items.data);
+              _orderDetailProvide.orderDetailModel = model;
+              pages = map['pages'];
             });
           }
         }, onError: (e) {});
@@ -166,8 +186,8 @@ class _OrderContentState extends State<OrderContent> {
   /// 支付按钮
   Widget payBtn(){
     return  new RaisedButton(
-      color: AppConfig.primaryColor,
-      textColor: AppConfig.fontBackColor,
+      color: AppConfig.blueBtnColor,
+      textColor: Colors.white,
       onPressed: (){
         //提交订单
         if(_orderDetailProvide.orderDetailModel.orderNo!=null){

@@ -40,8 +40,12 @@ class CustomsWidget{
     VoidCallback onCancel,
     bool isCancel=true,
     String cancelTitle = "放弃",
-    String submitTitle="确认"
+    String submitTitle="确认",
+    Color submitColor
   }){
+    if(submitColor==null){
+      submitColor= AppConfig.blueBtnColor;
+    }
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -78,7 +82,8 @@ class CustomsWidget{
                       Navigator.of(context).pop();
                     }
                   },
-                  child: new Text(submitTitle,style: TextStyle(color: AppConfig.blueBtnColor),),
+                  child: new Text(submitTitle,
+                    style: TextStyle(color: submitColor),),
                 )
               ],
             )

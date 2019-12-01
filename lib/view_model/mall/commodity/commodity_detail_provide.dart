@@ -35,6 +35,13 @@ class CommodityDetailProvide extends BaseProvide {
   /// 售后按钮显示
   bool _afterBtn = false;
   int _types;
+  // 跳转的页面
+  String _pages;
+  String get pages=>_pages;
+  set pages(String pages){
+    _pages = pages;
+    notifyListeners();
+  }
   int get types=>_types;
   set types(int types){
     _types = types;

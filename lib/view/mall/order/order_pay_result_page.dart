@@ -79,7 +79,7 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
                     textColor: Colors.white,
                     color: Colors.black,
                     onPressed: (){
-                      Navigator.pop(context);
+                      this.orderDetailRoute(context,provide);
                     },
                     child: new Text("暂不支付",),
                   ),
@@ -156,7 +156,10 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
           builder: (context){
             return OrderDetailPage();
           },
-        settings: RouteSettings(arguments: {'orderID':_detailProvide.orderDetailModel.orderID})
+        settings: RouteSettings(
+            arguments: {'orderID':_detailProvide.orderDetailModel.orderID,
+            'pages':'pay_result'}
+            )
       ));
     }
   }

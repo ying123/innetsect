@@ -30,4 +30,8 @@ class ConstConfig {
   // 图片尺寸
   static const String BANNER_SIZE = "?x-oss-process=image/resize,m_mfit,h_1125,w_582";
   static const String LIST_IMAGE_SIZE = "?x-oss-process=image/resize,m_mfit,h_600,w_900";
+
+  // 跳转参数常量，判断从哪个页面进入
+  // 展会
+  static const String EXHIBIT_PRODUCT = "EXHIBIT_PRODUCT";
 }

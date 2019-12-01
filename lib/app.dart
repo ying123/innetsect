@@ -73,15 +73,15 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
 //    Navigator.of(context).pushNamed('/appNavigationBarPage');
     if(_provide.splashModel.attended){
       _appNavigationBarProvide.currentIndex = 2;
-      Navigator.of(context).pushNamed('/appNavigationBarPage');
-    }else{
+      Navigator.of(context).pushNamedAndRemoveUntil('/appNavigationBarPage',
+              (Route route)=>false);
+    }else if(_provide.splashModel.exhibitionID!=null&&
+      !_provide.splashModel.attended){
       Navigator.of(context).pushNamedAndRemoveUntil('/entrancePage',
-          (Route route)=>true);
-//      Navigator.pushReplacement(context, MaterialPageRoute(
-//          builder: (context){
-//            return EntrancePage();
-//          }
-//      ));
+          (Route route)=>false);
+    }else if(_provide.splashModel.exhibitionID==null){
+      Navigator.of(context).pushNamedAndRemoveUntil('/mallPage',
+              (Route route)=>false);
     }
     _provide.isDone = true;
     setState(() {

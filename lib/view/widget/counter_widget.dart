@@ -26,14 +26,32 @@ class _CounterWidgetState extends State<CounterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return new Row(
-      mainAxisAlignment: this.provide.mode=="multiple"?MainAxisAlignment.end:MainAxisAlignment.center,
-      children: <Widget>[
-        _reduceWidget(),
-        _showNumWidget(),
-        _incrementWidget()
-      ],
-    );
+    if(model.panicBuyQtyPerAcct!=null){
+      return Column(
+        children: <Widget>[
+          Text("每人限购${model.panicBuyQtyPerAcct}件",style: TextStyle(
+            color: AppConfig.blueBtnColor,fontSize: ScreenAdapter.size(24)
+          ),),
+          Row(
+            mainAxisAlignment: this.provide.mode=="multiple"?MainAxisAlignment.end:MainAxisAlignment.center,
+            children: <Widget>[
+              _reduceWidget(),
+              _showNumWidget(),
+              _incrementWidget()
+            ],
+          )
+        ],
+      );
+    }else{
+      return new Row(
+        mainAxisAlignment: this.provide.mode=="multiple"?MainAxisAlignment.end:MainAxisAlignment.center,
+        children: <Widget>[
+          _reduceWidget(),
+          _showNumWidget(),
+          _incrementWidget()
+        ],
+      );
+    }
   }
   @override
   void initState() {
@@ -56,42 +74,45 @@ class _CounterWidgetState extends State<CounterWidget> {
     }
     return new InkWell(
       onTap: (){
-        this.provide.reduce(idx: widget.idx,model: widget.model);
-        if(this.provide.mode!="multiple"){
-          setState(() {
-            count = this.provide.count;
-          });
-        }else{
-          // 如果商品减少到0，提示删除
+        if(model.panicBuyQtyPerAcct==null||
+            (model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct>1)){
+          this.provide.reduce(idx: widget.idx,model: widget.model);
+          if(this.provide.mode!="multiple"){
+            setState(() {
+              count = this.provide.count;
+            });
+          }else{
+            // 如果商品减少到0，提示删除
 
-          List<CommodityTypesModel> list = this.provide.commodityTypesModelLists;
-          String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
-          list.forEach((item){
-            if(item.types == types
-              && item.commodityModelList[widget.idx].quantity==0){
-              CustomsWidget().customShowDialog(context: context,
-                  content: "是否删除该商品",
-                  onCancel:(){
-                    this.provide.setQuantity(item.commodityModelList[widget.idx], widget.idx);
-                    Navigator.pop(context);
-                  },
-                  onPressed: (){
-                    this.provide.removeCarts(item.commodityModelList[widget.idx]).doOnListen((){}).doOnCancel((){})
-                        .listen((res){
-                      if(res.data!=null){
-                        this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
-                        CustomsWidget().showToast(title: "删除成功");
-                      }
-                    },onError: (e){});
-                  }
-              );
-            }
-          });
+            List<CommodityTypesModel> list = this.provide.commodityTypesModelLists;
+            String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+            list.forEach((item){
+              if(item.types == types
+                  && item.commodityModelList[widget.idx].quantity==0){
+                CustomsWidget().customShowDialog(context: context,
+                    content: "是否删除该商品",
+                    onCancel:(){
+                      this.provide.setQuantity(item.commodityModelList[widget.idx], widget.idx);
+                      Navigator.pop(context);
+                    },
+                    onPressed: (){
+                      this.provide.removeCarts(item.commodityModelList[widget.idx]).doOnListen((){}).doOnCancel((){})
+                          .listen((res){
+                        if(res.data!=null){
+                          this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
+                          CustomsWidget().showToast(title: "删除成功");
+                        }
+                      },onError: (e){});
+                    }
+                );
+              }
+            });
+          }
         }
       },
       child: new Container(
         width: ScreenAdapter.width(size),
-        height: ScreenAdapter.height(size),
+        alignment: Alignment.center,
         child: Icon(Icons.remove,color: AppConfig.assistFontColor,),
       ),
     );
@@ -110,8 +131,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       count=widget.model.quantity;
     }
     return new Container(
-      height: ScreenAdapter.height(size),
-      padding: EdgeInsets.only(left: 5,right: 5),
+      padding: EdgeInsets.only(bottom: 5,left: 5,right: 5,top: 2),
       margin: EdgeInsets.only(left: 10,right: 10),
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -120,7 +140,9 @@ class _CounterWidgetState extends State<CounterWidget> {
       ),
       child: new Text(count.toString(),style: TextStyle(
         fontSize: ScreenAdapter.size(fontSize),
-        fontWeight: FontWeight.w900
+        fontWeight: FontWeight.w900,
+        color: model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct<2
+            ?Colors.grey:Colors.black
       ),),
     );
   }
@@ -133,16 +155,19 @@ class _CounterWidgetState extends State<CounterWidget> {
     }
     return new InkWell(
       onTap: (){
-        this.provide.increment(idx: widget.idx,model: widget.model);
-        if(this.provide.mode!="multiple"){
-          setState(() {
-            count = this.provide.count;
-          });
+        if(model.panicBuyQtyPerAcct==null||
+            (model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct>1)){
+          this.provide.increment(idx: widget.idx,model: widget.model);
+          if(this.provide.mode!="multiple"){
+            setState(() {
+              count = this.provide.count;
+            });
+          }
         }
       },
       child: new Container(
         width: ScreenAdapter.width(size),
-        height: ScreenAdapter.height(size),
+        alignment: Alignment.center,
         child: Icon(Icons.add,color: AppConfig.assistFontColor,),
       ),
     );

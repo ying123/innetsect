@@ -43,10 +43,12 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
         ));
       });
     }else{
-      Fluttertoast.showToast(
-          msg: error.response.data['message'].toString(),
-          gravity: ToastGravity.CENTER
-      );
+      if(error.response.data['message']!=null){
+        Fluttertoast.showToast(
+            msg: error.response.data['message'].toString(),
+            gravity: ToastGravity.CENTER
+        );
+      }
     }
   });
  
@@ -134,7 +136,9 @@ Future _patch(String url, dynamic body,
         .patch(url, data: body, queryParameters: queryParameters).then((item){
       response = item;
     }).catchError((error){
-      CustomsWidget().showToast(title: error.response.data['message']);
+      if(error.response.data['message']!=null){
+        CustomsWidget().showToast(title: error.response.data['message']);
+      }
     });
   } on DioError catch(e){
     print(e);

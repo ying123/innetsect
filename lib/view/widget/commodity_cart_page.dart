@@ -26,8 +26,9 @@ class CommodityCartPage extends PageProvideNode{
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
   final MallProvide _mallProvide = MallProvide.instance;
   final AppNavigationBarProvide _appNavigationBarProvide = AppNavigationBarProvide.instance;
+  final String pages;
 
-  CommodityCartPage(){
+  CommodityCartPage({this.pages}){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
@@ -48,8 +49,9 @@ class CommodityCartContent extends StatefulWidget {
   final OrderDetailProvide _orderDetailProvide;
   final AppNavigationBarProvide _appNavigationBarProvide;
   final MallProvide _mallProvide;
+  final String pages;
   CommodityCartContent(this._provide,this._detailProvide,this._orderDetailProvide,this._mallProvide,
-      this._appNavigationBarProvide);
+      this._appNavigationBarProvide,{this.pages});
   @override
   _CommodityCartContentState createState() => new _CommodityCartContentState();
 }
@@ -71,11 +73,11 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
   Widget build(BuildContext context) {
     ScreenAdapter.init(context);
     // 获取上一页的传值
-    Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments==null?
-    { 'isBack':false } : ModalRoute.of(context).settings.arguments;
+    Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
+    bool back = mapData['isBack']==null?false:mapData['isBack'];
     return new Scaffold(
       appBar: new AppBar(
-        leading: mapData['isBack']? new InkWell(
+        leading: back? new InkWell(
           onTap: (){
             // 返回
             Navigator.pop(context);
@@ -302,7 +304,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                           new Expanded(
                                               flex: 1,
                                               child: new Container(
-                                                alignment: Alignment.centerRight,
+                                                alignment: Alignment.topCenter,
                                                 child: CounterWidget(provide: provide,model: list[key],idx: key ),
                                               )
                                           )

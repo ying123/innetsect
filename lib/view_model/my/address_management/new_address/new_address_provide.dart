@@ -187,18 +187,25 @@ class  NewAddressProvide extends BaseProvide{
   /// 创建地址
   Observable createAndEditAddresses(BuildContext context,{bool isEdit = false,
   AddressModel addressModel}) {
-    Map<String,dynamic> json = AddressModel().toJson();
-    json['name'] = _name;
-    json['addressDetail'] = _addressDetail;
-    json['tel'] = _tel;
-    json['lastUsed'] = _lastUsed==null?false:_lastUsed;
-    json['countryCode'] = _countryModel.countryCode;
-    json['province'] = _provincesModel!=null?_provincesModel.regionName:"";
-    json['city'] = _cityModel!=null?_cityModel.regionName:"";
-    json['county'] = _countyModel!=null?_countyModel.regionName:"";
-    json['areaCode'] =_countyModel!=null?_countyModel.regionCode:"";
-    json["acctID"] = UserTools().getUserData()['id'];
-    json['telPrefix'] = _countryModel.telPrefix;
+    if(!isEdit){
+      addressModel = AddressModel();
+    }
+    addressModel.name = _name;
+    addressModel.addressDetail = _addressDetail;
+    addressModel.tel = _tel;
+    addressModel.lastUsed = _lastUsed;
+    addressModel.countryCode = _countryModel.countryCode;
+    addressModel.province = _provincesModel==null?addressModel.province
+        :_provincesModel.regionName;
+    addressModel.city = _cityModel==null?addressModel.city
+        :_cityModel.regionName;
+    addressModel.county = _countyModel==null?addressModel.county
+        :_countyModel.regionName;
+    addressModel.areaCode=_countyModel==null?addressModel.areaCode
+        :_countyModel.regionCode;
+    addressModel.acctID = UserTools().getUserData()['id'];
+    addressModel.telPrefix = _countryModel.telPrefix;
+    Map<String,dynamic> json = addressModel.toJson();
     if(isEdit){
       json['addressID'] = _addressID;
       return _repo

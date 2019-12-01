@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     initLocale();
 
     // 配置阿里推送
-//    initPlatformState();
+    initPlatformState();
     rammus.setupNotificationManager(name: "innerset",id: "innetsect push");
 //    rammus.initCloudChannelResult.listen((data){
 //      print("----------->init successful ${data.isSuccessful} ${data.errorCode} ${data.errorMessage}");
@@ -103,21 +103,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   }
 
-//  Future<void> initPlatformState() async {
-//    String deviceId;
-//    try {
-//      deviceId = await rammus.deviceId;
-//    } on PlatformException {
-//      deviceId = 'Failed to get device id.';
-//    }
-//    if (!mounted) return;
-//    setState(() {
-//      _deviceId = deviceId;
-//      //接下来你要做的事情
-//      //1.将device id通过接口post给后台，然后进行指定设备的推送
-//      //2.推送的时候，在Android8.0以上的设备都要设置通知通道
-//    });
-//  }
+  Future<void> initPlatformState() async {
+    try {
+     String deviceId =  await rammus.deviceId;
+     print("deviceId=======>>>>$deviceId");
+    } on PlatformException {
+    }
+
+  }
 
   void initLocale() async {
     if (!mounted) {
@@ -165,6 +158,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: ThemeData(
         primaryColor: AppConfig.themedata.primaryColor,
         accentColor: AppConfig.themedata.accentColor,
+        backgroundColor: Colors.white
       ),
       initialRoute: '/',
       onGenerateRoute: onGenerateRoute,

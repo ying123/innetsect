@@ -102,7 +102,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
         centerTitle: true,
         leading: Container(),
         actions: <Widget>[
-          _mainProvide.splashModel.attended?
+          _mainProvide.splashModel.exhibitionID!=null?
           InkWell(
             child: Container(
               alignment: Alignment.center,
@@ -343,7 +343,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        CustomsWidget().priceTitle(price: item.originalPrice.toInt().toString(),
+                        CustomsWidget().priceTitle(price: item.salesPriceRange,
                             fontWeight: FontWeight.w500,fontSize: ScreenAdapter.size(24))
                       ],
                     ),

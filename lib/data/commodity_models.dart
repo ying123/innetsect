@@ -30,7 +30,7 @@ class CommodityModels{
   int status;
   // 价格
   dynamic defSalesPrice;
-  // 列表价格
+  // 现价
   String salesPriceRange;
   // 默认sku
   String defSkuCode;
@@ -57,11 +57,14 @@ class CommodityModels{
   int payMode;
   // 下单时间
   String orderDate;
+  // 原价
   dynamic originalPrice;
   //数量
   int quantity;
   dynamic salesPrice;
   dynamic amount;
+  // orderType 0.现售  1.预售 2.中阶 3.高阶
+  int orderType;
 
   /// 售后modal扩展
   // 退换策略,0：此商品不支持退换货,>0申请售后
@@ -73,8 +76,22 @@ class CommodityModels{
 
   //购物车使用
   String types;
-  bool isChecked;
-  bool isDisable;
+  bool isChecked = false;
+  bool isDisable = false;
+
+  // 抢购商品扩展
+  // 是否显示底部操作栏
+  bool orderable = false;
+  // 签到信息提示
+  String promptingMessage;
+  // 是否是抢购商品
+  bool panicBuying = false;
+  // 限购数量
+  int panicBuyQtyPerAcct;
+  // 服务器时间
+  String panicCountdownTime;
+  // 开始时间,开始>服务器时间才开始倒计时
+  String panicBuyingStart;
 
   CommodityModels({
     this.prodID,
@@ -116,7 +133,14 @@ class CommodityModels{
     this.remark,
     this.rmaPolicy,
     this.rmaRequested,
-    this.rmaInPeriod
+    this.rmaInPeriod,
+    this.orderable,
+    this.promptingMessage,
+    this.panicBuying,
+    this.panicBuyQtyPerAcct,
+    this.panicCountdownTime,
+    this.panicBuyingStart,
+    this.orderType
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -160,7 +184,14 @@ class CommodityModels{
         remark: json['remark'],
         rmaPolicy: json['rmaPolicy'],
         rmaRequested: json['rmaRequested'],
-        rmaInPeriod: json['rmaInPeriod']
+        rmaInPeriod: json['rmaInPeriod'],
+        orderable: json['orderable'],
+        promptingMessage: json['promptingMessage'],
+        panicBuying: json['panicBuying'],
+        panicBuyQtyPerAcct: json['panicBuyQtyPerAcct'],
+        panicCountdownTime: json['panicCountdownTime'],
+        panicBuyingStart: json['panicBuyingStart'],
+        orderType: json['orderType']
     );
   }
 
@@ -196,7 +227,14 @@ class CommodityModels{
     'remark': remark,
     'rmaPolicy': rmaPolicy,
     'rmaRequested': rmaRequested,
-    'rmaInPeriod': rmaInPeriod
+    'rmaInPeriod': rmaInPeriod,
+    'orderable': orderable,
+    'promptingMessage': promptingMessage,
+    'panicBuying': panicBuying,
+    'panicBuyQtyPerAcct': panicBuyQtyPerAcct,
+    'panicCountdownTime': panicCountdownTime,
+    'panicBuyingStart': panicBuyingStart,
+    'orderType': orderType
   };
 }
 

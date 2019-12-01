@@ -55,6 +55,7 @@ class _BindingSignInContentPageState extends State<BindingSignInContentPage> {
           title: model.data.welcomeTitle,
           content: model.data.welcomeText,
           submitTitle: "下一步",
+          submitColor: Colors.blue,
           onPressed: (){
             if(model.redirectType==ConstConfig.EXHIBITION_SIGNED_IN){
               _mainProvide.splashModel.attended = model.data.success;
@@ -146,6 +147,7 @@ class _BindingSignInContentPageState extends State<BindingSignInContentPage> {
                       content: model.welcomeText,
                       isCancel: false,
                       submitTitle: "下一步",
+                      submitColor: Colors.blue,
                       onPressed: (){
                         Navigator.of(context).popAndPushNamed("/SignProtocolPage");
                       }

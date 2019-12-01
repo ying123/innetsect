@@ -23,8 +23,9 @@ class _EntrancePageState extends State<EntrancePage> {
                 Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                   builder: (context){
                     return AppNavigationBar();
-                  }
-                ),(Route<dynamic> route) => false);
+                  },
+                  settings: RouteSettings(arguments: {'index':2})
+                ),ModalRoute.withName('/appNavigationBarPage'));
               },
               child: new Container(
                 width: double.infinity,
@@ -39,7 +40,7 @@ class _EntrancePageState extends State<EntrancePage> {
                     builder: (context){
                       return MallPage();
                     }
-                ),(Route<dynamic> route) => false);
+                ),ModalRoute.withName("/mallPage"));
               },
               child: new Container(
                 width: double.infinity,

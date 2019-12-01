@@ -40,15 +40,21 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
   @override
   void initState() {
     super.initState();
-    _tabController = new TabController(length: widget._provide.menu.length, vsync: this);
-    if(_tabController.index.toDouble() == _tabController.animation.value) {
-      if (_tabController.index == 0) {
-        _image = widget._provide.menu[0].overviewPic;
+    _tabController = new TabController(length: widget._provide.menu.length, vsync: this)..addListener((){
+      switch(_tabController.index){
+        case 0:
+          setState(() {
+            _image = widget._provide.menu[0].overviewPic;
+          });
+          break;
+        case 1:
+          setState(() {
+            _image = widget._provide.menu[1].overviewPic;
+          });
+          break;
       }
-      if(_tabController.index==1){
-        _image = widget._provide.menu[1].overviewPic;
-      }
-    }
+    });
+
     widget._provide.hallsData(widget._provide.menu[0].exhibitionID, widget._provide.menu[0].exhibitionHall)
         .doOnListen((){}).doOnError((e,stack){
 
@@ -56,6 +62,7 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
           print('item0======>${item.data}');
           if (item.data!= null) {
             setState(() {
+                _image = widget._provide.menu[0].overviewPic;
                 widget._provide.addHallsModelE5List(VenueHallsModelList.fromJson(item.data).list);
             });
           }
@@ -84,14 +91,14 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
           children: <Widget>[
             Stack(
               children: <Widget>[
-                Container(
+                _image!=null?Container(
                   width: ScreenAdapter.width(750),
                   height: ScreenAdapter.height(425),
                   child: Image.network(
                     _image,
                     fit: BoxFit.cover,
                   ),
-                ),
+                ):Container(width: 0,height: 0,),
                 Positioned(
                   left: ScreenAdapter.width(30),
                   top: ScreenAdapter.height(80),

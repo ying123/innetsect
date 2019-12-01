@@ -6,7 +6,7 @@ import 'package:innetsect/view/activity/activity_page.dart';
 import 'package:innetsect/view/brand/brand_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
-import 'package:innetsect/view/shopping/shopping_page.dart';
+import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -44,7 +44,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
   //活动
   ActivityPage _activityPage = ActivityPage();
   //购物车
-  ShoppingPage _shoppingPage = ShoppingPage();
+  CommodityCartPage _shoppingPage = CommodityCartPage();
   //我的
   MyPage _myPage = MyPage(page:'exhibition');
 
@@ -75,12 +75,16 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
         }
       }
     });
-    _animationController = new AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-    _animation =
-        new CurvedAnimation(parent: _animationController, curve: Curves.linear);
+    Future.delayed(Duration.zero,(){
+      Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
+      _provide.currentIndex = int.parse(mapData['index'].toString());
+    });
+//    _animationController = new AnimationController(
+//      duration: const Duration(milliseconds: 500),
+//      vsync: this,
+//    );
+//    _animation =
+//        new CurvedAnimation(parent: _animationController, curve: Curves.linear);
   }
 
 
@@ -239,7 +243,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
 
   onTap(int index) {
     _provide.currentIndex = index;
-    controller.animateTo(index,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
+//    controller.animateTo(index,
+//        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 }

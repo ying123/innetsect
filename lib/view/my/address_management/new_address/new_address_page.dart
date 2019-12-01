@@ -40,6 +40,10 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
   bool isSelected = false;
   NewAddressProvide _provide;
   AddressManagementProvide _addressManagementProvide;
+  String province ;
+  String city ;
+  String areaName ;
+  String areaCode ;
 
   @override
   Widget build(BuildContext context) {
@@ -248,7 +252,13 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           Center(
                             child: Text('所在地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                           ),
-                          Provide<NewAddressProvide>(
+                          province!=null &&province!=null &&areaName!=null?
+                          Padding(
+                            padding: EdgeInsets.only(left: 40),
+                            child: Text(
+                                "$province $city $areaName"
+                            ),
+                          ):Provide<NewAddressProvide>(
                               builder: (BuildContext context, Widget child, NewAddressProvide provide) {
                                 Widget widget = new Container();
                                 if(provide.provincesModel!=null||provide.cityModel!=null||provide.countyModel!=null){
@@ -261,20 +271,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                                           "${provide.countyModel.regionName}"),
                                     );
                                   }
-                                }else if(_addressManagementProvide.addressModel!=null
-                                    &&_addressManagementProvide.addressModel.province!=null
-                                    &&_addressManagementProvide.addressModel.city!=null
-                                    &&_addressManagementProvide.addressModel.county!=null){
-                                  widget = Padding(
-                                    padding: EdgeInsets.only(left: 40),
-                                    child: Text(
-                                        "${_addressManagementProvide.addressModel.province} "
-                                            "${_addressManagementProvide.addressModel.city} "
-                                            "${_addressManagementProvide.addressModel.county}"
-                                    ),
-                                  );
                                 }
-
                                 return widget;
                               })
                         ],
@@ -392,11 +389,15 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                 CustomsWidget().showToast(title: "请输入收货人手机号");
               }else if(!flag){
                 CustomsWidget().showToast(title: "请输入正确的手机号");
-              }else if(provide.countryModel==null){
+              }else if(provide.countryModel==null||provide.cityModel==null){
                 CustomsWidget().showToast(title: "请选择国家和所在地区");
               }else if(provide.addressDetail==null){
                 CustomsWidget().showToast(title: "请填写详细地址");
               }else if(widget._addressManagementProvide.addressModel!=null){
+                if( province ==null&& city ==null&& areaName ==null&& areaCode ==null ){
+                  CustomsWidget().showToast(title: "请选择国家和所在地区");
+                }
+
                 provide.createAndEditAddresses(context,isEdit: true,
                     addressModel:widget._addressManagementProvide.addressModel)
                     .doOnListen(() {}).doOnCancel(() {})
@@ -460,9 +461,10 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
             _provide.selectCountry(item);
           }
         });
-        String province = widget._addressManagementProvide.addressModel.province;
-        String city = widget._addressManagementProvide.addressModel.city;
-        String areaCode = widget._addressManagementProvide.addressModel.areaCode;
+        province = widget._addressManagementProvide.addressModel.province;
+        city = widget._addressManagementProvide.addressModel.city;
+        areaName = widget._addressManagementProvide.addressModel.county;
+        areaCode = widget._addressManagementProvide.addressModel.areaCode;
         if(widget._addressManagementProvide.addressModel.areaCode == '000000'){
           _provide.setForeignAddressModel();
         }else{

@@ -52,6 +52,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   ScrollController _scrollController ;
   CommodityDetailProvide _provide;
   CommodityAndCartProvide _cartProvide;
+  bool _isShowBottom=true;
   // webview
   String html;
 
@@ -68,7 +69,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           width: ScreenAdapter.width(ScreenAdapter.getScreenWidth()-120)
       ),
       body: _contentWidget(),
-      bottomSheet: _bottomBar(context),
+      bottomSheet: !_isShowBottom?Container(height: 0,width: 0,):_bottomBar(context),
     );
   }
 
@@ -90,6 +91,16 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 //    });
 
 //    _loadData();
+    // 展会进入
+    if(widget.pages==ConstConfig.EXHIBIT_PRODUCT){
+      if(_provide.commodityModels.promptingMessage!=null){
+        CustomsWidget().showToast(title: _provide.commodityModels.promptingMessage);
+      }
+      setState(() {
+        _isShowBottom = _provide.commodityModels.orderable;
+      });
+    }
+
     _loadHtml();
   }
 
@@ -217,6 +228,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     );
   }
   /// 标题价格
+  ///TODO 商品详情（salesPrice和原价对比）
   Provide<CommodityDetailProvide> _comTitleSalesPrice() {
     return Provide<CommodityDetailProvide>(
         builder: (BuildContext context, Widget widget,

@@ -4,15 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/exhibition/halls_model.dart';
 import 'package:innetsect/data/exhibition/home_banners_model.dart';
 import 'package:innetsect/data/exhibition/home_portlets_model.dart';
 import 'package:innetsect/data/user_info_model.dart';
-
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/my/vip_card/vip_card_page.dart';
+import 'package:innetsect/view/shopping/high_commodity_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/home/home_provide.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
@@ -157,11 +159,24 @@ class _HomeContentPageState extends State<HomeContentPage>
               _detailProvide.setInitData();
               _cartProvide.setInitCount();
               _detailProvide.isBuy = false;
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context){
-                  return CommodityDetailPage(pages: "EXHIBIT_PRODUCT",);
-                }
-              ));
+              print(models.panicBuying&&models.skuName.isNotEmpty);
+
+              if(models.panicBuying&&models.skuName.isNotEmpty){
+                // 跳转抢购商品
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context){
+                    return HighCommodityPage();
+                  }
+                ));
+              }else if(!models.panicBuying){
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return CommodityDetailPage(pages: ConstConfig.EXHIBIT_PRODUCT,);
+                    }
+                ));
+              }else if(models.promptingMessage.toString().isNotEmpty){
+                CustomsWidget().showToast(title: models.promptingMessage.toString());
+              }
             }else{
               // vip贵宾卡
               Navigator.push(context, MaterialPageRoute(
@@ -373,96 +388,93 @@ class _HomeContentPageState extends State<HomeContentPage>
           primary: false,
           itemCount: provide.portletsModelList.length,
           itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: () {
-                print(index);
-                Navigator.pushNamed(context, '/homePortletsDetailsPage',arguments: {"contentID":provide.portletsModelList[index].contents[0].contentID});
-              },
-              child: Container(
-                width: ScreenAdapter.width(750),
-                height: ScreenAdapter.height(620),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: ScreenAdapter.width(750),
-                      height: ScreenAdapter.height(435),
-                      child: provide.portletsModelList[index]
-                                  .contents[0]
-                                  .mediaFiles
-                                  .split('.')[provide.portletsModelList[index]
-                                      .contents[0]
-                                      .mediaFiles
-                                      .split('.')
-                                      .length -
-                                  1] ==
-                              'mp4'
-                          ? Chewie(
-                              controller: _chewieController,
-                            )
-                          : Image.network(
-                              provide.portletsModelList[index].contents[0].mediaFiles,
-                              fit: BoxFit.cover,
+            if(provide.portletsModelList[index].contents!=null){
+              return InkWell(
+                onTap: () {
+                  print(index);
+                  Navigator.pushNamed(context, '/homePortletsDetailsPage',arguments: {"contentID":provide.portletsModelList[index].contents[0].contentID});
+                },
+                child: Container(
+                  width: ScreenAdapter.width(750),
+                  height: ScreenAdapter.height(620),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: ScreenAdapter.width(750),
+                        height: ScreenAdapter.height(435),
+                        child: provide.portletsModelList[index]
+                            .contents[0]
+                            .mediaFiles.indexOf(".mp4")>-1
+                            ? Chewie(
+                          controller: _chewieController,
+                        )
+                            : Image.network(
+                          provide.portletsModelList[index].contents[0].mediaFiles,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Container(
+                        width: ScreenAdapter.width(750),
+                        height: ScreenAdapter.height(185),
+                        child: Column(
+                          //crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              height: ScreenAdapter.height(30),
                             ),
-                    ),
-                    Container(
-                      width: ScreenAdapter.width(750),
-                      height: ScreenAdapter.height(185),
-                      child: Column(
-                        //crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: ScreenAdapter.height(30),
-                          ),
-                          Row(
-                            //  mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              SizedBox(
-                                width: ScreenAdapter.width(40),
-                              ),
-                              Container(
-                                width: ScreenAdapter.width(710),
-                                //height: ScreenAdapter.height(50),
-                                child: Text(
-                                  provide.portletsModelList[index].contents[0].title,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.left,
-                                  softWrap: true,
-                                  style: TextStyle(
-                                      fontSize: ScreenAdapter.size(35),
-                                      fontWeight: FontWeight.w600),
+                            Row(
+                              //  mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                SizedBox(
+                                  width: ScreenAdapter.width(40),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: ScreenAdapter.height(20),
-                          ),
-                          Row(
-                            children: <Widget>[
-                              SizedBox(
-                                width: ScreenAdapter.width(40),
-                              ),
-                              Container(
-                                width: ScreenAdapter.width(150),
-                                height: ScreenAdapter.height(42),
-                                color: Colors.black,
-                                child: Center(
+                                Container(
+                                  width: ScreenAdapter.width(710),
+                                  //height: ScreenAdapter.height(50),
                                   child: Text(
-                                    provide.portletsModelList[index].contents[0].tags,
-                                    style: TextStyle(color: Colors.white),
+                                    provide.portletsModelList[index].contents[0].title,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.left,
+                                    softWrap: true,
+                                    style: TextStyle(
+                                        fontSize: ScreenAdapter.size(35),
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+                              ],
+                            ),
+                            SizedBox(
+                              height: ScreenAdapter.height(20),
+                            ),
+                            Row(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: ScreenAdapter.width(40),
+                                ),
+                                Container(
+                                  width: ScreenAdapter.width(150),
+                                  height: ScreenAdapter.height(42),
+                                  color: Colors.black,
+                                  child: Center(
+                                    child: Text(
+                                      provide.portletsModelList[index].contents[0].tags,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
+            }else{
+              return Container(height: 0.0,width: 0,);
+            }
           },
         );
       },

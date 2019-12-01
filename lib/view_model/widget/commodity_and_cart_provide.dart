@@ -83,7 +83,13 @@ class CommodityAndCartProvide extends BaseProvide{
   // 增加
   void increment({int idx, CommodityModels model}) {
     if(_mode=="single"){
-      _count ++;
+      if(model.panicBuyQtyPerAcct!=null){
+        if(_count<=model.panicBuyQtyPerAcct){
+          _count ++;
+        }
+      }else{
+        _count ++;
+      }
     } else {
       String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
       _commodityTypesModelLists.forEach((item){
@@ -103,19 +109,21 @@ class CommodityAndCartProvide extends BaseProvide{
   // 减少
   void reduce({int idx,CommodityModels model}) {
     if(_mode=="single"){
-      if(_count>0 ){
+      if(_count>1 ){
         _count --;
       }
     } else {
       String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
       _commodityTypesModelLists.forEach((item){
         if(item.types == types ){
-          item.commodityModelList[idx].quantity --;
-          if(item.commodityModelList[idx].isChecked){
-            _sum-=item.commodityModelList[idx].salesPrice;
-          }
           if(item.commodityModelList[idx].quantity>0){
-            this.reAndIcRequest(item,idx);
+            item.commodityModelList[idx].quantity --;
+            if(item.commodityModelList[idx].isChecked){
+              _sum-=item.commodityModelList[idx].salesPrice;
+            }
+            if(item.commodityModelList[idx].quantity>0){
+              this.reAndIcRequest(item,idx);
+            }
           }
         }
       });

@@ -12,7 +12,7 @@ class  HomePortletsModel {
   int layout;
   String renderer;
   ///促销活动
-  String promotion;
+  dynamic promotion;
   List<HomeContentsModel> contents;
 
   HomePortletsModel({
