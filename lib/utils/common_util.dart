@@ -24,6 +24,11 @@ class CommonUtil{
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
 
+  /// 验证手机号码
+  static bool isPhoneLegal(String str) {
+    return new RegExp('^((13[0-9])|(15[^4])|(166)|(17[0-8])|(18[0-9])|(19[8-9])|(147,145))\\d{8}\$').hasMatch(str);
+  }
+
 
 ///通过动画曲线创建界面  
 static Route createRoute(Tween<Offset> tween, Widget child) {

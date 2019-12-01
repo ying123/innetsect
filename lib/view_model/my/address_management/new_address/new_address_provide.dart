@@ -14,7 +14,7 @@ class  NewAddressProvide extends BaseProvide{
   String _name;
   String _tel;
   String _addressDetail;
-  bool _lastUsed = false;
+  bool _lastUsed;
 
   get addressID=>_addressID;
   get name=>_name;

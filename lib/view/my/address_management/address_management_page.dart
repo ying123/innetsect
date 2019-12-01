@@ -61,6 +61,7 @@ class _AddressManagementContentPageState
 
   @override
   Widget build(BuildContext context) {
+    ScreenAdapter.init(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -123,7 +124,7 @@ class _AddressManagementContentPageState
         Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
         return Container(
             color: Colors.white,
-            width: double.infinity,
+            width: ScreenAdapter.width(750),
             child: new ListView.builder(
                 itemCount: addressProvide.listAddressModel.length,
                 itemBuilder: (BuildContext context, int index){
@@ -144,9 +145,7 @@ class _AddressManagementContentPageState
                       }
                     },
                     child: new Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(left: 10,right: 10),
-                      padding: EdgeInsets.all(5),
+                      margin: EdgeInsets.only(left: 20,right: 20),
                       decoration: BoxDecoration(
                           border: Border(bottom: BorderSide(width: 1,color: AppConfig.assistLineColor))
                       ),
@@ -154,17 +153,25 @@ class _AddressManagementContentPageState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           new Container(
-                            child: new Text(item.name + item.tel),
+                            child: new Text("${item.name}    ${item.tel}"),
                           ),
                           new Container(
-                            padding:EdgeInsets.all(5),
+                            margin:EdgeInsets.all(5),
                             child: new Row(
                               mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                new Image.asset("assets/images/mall/location.png",fit: BoxFit.fill,width: ScreenAdapter.width(25),),
-                                new Container(
-                                  padding:EdgeInsets.only(left: 10),
-                                  child: new Text(item.province+item.city+item.addressDetail),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 5),
+                                  child: new Image.asset("assets/images/mall/location.png",fit: BoxFit.fill,
+                                    width: ScreenAdapter.width(25),),
+                                ),
+                                Expanded(
+                                  child: new Container(
+                                    margin:EdgeInsets.only(left: 10),
+                                    child: new Text(item.province+item.city+item.county+item.addressDetail,
+                                      maxLines: 2,softWrap: true,),
+                                  ),
                                 )
                               ],
                             ),
@@ -228,6 +235,7 @@ class _AddressManagementContentPageState
                                                           gravity: ToastGravity.CENTER);
                                                     }
                                                   });
+                                                  Navigator.pop(context);
                                                 }
                                             );
                                           },

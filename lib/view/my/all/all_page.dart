@@ -167,9 +167,9 @@ class _AllContentPageState extends State<AllContentPage> {
 
   Widget _commodityContent(OrderDetailModel model){
     List<CommodityModels> skuList = model.skuModels;
-    String price;
+    double price=double.parse(model.freight.toString());
     skuList.forEach((items){
-      price = items.amount.toString();
+      price += double.parse(items.amount.toString()) ;
     });
     return new Container(
       padding: EdgeInsets.only(bottom: 10),
@@ -196,7 +196,7 @@ class _AllContentPageState extends State<AllContentPage> {
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      new CustomsWidget().priceTitle(price: price),
+                      new CustomsWidget().priceTitle(price: price.toString()),
                       new Text("共 ${skuList.length} 件")
                     ],
                   ))
@@ -241,7 +241,7 @@ class _AllContentPageState extends State<AllContentPage> {
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      new CustomsWidget().priceTitle(price: skuItem.amount.toString()),
+                      new CustomsWidget().priceTitle(price: price.toString()),
                       new Text("共 ${skuItem.quantity} 件")
                     ],
                   ))
@@ -389,6 +389,7 @@ class _AllContentPageState extends State<AllContentPage> {
                     //删除订单
                     _orderDetailList.removeWhere((res)=>res.orderID==orderID);
                     this.setState((){});
+                    Navigator.pop(context);
                   }
                 });
               }

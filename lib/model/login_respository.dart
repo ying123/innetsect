@@ -10,7 +10,8 @@ class LoginService {
   /// 登录请求
   Observable<BaseResponse> LoginData (String userName,String pwd){
     UserTools().clearUserInfo();
-    var url = '/api/oauth/token?grant_type=password&username=$userName&password=$pwd&scope=read write&client_id=innersect&client_secret=888888';
+    var url = '/api/oauth/token?grant_type=password&username=$userName&password=$pwd'
+        '&scope=read write&client_id=innersect&client_secret=888888';
     var response = post(url);
     return response;
   }

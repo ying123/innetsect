@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
@@ -55,6 +56,12 @@ class _EditNickNameContentState extends State<EditNickNameContent> {
                             offset: userModel.nickName.toString().length
                         ))
                     )),
+                  inputFormatters: [
+                    WhitelistingTextInputFormatter(RegExp(
+                    "[a-zA-Z]|[\u4e00-\u9fa5]|[0-9]")), //只能输入汉字或者字母或数字
+                  ],
+                  maxLength: 30,
+                  maxLengthEnforced:true,
                   onChanged: (val){
                     print(val);
                     userModel.nickName = val;
@@ -108,6 +115,7 @@ class _EditNickNameContentState extends State<EditNickNameContent> {
         if(item.data['passed']){
           _loginProvide.editUserNick(_nickName).then((item){
             if(item!=null&&item.data){
+              CustomsWidget().showToast(title: "修改成功");
               UserTools().clearUserInfo();
               Navigator.pushReplacement(context, MaterialPageRoute(
                 builder: (context){

@@ -268,20 +268,22 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                     child: new Container(
                                       margin: EdgeInsets.only(top: 15,bottom: 5),
                                       child: new Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
                                           // 商品描述
                                           new Expanded(
                                               flex:2,
                                               child: lists!=null?
                                               new Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: <Widget>[
-                                                  new Container(
-                                                    width: double.infinity,
-                                                    child: new Text(lists[0],softWrap: true,),
+                                                  Expanded(
+                                                    child: Text(lists[0],softWrap: true,),
                                                   ),
-                                                  new Container(
-                                                      width: double.infinity,
-                                                      child: new Text(lists[1],style: TextStyle(color: Colors.grey),)
+                                                  Expanded(
+                                                    child: Text(lists[1],style: TextStyle(color: Colors.grey),)
                                                   )
                                                 ],
                                               )
@@ -437,8 +439,10 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                               if(item.data!=null){
                                 this.provide.onDelSelect();
                                 CustomsWidget().showToast(title: "删除成功");
+                                Navigator.pop(context);
                               }
                             }, onError: (e) {});
+
                           });
                       }
                   )

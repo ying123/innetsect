@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/order/logistice_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/my_order/after_service_provide.dart';
@@ -29,6 +30,7 @@ class AfterLogisticsContent extends StatefulWidget {
 
 class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
   AfterServiceProvide _afterServiceProvide;
+  List<LogisticeModel> _list=new List();
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +60,8 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
               child: new Container(
                 width: double.infinity,
                 height: ScreenAdapter.getScreenHeight()-40,
-                child: _afterServiceProvide.logisticeModelList!=null&&
-                    _afterServiceProvide.logisticeModelList.length>0?ListView.builder(
-                    itemCount: _afterServiceProvide.logisticeModelList.length,
+                child: _list.length>0?ListView.builder(
+                    itemCount: _list.length,
                     itemBuilder: (BuildContext context, int index){
                       return new Row(
                         children: <Widget>[
@@ -83,9 +84,9 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        new Text(_afterServiceProvide.logisticeModelList[index].context),
+                                        new Text(_list[index].context),
                                         new Padding(padding: EdgeInsets.only(top: 20),
-                                          child: new Text(_afterServiceProvide.logisticeModelList[index].ftime,
+                                          child: new Text(_list[index].ftime,
                                             style: TextStyle(color: Colors.grey),),),
                                         new Divider(endIndent: 10,color: AppConfig.assistLineColor,)
                                       ],
@@ -111,6 +112,7 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
     // TODO: implement initState
     super.initState();
     _afterServiceProvide ??= widget._afterServiceProvide;
+    _loadData();
   }
 
   @override
@@ -118,5 +120,22 @@ class _AfterLogisticsContentState extends State<AfterLogisticsContent> {
     // TODO: implement dispose
     super.dispose();
     _afterServiceProvide.clearLogisticeModelList();
+  }
+
+  _loadData(){
+    _afterServiceProvide.getShipperDetail().doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+        // 设置物流数据
+        setState(() {
+          _list = LogisticeModelList.fromJson(item.data['data']).list;
+        });
+      }
+    }, onError: (e) {});
   }
 }

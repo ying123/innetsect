@@ -128,11 +128,18 @@ Future patch(String url,
 Future _patch(String url, dynamic body,
     {Map<String, dynamic> queryParameters}) async{
   Response response;
-  await HttpUtil()
-      .dio
-      .patch(url, data: body, queryParameters: queryParameters).then((item){
-    response = item;
-  });
+  try{
+    await HttpUtil()
+        .dio
+        .patch(url, data: body, queryParameters: queryParameters).then((item){
+      response = item;
+    }).catchError((error){
+      CustomsWidget().showToast(title: error.response.data['message']);
+    });
+  } on DioError catch(e){
+    print(e);
+  }
+
   return response;
 }
 

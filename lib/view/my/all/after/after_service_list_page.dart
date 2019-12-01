@@ -80,7 +80,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
                         color: Colors.white,
                         padding: EdgeInsets.all(10),
                         margin: EdgeInsets.only(bottom: 5),
-                        child: GestureDetector(
+                        child: InkWell(
                           onTap: () async {
                             if(item is AfterOrderModel){
                               // 售后详情请求
@@ -224,6 +224,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
                           _afterServiceProvide.removeOrder(model);
                           pageNo= 1;
                           this._loadData(pageNo: pageNo);
+                          Navigator.pop(context);
                         }
                       });
                     });
@@ -271,11 +272,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
                     // 退货物流请求
                     if(model.waybillNo!=null){
                       _getShipperDetail();
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context){
-                          return AfterLogisticsPage();
-                        }
-                      ));
+
                     }
                   },
                   child: new Text(model.syncStatus<3?"退货物流":"换货物流"),
@@ -438,17 +435,11 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
 
   /// 退货物流请求
   _getShipperDetail(){
-    _afterServiceProvide.getShipperDetail().doOnListen(() {
-      print('doOnListen');
-    })
-        .doOnCancel(() {})
-        .listen((item) {
-      ///加载数据
-      print('listen data->$item');
-      if(item!=null&&item.data!=null){
-        // 设置物流数据
-        _afterServiceProvide.logisticeModelList = LogisticeModelList.fromJson(item.data['data']).list;
-      }
-    }, onError: (e) {});
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context){
+          return AfterLogisticsPage();
+        }
+    ));
+
   }
 }

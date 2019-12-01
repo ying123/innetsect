@@ -116,11 +116,12 @@ class CustomsWidget{
   /// 自定义价格文本
   /// [price] 价格
   Widget priceTitle({
-    @required price,
+    @required String price,
     Color color,
     FontWeight fontWeight = FontWeight.w900,
     double fontSize
   }){
+    print(price);
     return new Row(
       children: <Widget>[
         new Container(

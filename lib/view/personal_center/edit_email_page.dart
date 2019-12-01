@@ -114,6 +114,8 @@ class _EditEmailContentState extends State<EditEmailContent> {
     // TODO: implement initState
     super.initState();
     _loginProvide ??= widget._loginProvide;
+    _loginProvide.emailText = null;
+    _loginProvide.vaildCode = null;
   }
 
   @override
@@ -122,8 +124,6 @@ class _EditEmailContentState extends State<EditEmailContent> {
     super.dispose();
     timer?.cancel();
     timer = null;
-    _loginProvide.emailText = null;
-    _loginProvide.vaildCode = null;
   }
 
   /// email文本
@@ -218,6 +218,10 @@ class _EditEmailContentState extends State<EditEmailContent> {
         if(item!=null&&item.data!=null&&item.data['passed']){
           _loginProvide.getEmailValidCode().then((items){
             if(items!=null&&items.data){
+              setState(() {
+                isButtonEnable = false;
+              });
+              _initTimer();
               CustomsWidget().showToast(title: "验证码已发送至邮箱");
             }
           });
@@ -226,10 +230,6 @@ class _EditEmailContentState extends State<EditEmailContent> {
         }
       }, onError: (e) {});
 
-      setState(() {
-        isButtonEnable = false;
-      });
-      _initTimer();
       return null;
     } else {
       return null;

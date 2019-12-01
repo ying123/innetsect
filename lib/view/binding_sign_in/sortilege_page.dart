@@ -267,35 +267,33 @@ class _SortilegeContentState extends State<SortilegeContent> {
     _bingdingSignInProvide ??= widget._bingdingSignInProvide;
     _appNavProvide ??= widget._appNavProvide;
 
-    if(widget.pages=="mySetting"){
-      _bingdingSignInProvide.getSignInfo()
-          .doOnListen(() {})
-          .doOnError((e, stack) {})
-          .listen((items) {
-        print('brandMallitems=============>${items.data}');
-        if (items!=null&&items.data != null) {
-          _sexList.forEach((item){
-            if(item['value']==items.data['gender']){
-              _sexName = item['text'];
-            }
-          });
-          _identityList.forEach((item){
-            if(item['value']==items.data['icType']){
-              _identityType = item['value'] ;
-              _identityName = item['text'];
-            }
-          });
-          setState(() {
-            _name = items.data['realName'];
-            _sex = items.data['gender'];
-            _identityNo = items.data['icNo'];
-            _stature = items.data['height'].toString();
-            _weight = items.data['weight'].toString();
-            _shoeName = items.data['feetSize'].toString();
-          });
-        }
-      });
-    }
+    _bingdingSignInProvide.getSignInfo()
+        .doOnListen(() {})
+        .doOnError((e, stack) {})
+        .listen((items) {
+      print('brandMallitems=============>${items.data}');
+      if (items!=null&&items.data != null) {
+        _sexList.forEach((item){
+          if(item['value']==items.data['gender']){
+            _sexName = item['text'];
+          }
+        });
+        _identityList.forEach((item){
+          if(item['value']==items.data['icType']){
+            _identityType = item['value'] ;
+            _identityName = item['text'];
+          }
+        });
+        setState(() {
+          _name = items.data['realName'];
+          _sex = items.data['gender'];
+          _identityNo = items.data['icNo'];
+          _stature = items.data['height'].toString();
+          _weight = items.data['weight'].toString();
+          _shoeName = items.data['feetSize'].toString();
+        });
+      }
+    });
   }
 
   @override

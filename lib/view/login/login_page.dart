@@ -4,6 +4,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
@@ -267,7 +268,12 @@ class _LoginContentPageState extends State<LoginContentPage> {
                                     if(provide.userCode==null){
                                       CustomsWidget().showToast(title: "请输入手机号");
                                     }else{
-                                      _buttonClickListen(provide);
+                                      bool flag = CommonUtil.isPhoneLegal(provide.userCode);
+                                      if(!flag){
+                                        CustomsWidget().showToast(title: "请输入正确的手机号");
+                                      }else{
+                                        _buttonClickListen(provide);
+                                      }
                                     }
                                   },
                                   child: Text(
@@ -363,9 +369,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
           onTap: (){
             // 登录
             String pwd = '';
-            if(provide.userCode.isEmpty&&!isPhone){
+            if(provide.userCode==null&&!isPhone){
               CustomsWidget().showToast(title: "请输入账号");
-            }else if(provide.userCode.isEmpty&&isPhone){
+            }else if(provide.userCode==null&&isPhone){
               CustomsWidget().showToast(title: "请输入注册手机号");
             }else if(isPhone && provide.vaildCode.toString().isEmpty){
               CustomsWidget().showToast(title: "请输入验证码");

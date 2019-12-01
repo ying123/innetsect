@@ -72,8 +72,10 @@ class _LogisticsContentState extends State<LogisticsContent> {
               child: new Container(
                 width: double.infinity,
                 height: ScreenAdapter.getScreenHeight()-40,
-                child: list==null&&list.length==0?
-                    CustomsWidget().noDataWidget()
+                child: list.length==0?
+                    Column(
+                      children: CustomsWidget().noDataWidget(),
+                    )
                     :ListView.builder(
                       itemCount: list.length,
                       itemBuilder: (BuildContext context, int index){

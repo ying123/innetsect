@@ -5,6 +5,7 @@ import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/country_model.dart';
 import 'package:innetsect/data/provinces_model.dart';
 import 'package:innetsect/data/series/approved_country_model.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/city/country_page.dart';
 import 'package:innetsect/view/my/address_management/city/provinces_page.dart';
@@ -82,6 +83,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     super.initState();
     _addressManagementProvide ??= widget._addressManagementProvide;
     _provide ??= widget._provide;
+    _provide.lastUsed = isSelected;
     // 获取国家
     _getCountries();
     // 初始化参数
@@ -89,56 +91,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
       _provide.initCountryModel();
     }
 //    _getCountries();
-    // 编辑时
-    if(widget._addressManagementProvide.addressModel!=null){
-      _provide.addressID = widget._addressManagementProvide.addressModel.addressID;
-      // 国家
-      _provide.countryList.forEach((item){
-        print(item.countryCode);
-        if(item.countryCode == widget._addressManagementProvide.addressModel.countryCode){
-          _provide.selectCountry(item);
-        }
-      });
-      String province = widget._addressManagementProvide.addressModel.province;
-      String city = widget._addressManagementProvide.addressModel.city;
-      String areaCode = widget._addressManagementProvide.addressModel.areaCode;
-      if(widget._addressManagementProvide.addressModel.areaCode == '000000'){
-        _provide.setForeignAddressModel();
-      }else{
-        // 城市
-        if(_provide.provincesList.length>0){
-          _provide.provincesList.forEach((item){
-            if(item.regionName==province){
-              _provide.selectProvinces(item);
-            }
-          });
-        }
-        // 省
-        if(_provide.cityList.length>0){
-          _provide.cityList.forEach((item){
-            if(item.regionName==city){
-              _provide.selectCity(item);
-            }
-          });
-        }
-        // 区
-        if(_provide.countyList.length>0){
-          _provide.countyList.forEach((item){
-            if(item.regionCode==areaCode){
-              _provide.selectCounty(item);
-            }
-          });
-        }
-      }
 
-      _provide.name = widget._addressManagementProvide.addressModel.name;
-      _provide.tel = widget._addressManagementProvide.addressModel.tel;
-      _provide.addressDetail = widget._addressManagementProvide.addressModel.addressDetail;
-      _provide.lastUsed = widget._addressManagementProvide.addressModel.lastUsed;
-      setState(() {
-        isSelected = widget._addressManagementProvide.addressModel.lastUsed;
-      });
-    }
   }
 
 
@@ -253,10 +206,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                       child:Provide<NewAddressProvide>(
                         builder: (BuildContext context, Widget child, NewAddressProvide provide) {
                           return Text(provide.countryModel!=null?
-                          "+ ${provide.countryModel.telPrefix} | ${provide.countryModel.briefName}":
-                //                        widget._addressManagementProvide.addressModel!=null?
-                //                        widget._addressManagementProvide.addressModel.:
-                          "");
+                          "+ ${provide.countryModel.telPrefix} | ${provide.countryModel.briefName}":""
+                          );
                         })
                     )
                   ],
@@ -310,7 +261,20 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                                           "${provide.countyModel.regionName}"),
                                     );
                                   }
+                                }else if(_addressManagementProvide.addressModel!=null
+                                    &&_addressManagementProvide.addressModel.province!=null
+                                    &&_addressManagementProvide.addressModel.city!=null
+                                    &&_addressManagementProvide.addressModel.county!=null){
+                                  widget = Padding(
+                                    padding: EdgeInsets.only(left: 40),
+                                    child: Text(
+                                        "${_addressManagementProvide.addressModel.province} "
+                                            "${_addressManagementProvide.addressModel.city} "
+                                            "${_addressManagementProvide.addressModel.county}"
+                                    ),
+                                  );
                                 }
+
                                 return widget;
                               })
                         ],
@@ -418,7 +382,17 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
           child: InkWell(
             onTap: () {
               /// 保存地址
-              if(provide.countryModel==null){
+              bool flag = false;
+              if(provide.tel!=null){
+                flag = CommonUtil.isPhoneLegal(provide.tel);
+              }
+              if(provide.name==null){
+                CustomsWidget().showToast(title: "请输入收货人姓名");
+              }else if(provide.tel==null){
+                CustomsWidget().showToast(title: "请输入收货人手机号");
+              }else if(!flag){
+                CustomsWidget().showToast(title: "请输入正确的手机号");
+              }else if(provide.countryModel==null){
                 CustomsWidget().showToast(title: "请选择国家和所在地区");
               }else if(provide.addressDetail==null){
                 CustomsWidget().showToast(title: "请填写详细地址");
@@ -475,6 +449,57 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
       print('listen data->$items');
       _provide.addCountryList(CountryModelList.fromJson(items.data).list);
       _provide.countryPageList = ApprovedCountryModelList.fromJson(items.data).list;
+
+      // 编辑时
+      if(widget._addressManagementProvide.addressModel!=null){
+        _provide.addressID = widget._addressManagementProvide.addressModel.addressID;
+        // 国家
+        _provide.countryList.forEach((item){
+          print(item.countryCode);
+          if(item.countryCode == widget._addressManagementProvide.addressModel.countryCode){
+            _provide.selectCountry(item);
+          }
+        });
+        String province = widget._addressManagementProvide.addressModel.province;
+        String city = widget._addressManagementProvide.addressModel.city;
+        String areaCode = widget._addressManagementProvide.addressModel.areaCode;
+        if(widget._addressManagementProvide.addressModel.areaCode == '000000'){
+          _provide.setForeignAddressModel();
+        }else{
+          // 城市
+          if(_provide.provincesList.length>0){
+            _provide.provincesList.forEach((item){
+              if(item.regionName==province){
+                _provide.selectProvinces(item);
+              }
+            });
+          }
+          // 省
+          if(_provide.cityList.length>0){
+            _provide.cityList.forEach((item){
+              if(item.regionName==city){
+                _provide.selectCity(item);
+              }
+            });
+          }
+          // 区
+          if(_provide.countyList.length>0){
+            _provide.countyList.forEach((item){
+              if(item.regionCode==areaCode){
+                _provide.selectCounty(item);
+              }
+            });
+          }
+        }
+
+        _provide.name = widget._addressManagementProvide.addressModel.name;
+        _provide.tel = widget._addressManagementProvide.addressModel.tel;
+        _provide.addressDetail = widget._addressManagementProvide.addressModel.addressDetail;
+        _provide.lastUsed = widget._addressManagementProvide.addressModel.lastUsed;
+        setState(() {
+          isSelected = widget._addressManagementProvide.addressModel.lastUsed;
+        });
+      }
     }, onError: (e) {});
   }
 }

@@ -72,12 +72,8 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
               ),
               _applyType(),
               // 选择规格，如果是换货
-              _afterServiceProvide.applyTypeList[1]['isSelected']?Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(8),
-                color: Color(0xFFFFFF),
-              ):Container(),
-              _afterServiceProvide.applyTypeList[1]['isSelected']?_orderDetailWidget():Container(),
+              _divideWidget(),
+              _orderDetailWidget(),
               // 申请原因
               Container(
                 width: double.infinity,
@@ -86,19 +82,11 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
               ),
               _applyCause(),
               // 退款方式
-              _afterServiceProvide.applyTypeList[1]['isSelected']?Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(8),
-                color: Color(0xFFFFFF),
-              ):Container(),
-              _afterServiceProvide.applyTypeList[1]['isSelected']?_payRefundWidget():Container(),
+              _divideWidget(),
+              _payRefundWidget(),
               // 地址
-              _afterServiceProvide.applyTypeList[1]['isSelected']?Container(
-                width: double.infinity,
-                height: ScreenAdapter.height(8),
-                color: Color(0xFFFFFF),
-              ):Container(),
-              _afterServiceProvide.applyTypeList[1]['isSelected']?_addressWidget():Container(),
+              _divideWidget(),
+              _addressWidget(),
             ],
           )
         ),
@@ -162,6 +150,7 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
     super.dispose();
     _commodityDetailProvide.afterBtn = false;
     _afterServiceProvide.skusModel = null;
+    _afterServiceProvide.resetApplyType();
   }
 
   /// 订单信息
@@ -415,67 +404,92 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
         );
     });
   }
+  /// 分隔符
+  Provide<AfterServiceProvide> _divideWidget() {
+    return Provide<AfterServiceProvide>(
+        builder: (BuildContext context, Widget widget,
+            AfterServiceProvide provide) {
+          Widget widget = Container(height: 0.0,width: 0.0,);
+          if(provide.applyTypeList[1]['isSelected']){
+            widget = Container(
+              width: double.infinity,
+              height: ScreenAdapter.height(8),
+              color: Color(0xFFFFFF),
+            );
+          }
+          return widget;
+        });
+  }
 
   /// 如果是换货，选择规格
-  Widget _orderDetailWidget(){
-      return Container(
-        width: double.infinity,
-        color: Colors.white,
-        child: InkWell(
-          onTap: (){
-            // 商品详情请求
-            _commodityDetailProvide.prodId = _afterServiceProvide.orderDetailModel.prodID;
-            _loadDetail();
-            //选择规格请求
-            CommodityModalBottom.showBottomModal(context:context);
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(left: 20,top: 10,bottom: 10),
-                child: Provide<AfterServiceProvide>(
-                  builder: (BuildContext context,Widget widget,AfterServiceProvide provide) {
-                    return Text(
-                      provide.skusModel!=null?"已选":"请选择",
-                      style: TextStyle(
-                          color: Color.fromRGBO(95, 95, 95, 1.0),
-                          fontSize: ScreenAdapter.size(28),
-                          fontWeight: FontWeight.w500
-                      ),
-                    );
-                  })
+  Provide<AfterServiceProvide> _orderDetailWidget(){
+    return Provide<AfterServiceProvide>(
+      builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+        Widget widget = Container(height: 0.0,width: 0.0,);
+        if(provide.applyTypeList[1]['isSelected']){
+          widget = Container(
+            width: double.infinity,
+            color: Colors.white,
+            child: InkWell(
+              onTap: (){
+                // 商品详情请求
+                _commodityDetailProvide.prodId = _afterServiceProvide.orderDetailModel.prodID;
+                _loadDetail(prodId: _afterServiceProvide.orderDetailModel.prodID,
+                types: _afterServiceProvide.orderDetailModel.shopID);
+                //选择规格请求
+                CommodityModalBottom.showBottomModal(context:context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.only(left: 20,top: 10,bottom: 10),
+                      child: Provide<AfterServiceProvide>(
+                          builder: (BuildContext context,Widget widget,AfterServiceProvide provide) {
+                            return Text(
+                              provide.skusModel!=null?"已选":"请选择",
+                              style: TextStyle(
+                                  color: Color.fromRGBO(95, 95, 95, 1.0),
+                                  fontSize: ScreenAdapter.size(28),
+                                  fontWeight: FontWeight.w500
+                              ),
+                            );
+                          })
+                  ),
+                  Provide<AfterServiceProvide>(
+                      builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
+                        String skuName="";
+                        if(provide.skusModel!=null){
+                          List list = CommonUtil.skuNameSplit(provide.skusModel.skuName);
+                          skuName = list[1];
+                          return Expanded(
+                            flex: 8,
+                            child: Container(
+                              alignment: Alignment.centerRight,
+                              padding: EdgeInsets.only(right: 10),
+                              child: Text(skuName,style: TextStyle(color:Color.fromRGBO(95, 95, 95, 1.0)),),
+                            ),
+                          );
+                        }else{
+                          return Container();
+                        }
+                      }
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(Icons.chevron_right,color:Color.fromRGBO(95, 95, 95, 1.0),),
+                    ),
+                  ),
+                ],
               ),
-              Provide<AfterServiceProvide>(
-                builder: (BuildContext context,Widget widget,AfterServiceProvide provide){
-                  String skuName="";
-                  if(provide.skusModel!=null){
-                    List list = CommonUtil.skuNameSplit(provide.skusModel.skuName);
-                    skuName = list[1];
-                    return Expanded(
-                      flex: 8,
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        padding: EdgeInsets.only(right: 10),
-                        child: Text(skuName,style: TextStyle(color:Color.fromRGBO(95, 95, 95, 1.0)),),
-                      ),
-                    );
-                  }else{
-                    return Container();
-                  }
-                }
-              ),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.only(right: 10),
-                  child: Icon(Icons.chevron_right,color:Color.fromRGBO(95, 95, 95, 1.0),),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+            ),
+          );
+        }
+        return widget;
+      },
+    );
   }
 
   /// 申请原因,_applyCause
@@ -563,42 +577,50 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
   }
 
   /// 退款方式widget
-  Widget _payRefundWidget(){
-    return Row(
-      children: <Widget>[
-        Container(
-          width: ScreenAdapter.width(750),
-          height: ScreenAdapter.height(80),
-          padding:EdgeInsets.only(left: 20,right: 20),
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Center(
-                child: Text(
-                  "退款方式",
-                  style: TextStyle(
-                      color: Color.fromRGBO(95, 95, 95, 1.0),
-                      fontSize: ScreenAdapter.size(28),
-                      fontWeight: FontWeight.w500
+  Provide<AfterServiceProvide> _payRefundWidget() {
+    return Provide<AfterServiceProvide>(
+        builder: (BuildContext context, Widget widget,
+            AfterServiceProvide provide) {
+          Widget widget = Container(height: 0.0,width: 0.0,);
+          if(provide.applyTypeList[1]['isSelected']) {
+            widget = Row(
+              children: <Widget>[
+                Container(
+                  width: ScreenAdapter.width(750),
+                  height: ScreenAdapter.height(80),
+                  padding:EdgeInsets.only(left: 20,right: 20),
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Center(
+                        child: Text(
+                          "退款方式",
+                          style: TextStyle(
+                              color: Color.fromRGBO(95, 95, 95, 1.0),
+                              fontSize: ScreenAdapter.size(28),
+                              fontWeight: FontWeight.w500
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          "原支付返回",
+                          style: TextStyle(
+                              color: Color.fromRGBO(95, 95, 95, 1.0),
+                              fontSize: ScreenAdapter.size(28),
+                              fontWeight: FontWeight.w500
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              Center(
-                child: Text(
-                  "原支付返回",
-                  style: TextStyle(
-                      color: Color.fromRGBO(95, 95, 95, 1.0),
-                      fontSize: ScreenAdapter.size(28),
-                      fontWeight: FontWeight.w500
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
-    );
+                )
+              ],
+            );
+          }
+          return widget;
+        });
   }
 
   /// 申请售后弹出框
@@ -612,51 +634,56 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
   Provide<AfterServiceProvide> _addressWidget(){
     return Provide<AfterServiceProvide>(
       builder: (BuildContext context,Widget widget, AfterServiceProvide provide){
-        OrderDetailModel model = provide.orderDetailModel;
-        return new GestureDetector(
-          onTap: (){
-            // 跳转地址管理
-            Navigator.push(context, MaterialPageRoute(
-                builder: (BuildContext context){
-                  return AddressManagementPage();
-                },
-                settings: RouteSettings(arguments: {'pages': 'afterApply'})
-            ));
-          },
-          child: new Container(
-            width: double.infinity,
-            color: Colors.white,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 8,
-                  child: new Column(
-                    children: <Widget>[
-                      new Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(10),
-                        child: this.getAddress(model),
-                      ),
-                      model==null?new Container():
-                      model.addressModel==null?model.shipTo!=null?
-                      this.getAddressDetailWidget(addressDetail: model.shipTo)
-                          : new Container()
-                          : this.getAddressDetailWidget(
-                          province: model.addressModel.province,
-                          city: model.addressModel.city,
-                          addressDetail: model.addressModel.addressDetail
-                      )
-                    ],
+
+        Widget widget = Container(height: 0.0,width: 0.0,);
+        if(provide.applyTypeList[1]['isSelected']) {
+          OrderDetailModel model = provide.orderDetailModel;
+          widget = new GestureDetector(
+            onTap: (){
+              // 跳转地址管理
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (BuildContext context){
+                    return AddressManagementPage();
+                  },
+                  settings: RouteSettings(arguments: {'pages': 'afterApply'})
+              ));
+            },
+            child: new Container(
+              width: double.infinity,
+              color: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 8,
+                    child: new Column(
+                      children: <Widget>[
+                        new Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(10),
+                          child: this.getAddress(model),
+                        ),
+                        model==null?new Container():
+                        model.addressModel==null?model.shipTo!=null?
+                        this.getAddressDetailWidget(addressDetail: model.shipTo)
+                            : new Container()
+                            : this.getAddressDetailWidget(
+                            province: model.addressModel.province,
+                            city: model.addressModel.city,
+                            addressDetail: model.addressModel.addressDetail
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Icon(Icons.chevron_right,color: Colors.grey,),
-                )
-              ],
+                  Expanded(
+                    flex: 1,
+                    child: Icon(Icons.chevron_right,color: Colors.grey,),
+                  )
+                ],
+              ),
             ),
-          ),
-        );
+          );
+        }
+        return widget;
       },
     );
   }
@@ -725,9 +752,9 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
   }
 
   /// 商品详情请求
-  _loadDetail(){
+  _loadDetail({int prodId,int types}){
     /// 加载详情数据
-    _commodityDetailProvide.detailData()
+    _commodityDetailProvide.detailData(prodId: prodId,types: types)
         .doOnListen(() {
       print('doOnListen');
     })

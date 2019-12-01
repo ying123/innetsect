@@ -96,7 +96,9 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
           color: Colors.black,
           textColor: Colors.white,
           onPressed: (){
-            if(_loginProvide.vaildCode==null){
+            if(_loginProvide.userCode==null) {
+              CustomsWidget().showToast(title: "请输入手机号");
+            }else if(_loginProvide.vaildCode==null){
               CustomsWidget().showToast(title: "请输入验证码");
             }else{
               // 请求修改手机号
@@ -114,6 +116,8 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
     // TODO: implement initState
     super.initState();
     _loginProvide ??= widget._loginProvide;
+    _loginProvide.userCode = null;
+    _loginProvide.vaildCode = null;
   }
 
   @override
@@ -122,8 +126,6 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
     super.dispose();
     timer?.cancel();
     timer = null;
-    _loginProvide.userCode = null;
-    _loginProvide.vaildCode = null;
   }
 
   /// phone文本
@@ -209,7 +211,7 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
 
   void  _buttonClickListen(LoginProvide provide) {
     if (isButtonEnable) {
-      /// 验证邮箱
+      /// 验证手机号
       _loginProvide.getVaildPhone().doOnListen(() {
         print('doOnListen');
       }).doOnCancel(() {}).listen((item) {
@@ -218,6 +220,10 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
         if(item!=null&&item.data!=null&&item.data['passed']){
           _loginProvide.getVaildCode().then((items){
             if(items!=null&&items.data){
+              setState(() {
+                isButtonEnable = false;
+              });
+              _initTimer();
               CustomsWidget().showToast(title: "验证码已发送");
             }
           });
@@ -226,10 +232,6 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
         }
       }, onError: (e) {});
 
-      setState(() {
-        isButtonEnable = false;
-      });
-      _initTimer();
       return null;
     } else {
       return null;
@@ -258,6 +260,7 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
   /// 修改手机请求
   void _updatePhone(){
     _loginProvide.editPhone().then((item){
+      print(item);
       if(item!=null&&item.data){
         UserInfoModel model = _loginProvide.userInfoModel;
         model.mobile = _loginProvide.userCode;

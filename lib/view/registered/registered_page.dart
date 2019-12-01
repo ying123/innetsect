@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/tools/user_tool.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/settings/protocol_page.dart';
 import 'package:innetsect/view/registered/country_page.dart';
@@ -46,6 +47,7 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
   void dispose() {
     timer?.cancel();
     timer = null;
+    _registeredProvide.userCode=null;
     super.dispose();
   }
 
@@ -57,6 +59,14 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
     UserTools().clearUserInfo();
     _loginProvide ??=widget._loginProvide;
     _registeredProvide ??= widget._registeredProvide;
+    if(timer!=null){
+      timer?.cancel();
+      timer = null;
+    }
+    _registeredProvide.userCode=null;
+    _registeredProvide.isButtonEnable = true;
+    _registeredProvide.count = 60;
+    _registeredProvide.buttonText = '获取验证码';
   }
 
   @override
@@ -241,10 +251,15 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                         ? Colors.black
                         : Colors.grey.withOpacity(0.8),
                     onPressed: () {
-                      if(provide.userCode.isEmpty){
+                      if(provide.userCode==null){
                         CustomsWidget().showToast(title: "请输入账号");
                       }else{
-                        _buttonClickListen();
+                        bool flag = CommonUtil.isPhoneLegal(provide.userCode);
+                        if(!flag){
+                          CustomsWidget().showToast(title: "请输入正确的手机号");
+                        }else{
+                          _buttonClickListen();
+                        }
                       }
                     },
                     child: Text(
