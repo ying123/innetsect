@@ -511,7 +511,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              color: AppConfig.primaryColor
+                              color: AppConfig.blueBtnColor
                           ),
                           child: new Text("0",style: TextStyle(fontWeight: FontWeight.w700),),
                         )
