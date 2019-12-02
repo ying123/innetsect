@@ -52,7 +52,7 @@ class _VenuesHallsContentPageState extends State<VenuesHallsContentPage> {
   }
 
   void _initLoadData(){
-    _provide.hallsData(venueHallsE6[0].exhibitionID, venueHallsE6[0].exhibitionHall).doOnListen((){}).doOnCancel((){
+    _provide.hallsData(venueHallsE6[1].exhibitionID, venueHallsE6[1].exhibitionHall).doOnListen((){}).doOnCancel((){
 
     }).listen((items){
        ///加载数据

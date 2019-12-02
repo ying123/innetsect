@@ -5,6 +5,7 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
+import 'package:innetsect/view/mall/order/order_pay_page.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:provide/provide.dart';
@@ -88,33 +89,11 @@ class _OrderPayResultContentState extends State<OrderPayResultContent> {
                     color: AppConfig.primaryColor,
                     onPressed: (){
                       // 提交付款
-                      _provide.payShopping().doOnListen(() {
-                        print('doOnListen');
-                      }).doOnCancel(() {}).listen((item) {
-                        ///加载数据
-                        print('listen data->$item');
-                        if(item.data!=null){
-                          PayUtils().aliPay(item.data['orderString']).then((result){
-                            if(result['resultStatus']=="9000"){
-                              _provide.resultStatus = true;
-                              // 支付成功
-                              Navigator.pushReplacement(context, MaterialPageRoute(
-                                  builder: (context){
-                                    return OrderPayResultPage();
-                                  }
-                              ));
-                            }else{
-                              // 支付异常
-                              _provide.resultStatus = false;
-                              Navigator.pushReplacement(context, MaterialPageRoute(
-                                  builder: (context){
-                                    return OrderPayResultPage();
-                                  }
-                              ));
-                            }
-                          });
-                        }
-                      }, onError: (e) {});
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                          builder: (context){
+                            return OrderPayPage();
+                          }
+                      ));
                     },
                     child: new Text("继续支付",),
                   ),

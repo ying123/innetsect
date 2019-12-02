@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/view/activity/activity_page.dart';
 import 'package:innetsect/view/brand/brand_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
@@ -56,25 +58,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
     super.initState();
     _provide = AppNavigationBarProvide.instance;
     _loginProvide = LoginProvide.instance;
-    controller = new TabController(length: 5, vsync: this)..addListener((){
-      if(controller.index.toDouble() == controller.animation.value){
-        if(controller.index==4){
-          // 获取用户信息，如果请求错误弹出登录页面
-          /// 获取用户信息
-          Future.delayed(Duration.zero,(){
-            _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
-              if(userItem!=null&&userItem.data!=null){
-                // 注册阿里云账号绑定
-                UserInfoModel model = UserInfoModel.fromJson(userItem.data);
-                rammus.bindAccount(model.acctID.toString());
-                _loginProvide.setUserInfoModel(model);
-              }
-            },onError: (e){
-            });
-          });
-        }
-      }
-    });
+    controller = new TabController(length: 5, vsync: this);
     Future.delayed(Duration.zero,(){
       Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
       _provide.currentIndex = int.parse(mapData['index'].toString());
@@ -243,6 +227,19 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
 
   onTap(int index) {
     _provide.currentIndex = index;
+    if(index==4){
+      // 获取用户信息，如果请求错误弹出登录页面
+      /// 获取用户信息
+      _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
+        if(userItem!=null&&userItem.data!=null){
+          // 注册阿里云账号绑定
+          UserInfoModel model = UserInfoModel.fromJson(userItem.data);
+          rammus.bindAccount(model.acctID.toString());
+          _loginProvide.setUserInfoModel(model);
+        }
+      },onError: (e){
+      });
+    }
 //    controller.animateTo(index,
 //        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }

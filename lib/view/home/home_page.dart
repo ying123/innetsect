@@ -159,9 +159,8 @@ class _HomeContentPageState extends State<HomeContentPage>
               _detailProvide.setInitData();
               _cartProvide.setInitCount();
               _detailProvide.isBuy = false;
-              print(models.panicBuying&&models.skuName.isNotEmpty);
 
-              if(models.panicBuying&&models.skuName.isNotEmpty){
+              if(models.panicBuying&&models.skuName!=null){
                 // 跳转抢购商品
                 Navigator.push(context, MaterialPageRoute(
                   builder: (context){

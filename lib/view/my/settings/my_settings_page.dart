@@ -16,7 +16,8 @@ import 'package:provide/provide.dart';
 class MySettingsPage extends PageProvideNode{
   final UserProvide _provide = UserProvide();
   final LoginProvide _loginProvide = LoginProvide.instance;
-  MySettingsPage(){
+  final String page;
+  MySettingsPage({this.page}){
     mProviders.provide(Provider<UserProvide>.value(_provide));
     mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
@@ -24,13 +25,14 @@ class MySettingsPage extends PageProvideNode{
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return MySettingsContent(_loginProvide);
+    return MySettingsContent(_loginProvide,page: page,);
   }
 }
 
 class MySettingsContent extends StatefulWidget {
   final LoginProvide _loginProvide;
-  MySettingsContent(this._loginProvide);
+  final String page;
+  MySettingsContent(this._loginProvide,{this.page});
   @override
   _MySettingsContentState createState() => new _MySettingsContentState();
 }
@@ -56,13 +58,14 @@ class _MySettingsContentState extends State<MySettingsContent> {
             }),
             new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
             // 抽签登记
+            widget.page=="exhibition"?
             _listWidgets(icon: Icons.book,title: "抽签登记信息",onTap: (){
               Navigator.push(context, MaterialPageRoute(
                   builder: (context){
                     return SortilegePage(pages: "mySetting",);
                   }
               ));
-            }),
+            }):Container(width: 0,height: 0,),
             new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
             // 修改密码
             _listWidgets(icon: Icons.lock_outline,title: "修改密码",onTap: (){

@@ -406,7 +406,7 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
   /// 注册请求
   void _onRegistered(){
     _registeredProvide.onRegistered(_registeredProvide.vaildCode,
-    _registeredProvide.telPrefix).doOnListen(() {
+    _registeredProvide.telPrefix,_registeredProvide.userCode).doOnListen(() {
       print('doOnListen');
     }).doOnCancel(() {}).listen((item) {
       ///加载数据

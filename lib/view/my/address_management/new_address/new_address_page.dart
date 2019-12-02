@@ -5,7 +5,6 @@ import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/country_model.dart';
 import 'package:innetsect/data/provinces_model.dart';
 import 'package:innetsect/data/series/approved_country_model.dart';
-import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/city/country_page.dart';
 import 'package:innetsect/view/my/address_management/city/provinces_page.dart';
@@ -379,16 +378,10 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
           child: InkWell(
             onTap: () {
               /// 保存地址
-              bool flag = false;
-              if(provide.tel!=null){
-                flag = CommonUtil.isPhoneLegal(provide.tel);
-              }
               if(provide.name==null){
                 CustomsWidget().showToast(title: "请输入收货人姓名");
               }else if(provide.tel==null){
                 CustomsWidget().showToast(title: "请输入收货人手机号");
-              }else if(!flag){
-                CustomsWidget().showToast(title: "请输入正确的手机号");
               }else if(provide.countryModel==null||provide.cityModel==null){
                 CustomsWidget().showToast(title: "请选择国家和所在地区");
               }else if(provide.addressDetail==null){

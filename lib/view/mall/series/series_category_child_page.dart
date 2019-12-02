@@ -214,7 +214,7 @@ class _SeriesCategoryChildContentPageState extends State<SeriesCategoryChildCont
                   width: ScreenAdapter.width(80),
                   height: ScreenAdapter.height(80),
                   child: new ClipOval(
-                    child:pic==""?Image.asset("assets/images/mall/hot_brand1.png"): Image.network(pic),
+                    child:pic==""||pic==null?Image.asset("assets/images/mall/hot_brand1.png"): Image.network(pic),
                   ),
                 ),
                 Container(

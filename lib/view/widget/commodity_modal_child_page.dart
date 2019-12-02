@@ -55,7 +55,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
   Widget build(BuildContext context) {
     return Provide<CommodityDetailProvide>(
       builder: (BuildContext context,Widget widget,CommodityDetailProvide provide){
-        Widget widget =bottomBtn();
+        Widget widget =Container(height: 0,width: 0,);
         if(provide.afterBtn){
           widget = Container(
             width: double.infinity,
@@ -77,6 +77,8 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
             margin: EdgeInsets.only(left: 20,right: 20,top: 5),
             child: _buyWidget(),
           );
+        }else{
+          widget = bottomBtn();
         }
         return new Column(
           children: <Widget>[

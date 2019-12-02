@@ -88,8 +88,8 @@ class RegisteredProvide extends BaseProvide{
   }
 
   /// 注册
-  Observable onRegistered(String vaildCode,String telPrefix) {
-    return _repo.onRegistered(vaildCode,telPrefix)
+  Observable onRegistered(String vaildCode,String telPrefix,String mobile) {
+    return _repo.onRegistered(vaildCode,telPrefix,mobile)
         .doOnData((result) {
 
     })

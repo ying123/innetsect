@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
+import 'package:innetsect/view/my/exhibition/lucky_sign_page.dart';
 import 'package:innetsect/view/my/feedback/feedback_page.dart';
 import 'package:innetsect/view/my/notice/notice_page.dart';
 import 'package:innetsect/view/my/settings/my_settings_page.dart';
@@ -78,6 +80,8 @@ class _MyContentPageState extends State<MyContentPage> {
                 height: ScreenAdapter.height(40),
               ),
               _setupCenter(),
+              page=="exhibition"?
+                  _exhibitionAction():Container(width: 0,height: 0,),
               _setupBoady(),
             ],
           );
@@ -217,6 +221,94 @@ class _MyContentPageState extends State<MyContentPage> {
     );
   }
 
+
+  /// 展会操作
+  Widget _exhibitionAction(){
+    return Column(
+      children: <Widget>[
+        Container(
+          width: ScreenAdapter.width(750),
+          height: ScreenAdapter.height(150),
+          //color: Colors.blue,
+          child: Row(
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              SizedBox(
+                width: ScreenAdapter.width(50),
+              ),
+              InkWell(
+                onTap: () {
+                  // 我的门票
+
+                },
+                child: _setupBtn(
+                    'assets/images/user/my_ticket@3x.png',
+                    '我的门票',
+                    36.0,
+                    39.0),
+              ),
+              Expanded(
+                child: Container(),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return BindingSignInPage();
+                    }
+                  ));
+                },
+                child: _setupBtn(
+                    'assets/images/user/my_scan@3x.png',
+                    '扫码签到',
+                    35.0,
+                    40.0),
+              ),
+              Expanded(
+                child: Container(),
+              ),
+              InkWell(
+                onTap: () {
+                },
+                child: _setupBtn(
+                    'assets/images/user/my_ordered@3x.png',
+                    '我的预约',
+                    31,
+                    39),
+              ),
+              Expanded(
+                child: Container(),
+              ),
+              InkWell(
+                onTap: () {
+                  ///跳转我的中签
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return LuckySignPage();
+                    }
+                  ));
+                },
+                child: _setupBtn(
+                    'assets/images/user/my_ordered@3x.png',
+                    '我的中签',
+                    37,
+                    39),
+              ),
+              SizedBox(
+                width: ScreenAdapter.width(50),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: ScreenAdapter.width(750),
+          height: ScreenAdapter.height(10),
+          color: Color.fromRGBO(249, 249, 249, 1.0),
+        ),
+      ],
+    );
+  }
+
   Provide<MyProvide> _setupBtn(
       String imagePath, String text, double width, double height) {
     return Provide<MyProvide>(
@@ -317,7 +409,7 @@ class _MyContentPageState extends State<MyContentPage> {
                   print('设置按钮被点击');
                   Navigator.push(context, MaterialPageRoute(
                     builder: (BuildContext context){
-                      return MySettingsPage();
+                      return MySettingsPage(page:page);
                     }
                   ));
                 },

@@ -6,7 +6,7 @@ import 'package:innetsect/view/widget/web_view_widget.dart';
 class ProtocolPage extends StatelessWidget {
   final String title;
   final bool leading;
-  ProtocolPage({this.title,this.leading});
+  ProtocolPage({this.title,this.leading=true});
   @override
   Widget build(BuildContext context) {
     return new Scaffold(

@@ -29,8 +29,10 @@ class ConstConfig {
 
   // 图片尺寸
   static const String BANNER_SIZE = "?x-oss-process=image/resize,m_mfit,h_1125,w_582";
+  static const String BANNER_MINI_SIZE = "?x-oss-process=image/resize,m_mfit,h_235,w_122";
   static const String LIST_IMAGE_SIZE = "?x-oss-process=image/resize,m_mfit,h_600,w_900";
-
+  static const String BANNER_FOUR_SIZE = "?x-oss-process=image/resize,m_mfit,h_400,w_400";
+  static const String BANNER_TWO_SIZE = "?x-oss-process=image/resize,m_mfit,h_200,w_500";
   // 跳转参数常量，判断从哪个页面进入
   // 展会
   static const String EXHIBIT_PRODUCT = "EXHIBIT_PRODUCT";

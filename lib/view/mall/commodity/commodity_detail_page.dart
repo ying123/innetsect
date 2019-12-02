@@ -59,6 +59,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   int pageNo = 1;
   /// 推荐商品
 //  List<List<CommodityModels>> recommedList = new List();
+  List<Widget> _listImage = List();
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,6 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
 
     _provide ??= widget._provide;
     _cartProvide ??= widget._cartProvide;
@@ -101,7 +101,24 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       });
     }
 
+
+    CommoditySkusModel skuModel = _provide.skusModel;
+    if(skuModel!=null){
+      if(skuModel.pics.length>0){
+        skuModel.pics.forEach((item){
+          _listImage..add(CachedNetworkImage(
+              imageUrl: "${item.skuPicUrl}${ConstConfig.BANNER_TWO_SIZE}",fit: BoxFit.fill
+          ));
+        });
+      }else{
+        _listImage..add(
+            Image.asset("assets/images/default/default_hori_img.png",fit: BoxFit.fitWidth)
+        );
+      }
+    }
+
     _loadHtml();
+    super.initState();
   }
 
   @override
@@ -171,29 +188,21 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   }
 
   /// _swiperWidget
-  Provide<CommodityDetailProvide> _swiperWidget(){
-    return Provide<CommodityDetailProvide>(
-      builder: (BuildContext context, Widget widget,CommodityDetailProvide provide){
-        CommoditySkusModel skuModel = provide.skusModel;
-        return new Swiper(
-          itemBuilder: (BuildContext context,int index){
-            return skuModel!=null?
-            CachedNetworkImage(imageUrl: skuModel.pics[index].skuPicUrl+ConstConfig.LIST_IMAGE_SIZE,)
-            :new Container();
-          },
-          loop: true,
-          itemCount: skuModel!=null?skuModel.pics.length:1,
-          pagination: new SwiperPagination(
-              builder: DotSwiperPaginationBuilder(
-                  color: Colors.white70,              // 其他点的颜色
-                  activeColor: AppConfig.blueBtnColor,      // 当前点的颜色
-                  space: 2,                           // 点与点之间的距离
-                  activeSize: 5,                      // 当前点的大小
-                  size: 5
-              )
-          ),
-        );
+  Widget  _swiperWidget(){
+    return new Swiper(
+      itemBuilder: (BuildContext context,int index){
+        return _listImage[index];
       },
+      itemCount: _listImage.length,
+      pagination: new SwiperPagination(
+          builder: DotSwiperPaginationBuilder(
+              color: Colors.white70,              // 其他点的颜色
+              activeColor: AppConfig.blueBtnColor,      // 当前点的颜色
+              space: 2,                           // 点与点之间的距离
+              activeSize: 5,                      // 当前点的大小
+              size: 5
+          )
+      ),
     );
   }
 
@@ -247,7 +256,11 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         _provide.setInitData();
         _cartProvide.setInitCount();
         _provide.isBuy = false;
-        CommodityModalBottom.showBottomModal(context:context);
+        if(_provide.commodityModels.promptingMessage!=null){
+          CustomsWidget().showToast(title: _provide.commodityModels.promptingMessage);
+        }else{
+          CommodityModalBottom.showBottomModal(context:context);
+        }
       },
       child: new Container(
         height: ScreenAdapter.height(110),

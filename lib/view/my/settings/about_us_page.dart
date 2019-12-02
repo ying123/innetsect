@@ -41,7 +41,7 @@ class AboutUsPage extends StatelessWidget {
                 CustomsWidget().listSlider(title: "隐私协议",onTap: (){
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context){
-                        return ProtocolPage();
+                        return ProtocolPage(title: "innersect用户协议",);
                       }
                   ));
                 }),

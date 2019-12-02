@@ -91,14 +91,15 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
           children: <Widget>[
             Stack(
               children: <Widget>[
-                _image!=null?Container(
+                Container(
                   width: ScreenAdapter.width(750),
                   height: ScreenAdapter.height(425),
-                  child: Image.network(
+                  padding: EdgeInsets.only(top: 30),
+                  child: _image!=null?Image.network(
                     _image,
-                    fit: BoxFit.cover,
-                  ),
-                ):Container(width: 0,height: 0,),
+                    fit: BoxFit.fitWidth,
+                  ):Image.asset("assets/images/default/default_hori_img.png",fit: BoxFit.fitWidth,),
+                ),
                 Positioned(
                   left: ScreenAdapter.width(30),
                   top: ScreenAdapter.height(80),

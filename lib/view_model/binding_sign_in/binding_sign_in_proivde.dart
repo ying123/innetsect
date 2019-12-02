@@ -4,7 +4,7 @@ import 'package:rxdart/rxdart.dart';
 
 class BingdingSignInProvide extends BaseProvide {
 
-  double _size = 100;
+  double _size = 1000;
   double get size => _size;
 
   String _qrCode = '';

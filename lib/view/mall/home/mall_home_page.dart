@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
@@ -33,6 +34,7 @@ class MallHomePage extends PageProvideNode {
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
   final InformationProvide _informationProvide = InformationProvide.instance;
   final MainProvide _mainProvide = MainProvide.instance;
+  final AppNavigationBarProvide _appNavProvide = AppNavigationBarProvide.instance;
   MallHomePage(){
     mProviders.provide(Provider<MallHomeProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
@@ -41,12 +43,14 @@ class MallHomePage extends PageProvideNode {
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
     mProviders.provide(Provider<InformationProvide>.value(_informationProvide));
     mProviders.provide(Provider<MainProvide>.value(_mainProvide));
+    mProviders.provide(Provider<AppNavigationBarProvide>.value(_appNavProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
 
     return MallHomeContent(_provide,_detailProvide,_commodityListProvide,
-        _searchProvide,_cartProvide,_informationProvide,_mainProvide);
+        _searchProvide,_cartProvide,_informationProvide,_mainProvide,
+        _appNavProvide);
   }
 
 }
@@ -60,11 +64,12 @@ class MallHomeContent extends StatefulWidget {
   final CommodityAndCartProvide _cartProvide;
   final InformationProvide _informationProvide;
   final MainProvide _mainProvide;
+  final AppNavigationBarProvide _appNavProvide;
 
   MallHomeContent(this._provide,this._detailProvide,
       this._commodityListProvide,this._searchProvide,
       this._cartProvide,this._informationProvide,
-      this._mainProvide);
+      this._mainProvide,this._appNavProvide);
 
   @override
   _MallHomeContentState createState() => new _MallHomeContentState();
@@ -78,6 +83,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
   CommodityAndCartProvide _cartProvide;
   InformationProvide _informationProvide;
   MainProvide _mainProvide;
+  AppNavigationBarProvide _appNavProvide;
   // 控制器
   EasyRefreshController _controller;
   // 分页
@@ -117,6 +123,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
               ),
             ),
             onTap: () {
+              _appNavProvide.currentIndex = 2;
               Navigator.pushNamed(context, '/appNavigationBarPage');
             },
           ):Container(height: 0.0,width: 0.0,)
@@ -157,6 +164,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
     _cartProvide ??= widget._cartProvide;
     _informationProvide ??= widget._informationProvide;
     _mainProvide ??= widget._mainProvide;
+    _appNavProvide ??= widget._appNavProvide;
     // 加载首页数据
     _loadBannerData();
   }
@@ -205,7 +213,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
                       width:ScreenAdapter.width(750),
                       child: CachedNetworkImage(
                         fit: BoxFit.fitWidth,
-                        imageUrl: _bannersList[index].bannerPic,
+                        imageUrl: "${_bannersList[index].bannerPic}${ConstConfig.BANNER_MINI_SIZE}",
                         errorWidget: (context, url, error) {
                           return Icon(Icons.error);
                         },
@@ -278,21 +286,40 @@ class _MallHomeContentState extends State<MallHomeContent> {
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new Padding(padding: EdgeInsets.only(bottom: 10,top: 20),
+            new Container(
+              padding: EdgeInsets.only(bottom: 10,top: 20),
               child: new Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  _dividerWidget(width: ScreenAdapter.getScreenWidth()/4,padding: EdgeInsets.only(right: 10),indent: 60),
+                  Expanded(
+                    child: Container(
+                      height: 1,
+                      width: ScreenAdapter.width(20),
+                      margin: EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppConfig.assistLineColor),
+                      ),
+                    ),
+                  ),
                   new Text(model.promotionName,softWrap: false,
                     style: TextStyle(color: AppConfig.fontBackColor,fontWeight:FontWeight.w600,fontSize: ScreenAdapter.size(32)),),
-                  _dividerWidget(width: ScreenAdapter.getScreenWidth()/4,padding: EdgeInsets.only(left: 10),endIndent: 60),
+                  Expanded(
+                    child: Container(
+                      height: 1,
+                      width: ScreenAdapter.width(20),
+                      margin: EdgeInsets.only(left: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppConfig.assistLineColor),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             SizedBox(
               width: ScreenAdapter.width(750),
               height: ScreenAdapter.getPixelRatio()*ScreenAdapter.height(125),
-              child: CachedNetworkImage(imageUrl: model.promotionPic+ConstConfig.BANNER_SIZE,fit: BoxFit.fitWidth,),
+              child: CachedNetworkImage(imageUrl: "${model.promotionPic}${ConstConfig.BANNER_FOUR_SIZE}",fit: BoxFit.fitWidth,),
             )
           ],
         ),
@@ -326,7 +353,8 @@ class _MallHomeContentState extends State<MallHomeContent> {
                 children: <Widget>[
                   new SizedBox(
                     height: ScreenAdapter.height(180),
-                    child: new Image.network(item.prodPic+ConstConfig.LIST_IMAGE_SIZE,),
+                    child: item.prodPic!=null?new CachedNetworkImage(imageUrl:"${item.prodPic}${ConstConfig.BANNER_TWO_SIZE}",fit: BoxFit.fitWidth):
+                    Image.asset("assets/images/default/default_squre_img.png",fit: BoxFit.fitWidth,),
                   ),
                   new Container(
                     padding:EdgeInsets.only(top: 10),
@@ -374,91 +402,6 @@ class _MallHomeContentState extends State<MallHomeContent> {
         ),
       )
     );
-  }
-
-  /// 横线
-  Widget _dividerWidget({double width,double height=50.0,EdgeInsetsGeometry padding,double indent=0.0,double endIndent=0.0}){
-    return Container(
-      width: width,
-      height: ScreenAdapter.height(height),
-      padding: padding,
-      child: new Divider(color: Colors.grey,indent: indent,endIndent: endIndent,height: 5,),
-    );
-  }
-
-  ///TODO 废弃
-  Widget _contentList(PortletsModel model){
-    Widget widget;
-    switch(model.contents.length) {
-      case 1:
-        widget = new Container(
-          width: double.infinity,
-          color: Colors.white,
-          child: new Column(
-            children: <Widget>[
-              new Image.network(model.contents[0].mediaFiles,
-                width: double.infinity,
-                height:ScreenAdapter.height(420),fit:BoxFit.fitWidth,),
-              new Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  new ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: 20),
-                    child: new Container(
-                      color: Colors.black,
-                      padding: EdgeInsets.all(5),
-                      margin: EdgeInsets.all(10),
-                      child: new Text(model.contents[0].tags,style: TextStyle(color:Colors.white),),
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
-        );
-        break;
-      case 2:
-        widget = new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: model.contents.map((res){
-            return new Container(
-              width: ScreenAdapter.getScreenWidth()/2-20 ,
-              height: ScreenAdapter.height(480),
-              color: Colors.white,
-              margin: EdgeInsets.only(top: 10,bottom: 10),
-              child: new Column(
-                children: <Widget>[
-                  new Image.network(res.poster,fit: BoxFit.fitHeight,
-                  height: ScreenAdapter.height(360),),
-                  new Text(res.title,maxLines: 1,style: TextStyle(fontSize: ScreenAdapter.size(24)),),
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      new ConstrainedBox(
-                        constraints: BoxConstraints(minHeight: 20),
-                        child: new Container(
-                          color: Colors.black,
-                          margin: EdgeInsets.only(left: 10,top: 15),
-                          padding: EdgeInsets.all(5),
-                          alignment: Alignment.center,
-                          child: new Text(res.tags,style: TextStyle(color:Colors.white,
-                              fontSize: ScreenAdapter.size(18)),),
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            );
-          }).toList(),
-        );
-        break;
-      default:
-        widget = new Container();
-        break;
-    }
-    return widget;
   }
 
   _loadBannerData(){
@@ -536,15 +479,13 @@ class _MallHomeContentState extends State<MallHomeContent> {
         _detailProvide.setInitData();
         _cartProvide.setInitCount();
         _detailProvide.isBuy = false;
+        Navigator.push(context, MaterialPageRoute(
+            builder:(context){
+              return new CommodityDetailPage();
+            }
+        )
+        );
   //      _provide
     }, onError: (e) {});
-    Navigator.push(context, MaterialPageRoute(
-        builder:(context){
-          return new CommodityDetailPage();
-        }
-      )
-    );
   }
-
-
 }

@@ -82,7 +82,8 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
     if(_detailProvide.commodityModels.panicBuyingStart!=null
         &&_detailProvide.commodityModels.panicCountdownTime!=null){
       _startTime = DateTime.parse(_detailProvide.commodityModels.panicBuyingStart);
-      _endTime = DateTime.parse(_detailProvide.commodityModels.panicCountdownTime);
+//      _endTime = DateTime.parse(_detailProvide.commodityModels.panicCountdownTime);
+      _endTime = DateTime.now();
       bool flag = _startTime.isAfter(_endTime);
       if(flag){
 
@@ -218,7 +219,7 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
         return new Swiper(
           itemBuilder: (BuildContext context,int index){
             return skuModel!=null?
-            CachedNetworkImage(imageUrl: skuModel.pics[index].skuPicUrl+ConstConfig.LIST_IMAGE_SIZE,)
+            CachedNetworkImage(imageUrl: "${skuModel.pics[index].skuPicUrl}${ConstConfig.BANNER_TWO_SIZE}",)
                 :new Container();
           },
           loop: true,

@@ -26,9 +26,8 @@ class CommodityCartPage extends PageProvideNode{
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
   final MallProvide _mallProvide = MallProvide.instance;
   final AppNavigationBarProvide _appNavigationBarProvide = AppNavigationBarProvide.instance;
-  final String pages;
 
-  CommodityCartPage({this.pages}){
+  CommodityCartPage(){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
@@ -49,9 +48,8 @@ class CommodityCartContent extends StatefulWidget {
   final OrderDetailProvide _orderDetailProvide;
   final AppNavigationBarProvide _appNavigationBarProvide;
   final MallProvide _mallProvide;
-  final String pages;
   CommodityCartContent(this._provide,this._detailProvide,this._orderDetailProvide,this._mallProvide,
-      this._appNavigationBarProvide,{this.pages});
+      this._appNavigationBarProvide);
   @override
   _CommodityCartContentState createState() => new _CommodityCartContentState();
 }
@@ -74,7 +72,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
     ScreenAdapter.init(context);
     // 获取上一页的传值
     Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
-    bool back = mapData['isBack']==null?false:mapData['isBack'];
+    bool back = mapData==null||mapData['isBack']==null?false:mapData['isBack'];
     return new Scaffold(
       appBar: new AppBar(
         leading: back? new InkWell(
@@ -115,7 +113,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
       ),
       body: new Container(
         width: double.infinity,
-        child: _cartContent(mapData['page']),
+        child: _cartContent(mapData!=null?mapData['page']:""),
       ),
     );
   }
@@ -224,7 +222,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
               List lists = CommonUtil.skuNameSplit(list[key].skuName);
               return new Container(
                 width: double.infinity,
-                height: ScreenAdapter.height(200),
+                height: ScreenAdapter.height(230),
                 margin: EdgeInsets.only(top: 1,left: 10,right: 10),
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: AppConfig.assistLineColor))
@@ -282,17 +280,21 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Expanded(
-                                                    child: Text(lists[0],softWrap: true,),
+                                                    flex:2,
+                                                    child: Text(lists[0],softWrap: true,
+                                                      style: TextStyle(fontSize: ScreenAdapter.size(26)),
+                                                    ),
                                                   ),
                                                   Expanded(
-                                                    child: Text(lists[1],style: TextStyle(color: Colors.grey),)
+                                                    child: Text(lists[1],style: TextStyle(color: Colors.grey,
+                                                        fontSize: ScreenAdapter.size(24)),)
                                                   )
                                                 ],
                                               )
                                                   : new Container(
                                                 padding: EdgeInsets.only(top: 10),
                                                 child: new Text(list[key].skuName,softWrap: true,
-                                                  style: TextStyle(fontSize: ScreenAdapter.size(28)),
+                                                  style: TextStyle(fontSize: ScreenAdapter.size(26)),
                                                 ),
                                               )),
                                           // 商品价格
@@ -356,7 +358,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   this.isEdited? new Text("总计: "): new Container(),
-                  this.isEdited? new Text("¥ ${provide.sum.toString()}",style: TextStyle(fontWeight: FontWeight.w800),)
+                  this.isEdited? new Text("¥ ${provide.sum.toStringAsFixed(2)}",style: TextStyle(fontWeight: FontWeight.w800),)
                       : new Container(),
                   this.isEdited?_bottomDyAction(text: "去结算",
                       callback: (){
@@ -417,38 +419,40 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                       }
                   ) : _bottomDyAction(text: "删除所选",
                       callback: (){
-                        // 删除所选
-//                  this.provide.onDelSelect();
-                        CustomsWidget().customShowDialog(context: context,
-                          content: "是否删除所选商品",
-                          onPressed: (){
-                            List<CommodityModels> list = [];
-                            this.provide.commodityTypesModelLists.forEach((item){
-                              item.commodityModelList.forEach((res){
-                                if(res.isChecked==true){
-                                  list.add(res);
-                                }
-                              });
-                            });
-                            //请求删除
-                            this.provide.removeCartsList(list).doOnListen(() {
-                              print('doOnListen');
-                            })
-                                .doOnCancel(() {})
-                                .listen((item) {
-                              ///加载数据
-                              print('listen data->$item');
-                              if(item.data!=null){
-                                this.provide.onDelSelect();
-                                CustomsWidget().showToast(title: "删除成功");
-                                Navigator.pop(context);
-                              }
-                            }, onError: (e) {});
 
+                        List<CommodityModels> list = [];
+                        this.provide.commodityTypesModelLists.forEach((item){
+                          item.commodityModelList.forEach((res){
+                            if(res.isChecked==true){
+                              list.add(res);
+                            }
                           });
-                      }
-                  )
+                        });
+                        if(list.length>0){
+                          // 删除所选
+                          CustomsWidget().customShowDialog(context: context,
+                              content: "是否删除所选商品",
+                              onPressed: (){
+                                //请求删除
+                                this.provide.removeCartsList(list).doOnListen(() {
+                                  print('doOnListen');
+                                })
+                                    .doOnCancel(() {})
+                                    .listen((item) {
+                                  ///加载数据
+                                  print('listen data->$item');
+                                  if(item.data!=null){
+                                    this.provide.onDelSelect();
+                                    CustomsWidget().showToast(title: "删除成功");
+                                    Navigator.pop(context);
+                                  }
+                                }, onError: (e) {});
 
+                              });
+                        }else{
+                          CustomsWidget().showToast(title: "请选择删除的商品");
+                        }
+                      })
                 ],
               ),
             )

@@ -22,16 +22,15 @@ class CounterWidget extends StatefulWidget {
 class _CounterWidgetState extends State<CounterWidget> {
   CommodityAndCartProvide provide;
   CommodityModels model;
-  int count;
+  int count=1;
 
   @override
   Widget build(BuildContext context) {
-    if(model.panicBuyQtyPerAcct!=null){
       return Column(
         children: <Widget>[
-          Text("每人限购${model.panicBuyQtyPerAcct}件",style: TextStyle(
+          model!=null&&model.panicBuyQtyPerAcct!=null?Text("每人限购${model.panicBuyQtyPerAcct}件",style: TextStyle(
             color: AppConfig.blueBtnColor,fontSize: ScreenAdapter.size(24)
-          ),),
+          ),):Container(width: 0,height: 0,),
           Row(
             mainAxisAlignment: this.provide.mode=="multiple"?MainAxisAlignment.end:MainAxisAlignment.center,
             children: <Widget>[
@@ -42,16 +41,6 @@ class _CounterWidgetState extends State<CounterWidget> {
           )
         ],
       );
-    }else{
-      return new Row(
-        mainAxisAlignment: this.provide.mode=="multiple"?MainAxisAlignment.end:MainAxisAlignment.center,
-        children: <Widget>[
-          _reduceWidget(),
-          _showNumWidget(),
-          _incrementWidget()
-        ],
-      );
-    }
   }
   @override
   void initState() {
@@ -64,6 +53,7 @@ class _CounterWidgetState extends State<CounterWidget> {
         count = widget.provide.count;
       });
     }
+    this.model.quantity = widget.provide.count;
   }
 
   /// 减少按钮
@@ -101,6 +91,7 @@ class _CounterWidgetState extends State<CounterWidget> {
                         if(res.data!=null){
                           this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
                           CustomsWidget().showToast(title: "删除成功");
+                          Navigator.pop(context);
                         }
                       },onError: (e){});
                     }
@@ -120,12 +111,10 @@ class _CounterWidgetState extends State<CounterWidget> {
 
   /// 显示数字框
   Widget _showNumWidget(){
-    double size = 80.0;
     double fontSize = 38.0;
     double circular =8.0;
     int count = this.count;
     if(this.provide.mode=="multiple"){
-      size=40.0;
       fontSize=28.0;
       circular=4.0;
       count=widget.model.quantity;
@@ -141,7 +130,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       child: new Text(count.toString(),style: TextStyle(
         fontSize: ScreenAdapter.size(fontSize),
         fontWeight: FontWeight.w900,
-        color: model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct<2
+        color: model!=null&&model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct<2
             ?Colors.grey:Colors.black
       ),),
     );

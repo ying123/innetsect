@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
@@ -434,8 +435,8 @@ class _SearchScreenContentState extends State<SearchScreenContent>
     return new Container(
         width: double.infinity,
         height: ScreenAdapter.height(320),
-        child: image!=null? Image.network(
-          image+ConstConfig.LIST_IMAGE_SIZE,
+        child: image!=null? CachedNetworkImage(
+          imageUrl:"$image${ConstConfig.BANNER_TWO_SIZE}",
           fit: BoxFit.fitWidth,
         ):Image.asset("assets/images/user/header.png",fit: BoxFit.fitWidth,)
     );

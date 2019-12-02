@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/app_navigation_bar.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -66,11 +67,11 @@ class _SortilegeContentState extends State<SortilegeContent> {
     "35","35.5","36","37","37.5","38","39",
     "40.5","41","42","42.5","43","44","44.5","45","46"
   ];
-  String _shoeName;
+  String _shoeName="请选择鞋码";
   /// 身高
-  String _stature;
+  String _stature="请选择身高";
   /// 体重
-  String _weight;
+  String _weight="请选择身高";
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +114,16 @@ class _SortilegeContentState extends State<SortilegeContent> {
           child:  Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Text("温馨提示:",style: TextStyle(color: AppConfig.blueBtnColor),),
+              Text("1.请填写您的真实身份信息以用于购买展会限量商品，"
+                  "购买成功的用户需携带您本人登记的有效证件及订单相关信息至提货区二次核实。",
+                  style: TextStyle(color: AppConfig.blueBtnColor)
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text("2.如信息核实不正确，INNERSECT将有权取消您的订单并仅需为您办理退款。",
+                    style: TextStyle(color: AppConfig.blueBtnColor)),
+              ),
               Text("姓名"),
               TextField(
                 controller: TextEditingController.fromValue(
@@ -179,6 +190,9 @@ class _SortilegeContentState extends State<SortilegeContent> {
               ),
               Text("体重KG(可选)"),
               _weightWidget(),
+              SizedBox(
+                height: ScreenAdapter.height(80),
+              )
             ],
           ),
         )
@@ -235,11 +249,11 @@ class _SortilegeContentState extends State<SortilegeContent> {
     var json = {
       "gender": _sex.toString(),
       "icType": _identityType.toString(),
-      "height": _stature.toString(),
+      "height": _stature=="请选择身高"?"":_stature.toString(),
       "realName": _name,
-      "weight": _weight.toString(),
+      "weight": _weight=='请选择体重'?"":_weight.toString(),
       "icNo": _identityNo.toString(),
-      "feetSize": _shoeName
+      "feetSize": _shoeName=="请选择鞋码"?"":_shoeName
     };
     _bingdingSignInProvide.submitInfo(json)
         .doOnListen(() {})
@@ -290,9 +304,9 @@ class _SortilegeContentState extends State<SortilegeContent> {
           _name = items.data['realName'];
           _sex = items.data['gender'];
           _identityNo = items.data['icNo'];
-          _stature = items.data['height'].toString();
-          _weight = items.data['weight'].toString();
-          _shoeName = items.data['feetSize'].toString();
+          _stature =items.data['height']==null?"请选择身高": items.data['height'].toString();
+          _weight = items.data['weight']==null?"请选择体重":items.data['weight'].toString();
+          _shoeName = items.data['feetSize']==null?"请选择鞋码":items.data['feetSize'].toString();
         });
       }
     });
@@ -427,7 +441,7 @@ class _SortilegeContentState extends State<SortilegeContent> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(_shoeName!=null?_shoeName:"请选择鞋码"),
+            Text(_shoeName),
             Icon(Icons.chevron_right,color: Colors.grey,)
           ],
         ),
@@ -474,7 +488,7 @@ class _SortilegeContentState extends State<SortilegeContent> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(_stature!=null?_stature:"请选择身高"),
+            Text(_stature),
             Icon(Icons.chevron_right,color: Colors.grey,)
           ],
         ),
@@ -530,7 +544,7 @@ class _SortilegeContentState extends State<SortilegeContent> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(_weight!=null?_weight:"请选择身高"),
+            Text(_weight),
             Icon(Icons.chevron_right,color: Colors.grey,)
           ],
         ),

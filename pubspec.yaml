@@ -11,7 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 3.0.0+111203
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -206,10 +206,21 @@ flutter:
     - assets/images/showhome/展会商品.png
     - assets/images/showhome/签到绑定.png
     - assets/images/showhome/扫码购物.png
+    # 默认展示图片
+    - assets/images/default/default_squre_img.png
+    - assets/images/default/default_img.png
+    - assets/images/default/default_hori_img.png
     #展会-我的-vipcard
     - assets/images/user/vipcard/vip_card.png
     #客服图标
     - assets/images/user/feedback.png
+    # 我的按钮icon
+    # 我的门票
+    - assets/images/user/my_ticket@3x.png
+    # 扫码签到
+    - assets/images/user/my_scan@3x.png
+    # 我的预约
+    - assets/images/user/my_ordered@3x.png
     # 商城
     - assets/images/mall/welcome.png
     - assets/images/mall/bg.gif

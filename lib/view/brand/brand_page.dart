@@ -5,6 +5,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/exhibition/brand_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/brand/brand_mall_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/brand/brand_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:lpinyin/lpinyin.dart';
@@ -135,7 +136,9 @@ class _BrandContentPageState extends State<BrandContentPage>
                     bottom: BorderSide(color: AppConfig.assistLineColor))),
             child: ListTile(
               leading: CircleAvatar(
-                child: Image.asset('assets/images/logo.png'),
+                child: model.brandLogo==null?
+                Image.asset('assets/images/logo.png',fit: BoxFit.cover,):
+                Image.network(model.brandLogo),
               ),
               //Icon(Icons.compare),
               // CircleAvatar(
@@ -206,20 +209,9 @@ class _BrandContentPageState extends State<BrandContentPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('品牌'),
-        centerTitle: true,
-        elevation: 0.0,
-         leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Image.asset(
-              'assets/images/xiangxia.png',
-              fit: BoxFit.none,
-              width: ScreenAdapter.width(38),
-              height: ScreenAdapter.width(38),
-            )),
+      appBar: CustomsWidget().customNav(context: context,
+        widget: new Text("品牌",style: TextStyle(fontSize: ScreenAdapter.size((30)),
+            fontWeight: FontWeight.w900)),leading: false
       ),
       body: AzListView(
         data: _list,

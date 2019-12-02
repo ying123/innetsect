@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/exhibition/ticket_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/show_tickets/ticket_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/show_tickets/show_tickets_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -54,23 +57,9 @@ ShowTicketsProvide _provide;
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0.0,
-          title: Text(
-            '展会门票',
-            
-          ),
-          centerTitle: true,
-          leading: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Image.asset(
-                'assets/images/xiangxia.png',
-                fit: BoxFit.none,
-                width: ScreenAdapter.width(38),
-                height: ScreenAdapter.width(38),
-              )),
+        appBar:  CustomsWidget().customNav(context: context,
+          widget: new Text("展会门票",style: TextStyle(fontSize: ScreenAdapter.size((30)),
+              fontWeight: FontWeight.w900)),
         ),
         body: ListView(
           physics: BouncingScrollPhysics(),
@@ -106,19 +95,21 @@ ShowTicketsProvide _provide;
                 },
                 child: Container(
                   width: itemWidth,
+                  padding: EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
                 
                       ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
                           width: double.infinity,
-                          child: Image.network(
-                            value.prodPic,
+                          child: CachedNetworkImage(
+                            imageUrl:"${value.prodPic}${ConstConfig.BANNER_FOUR_SIZE}",
                             fit: BoxFit.fill,
                           )),
                       Padding(
-                        padding: EdgeInsets.only(top: ScreenAdapter.height(20)),
+                        padding: EdgeInsets.only(top: ScreenAdapter.height(20),),
                         child: Container(
                           height: ScreenAdapter.height(90),
                           child: Row(
@@ -143,6 +134,10 @@ ShowTicketsProvide _provide;
                           ),
                         ),
                       ),
+                      Text(value.prodName,style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: ScreenAdapter.size(28)
+                      ),)
                       // Padding(
                       //   padding: EdgeInsets.only(top: ScreenAdapter.height(10)),
                       //   child: Container(

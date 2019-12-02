@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/base.dart';
@@ -215,12 +216,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                           /// 跳转详情
                           /// 加载详情
                           _loadDetail(item.prodID,item.shopID);
-                          Navigator.push(context, MaterialPageRoute(
-                              builder:(context){
-                                return new CommodityDetailPage();
-                              }
-                            )
-                          );
+
                         },
                         child: new Container(
                           width: itemWidth,
@@ -252,10 +248,10 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
     return new Container(
         width: double.infinity,
         height: ScreenAdapter.height(320),
-        child:image!=null? Image.network(
-          image+ConstConfig.LIST_IMAGE_SIZE,
+        child:image!=null? CachedNetworkImage(
+          imageUrl:image+ConstConfig.BANNER_FOUR_SIZE,
           fit: BoxFit.fitWidth,
-        ):Image.asset("assets/images/user/header.png",fit: BoxFit.fitWidth,)
+        ):Image.asset("assets/images/default/default_img.png",fit: BoxFit.fitWidth,)
 
     );
   }
@@ -359,6 +355,12 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
       _detailProvide.setInitData();
       _cartProvide.setInitCount();
       _detailProvide.isBuy = false;
+      Navigator.push(context, MaterialPageRoute(
+          builder:(context){
+            return new CommodityDetailPage();
+          }
+      )
+      );
 //      _provide
     }, onError: (e) {});
   }
