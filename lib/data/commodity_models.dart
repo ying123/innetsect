@@ -26,7 +26,7 @@ class CommodityModels{
   int gender;
   //状态
   String tags;
-  //标签
+  //标签 =1已支付
   int status;
   // 价格
   dynamic defSalesPrice;
@@ -49,7 +49,7 @@ class CommodityModels{
   String remark;
   // 订单编号
   String orderNo;
-  // 发货状态
+  // 发货状态，=3显示提货码
   int syncStatus;
   //支付时间
   String payDate;
@@ -60,7 +60,7 @@ class CommodityModels{
   // 原价
   dynamic originalPrice;
   //数量
-  int quantity;
+  int quantity=0;
   dynamic salesPrice;
   dynamic amount;
   // orderType 0.现售  1.预售 2.中阶 3.高阶

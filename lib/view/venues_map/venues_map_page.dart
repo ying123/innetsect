@@ -5,6 +5,8 @@ import 'package:innetsect/data/exhibition/venue_halls_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/venues_map/venues_Halls_E5.dart';
 import 'package:innetsect/view/venues_map/venues_halls_e6_page.dart';
+import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view/widget/pre_view_page.dart';
 import 'package:innetsect/view_model/venues_map/venues_map_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -55,30 +57,31 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
       }
     });
 
-    widget._provide.hallsData(widget._provide.menu[0].exhibitionID, widget._provide.menu[0].exhibitionHall)
-        .doOnListen((){}).doOnError((e,stack){
+    if(widget._provide.menu.length>0){
+      widget._provide.hallsData(widget._provide.menu[0].exhibitionID, widget._provide.menu[0].exhibitionHall)
+          .doOnListen((){}).doOnError((e,stack){
 
-        }).listen((item){
-          print('item0======>${item.data}');
-          if (item.data!= null) {
-            setState(() {
-                _image = widget._provide.menu[0].overviewPic;
-                widget._provide.addHallsModelE5List(VenueHallsModelList.fromJson(item.data).list);
-            });
-          }
-        });
-        widget._provide.hallsData(widget._provide.menu[1].exhibitionID, widget._provide.menu[1].exhibitionHall)
-        .doOnListen((){}).doOnError((e,stack){
+      }).listen((item){
+        print('item0======>${item.data}');
+        if (item.data!= null) {
+          setState(() {
+            _image = widget._provide.menu[0].overviewPic;
+            widget._provide.addHallsModelE5List(VenueHallsModelList.fromJson(item.data).list);
+          });
+        }
+      });
+      widget._provide.hallsData(widget._provide.menu[1].exhibitionID, widget._provide.menu[1].exhibitionHall)
+          .doOnListen((){}).doOnError((e,stack){
 
-        }).listen((item){
-          print('item1 ====>${item.data}');
-           if (item.data!= null) {
-            setState(() {
-              widget._provide.addHallsModelE6List(VenueHallsModelList.fromJson(item.data).list);
-            });
-          }
-        });
-        
+      }).listen((item){
+        print('item1 ====>${item.data}');
+        if (item.data!= null) {
+          setState(() {
+            widget._provide.addHallsModelE6List(VenueHallsModelList.fromJson(item.data).list);
+          });
+        }
+      });
+    }
   }
     
   
@@ -86,19 +89,29 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _image!=null?null:CustomsWidget().customNav(context: context, widget: Container()),
       body: SingleChildScrollView(
         child: Column(
-          children: <Widget>[
+          children: _image!=null?<Widget>[
             Stack(
               children: <Widget>[
-                Container(
-                  width: ScreenAdapter.width(750),
-                  height: ScreenAdapter.height(425),
-                  padding: EdgeInsets.only(top: 30),
-                  child: _image!=null?Image.network(
-                    _image,
-                    fit: BoxFit.fitWidth,
-                  ):Image.asset("assets/images/default/default_hori_img.png",fit: BoxFit.fitWidth,),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return PreViewPage(image: _image,);
+                      }
+                    ));
+                  },
+                  child: Container(
+                    width: ScreenAdapter.width(750),
+                    height: ScreenAdapter.height(425),
+                    padding: EdgeInsets.only(top: 30),
+                    child: _image!=null?Image.network(
+                      _image,
+                      fit: BoxFit.fitWidth,
+                    ):Image.asset("assets/images/default/default_hori_img.png",fit: BoxFit.fitWidth,),
+                  )
                 ),
                 Positioned(
                   left: ScreenAdapter.width(30),
@@ -139,7 +152,7 @@ class _VenuesMapContentPageState extends State<VenuesMapContentPage>
                 ],
               ),
             )
-          ],
+          ]:CustomsWidget().noDataWidget(),
         ),
       ),
     );

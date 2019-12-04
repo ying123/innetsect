@@ -53,6 +53,14 @@ class  AllProvide  extends BaseProvide{
     return _repo.delOrder(orderID);
   }
 
+  /// 提货码
+  Observable ladingQrCode (int orderID){
+    return _repo.ladingQrCode(orderID).doOnData((result){})
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
+
   ///工厂模式
   factory AllProvide() => _getInstance();
   static AllProvide get instance => _getInstance();

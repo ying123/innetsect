@@ -251,13 +251,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           Center(
                             child: Text('所在地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                           ),
-                          province!=null &&province!=null &&areaName!=null?
-                          Padding(
-                            padding: EdgeInsets.only(left: 40),
-                            child: Text(
-                                "$province $city $areaName"
-                            ),
-                          ):Provide<NewAddressProvide>(
+                          Provide<NewAddressProvide>(
                               builder: (BuildContext context, Widget child, NewAddressProvide provide) {
                                 Widget widget = new Container();
                                 if(provide.provincesModel!=null||provide.cityModel!=null||provide.countyModel!=null){
@@ -317,6 +311,47 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                     ],
                   )
           ),
+          //
+          Container(
+              width: ScreenAdapter.width(700),
+              height: ScreenAdapter.height(100),
+              // color: Colors.yellow,
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),),
+                      top: BorderSide(color: Color.fromRGBO(234, 234, 234, 1.0),))
+              ),
+              child: Row(
+                children: <Widget>[
+                  Center(
+                    child: Text('邮政编码',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                  ),
+                  Container(
+                      width: ScreenAdapter.width(500),
+                      margin: EdgeInsets.only(left: 20),
+                      child: Provide<NewAddressProvide>(
+                          builder: (BuildContext context, Widget child, NewAddressProvide provide) {
+                            return TextField(
+                              controller: TextEditingController.fromValue(TextEditingValue(
+                                  text: provide.postalCode!=null?provide.postalCode:'',
+                                  selection: TextSelection.fromPosition(TextPosition(
+                                      affinity: TextAffinity.downstream,
+                                      offset: provide.postalCode!=null?provide.postalCode.toString().length:''.length
+                                  ))
+                              )),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.postalCode:"请输入邮政编码"
+                              ),
+                              onChanged: (text){
+                                provide.postalCode=text;
+                              },
+                            );
+                          })
+                  )
+                ],
+              )
+          ),
           Container(
             width: ScreenAdapter.width(700),
             height: ScreenAdapter.height(100),
@@ -369,6 +404,9 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     _provide.tel = null;
     _provide.name = null;
     _provide.addressDetail = null;
+    _provide.provincesModel=null;
+    _provide.cityModel = null;
+    _provide.countyModel = null;
   }
 
   Provide<NewAddressProvide> _setupBottomBtn() {
@@ -386,11 +424,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                 CustomsWidget().showToast(title: "请选择国家和所在地区");
               }else if(provide.addressDetail==null){
                 CustomsWidget().showToast(title: "请填写详细地址");
-              }else if(widget._addressManagementProvide.addressModel!=null){
-                if( province ==null&& city ==null&& areaName ==null&& areaCode ==null ){
-                  CustomsWidget().showToast(title: "请选择国家和所在地区");
-                }
-
+              } else if(widget._addressManagementProvide.addressModel!=null){
                 provide.createAndEditAddresses(context,isEdit: true,
                     addressModel:widget._addressManagementProvide.addressModel)
                     .doOnListen(() {}).doOnCancel(() {})
@@ -454,10 +488,21 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
             _provide.selectCountry(item);
           }
         });
-        province = widget._addressManagementProvide.addressModel.province;
-        city = widget._addressManagementProvide.addressModel.city;
-        areaName = widget._addressManagementProvide.addressModel.county;
-        areaCode = widget._addressManagementProvide.addressModel.areaCode;
+        _provide.initProvinces(
+            widget._addressManagementProvide.addressModel.province,
+            widget._addressManagementProvide.addressModel.city,
+            widget._addressManagementProvide.addressModel.county,
+            widget._addressManagementProvide.addressModel.areaCode
+        );
+
+//        _provide.provincesModel.regionName = widget._addressManagementProvide.addressModel.province;
+//        provide.provincesModel.regionName} "
+//      "${provide.cityModel.regionName} "
+//          "${provide.countyModel.regionName
+//        province = widget._addressManagementProvide.addressModel.province;
+//        city = widget._addressManagementProvide.addressModel.city;
+//        areaName = widget._addressManagementProvide.addressModel.county;
+//        areaCode = widget._addressManagementProvide.addressModel.areaCode;
         if(widget._addressManagementProvide.addressModel.areaCode == '000000'){
           _provide.setForeignAddressModel();
         }else{

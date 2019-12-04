@@ -210,6 +210,12 @@ flutter:
     - assets/images/default/default_squre_img.png
     - assets/images/default/default_img.png
     - assets/images/default/default_hori_img.png
+    #已过期
+    - assets/images/default/past.png
+    # 预约列表背景
+    - assets/images/default/activity_bg.png
+    #已使用
+    - assets/images/user/un_use.png
     #展会-我的-vipcard
     - assets/images/user/vipcard/vip_card.png
     #客服图标

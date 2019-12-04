@@ -30,6 +30,8 @@ class OrderDetailModel{
   int prodType;
   // 0，代发 1：自提
   int ladingMode;
+  // 提货时间
+  String ladingTime;
   // 发货地址ID
   int addressID;
   // 收货人
@@ -148,7 +150,8 @@ class OrderDetailModel{
     this.salesPrice,
     this.prodID,
     this.itemID,
-    this.skuCode
+    this.skuCode,
+    this.ladingTime
   });
 
   factory OrderDetailModel.fromJson(Map<String,dynamic> json) {
@@ -200,7 +203,8 @@ class OrderDetailModel{
         salesPrice: json['salesPrice'],
         prodID: json['prodID'],
         itemID: json['itemID'],
-        skuCode: json['skuCode']
+        skuCode: json['skuCode'],
+        ladingTime: json['ladingTime']
     );
   }
 

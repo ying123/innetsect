@@ -62,24 +62,13 @@ class _LoginContentPageState extends State<LoginContentPage> {
               // 返回按钮
               if(pages is AppNavigationContentBar||_provide.pages=="exhibition"){
                 _appNavigationBarProvide.currentIndex = 2;
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                    builder: (context){
-                      return AppNavigationBar();
-                    }
-                ), (Route<dynamic> route)=>false );
               }else if(pages is MallContentPage||_provide.pages=="mall"){
                 _mallProvide.currentIndex = 2;
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                  builder: (context){
-                    return MallPage();
-                  }
-                ), (Route<dynamic> route)=>false );
-              }else{
-                Navigator.pop(context);
-                if(pages == 'orderDetail'){
-                  Navigator.pop(context);
-                }
               }
+              if(pages == 'orderDetail'){
+                Navigator.pop(context);
+              }
+              Navigator.pop(context);
             },
             child: Image.asset(
               'assets/images/xiangxia.png',
@@ -120,6 +109,10 @@ class _LoginContentPageState extends State<LoginContentPage> {
     _provide ??= widget._provide;
     _mallProvide ??= widget._mallProvide;
     _appNavigationBarProvide ??= widget._appNavigationBarProvide;
+
+    _provide.userCode = null;
+    _provide.password = null;
+    _provide.vaildCode = null;
     Future.delayed(Duration.zero,(){
       // 运用未来获取context，初始化数据
       Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
@@ -134,9 +127,6 @@ class _LoginContentPageState extends State<LoginContentPage> {
     timer?.cancel();
     timer = null;
     super.dispose();
-    _provide.userCode = null;
-    _provide.password = null;
-    _provide.vaildCode = null;
   }
 
   Provide<LoginProvide> _setupLogo() {

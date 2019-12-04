@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
+import 'package:innetsect/view/my/activity/activity_mark_page.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/my/exhibition/lucky_sign_page.dart';
 import 'package:innetsect/view/my/feedback/feedback_page.dart';
@@ -18,6 +21,7 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/my/my_provide.dart';
 import 'package:provide/provide.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 ///我的页面
 class MyPage extends PageProvideNode {
@@ -269,6 +273,11 @@ class _MyContentPageState extends State<MyContentPage> {
               ),
               InkWell(
                 onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return ActivityMarkPage();
+                    }
+                  ));
                 },
                 child: _setupBtn(
                     'assets/images/user/my_ordered@3x.png',
@@ -366,7 +375,10 @@ class _MyContentPageState extends State<MyContentPage> {
               }
             ),
             new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
-            CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/联系客服@2x.png', title: '联系客服'),
+            CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/联系客服@2x.png',
+                title: '联系客服',onTap: (){
+                  CustomsWidget().serviceWidget(context: context);
+                }),
             new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
             CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/反馈意@2x.png',
                 title: '反馈意见',onTap: (){

@@ -15,11 +15,13 @@ class  NewAddressProvide extends BaseProvide{
   String _tel;
   String _addressDetail;
   bool _lastUsed;
+  String _postalCode;
 
   get addressID=>_addressID;
   get name=>_name;
   get tel=>_tel;
   get addressDetail=>_addressDetail;
+  String get postalCode => _postalCode;
   bool get lastUsed=>_lastUsed;
 
   set addressID(int addressID){
@@ -40,6 +42,11 @@ class  NewAddressProvide extends BaseProvide{
   }
   set lastUsed(bool lastUsed){
     _lastUsed = lastUsed;
+    notifyListeners();
+  }
+
+  set postalCode(String postalCode){
+    _postalCode = postalCode;
     notifyListeners();
   }
 
@@ -74,6 +81,20 @@ class  NewAddressProvide extends BaseProvide{
   ProvincesModel get provincesModel => _provincesModel;
   ProvincesModel get cityModel => _cityModel;
   ProvincesModel get countyModel => _countyModel;
+
+  set provincesModel(ProvincesModel model){
+    _provincesModel = model;
+    notifyListeners();
+  }
+  set cityModel(ProvincesModel model){
+    _cityModel = model;
+    notifyListeners();
+  }
+  set countyModel(ProvincesModel model){
+    _countyModel = model;
+    notifyListeners();
+  }
+
   set countryModel(CountryModel model){
     _countryModel = model;
     notifyListeners();
@@ -103,6 +124,17 @@ class  NewAddressProvide extends BaseProvide{
     _cityModel.regionName = "外国";
     _countyModel.regionName = "外国";
     _countyModel.regionCode = "000000";
+    notifyListeners();
+  }
+
+  void initProvinces(String province,String city,String county,String areaCode){
+    _provincesModel = new ProvincesModel();
+    _cityModel = new ProvincesModel();
+    _countyModel = new ProvincesModel();
+    _provincesModel.regionName = province;
+    _cityModel.regionName = city;
+    _countyModel.regionName = county;
+    _countyModel.regionCode = areaCode;
     notifyListeners();
   }
 
@@ -203,6 +235,7 @@ class  NewAddressProvide extends BaseProvide{
         :_countyModel.regionName;
     addressModel.areaCode=_countyModel==null?addressModel.areaCode
         :_countyModel.regionCode;
+    addressModel.postalCode=_postalCode;
     addressModel.acctID = UserTools().getUserData()['id'];
     addressModel.telPrefix = _countryModel.telPrefix;
     Map<String,dynamic> json = addressModel.toJson();

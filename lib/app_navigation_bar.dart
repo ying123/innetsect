@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/user_info_model.dart';
-import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/view/activity/activity_page.dart';
 import 'package:innetsect/view/brand/brand_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
-import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
+import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 
 import 'package:rammus/rammus.dart' as rammus;
@@ -17,17 +17,21 @@ import 'package:rammus/rammus.dart' as rammus;
 class AppNavigationBar extends PageProvideNode {
   final AppNavigationBarProvide _provide = AppNavigationBarProvide.instance;
   final LoginProvide _loginProvide = LoginProvide();
+  final CommodityAndCartProvide _cartProvide=CommodityAndCartProvide.instance;
   AppNavigationBar() {
     mProviders.provide(Provider<AppNavigationBarProvide>.value(_provide));
     mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
+    mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return AppNavigationContentBar();
+    return AppNavigationContentBar(_cartProvide);
   }
 }
 
 class AppNavigationContentBar extends StatefulWidget {
+  final CommodityAndCartProvide _cartProvide;
+  AppNavigationContentBar(this._cartProvide);
   @override
   _AppNavigationContentBarState createState() =>
       _AppNavigationContentBarState();
@@ -37,6 +41,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
     with TickerProviderStateMixin<AppNavigationContentBar> {
   AppNavigationBarProvide _provide;
   LoginProvide _loginProvide;
+  CommodityAndCartProvide _cartProvide;
   TabController controller;
 
   //首页
@@ -58,6 +63,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
     super.initState();
     _provide = AppNavigationBarProvide.instance;
     _loginProvide = LoginProvide.instance;
+    _cartProvide =  widget._cartProvide;
     controller = new TabController(length: 5, vsync: this);
     Future.delayed(Duration.zero,(){
       Map<dynamic,dynamic> mapData = ModalRoute.of(context).settings.arguments;
@@ -226,7 +232,6 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
   }
 
   onTap(int index) {
-    _provide.currentIndex = index;
     if(index==4){
       // 获取用户信息，如果请求错误弹出登录页面
       /// 获取用户信息
@@ -236,9 +241,30 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
           UserInfoModel model = UserInfoModel.fromJson(userItem.data);
           rammus.bindAccount(model.acctID.toString());
           _loginProvide.setUserInfoModel(model);
+          _provide.currentIndex = index;
         }
       },onError: (e){
       });
+    }else if(index==3){
+      _cartProvide.getMyCarts().doOnListen(() {
+        print('doOnListen');
+      })
+          .doOnCancel(() {})
+          .listen((item) {
+        ///加载数据
+        print('listen data->$item');
+        if(item!=null&&item.data!=null){
+          List<CommodityModels> list = CommodityList.fromJson(item.data).list;
+          _cartProvide.commodityTypesModelLists.clear();
+          _cartProvide.setMode(mode: "multiple");
+          list.forEach((res){
+            _cartProvide.addCarts(res);
+          });
+          _provide.currentIndex = index;
+        }
+      }, onError: (e) {});
+    }else{
+      _provide.currentIndex = index;
     }
 //    controller.animateTo(index,
 //        duration: Duration(milliseconds: 300), curve: Curves.ease);

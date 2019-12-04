@@ -43,6 +43,15 @@ static Route createRoute(Tween<Offset> tween, Widget child) {
       });
 }
 
+static Route customCreateRoute(Widget page){
+    return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return child;
+        }
+    );
+}
+
   /// 商品skuname截取显示
   static List skuNameSplit(String skuName){
     List list = List();
@@ -155,6 +164,33 @@ static Route createRoute(Tween<Offset> tween, Widget child) {
         return "DEC";
         break;
     }
+  }
+
+  /// 获取时分
+  static String formatTimes(String times){
+    String str = times.split(" ")[1];
+    return str.substring(0,str.length-3);
+  }
+
+  /// 活动状态
+  static String activityStatus(int status){
+    //0 未开始 1进行中 2已结束 4已取消
+    String str="";
+    switch(status){
+      case 0:
+        str= "未开始";
+        break;
+      case 1:
+        str= "进行中";
+        break;
+      case 2:
+        str= "已结束";
+        break;
+      case 4:
+        str= "已取消";
+        break;
+    }
+    return str;
   }
 
 }

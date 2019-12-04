@@ -86,7 +86,7 @@ class _BrandContentPageState extends State<BrandContentPage>
 
   /// 排序
   void _handleList(List<BrandModel> list) {
-    if (list == null || list.isEmpty) return;
+    if (list == null || list.length==0) return;
     for (int i = 0, length = list.length; i < length; i++) {
       print('==========>list[$i] = ${list[i].brandName}');
       String pinyin = PinyinHelper.getPinyinE(list[i].brandName);
@@ -149,7 +149,7 @@ class _BrandContentPageState extends State<BrandContentPage>
                 print("OnItemClick: ${model.brandName}");
                 // 点击跳转筛选页
                 // _searchProvide.searchValue = model.name;
-                 _searchRequest(model.brandName);
+                 _searchRequest(model.brandName,model.poster);
              //  Navigator.pushNamed(context, '/brandMallPage');
               },
             ),
@@ -186,7 +186,7 @@ class _BrandContentPageState extends State<BrandContentPage>
   }
 
   /// 搜索请求
-  void _searchRequest(String name){
+  void _searchRequest(String name,String pic){
     // 清除原数据
     //_commodityListProvide.clearList();
     //_commodityListProvide.requestUrl = "/api/eshop/app/products/filterByBrand?brand=$name";
@@ -201,7 +201,7 @@ class _BrandContentPageState extends State<BrandContentPage>
 
     Navigator.push(context, MaterialPageRoute(
         builder: (context){
-          return BrandMallPage(name);
+          return BrandMallPage(name,pic);
         }
     ));
   }

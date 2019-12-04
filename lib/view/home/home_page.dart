@@ -7,11 +7,15 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/exhibition/halls_model.dart';
-import 'package:innetsect/data/exhibition/home_banners_model.dart';
 import 'package:innetsect/data/exhibition/home_portlets_model.dart';
+import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/activity/activity_detail_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
+import 'package:innetsect/view/mall/information/infor_web_page.dart';
+import 'package:innetsect/view/mall/search/search_screen_page.dart';
+import 'package:innetsect/view/mall/web_view.dart';
 import 'package:innetsect/view/my/vip_card/vip_card_page.dart';
 import 'package:innetsect/view/shopping/high_commodity_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
@@ -19,6 +23,9 @@ import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/home/home_provide.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_list_provide.dart';
+import 'package:innetsect/view_model/mall/information/information_provide.dart';
+import 'package:innetsect/view_model/mall/search/search_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -31,16 +38,22 @@ class HomePage extends PageProvideNode {
   final LoginProvide _loginProvide = LoginProvide();
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
-
+  final SearchProvide _searchProvide = SearchProvide();
+  final CommodityListProvide _commodityListProvide = CommodityListProvide.instance;
+  final InformationProvide _informationProvide = InformationProvide.instance;
   HomePage() {
     mProviders.provide(Provider<HomeProvide>.value(_provide));
     mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
+    mProviders.provide(Provider<SearchProvide>.value(_searchProvide));
+    mProviders.provide(Provider<CommodityListProvide>.value(_commodityListProvide));
+    mProviders.provide(Provider<InformationProvide>.value(_informationProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return HomeContentPage(_provide,_loginProvide,_detailProvide,_cartProvide);
+    return HomeContentPage(_provide,_loginProvide,_detailProvide,_cartProvide,
+        _searchProvide,_commodityListProvide,_informationProvide);
   }
 }
 
@@ -49,7 +62,12 @@ class HomeContentPage extends StatefulWidget {
   final LoginProvide _loginProvide;
   final CommodityDetailProvide _detailProvide;
   final CommodityAndCartProvide _cartProvide;
-  HomeContentPage(this._provide,this._loginProvide,this._detailProvide,this._cartProvide);
+  final SearchProvide _searchProvide ;
+  final CommodityListProvide _commodityListProvide;
+  final InformationProvide _informationProvide;
+  HomeContentPage(this._provide,this._loginProvide,
+      this._detailProvide,this._cartProvide,
+      this._searchProvide,this._commodityListProvide,this._informationProvide);
   @override
   _HomeContentPageState createState() => _HomeContentPageState();
 }
@@ -101,7 +119,7 @@ class _HomeContentPageState extends State<HomeContentPage>
         _provide.lastModifiedBy = item.data['lastModifiedBy'];
 
         _provide.addBanners(
-            HomeBannersModelList.fromJson(item.data['banners']).list);
+            BannersModelList.fromJson(item.data['banners']).list);
         _provide.addPortlets(
             HomePortletsModelList.fromJson(item.data['portlets']).list);
         String videoUrl = _provide.portletsModelList[0].contents[0].mediaFiles;
@@ -270,11 +288,39 @@ class _HomeContentPageState extends State<HomeContentPage>
           child: provide.bannersList.length > 0
               ? Swiper(
                   index: 0,
-                  loop: true,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
                         print('$index');
+                        /// 跳转商品详情
+                        if(provide.bannersList[index].redirectType==ConstConfig.PRODUCT_DETAIL){
+                          List list = provide.bannersList[index].redirectParam.split(":");
+                          _commodityDetail(types:int.parse(list[0]) ,prodID: int.parse(list[1]));
+                        }else if(provide.bannersList[index].redirectType==ConstConfig.PROMOTION){
+                          /// 跳转集合搜索列表
+                          _searchRequest(provide.bannersList[index].redirectParam);
+                        }else if(provide.bannersList[index].redirectType==ConstConfig.CONTENT_DETAIL){
+                          /// 跳转资讯详情
+                          widget._informationProvide.contentID =int.parse(provide.bannersList[index].redirectParam) ;
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context){
+                                return new InforWebPage();
+                              }
+                          ));
+                        }else if(provide.bannersList[index].redirectType==ConstConfig.URL){
+                          /// 跳转URL
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context){
+                                return new WebView(url: provide.bannersList[index].redirectParam,);
+                              }
+                          ));
+                        }else if(provide.bannersList[index].redirectType == ConstConfig.ACTIVITY){
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context){
+                                return ActivityDetailPage(activityID: int.parse(provide.bannersList[index].redirectParam),);
+                              }
+                          ));
+                        }
                       },
                       child: CachedNetworkImage(
                         fit: BoxFit.fill,
@@ -286,7 +332,6 @@ class _HomeContentPageState extends State<HomeContentPage>
                     );
                   },
                   itemCount: provide.bannersList.length,
-                  autoplay: true,
                   duration: 300,
                   scrollDirection: Axis.horizontal,
                   //   pagination: SwiperPagination(),
@@ -478,5 +523,56 @@ class _HomeContentPageState extends State<HomeContentPage>
         );
       },
     );
+  }
+
+  /// 商品详情
+  _commodityDetail({int types,int prodID}){
+    /// 跳转商品详情
+    _detailProvide.clearCommodityModels();
+    _detailProvide.prodId = prodID;
+    /// 加载详情数据
+    _detailProvide.detailData(types: types,prodId:prodID)
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+      ///加载数据
+      print('listen data->$item');
+      _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
+      _detailProvide.setInitData();
+      _cartProvide.setInitCount();
+      _detailProvide.isBuy = false;
+      Navigator.push(context, MaterialPageRoute(
+          builder:(context){
+            return new CommodityDetailPage();
+          }
+      )
+      );
+      //      _provide
+    }, onError: (e) {});
+  }
+
+
+  /// 搜索请求
+  void _searchRequest(String code){
+    // 清除原数据
+    widget._commodityListProvide.clearList();
+    widget._commodityListProvide.requestUrl = "/api/promotion/promotions/$code/products?";
+
+    widget._searchProvide.onSearch(widget._commodityListProvide.requestUrl+'pageNo=1&sort=&pageSize=8').doOnListen(() { }).doOnCancel(() {}).listen((items) {
+      ///加载数据
+      print('listen data->$items');
+      if(items!=null&&items.data!=null){
+        widget._searchProvide.searchValue = items.data['promotionName'];
+        widget._commodityListProvide.addList(CommodityList.fromJson(items.data['products']).list);
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context){
+              return SearchScreenPage();
+            }
+        ));
+      }
+
+    }, onError: (e) {});
   }
 }

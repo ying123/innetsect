@@ -397,7 +397,10 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         children: <Widget>[
           Expanded(
             flex: 1,
-            child: _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"),
+            child: _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"
+                ,onTap: (){
+                  CustomsWidget().serviceWidget(context: context);
+                }),
           ),
           Expanded(
             flex: 1,

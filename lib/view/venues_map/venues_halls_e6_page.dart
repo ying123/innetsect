@@ -4,7 +4,6 @@ import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/data/exhibition/halls_e6_model.dart';
 import 'package:innetsect/data/exhibition/halls_model.dart';
-import 'package:innetsect/data/exhibition/venue_halls_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/venues_map/venues_halls_e6_provide.dart';
 import 'package:provide/provide.dart';

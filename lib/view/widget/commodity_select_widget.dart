@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_feature_model.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
@@ -98,7 +100,10 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                                 color:skusModel.skuCode==item.skuCode?AppConfig.fontBackColor:Colors.white
                             )
                         ),
-                        child: item.skuPic!=null?Image.network(item.skuPic,fit: BoxFit.fill,):Container(),
+                        child: item.skuPic!=null?
+                        CachedNetworkImage(imageUrl:"${item.skuPic}${ConstConfig.BANNER_TWO_SIZE}"
+                          ,fit: BoxFit.fitWidth,)
+                            :Image.asset("assets/images/default/default_squre_img.png",fit: BoxFit.fitWidth,),
                       ),
                       new Expanded(
                         flex:1,

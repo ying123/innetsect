@@ -117,16 +117,18 @@ class _MallContentPageState extends State<MallContentPage> {
 
   /// 底部点击导航
   void _onBottomTap(int index){
-    widget._provide.currentIndex = index;
       if(index==4){
         this._loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
           if(userItem!=null&&userItem.data!=null){
             UserInfoModel model = UserInfoModel.fromJson(userItem.data);
             rammus.bindAccount(model.acctID.toString());
             this._loginProvide.setUserInfoModel(model);
+            widget._provide.currentIndex = index;
           }
         },onError: (e){
         });
+      }else{
+        widget._provide.currentIndex = index;
       }
   }
 

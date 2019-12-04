@@ -17,6 +17,7 @@ import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/my/all/all_provide.dart';
 import 'package:provide/provide.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class AllPage extends PageProvideNode{
   final int idx;
@@ -293,14 +294,14 @@ class _AllContentPageState extends State<AllContentPage> {
         ],
       );
     }else if(model.status==1){
-      widget = widget = new Row(
+      widget = new Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           this._logisticsWidget(model)
         ],
       );
     }else if(model.status==2){
-      widget = widget = new Row(
+      widget = new Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           this._logisticsWidget(model)
@@ -311,6 +312,62 @@ class _AllContentPageState extends State<AllContentPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           _delOrderWidget(model.orderID)
+        ],
+      );
+    }
+    if(model.status==1&&model.ladingMode==1&&model.syncStatus==3
+        &&DateTime.now().isAfter(DateTime.parse(model.ladingTime))){
+      widget = new Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          new Container(
+              height: ScreenAdapter.height(60),
+              padding:EdgeInsets.only(left: 10,) ,
+              child: new RaisedButton(
+                color: AppConfig.fontBackColor,
+                onPressed: () async{
+                  await _provide.ladingQrCode(model.orderID).doOnListen(() {
+                    print('doOnListen');
+                  })
+                      .doOnCancel(() {})
+                      .listen((item) {
+                    ///加载数据
+                    print('listen data->$item');
+                    if(item!=null&&item.data!=null){
+                      showDialog(context: context,
+                        builder: (context){
+                          return AlertDialog(
+                            content: Container(
+                                  width: ScreenAdapter.width(400),
+                                  height: ScreenAdapter.height(400),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Expanded(
+                                        flex:2,
+                                        child: QrImage(
+                                          padding: EdgeInsets.only(left: 50,bottom: 20),
+                                          data: item.data['qrCode'],
+                                          size: 2000,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(model.remark==null?"":model.remark),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                          );
+                        }
+                      );
+                    }
+                  }, onError: (e) {});
+                },
+                child: new Text("提货码",style: TextStyle(
+                    fontSize: ScreenAdapter.size(24),color: Colors.white),),
+              )
+          )
         ],
       );
     }

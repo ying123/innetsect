@@ -36,7 +36,7 @@ class _SeriesMainPageState extends State<SeriesMainPage> with TickerProviderStat
       width: ScreenAdapter.getScreenWidth()/3,
       child: new TabBar(
           controller: _tabController,
-          isScrollable: false,
+          isScrollable: true,
           indicatorColor: AppConfig.blueBtnColor,
           unselectedLabelColor: Colors.grey,
           unselectedLabelStyle: new TextStyle(fontSize: 14.0),

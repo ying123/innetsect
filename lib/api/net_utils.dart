@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/tools/user_tool.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:rxdart/rxdart.dart';
@@ -40,7 +41,7 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
           builder: (context){
             return LoginPage();
           },
-          settings: RouteSettings(arguments: {"pages":context.widget})
+          settings: RouteSettings(arguments: {"pages":context.widget}),
         ));
       });
     }else{
@@ -248,7 +249,9 @@ Future _delete(String url, dynamic body,
     response = res;
     print('response _post:->$response');
   }).catchError((error) {
-    print(error);
+    if(error.response.data['path'].toString().indexOf("/reservations")>-1){
+      CustomsWidget().showToast(title: error.response.data['message']);
+    }
   });
   return response;
 }

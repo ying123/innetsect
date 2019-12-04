@@ -13,6 +13,7 @@ import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/mall/web_view.dart';
 import 'package:innetsect/view/widget/video_widget_page.dart';
+import 'package:innetsect/view_model/mall/mall_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter/material.dart';
 import 'package:rammus/rammus.dart' as rammus;
@@ -20,38 +21,46 @@ import 'package:rammus/rammus.dart' as rammus;
 class App extends PageProvideNode {
   final MainProvide _provide = MainProvide.instance;
   final AppNavigationBarProvide _appNavigationBarProvide = AppNavigationBarProvide.instance;
+  final MallProvide _mallProvide = MallProvide.instance;
   App() {
     mProviders.provide(Provider<MainProvide>.value(_provide));
     mProviders.provide(Provider<AppNavigationBarProvide>.value(_appNavigationBarProvide));
+    mProviders.provide(Provider<MallProvide>.value(_mallProvide));
     //可以添加多个数据
     // mProviders.provideAll({MainProvide: Provider.value(MainProvide()), double : Provider.value(30.0)});
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return _AppContentPage(_provide,_appNavigationBarProvide);
+    return _AppContentPage(_provide,_appNavigationBarProvide,_mallProvide);
   }
 }
 
 class _AppContentPage extends StatefulWidget {
   final MainProvide _provide;
   final AppNavigationBarProvide _appNavigationBarProvide;
-  _AppContentPage(this._provide,this._appNavigationBarProvide);
+  final MallProvide _mallProvide;
+  _AppContentPage(this._provide,this._appNavigationBarProvide,this._mallProvide);
   @override
   __AppContentPageState createState() => __AppContentPageState();
 }
 
 class __AppContentPageState extends State<_AppContentPage> with TickerProviderStateMixin{
   MainProvide _provide;
+  MallProvide _mallProvide;
   // 可见图片透明
   double opacityLevel = 1.0;
   AppNavigationBarProvide _appNavigationBarProvide;
+  Timer _timers;
+  int _countDown=3;
   // 扩散动画
 //  AnimationController _animationController;
   @override
   void initState() {
     _provide ??= widget._provide;
     _appNavigationBarProvide ??= widget._appNavigationBarProvide;
+    _mallProvide ??= widget._mallProvide;
+    _loadData();
     super.initState();
 
     _loadAndroidDevice().then((item){
@@ -60,7 +69,6 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
       });
     });
 //    _provide.img = ExactAssetImage('assets/images/mall/welcome.png');
-    _loadData();
   }
 
   Future<String> _deviceID() async{
@@ -123,11 +131,16 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
                 ConstConfig.URL){
                   Navigator.pushReplacement(context, MaterialPageRoute(
                     builder: (context){
+                      if(_provide.splashModel.exhibitionID==null){
+                        _mallProvide.currentIndex = 2;
+                      }else{
+                        _appNavigationBarProvide.currentIndex = 2;
+                      }
                       return WebView(
                         url: _provide.splashModel.splashes[0].redirectTo,
                         pages: "main",
                         attended: _provide.splashModel.attended,
-                        appProvide: _appNavigationBarProvide
+                        exID: _provide.splashModel.exhibitionID,
                       );
                     }
                   ));
@@ -156,11 +169,15 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
                     ConstConfig.URL){
                   Navigator.pushReplacement(context, MaterialPageRoute(
                       builder: (context){
+                        if(_provide.splashModel.exhibitionID==null){
+                          _mallProvide.currentIndex = 2;
+                        }else{
+                          _appNavigationBarProvide.currentIndex = 2;
+                        }
                         return WebView(
                           url: _provide.splashModel.splashes[0].redirectTo,
                           pages: "main",
                           attended: _provide.splashModel.attended,
-                          appProvide: _appNavigationBarProvide
                         );
                       }
                   ));
@@ -194,7 +211,7 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
               },
               child: Text(
 //                '${IntlUtil.getString(context, Ids.x_jump_welcome)}(${provide.countdown})',
-              '跳过 ${provide.countdown}',
+              '跳过 $_countDown',
                 style: TextStyle(fontSize: 14.0, color: Colors.white),
               ),
             ),
@@ -216,6 +233,9 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
     if (null != _provide.timerCountdown) {
       _provide.timerCountdown.cancel();
     }
+
+    _timers?.cancel();
+    _timers = null;
     super.dispose();
   }
 
@@ -231,21 +251,24 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
       if(item!=null&&item.data!=null){
         SplashModel model = SplashModel.fromJson(item.data);
         _provide.splashModel = model;
-        // 活动请求
-        _loadExhibition(model.exhibitionID);
         if(model.splashes!=null&&model.splashes.length>0){
 
-          _provide.countdown = model.splashes[0].playSeconds;
           _provide.openImage = model.splashes[0].splashFile;
-
           //退出计时器
-          _provide.timerDone =
-              Timer(Duration(seconds: model.splashes[0].playSeconds), () {
-                onDone();
-              });
+//          _provide.timerDone =
+//              Timer(Duration(seconds: _provide.countdown), () {
+//                onDone();
+//              });
 
           ///计时器开始倒计时
-          _provide.startTimerCountdown();
+          _timers = Timer.periodic(Duration(seconds: 1),(Timer timer){
+            _countDown --;
+            if(_countDown==0){
+              onDone();
+              timer.cancel();
+            }
+            setState(() {});
+          });
         }else{
           if(model.attended){
             Future.delayed(Duration(seconds: 1),(){
@@ -266,6 +289,9 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
             });
           }
         }
+
+        // 活动请求
+        _loadExhibition(model.exhibitionID);
       }
 
     }, onError: (e) {});

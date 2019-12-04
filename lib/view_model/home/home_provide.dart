@@ -3,6 +3,7 @@ import 'package:innetsect/data/exhibition/exhibitions_model.dart';
 import 'package:innetsect/data/exhibition/halls_model.dart';
 import 'package:innetsect/data/exhibition/home_banners_model.dart';
 import 'package:innetsect/data/exhibition/home_portlets_model.dart';
+import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/model/exhibition/home_model.dart';
 
 import 'package:rxdart/rxdart.dart';
@@ -75,8 +76,8 @@ class HomeProvide extends BaseProvide {
     });
   }
 ///首页banner
-  List<HomeBannersModel> _bannersList = [];
-  List<HomeBannersModel> get bannersList => _bannersList;
+  List<BannersModel> _bannersList = [];
+  List<BannersModel> get bannersList => _bannersList;
 ///首页列表
   List<HomePortletsModel> _portletsModelList = [];
   List<HomePortletsModel> get portletsModelList => _portletsModelList;
@@ -87,7 +88,7 @@ class HomeProvide extends BaseProvide {
   List<HallsModel> get hallsModelList => _hallsModelList;
 
 
-  void addBanners(List<HomeBannersModel> list) {
+  void addBanners(List<BannersModel> list) {
     _bannersList.addAll(list);
     notifyListeners();
   }

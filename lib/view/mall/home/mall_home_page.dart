@@ -7,6 +7,7 @@ import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/data/mall/portlets_model.dart';
 import 'package:innetsect/data/mall/promotion_model.dart';
 import 'package:innetsect/main_provide.dart';
+import 'package:innetsect/view/activity/activity_detail_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/mall/information/infor_web_page.dart';
 import 'package:innetsect/view/mall/search/search_screen_page.dart';
@@ -29,8 +30,8 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 class MallHomePage extends PageProvideNode {
   final MallHomeProvide _provide = MallHomeProvide();
   final SearchProvide _searchProvide = SearchProvide();
-  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final CommodityListProvide _commodityListProvide = CommodityListProvide.instance;
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
   final InformationProvide _informationProvide = InformationProvide.instance;
   final MainProvide _mainProvide = MainProvide.instance;
@@ -179,7 +180,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
       child: Center(
         child: _bannersList.length>0?Swiper(
           itemBuilder: (context, index) {
-            return GestureDetector(
+            return InkWell(
               onTap: () {
                 print('第$index 页被点击=====${_bannersList[index].toString()}');
 
@@ -199,10 +200,17 @@ class _MallHomeContentState extends State<MallHomeContent> {
                       }
                   ));
                 }else if(_bannersList[index].redirectType==ConstConfig.URL){
+                  /// 跳转URL
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context){
                         return new WebView(url: _bannersList[index].redirectParam,);
                       }
+                  ));
+                }else if(_bannersList[index].redirectType == ConstConfig.ACTIVITY){
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return ActivityDetailPage(activityID: int.parse(_bannersList[index].redirectParam),);
+                    }
                   ));
                 }
               },
@@ -234,8 +242,6 @@ class _MallHomeContentState extends State<MallHomeContent> {
                  size: 5
                )
            ),
-          autoplay: true,
-          loop: true,
           index: 0,
           duration: 300,
           scrollDirection: Axis.horizontal,
@@ -415,7 +421,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
       if(item.data!=null){
         setState(() {
           _bannersList=BannersModelList.fromJson(item.data['banners']).list;
-          _portletsModelList..addAll( PortletsModelList.fromJson(item.data['portlets']).list);
+          _portletsModelList= PortletsModelList.fromJson(item.data['portlets']).list;
         });
       }
       print('listen data->$item');
@@ -424,10 +430,11 @@ class _MallHomeContentState extends State<MallHomeContent> {
   }
 
   _loadListData(){
-    widget._provide.listData(++pageNo).doOnListen((){}).doOnCancel((){})
+    pageNo = pageNo +1;
+    widget._provide.listData(pageNo).doOnListen((){}).doOnCancel((){})
         .listen((item){
         setState(() {
-          _portletsModelList..addAll( PortletsModelList.fromJson(item.data).list);
+          _portletsModelList.addAll( PortletsModelList.fromJson(item.data).list);
         });
     },onError: (e){});
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 自定义通用小部件类
 class CustomsWidget{
@@ -175,9 +176,7 @@ class CustomsWidget{
         },
         child: new Container(
             padding: EdgeInsets.all(20),
-            child: new Image.asset("assets/images/mall/arrow_down.png",
-              fit: BoxFit.fitWidth,
-            )
+            child: Icon(Icons.keyboard_arrow_down)
         ),
       ): null,
       title: new Container(
@@ -308,6 +307,40 @@ class CustomsWidget{
         ),
       )
     ];
+  }
+
+  /// 提示客服
+  void serviceWidget({BuildContext context}){
+    showDialog(context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            content: Container(
+              height: ScreenAdapter.height(150),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text("电话客服:  "),
+                      InkWell(
+                        onTap: ()async{
+                          await launch("tel:4001686368");
+                        },
+                        child: Text("4001686368 (点击拨打)",style: TextStyle(
+                            color: AppConfig.blueBtnColor
+                        ),),
+                      )
+                    ],
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: SelectableText("微信客服：innersect-service")
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 
 }

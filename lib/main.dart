@@ -158,7 +158,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: ThemeData(
         primaryColor: AppConfig.themedata.primaryColor,
         accentColor: AppConfig.themedata.accentColor,
-        backgroundColor: Colors.white
+        backgroundColor: Colors.white,
       ),
       initialRoute: '/',
       onGenerateRoute: onGenerateRoute,

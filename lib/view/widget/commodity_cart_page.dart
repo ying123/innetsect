@@ -131,7 +131,6 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
     this.provide.sum = 0.00;
     // 初始化数据
     // 判断是否存在token
-    print(UserTools().getUserToken());
     if(UserTools().getUserToken()!=null){
       _loadList();
     }
@@ -585,5 +584,24 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
         });
       }
     }, onError: (e) {});
+  }
+
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+  }
+
+  @override
+  void didUpdateWidget(CommodityCartContent oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    print("didUpdateWidget");
+  }
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print("didChangeDependencies");
   }
 }

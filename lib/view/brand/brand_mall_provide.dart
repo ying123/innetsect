@@ -9,7 +9,10 @@ class BrandMallPrvide extends BaseProvide {
 
   List<BrandMallModel>_brandMallList = [];
   List<BrandMallModel> get brandMallList => _brandMallList;
-
+  set brandMallList(List list){
+    _brandMallList = list;
+    notifyListeners();
+  }
   void addBrandMall(List<BrandMallModel> list ){
     _brandMallList.addAll(list);
     notifyListeners();
