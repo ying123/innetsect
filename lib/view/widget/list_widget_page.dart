@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/view/widget/list_header.dart';
 
 typedef OnRefresh = Future<void> Function();
@@ -30,7 +31,7 @@ class _ListWidgetPageState extends State<ListWidgetPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white10,
       body: new EasyRefresh.custom(
         shrinkWrap:false,
         header: ListHeader(),

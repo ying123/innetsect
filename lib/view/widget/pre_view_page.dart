@@ -17,9 +17,9 @@ class PreViewPage extends StatelessWidget {
         ),
         title: new Text(''),
       ),
-      body: PhotoView(
+      body: this.image!=null?PhotoView(
         imageProvider: NetworkImage( this.image,),
-      ),
+      ):Container(width: 0,height: 0,),
     );
   }
 }

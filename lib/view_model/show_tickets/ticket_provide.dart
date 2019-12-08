@@ -1,4 +1,6 @@
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/model/exhibition/tickets_model.dart';
+import 'package:rxdart/rxdart.dart';
 
 class TicketProvide extends BaseProvide{
   
@@ -26,4 +28,16 @@ class TicketProvide extends BaseProvide{
     notifyListeners();
   }
 
+
+  TicketsRepo _repo = TicketsRepo();
+  /// 我的门票列表
+  Observable ticketsList (int pages){
+    return _repo.ticketsList(pages).doOnData((item){
+
+    }).doOnError((e, stack){
+
+    }).doOnDone((){
+
+    });
+  }
 }

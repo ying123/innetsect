@@ -12,6 +12,7 @@ class CommodityModels{
   String prodCode;
   // 是否预售
   bool presale;
+  String presaleDesc;
   String unit;
   dynamic allowPointRate;
   //产品首页url
@@ -97,6 +98,7 @@ class CommodityModels{
     this.prodID,
     this.shopID,
     this.presale,
+    this.presaleDesc,
     this.unit,
     this.allowPointRate,
     this.prodPic,
@@ -148,6 +150,7 @@ class CommodityModels{
         prodID: json['prodID'],
         shopID: json['shopID'],
         presale: json['presale'],
+        presaleDesc: json['presaleDesc'],
         unit: json['unit'],
         allowPointRate:json['allowPointRate'],
         prodPic: json['prodPic'],
@@ -199,6 +202,7 @@ class CommodityModels{
     'prodID': prodID,
     'shopID': shopID,
     'presale': presale,
+    'presaleDesc': presaleDesc,
     'prodPic': prodPic,
     'unit': unit,
     'allowPointRate':allowPointRate,

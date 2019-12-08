@@ -110,7 +110,7 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
                       flag = true;
                       // 当退换原因为5、6时，原因描述和图片必须填写
                       if(item.reasonType==5||item.reasonType==6){
-                        if(reason.isEmpty){
+                        if(reason==null){
                           isReason = true;
                         }
                       }
@@ -754,7 +754,8 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
   /// 商品详情请求
   _loadDetail({int prodId,int types}){
     /// 加载详情数据
-    _commodityDetailProvide.detailData(prodId: prodId,types: types)
+    _commodityDetailProvide.detailData(prodId: prodId,types: types,
+    context: context)
         .doOnListen(() {
       print('doOnListen');
     })

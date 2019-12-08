@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/address_model.dart';
 import 'package:innetsect/data/commodity_color_model.dart';
@@ -34,7 +35,6 @@ class CommodityAndCartProvide extends BaseProvide{
   get mode => _mode;
   get isSelected => _isSelected;
   get sum=>_sum;
-
   set sum(double pay){
     _sum = pay;
     notifyListeners();
@@ -277,8 +277,8 @@ class CommodityAndCartProvide extends BaseProvide{
   final CommodityRepo _repo = CommodityRepo();
 
   /// 详情数据
-  Observable addCartsRequest(CommodityModels model) {
-    return _repo.addCarts(model)
+  Observable addCartsRequest(CommodityModels model,BuildContext context) {
+    return _repo.addCarts(model,context)
         .doOnData((result) {
 
     })
@@ -288,8 +288,8 @@ class CommodityAndCartProvide extends BaseProvide{
   }
 
   /// 购物车列表
-  Observable getMyCarts() {
-    return _repo.getMyCarts()
+  Observable getMyCarts(BuildContext context) {
+    return _repo.getMyCarts(context)
         .doOnData((result) {
 
     })

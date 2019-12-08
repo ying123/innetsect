@@ -17,6 +17,7 @@ import 'package:innetsect/view_model/mall/logistics/logistics_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class OrderDetailPage extends PageProvideNode{
 
@@ -66,8 +67,12 @@ class _OrderContentState extends State<OrderContent> {
         widget: new Text("订单详情",style: TextStyle(fontSize: ScreenAdapter.size((30)),
           fontWeight: FontWeight.w900 ),
         ),onTap: (){
-            if(pages=="pay_result"){
+        print(_detailProvide);
+            if(pages=="pay_result"&&(widget._detailProvide.pages==null||
+                widget._detailProvide.pages!="exhibition")){
               Navigator.pushNamedAndRemoveUntil(context, "/mallPage", (Route routes)=>false);
+            }else if(widget._detailProvide.pages=="exhibition"){
+              Navigator.pushNamedAndRemoveUntil(context, "/appNavigationBarPage", (Route routes)=>false);
             }else{
               Navigator.pop(context);
             }
@@ -107,12 +112,73 @@ class _OrderContentState extends State<OrderContent> {
                 Widget widget =Container(height: 0.0,width: 0.0,);
                 if(provide.orderDetailModel!=null
                     &&provide.orderDetailModel.status==0){
+
                   widget= this.payBtn();
                 }
                 if(provide.orderDetailModel!=null
                     &&(provide.orderDetailModel.status==1
-                    ||provide.orderDetailModel.status==2)){
+                    ||provide.orderDetailModel.status==2)
+                    &&provide.orderDetailModel.shopID==37){
                   widget= this.logisticsBtn();
+                }
+                if(provide.orderDetailModel!=null
+                &&provide.orderDetailModel.status==1
+                &&provide.orderDetailModel.ladingMode==1&&provide.orderDetailModel.syncStatus==3
+                    &&DateTime.now().isAfter(DateTime.parse(provide.orderDetailModel.ladingTime))){
+                  widget = Container(
+                      height: ScreenAdapter.height(60),
+                      padding:EdgeInsets.only(left: 10,) ,
+                      child: new RaisedButton(
+                        color: AppConfig.fontBackColor,
+                        onPressed: () async{
+                          _detailProvide.ladingQrCode(provide.orderDetailModel.orderID).doOnListen(() {
+                            print('doOnListen');
+                          })
+                              .doOnCancel(() {})
+                              .listen((item) {
+                            ///加载数据
+                            print('listen data->$item');
+                            if(item!=null&&item.data!=null){
+                              showDialog(context: context,
+                                  builder: (context){
+                                    return Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                            width: ScreenAdapter.width(400),
+                                            height: ScreenAdapter.height(400),
+                                            color: Colors.white,
+                                            child: QrImage(
+                                              padding: EdgeInsets.all(0),
+                                              data: item.data['qrCode'],
+                                              size: 5000,
+                                            ),
+                                          ),
+                                          Container(
+                                              width: ScreenAdapter.width(400),
+                                              height: ScreenAdapter.height(100),
+                                              color:Colors.white,
+                                              alignment: Alignment.center,
+                                              child: Text(provide.orderDetailModel.remark==null?"":provide.orderDetailModel.remark,
+                                                style: TextStyle(
+                                                    fontSize: ScreenAdapter.size(24),
+                                                    color: Colors.black,decoration: TextDecoration.none
+                                                ),)
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  }
+                              );
+                            }
+                          }, onError: (e) {});
+                        },
+                        child: new Text("提货码",style: TextStyle(
+                            fontSize: ScreenAdapter.size(24),color: Colors.white),),
+                      )
+                  );
                 }
                 return widget;
               }
@@ -130,12 +196,12 @@ class _OrderContentState extends State<OrderContent> {
     _orderDetailProvide ??= widget._orderDetailProvide;
     _detailProvide ??= widget._detailProvide;
     _logisticsProvide ??= widget._logisticsProvide;
-    Future.delayed(Duration(milliseconds: 200),(){
-      Map<dynamic,dynamic> map = ModalRoute.of(context).settings.arguments;
-      if(map!=null&&map['orderID']!=null){
+    Future.delayed(Duration.zero,(){
+      Map<dynamic,dynamic> maps = ModalRoute.of(context).settings.arguments;
+      if(maps!=null&&maps['orderID']!=null){
         /// 订单详情请求
         widget._detailProvide.getOrderPayDetails(
-          orderID: map['orderID'],
+          orderID: maps['orderID'],
         ).doOnListen(() {
           print('doOnListen');
         }).doOnCancel(() {}).listen((items) {
@@ -148,7 +214,7 @@ class _OrderContentState extends State<OrderContent> {
             }
             setState(() {
               _orderDetailProvide.orderDetailModel = model;
-              pages = map['pages'];
+              pages = maps['pages'];
             });
           }
         }, onError: (e) {});
@@ -193,7 +259,8 @@ class _OrderContentState extends State<OrderContent> {
         if(_orderDetailProvide.orderDetailModel.orderNo!=null){
           _setOrder(_orderDetailProvide.orderDetailModel.orderID);
         }else{
-          _detailProvide.submitShopping(_orderDetailProvide.orderDetailModel.addressID)
+          _detailProvide.submitShopping(_orderDetailProvide.orderDetailModel.addressID,
+          context:context)
               .doOnListen(() {
             print('doOnListen');
           })
@@ -211,7 +278,7 @@ class _OrderContentState extends State<OrderContent> {
   }
 
   void _reloadCartList(){
-    _provide.getMyCarts().doOnListen(() {
+    _provide.getMyCarts(context).doOnListen(() {
       print('doOnListen');
     })
         .doOnCancel(() {})
@@ -310,7 +377,7 @@ class _OrderContentState extends State<OrderContent> {
     if(model==null) return new Container();
     if(model.addressModel!=null){
       widget = this.getAddressWidget();
-    }else if(model.tel!=null){
+    }else if(model!=null&&model.tel!=null){
       widget = this.getAddressWidget();
     }else {
       widget = _addAddress();
@@ -329,7 +396,8 @@ class _OrderContentState extends State<OrderContent> {
           if(model.addressModel==null&& model.shipTo!=null){
             address = model.shipTo;
           }else if(model.addressModel!=null){
-            address =  model.addressModel.province + model.addressModel.city + model.addressModel.addressDetail;
+            address =  model.addressModel.province + model.addressModel.city +model.addressModel.county
+                + model.addressModel.addressDetail;
           }
           return new Text(address, style: TextStyle(color: Colors.grey),);
         },
@@ -373,7 +441,7 @@ class _OrderContentState extends State<OrderContent> {
                     child: Provide<OrderDetailProvide>(
                         builder: (BuildContext context,Widget widget, OrderDetailProvide provide) {
                           OrderDetailModel model = provide.orderDetailModel;
-                          String tel = model.tel!=null?model.tel:"";
+                          String tel = model!=null&&model.tel!=null?model.tel:"";
                           if(model.addressModel!=null){
                             tel = model.addressModel.tel!=null?model.addressModel.tel:"";
                           }
@@ -420,7 +488,9 @@ class _OrderContentState extends State<OrderContent> {
             width: double.infinity,
             alignment: Alignment.center,
             padding: EdgeInsets.only(top: 10,left: 10,right: 10),
-            child: _orderDetailProvide.orderDetailModel!=null? new Column(
+            child: _orderDetailProvide.orderDetailModel!=null
+                &&_orderDetailProvide.orderDetailModel.skuModels!=null
+                &&_orderDetailProvide.orderDetailModel.skuModels.length>0? new Column(
               children: _orderDetailProvide.orderDetailModel.skuModels.map((item){
                 List skuNameList = CommonUtil.skuNameSplit(item.skuName);
                 return new Container(

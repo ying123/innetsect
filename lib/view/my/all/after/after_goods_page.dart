@@ -33,7 +33,7 @@ class AfterGoodsContent extends StatefulWidget {
 class _AfterGoodsContentState extends State<AfterGoodsContent> {
   AfterServiceProvide _afterServiceProvide;
   // 物流单号
-  String _logisticsNo="";
+  String _logisticsNo;
 
   @override
   Widget build(BuildContext context) {
@@ -133,12 +133,12 @@ class _AfterGoodsContentState extends State<AfterGoodsContent> {
           color: Colors.black,
           onPressed: (){
             // 提交物流信息
-            if(_logisticsNo==""){
+            if(_logisticsNo==null){
               CustomsWidget().showToast(title: "请输入物流单号");
-              return;
+            }else{
+              // 物流单号请求
+              _submitLogistics();
             }
-            // 物流单号请求
-            _submitLogistics();
           },
           child: Text("提交",style: TextStyle(fontSize: ScreenAdapter.size(24),
           fontWeight: FontWeight.w600),),
@@ -251,9 +251,10 @@ class _AfterGoodsContentState extends State<AfterGoodsContent> {
   /// 提交物流请求
   _submitLogistics(){
     String code = "SFDF";
-    if(_afterServiceProvide.afterOrderModel.reasonType!=5||
+    if(_afterServiceProvide.afterOrderModel.reasonType!=5&&
         _afterServiceProvide.afterOrderModel.reasonType!=6){
       // 如果不是5、6申请类型，则是物流公司code
+      code = _afterServiceProvide.afterOrderModel.reasonType.toString();
     }
     _afterServiceProvide.submitLogistic(
       rmaID: _afterServiceProvide.afterOrderModel.rmaID,

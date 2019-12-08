@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
@@ -342,25 +343,31 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   _loadDetail(int prodID,int shopID){
     _detailProvide.clearCommodityModels();
     _detailProvide.prodId = prodID;
+//    Loading.ctx=context;
+//    Loading.show();
     /// 加载详情数据
-    _detailProvide.detailData(types: shopID,prodId:prodID )
+    _detailProvide.detailData(types: shopID,prodId:prodID,context: context )
         .doOnListen(() {
       print('doOnListen');
     })
         .doOnCancel(() {})
         .listen((item) {
+//          Loading.remove();
       ///加载数据
       print('listen data->$item');
-      _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
-      _detailProvide.setInitData();
-      _cartProvide.setInitCount();
-      _detailProvide.isBuy = false;
-      Navigator.push(context, MaterialPageRoute(
-          builder:(context){
-            return new CommodityDetailPage();
-          }
-      )
-      );
+      if(item!=null&&item.data!=null){
+        _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
+        _detailProvide.setInitData();
+        _cartProvide.setInitCount();
+        _detailProvide.isBuy = false;
+        _cartProvide.setMode(mode: "multiple");
+        Navigator.push(context, MaterialPageRoute(
+            builder:(context){
+              return new CommodityDetailPage();
+            }
+        )
+        );
+      }
 //      _provide
     }, onError: (e) {});
   }

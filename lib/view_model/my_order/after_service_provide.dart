@@ -302,9 +302,6 @@ class AfterServiceProvide extends BaseProvide{
     String shipperCode,
     int reasonType
   }){
-    if(reasonType!=5||reasonType!=6){
-      shipperCode = _shipperModel.shipperCode;
-    }
     return _repo.submitLogistic(
         rmaID: rmaID,waybillNo: waybillNo,
         shipperCode: shipperCode,reasonType: reasonType

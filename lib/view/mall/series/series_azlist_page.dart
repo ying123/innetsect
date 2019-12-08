@@ -1,5 +1,6 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
+import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_models.dart';
@@ -184,12 +185,16 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
 
   /// 搜索请求
   void _searchRequest(String name){
+//    Loading.ctx = context;
+//    Loading.show();
     // 清除原数据
     _commodityListProvide.clearList();
     _commodityListProvide.requestUrl = "/api/eshop/app/products/filterByBrand?brand=$name";
-    _searchProvide.onSearch(_commodityListProvide.requestUrl+'&pageNo=1&pageSize=8').doOnListen(() { }).doOnCancel(() {}).listen((items) {
+    _searchProvide.onSearch(_commodityListProvide.requestUrl+'&pageNo=1&pageSize=8',
+    context: context).doOnListen(() { }).doOnCancel(() {}).listen((items) {
       ///加载数据
       print('listen data->$items');
+//      Loading.remove();
       if(items!=null&&items.data!=null){
         _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
       }

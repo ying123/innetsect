@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/enum/commodity_cart_types.dart';
@@ -178,22 +179,28 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                 if(!isLogin()){
                   // 请求
                   if(this._detailProvide.skusModel.qtyInHand>0){
-                    this._cartProvide.addCartsRequest(this._detailProvide.commodityModels)
-                        .doOnListen(() {
-                      print('doOnListen');
-                    })
-                        .doOnCancel(() {})
-                        .listen((item) {
-                      ///加载数据
-                      print('listen data->$item');
-                      if(item.data!=null){
-                        this._detailProvide.commodityModels.types = CommodityCartTypes.commodity.toString();
-                        this._detailProvide.commodityModels.isChecked = false;
-                        this._detailProvide.commodityModels.quantity = this._cartProvide.count;
-                        CustomsWidget().showToast(title: "添加成功");
-                        Navigator.pop(context);
-                      }
-                    }, onError: (e) {});
+                    if(!Loading.isShow){
+                      this._cartProvide.addCartsRequest(this._detailProvide.commodityModels,
+                          context)
+                          .doOnListen(() {
+                        print('doOnListen');
+                      })
+                          .doOnCancel(() {})
+                          .listen((item) {
+                        ///加载数据
+                        print('listen data->$item');
+                        if(item.data!=null){
+                          this._detailProvide.commodityModels.types = CommodityCartTypes.commodity.toString();
+                          this._detailProvide.commodityModels.isChecked = false;
+                          this._detailProvide.commodityModels.quantity = this._cartProvide.count;
+                          CustomsWidget().showToast(title: "添加成功");
+                          Navigator.pop(context);
+                        }
+                      }, onError: (e) {});
+                    }else{
+                      CustomsWidget().showToast(title: "购物车读取中...");
+                    }
+
                   }else{
                     CustomsWidget().showToast(title: "库存不足");
                   }

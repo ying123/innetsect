@@ -6,7 +6,9 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/exhibition/ex_activity_model.dart';
 import 'package:innetsect/data/exhibition/ex_activity_qrcode_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/activity/activity_provide.dart';
 import 'package:provide/provide.dart';
@@ -234,7 +236,17 @@ class _ActivityDetailContentState extends State<ActivityDetailContent> {
               RaisedButton(
                 onPressed: () async{
                   // 请求预约
-                  _validMarkReq();
+                  print(UserTools().getUserToken());
+                  if(UserTools().getUserToken()==null
+                  ||UserTools().getUserToken().isEmpty){
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return LoginPage();
+                      }
+                    ));
+                  }else{
+                    _validMarkReq();
+                  }
                 },
                 textColor: Colors.white,
                 color: AppConfig.blueBtnColor,

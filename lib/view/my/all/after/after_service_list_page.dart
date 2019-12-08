@@ -3,7 +3,6 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/order/after_order_model.dart';
-import 'package:innetsect/data/order/logistice_model.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -56,12 +55,12 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
         return ListWidgetPage(
           controller: _easyRefreshController,
           onRefresh: () async{
-            _afterServiceProvide.clearList();
             pageNo = 1;
             await this._loadData(pageNo: pageNo);
           },
           onLoad: () async{
-            await this._loadData(pageNo: ++pageNo);
+            pageNo = pageNo +1;
+            await this._loadData(pageNo: pageNo);
           },
           child: <Widget>[
             // 数据内容
@@ -111,7 +110,8 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
                               // 商品展示
                               _commodityContent(item),
                               // 底部操作按钮
-                              item is AfterOrderModel?_afterBottom(item):_bottomConditionBtn(item)
+                              item is AfterOrderModel?_afterBottom(item):_bottomConditionBtn(item),
+
                             ],
                           ),
                         ),
@@ -399,6 +399,9 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
         break;
     }
 
+    if(pageNo==1){
+      _afterServiceProvide.clearList();
+    }
     _afterServiceProvide.listData(method: method).doOnListen(() {
       print('doOnListen');
     })

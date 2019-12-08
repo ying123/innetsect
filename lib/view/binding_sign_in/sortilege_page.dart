@@ -4,6 +4,7 @@ import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
+import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
@@ -246,34 +247,39 @@ class _SortilegeContentState extends State<SortilegeContent> {
 
   _saveData(){
     // 提交信息
-    var json = {
-      "gender": _sex.toString(),
-      "icType": _identityType.toString(),
-      "height": _stature=="请选择身高"?"":_stature.toString(),
-      "realName": _name,
-      "weight": _weight=='请选择体重'?"":_weight.toString(),
-      "icNo": _identityNo.toString(),
-      "feetSize": _shoeName=="请选择鞋码"?"":_shoeName
-    };
-    _bingdingSignInProvide.submitInfo(json)
-        .doOnListen(() {})
-        .doOnError((e, stack) {})
-        .listen((items) {
-      print('brandMallitems=============>${items.data}');
-      if (items.data != null) {
-        if(widget.pages=="mySetting"){
-          CustomsWidget().showToast(title: "提交成功");
-          Navigator.pop(context);
-        }else{
-          //去填写跳转地址管理
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context){
-                return AddressManagementPage(pages:ConstConfig.EXHIBITION_SIGNED_IN);
-              }
-          ));
+//    if(!CommonUtil.isIdCard(_identityNo)){
+//      CustomsWidget().showToast(title: "请输入正确的身份证号");
+//    }else{
+      var json = {
+        "gender": _sex.toString(),
+        "icType": _identityType.toString(),
+        "height": _stature=="请选择身高"?"":_stature.toString(),
+        "realName": _name,
+        "weight": _weight=='请选择体重'?"":_weight.toString(),
+        "icNo": _identityNo.toString(),
+        "feetSize": _shoeName=="请选择鞋码"?"":_shoeName
+      };
+      _bingdingSignInProvide.submitInfo(json)
+          .doOnListen(() {})
+          .doOnError((e, stack) {})
+          .listen((items) {
+        print('brandMallitems=============>${items.data}');
+        if (items.data != null) {
+          if(widget.pages=="mySetting"){
+            CustomsWidget().showToast(title: "提交成功");
+            Navigator.pop(context);
+          }else{
+            //去填写跳转地址管理
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context){
+                  return AddressManagementPage(pages:ConstConfig.EXHIBITION_SIGNED_IN);
+                }
+            ));
+          }
         }
-      }
-    });
+      });
+//    }
+
   }
 
   @override

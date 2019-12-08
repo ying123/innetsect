@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/model/mall/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -33,16 +34,16 @@ class SearchProvide extends BaseProvide{
   final SearchRepo _repo = SearchRepo();
 
   ///获取列表
-  Observable onRecommendedTags(){
-    return _repo.onRecommendedTags().doOnData((result){})
+  Observable onRecommendedTags({BuildContext context}){
+    return _repo.onRecommendedTags(context: context).doOnData((result){})
         .doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});
   }
 
   /// 品类搜索
-  Observable onSearch(url){
-    return _repo.onSearch(url).doOnData((result){})
+  Observable onSearch(url,{BuildContext context}){
+    return _repo.onSearch(url,context:context).doOnData((result){})
         .doOnError((e, stacktrace) {})
         .doOnListen(() {})
         .doOnDone(() {});

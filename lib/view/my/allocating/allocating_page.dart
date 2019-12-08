@@ -1,38 +1,40 @@
 import 'package:azlistview/azlistview.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/exhibition/brand_model.dart';
-import 'package:innetsect/main_provide.dart';
+import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/brand/brand_mall_page.dart';
+import 'package:innetsect/view/my/allocating/web_view.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/brand/brand_provide.dart';
+import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:lpinyin/lpinyin.dart';
 
-class BrandPage extends PageProvideNode {
+class AllocatingPage extends PageProvideNode {
   final BrandProvide _provide = BrandProvide();
-  final MainProvide _mainProvide = MainProvide.instance;
-  BrandPage() {
+  final LoginProvide _loginProvide = LoginProvide.instance;
+  AllocatingPage() {
     mProviders.provide(Provider<BrandProvide>.value(_provide));
-    mProviders.provide(Provider<MainProvide>.value(_mainProvide));
+    mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return BrandContentPage(_provide,_mainProvide);
+    return AllocatingContentPage(_provide,_loginProvide);
   }
 }
 
-class BrandContentPage extends StatefulWidget {
+class AllocatingContentPage extends StatefulWidget {
   final BrandProvide _provide;
-  final MainProvide _mainProvide;
-  BrandContentPage(this._provide,this._mainProvide);
+  final LoginProvide _loginProvide;
+  AllocatingContentPage(this._provide,this._loginProvide);
   @override
-  _BrandContentPageState createState() => _BrandContentPageState();
+  _AllocatingContentPageState createState() => _AllocatingContentPageState();
 }
 
-class _BrandContentPageState extends State<BrandContentPage>
+class _AllocatingContentPageState extends State<AllocatingContentPage>
     with SingleTickerProviderStateMixin {
   BrandProvide _provide;
 
@@ -51,28 +53,39 @@ class _BrandContentPageState extends State<BrandContentPage>
     _initBrandData();
   }
   _initBrandData(){
-    _provide.brandModel(widget._mainProvide.splashModel.exhibitionID).doOnListen((){
+    _provide.splashData().doOnListen((){
 
     }).doOnError((e, stack){
 
-    }).listen((items){
-      print('))))))))))))))======>${items.data}');
+    }).listen((item){
+      print('item)))))))))))${item.data}');
+      if (item!= null) {
+        _provide.brandModel(item.data['exhibitionID']).doOnListen((){
 
-      ///加载数据
-      print('listen data-------->${items.data}');
-      if (items != null && items.data != null) {
-        _list = BrandModelList.fromJson(items.data).list;
-        for (var i = 0; i < _list.length; i++) {
-          if (_list[i].brandName == null || _list[i].brandName == '#') {
-            _list.removeAt(i);
+        }).doOnError((e, stack){
+
+        }).listen((items){
+          print('))))))))))))))======>${items.data}');
+
+          ///加载数据
+          print('listen data-------->${items.data}');
+          if (items != null && items.data != null) {
+            _list = BrandModelList.fromJson(items.data).list;
+            for (var i = 0; i < _list.length; i++) {
+              if (_list[i].brandName == null || _list[i].brandName == '#') {
+                _list.removeAt(i);
+              }
+            }
+            print('_list =====>$_list');
+            _handleList(_list);
+            setState(() {
+              _suspensionTag = _list[0].getSuspensionTag();
+            });
           }
-        }
-        print('_list =====>$_list');
-        _handleList(_list);
-        setState(() {
-          _suspensionTag = _list[0].getSuspensionTag();
+
         });
       }
+    },onError: (e){
 
     });
   }
@@ -102,7 +115,7 @@ class _BrandContentPageState extends State<BrandContentPage>
     _sortListBySuspensionTag(_list);
   }
 
-    /// 重置排序
+  /// 重置排序
   void _sortListBySuspensionTag(List<ISuspensionBean> list) {
     if (list == null || list.isEmpty) return;
     list.sort((a, b) {
@@ -110,7 +123,7 @@ class _BrandContentPageState extends State<BrandContentPage>
     });
   }
 
-    ///数据展示
+  ///数据展示
   Widget _buildListItem(BrandModel model) {
     print('model----------->model.name');
     String susTag = model.getSuspensionTag();
@@ -138,12 +151,34 @@ class _BrandContentPageState extends State<BrandContentPage>
               //   child: Image.network(model.brandLogo),
               // ),
               title: Text(model.brandName),
-              onTap: () {
-                print("OnItemClick: ${model.brandName}");
-                // 点击跳转筛选页
-                // _searchProvide.searchValue = model.name;
-                 _searchRequest(model.brandName,model.poster);
-             //  Navigator.pushNamed(context, '/brandMallPage');
+              onTap: () async {
+                // 点击跳转调货页面
+                UserInfoModel models = widget._loginProvide.userInfoModel;
+                await Dio().post(AppConfig.allocatingUrl,
+                queryParameters: {
+                  "Brand": model.brandName,
+                  "BrandImgage": model.brandLogo,
+                  "ReceiveName": models.nickName,
+                  "ReceivePhone": models.mobile,
+                  "OrigStoreName": "展会大仓",
+                  "DestStoreName": "展会门店",
+                  "Remark": "",
+                  "oWHKey": "1",
+                  "oUserKey": "d6a0da66b82040429e2b2c9f2bec2779",
+                  "oUrl": "order.htm"
+                }).then((item){
+                  if(item.data['data']!=null){
+                    String url = "http://exwms.exfox.com.cn/order/list.htm?brand="
+                        "${model.brandName}&receivename=${models.nickName}"
+                        "&receivephone=${models.mobile}"
+                        "&brandimage=${model.brandLogo}";
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                       return AllocatingWebView(url: url,);
+                      }
+                    ));
+                  }
+                });
               },
             ),
           ),
@@ -151,7 +186,7 @@ class _BrandContentPageState extends State<BrandContentPage>
       ],
     );
   }
-/// 标签展示
+  /// 标签展示
   Widget _buildSusWidget(String susTag) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -178,33 +213,12 @@ class _BrandContentPageState extends State<BrandContentPage>
     });
   }
 
-  /// 搜索请求
-  void _searchRequest(String name,String pic){
-    // 清除原数据
-    //_commodityListProvide.clearList();
-    //_commodityListProvide.requestUrl = "/api/eshop/app/products/filterByBrand?brand=$name";
-    //_searchProvide.onSearch(_commodityListProvide.requestUrl+'&pageNo=1&pageSize=8').doOnListen(() { }).doOnCancel(() {}).listen((items) {
-      ///加载数据
-     // print('listen data->$items');
-      //if(items!=null&&items.data!=null){
-       /// _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
-     // }
-
-   // }, onError: (e) {});
-
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context){
-          return BrandMallPage(name,pic);
-        }
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomsWidget().customNav(context: context,
-        widget: new Text("品牌",style: TextStyle(fontSize: ScreenAdapter.size((30)),
-            fontWeight: FontWeight.w900)),leading: false
+          widget: new Text("调货",style: TextStyle(fontSize: ScreenAdapter.size((30)),
+              fontWeight: FontWeight.w900)),leading: true
       ),
       body: AzListView(
         data: _list,

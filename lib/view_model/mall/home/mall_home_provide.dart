@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/mall/banners_model.dart';
 import 'package:innetsect/data/mall/portlets_model.dart';
@@ -33,8 +34,8 @@ class MallHomeProvide extends BaseProvide{
   final MallHomeRepo _repo = MallHomeRepo();
 
   ///商城首页数据
-  Observable bannerData() {
-    return _repo.bannerData()
+  Observable bannerData({BuildContext context}) {
+    return _repo.bannerData(context:context)
         .doOnData((result) {
     })
         .doOnError((e, stacktrace) {})
@@ -43,8 +44,8 @@ class MallHomeProvide extends BaseProvide{
   }
 
   ///商城首页列表数据
-  Observable listData(int pageNo) {
-    return _repo.listData(pageNo)
+  Observable listData(int pageNo,{BuildContext context}) {
+    return _repo.listData(pageNo,context:context)
         .doOnData((result) {
     })
         .doOnError((e, stacktrace) {})

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
@@ -21,8 +22,9 @@ class SearchScreenPage extends PageProvideNode{
   final CommodityListProvide _commodityListProvide = CommodityListProvide.instance;
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final String pages;
 
-  SearchScreenPage(){
+  SearchScreenPage({this.pages}){
     mProviders.provide(Provider<SearchProvide>.value(_searchProvide));
     mProviders.provide(Provider<CommodityListProvide>.value(_commodityListProvide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
@@ -31,7 +33,8 @@ class SearchScreenPage extends PageProvideNode{
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return SearchScreenContent(_searchProvide,_commodityListProvide,_detailProvide,_cartProvide);
+    return SearchScreenContent(_searchProvide,_commodityListProvide,
+        _detailProvide,_cartProvide,pages: pages,);
   }
 }
 
@@ -40,7 +43,9 @@ class SearchScreenContent extends StatefulWidget {
   final CommodityListProvide _commodityListProvide;
   final CommodityDetailProvide _detailProvide;
   final CommodityAndCartProvide _cartProvide;
-  SearchScreenContent(this._searchProvide,this._commodityListProvide,this._detailProvide,this._cartProvide);
+  final String pages;
+  SearchScreenContent(this._searchProvide,this._commodityListProvide,
+      this._detailProvide,this._cartProvide,{this.pages});
   @override
   _SearchScreenContentState createState() => _SearchScreenContentState();
 }
@@ -438,7 +443,7 @@ class _SearchScreenContentState extends State<SearchScreenContent>
         child: image!=null? CachedNetworkImage(
           imageUrl:"$image${ConstConfig.BANNER_TWO_SIZE}",
           fit: BoxFit.fitWidth,
-        ):Image.asset("assets/images/user/header.png",fit: BoxFit.fitWidth,)
+        ):Image.asset("assets/images/default/default_img.png",fit: BoxFit.fitWidth,)
     );
   }
 
@@ -511,24 +516,30 @@ class _SearchScreenContentState extends State<SearchScreenContent>
     _detailProvide.clearCommodityModels();
     _detailProvide.prodId = prodID;
     /// 加载详情数据
-    _detailProvide.detailData(prodId: prodID,types: shopID)
+//    Loading.ctx=context;
+//    Loading.show();
+    _detailProvide.detailData(prodId: prodID,types: shopID,context: context)
         .doOnListen(() {
       print('doOnListen');
     })
         .doOnCancel(() {})
         .listen((item) {
+//          Loading.remove();
       ///加载数据
       print('listen data->$item');
-      _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
-      _detailProvide.setInitData();
-      _cartProvide.setInitCount();
-      _detailProvide.isBuy = false;
-      Navigator.push(context, MaterialPageRoute(
-          builder:(context){
-            return new CommodityDetailPage();
-          }
-      )
-      );
+      if(item!=null&&item.data!=null){
+        _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
+        _detailProvide.setInitData();
+        _cartProvide.setInitCount();
+        _detailProvide.isBuy = false;
+        Navigator.push(context, MaterialPageRoute(
+            builder:(context){
+              return new CommodityDetailPage(pages: widget.pages);
+            }
+        )
+        );
+      }
+
 //      _provide
     }, onError: (e) {});
   }

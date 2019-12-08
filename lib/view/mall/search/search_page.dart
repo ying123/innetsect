@@ -209,7 +209,7 @@ class _SearchContentState extends State<SearchContent> {
   }
 
   _loadData(){
-    _provide.onRecommendedTags()
+    _provide.onRecommendedTags(context: context)
         .doOnListen(() {
       print('doOnListen');
     })

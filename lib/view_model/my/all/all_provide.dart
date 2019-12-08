@@ -49,16 +49,8 @@ class  AllProvide  extends BaseProvide{
   }
 
   /// 删除订单
-  Future delOrder(int orderID){
+  Future delOrder(int orderID) {
     return _repo.delOrder(orderID);
-  }
-
-  /// 提货码
-  Observable ladingQrCode (int orderID){
-    return _repo.ladingQrCode(orderID).doOnData((result){})
-        .doOnError((e, stacktrace) {})
-        .doOnListen(() {})
-        .doOnDone(() {});
   }
 
   ///工厂模式

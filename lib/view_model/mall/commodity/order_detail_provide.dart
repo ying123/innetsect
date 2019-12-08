@@ -6,6 +6,12 @@ import 'package:innetsect/data/order_detail_model.dart';
 class OrderDetailProvide extends BaseProvide {
 
   OrderDetailModel _orderDetailModel;
+  String _pages;
+  String get pages => _pages;
+  set pages(String pages){
+    _pages = pages;
+    notifyListeners();
+  }
 
   OrderDetailModel get orderDetailModel => _orderDetailModel;
 

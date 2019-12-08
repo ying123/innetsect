@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
@@ -179,6 +180,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
       margin:EdgeInsets.only(bottom: 20),
       child: Center(
         child: _bannersList.length>0?Swiper(
+          loop: false,
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
@@ -411,7 +413,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
   }
 
   _loadBannerData(){
-    widget._provide.bannerData()
+    widget._provide.bannerData(context:context)
         .doOnListen(() {
       print('doOnListen');
     })
@@ -431,8 +433,11 @@ class _MallHomeContentState extends State<MallHomeContent> {
 
   _loadListData(){
     pageNo = pageNo +1;
-    widget._provide.listData(pageNo).doOnListen((){}).doOnCancel((){})
+    Loading.ctx=context;
+    Loading.show();
+    widget._provide.listData(pageNo,context:context).doOnListen((){}).doOnCancel((){})
         .listen((item){
+          Loading.remove();
         setState(() {
           _portletsModelList.addAll( PortletsModelList.fromJson(item.data).list);
         });
@@ -451,8 +456,11 @@ class _MallHomeContentState extends State<MallHomeContent> {
     // 清除原数据
     _commodityListProvide.clearList();
     _commodityListProvide.requestUrl = "/api/promotion/promotions/$code/products?";
-
-    _searchProvide.onSearch(_commodityListProvide.requestUrl+'pageNo=1&sort=&pageSize=8').doOnListen(() { }).doOnCancel(() {}).listen((items) {
+    Loading.ctx=context;
+    Loading.show();
+    _searchProvide.onSearch(_commodityListProvide.requestUrl+'pageNo=1&sort=&pageSize=8',
+    context:context).doOnListen(() { }).doOnCancel(() {}).listen((items) {
+      Loading.remove();
     ///加载数据
     print('listen data->$items');
     if(items!=null&&items.data!=null){
@@ -473,25 +481,30 @@ class _MallHomeContentState extends State<MallHomeContent> {
     /// 跳转商品详情
     _detailProvide.clearCommodityModels();
     _detailProvide.prodId = prodID;
+//    Loading.ctx=context;
+//    Loading.show();
     /// 加载详情数据
-    _detailProvide.detailData(types: types,prodId:prodID)
+    _detailProvide.detailData(types: types,prodId:prodID,context:context)
         .doOnListen(() {
       print('doOnListen');
     })
         .doOnCancel(() {})
         .listen((item) {
+//          Loading.remove();
         ///加载数据
         print('listen data->$item');
-        _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
-        _detailProvide.setInitData();
-        _cartProvide.setInitCount();
-        _detailProvide.isBuy = false;
-        Navigator.push(context, MaterialPageRoute(
-            builder:(context){
-              return new CommodityDetailPage();
-            }
-        )
-        );
+        if(item!=null&&item.data!=null){
+          _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
+          _detailProvide.setInitData();
+          _cartProvide.setInitCount();
+          _detailProvide.isBuy = false;
+          Navigator.push(context, MaterialPageRoute(
+              builder:(context){
+                return new CommodityDetailPage();
+              }
+          )
+          );
+        }
   //      _provide
     }, onError: (e) {});
   }

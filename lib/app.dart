@@ -106,7 +106,6 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
   Widget build(BuildContext context) {
     print('进入欢迎界面');
     ScreenAdapter.init(context);
-
     return Material(
       child: Stack(
         alignment: AlignmentDirectional.center,

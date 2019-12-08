@@ -31,6 +31,11 @@ void main() async {
   // } on CameraException catch (e) {
   //   //logError(e.code, e.description);
   // }
+  /// 强制竖屏
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   runApp(MyApp());
 }
 
@@ -158,7 +163,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: ThemeData(
         primaryColor: AppConfig.themedata.primaryColor,
         accentColor: AppConfig.themedata.accentColor,
-        backgroundColor: Colors.white,
+        backgroundColor: AppConfig.assistLineColor,
       ),
       initialRoute: '/',
       onGenerateRoute: onGenerateRoute,

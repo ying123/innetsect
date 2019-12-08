@@ -240,9 +240,9 @@ class CommodityDetailProvide extends BaseProvide {
   final CommodityRepo _repo = CommodityRepo();
 
   /// 详情数据
-  Observable detailData({int types,int prodId}) {
+  Observable detailData({int types,int prodId,BuildContext context}) {
     return _repo
-        .detailData(types, prodId)
+        .detailData(types, prodId,context:context)
         .doOnData((result) {
 
     })
@@ -266,9 +266,9 @@ class CommodityDetailProvide extends BaseProvide {
   }
 
   /// 提交订单
-  Observable submitShopping(int addrID) {
+  Observable submitShopping(int addrID,{BuildContext context}) {
     print(addrID);
-    return _repo.submitShopping(addrID)
+    return _repo.submitShopping(addrID,context:context)
         .doOnData((result) {
 
     })
@@ -307,6 +307,14 @@ class CommodityDetailProvide extends BaseProvide {
   /// 详情底部webview
   Future getDetailHtml(){
     return _repo.getDetailHtml(this.prodId);
+  }
+
+  /// 提货码
+  Observable ladingQrCode (int orderID){
+    return _repo.ladingQrCode(orderID).doOnData((result){})
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
   }
 
   ///工厂模式

@@ -23,12 +23,7 @@ class AllOrderService {
     return delete(url);
   }
 
-  /// 提货码
-  Observable<BaseResponse> ladingQrCode (int orderID){
-    String url = "/api/eshop/salesorders/$orderID/ladingQrCode";
-    var response = get(url);
-    return response;
-  }
+
 
 }
 
@@ -51,8 +46,5 @@ class AllOrderRepo {
     return _remote.delOrder(orderID);
   }
 
-  /// 提货码
-  Observable<BaseResponse> ladingQrCode (int orderID){
-    return _remote.ladingQrCode(orderID);
-  }
+
 }

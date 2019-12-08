@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -8,10 +9,16 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
+import 'package:innetsect/data/order_detail_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/login/login_page.dart';
+import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/widget/commodity_modal_bottom.dart';
+import 'package:innetsect/view/widget/counter_widget.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/order_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 
@@ -20,15 +27,18 @@ class HighCommodityPage extends PageProvideNode{
 
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
-  HighCommodityPage(){
+  final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
+  final String pages;
+  HighCommodityPage({this.pages}){
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
+    mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
     // TODO: implement buildContent
-    return HighCommodityContent(_detailProvide,_cartProvide);
+    return HighCommodityContent(_detailProvide,_cartProvide,_orderDetailProvide,pages: pages,);
   }
   
 }
@@ -36,7 +46,9 @@ class HighCommodityPage extends PageProvideNode{
 class HighCommodityContent extends StatefulWidget {
   final CommodityDetailProvide _detailProvide;
   final CommodityAndCartProvide _cartProvide;
-  HighCommodityContent(this._detailProvide,this._cartProvide);
+  final OrderDetailProvide _orderDetailProvide;
+  final String pages;
+  HighCommodityContent(this._detailProvide,this._cartProvide,this._orderDetailProvide,{this.pages});
 
   @override
   _HighCommodityContentState createState() => new _HighCommodityContentState();
@@ -52,6 +64,7 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
   DateTime _endTime;
   Timer _timer;
   String _times="";
+  String html;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +92,8 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
 
 
     // 判断显示倒计时
-    if(_detailProvide.commodityModels.panicBuyingStart!=null
+    if(_detailProvide.commodityModels!=null&&
+        _detailProvide.commodityModels.panicBuyingStart!=null
         &&_detailProvide.commodityModels.panicCountdownTime!=null){
       _startTime = DateTime.parse(_detailProvide.commodityModels.panicBuyingStart);
 //      _endTime = DateTime.parse(_detailProvide.commodityModels.panicCountdownTime);
@@ -117,6 +131,22 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
         });
       }
     }
+
+    if(widget.pages=="tickets"){
+      _loadHtml();
+    }
+  }
+
+  /// 加载webview
+  _loadHtml() async{
+    await widget._detailProvide.getDetailHtml().then((item){
+      print(item);
+      if(item.data!=null){
+        setState(() {
+          html = item.data;
+        });
+      }
+    });
   }
 
   @override
@@ -129,31 +159,107 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
   }
 
   Widget _bottomWidget(){
-    Widget widget = Container(width: 0,height: 0,);
+    Widget widgets = Container(width: 0,height: 0,);
     if(_promptingMessage==null&&!_isShowBottom
-    &&_detailProvide.commodityModels.orderable){
-      widget = Container(
-        width: double.infinity,
-        margin: EdgeInsets.only(right: 20,left: 20),
-        child: RaisedButton(
-          onPressed:(){
-            // 弹出购买界面
-            _detailProvide.setInitData();
-            _cartProvide.setInitCount();
-            _detailProvide.isBuy = false;
-            _detailProvide.pages = "highCommodity";
-            CommodityModalBottom.showBottomModal(context:context);
-          },
-          textColor: Colors.white,
-          color: AppConfig.blueBtnColor,
-          child: Text("立即购买"),
-        ),
-      );
+    &&_detailProvide.commodityModels!=null&&
+        _detailProvide.commodityModels.orderable){
+      if(widget.pages=="tickets"){
+        widgets = Container(
+          width: double.infinity,
+          height: ScreenAdapter.height(120),
+          padding: EdgeInsets.only(right: 20,left: 20),
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: 10),
+                child: _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"
+                    ,onTap: (){
+                      CustomsWidget().serviceWidget(context: context);
+                    }),
+              ),
+              Expanded(
+                child: RaisedButton(
+                  onPressed:(){
+                    // 票务购买界面
+                    if(!isLogin()){
+                      if(_detailProvide.skusModel.qtyInHand ==0){
+                        CustomsWidget().showToast(title: "没有库存");
+                      }else{
+                        // 跳转订单详情
+                        List json = [{
+                          "acctID": UserTools().getUserData()['id'],
+                          "shopID":_detailProvide.commodityModels.shopID,
+                          "prodID":_detailProvide.commodityModels.prodID,
+                          "presale":_detailProvide.commodityModels.presale,
+                          "skuCode":_detailProvide.skusModel.skuCode,
+                          "skuName":_detailProvide.skusModel.skuName,
+                          "skuPic":_detailProvide.skusModel.skuPic,
+                          "quantity":_cartProvide.count,
+                          "unit": _detailProvide.commodityModels.unit,
+                          "prodCode": _detailProvide.commodityModels.prodCode,
+                          "salesPrice":_detailProvide.commodityModels.salesPrice,
+                          "allowPointRate":_detailProvide.commodityModels.allowPointRate
+                        }];
+                        _detailProvide.createShopping(json,context)
+                            .doOnListen(() {
+                          print('doOnListen');
+                        })
+                            .doOnCancel(() {})
+                            .listen((item) {
+                          ///加载数据,订单详情
+                          print('listen data->$item');
+                          if(item.data!=null){
+                            OrderDetailModel model = OrderDetailModel.fromJson(item.data);
+                            widget._orderDetailProvide.orderDetailModel = model;
+                            widget._detailProvide.pages = "exhibition";
+                            Navigator.push(context, new MaterialPageRoute(
+                                builder: (context){
+                                  return new OrderDetailPage();
+                                })
+                            );
+                          }
+                        }, onError: (e) {
+                          print(e);
+                        });
+                      }
+                    }
+                  },
+                  textColor: Colors.white,
+                  color: AppConfig.blueBtnColor,
+                  child: Text("立即购买"),
+                ),
+              )
+            ],
+          ),
+        );
+      }else{
+        widgets = Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(right: 20,left: 20),
+          color: Colors.white,
+          child: RaisedButton(
+            onPressed:(){
+              // 弹出购买界面
+              _detailProvide.setInitData();
+              _cartProvide.setInitCount();
+              _detailProvide.isBuy = false;
+              _detailProvide.pages = "highCommodity";
+              CommodityModalBottom.showBottomModal(context:context);
+            },
+            textColor: Colors.white,
+            color: AppConfig.blueBtnColor,
+            child: Text("立即购买"),
+          ),
+        );
+      }
     }else if(_promptingMessage==null&&_isShowBottom){
-      widget= Container(
+      widgets = Container(
         width: double.infinity,
         height: ScreenAdapter.height(80),
-        margin: EdgeInsets.only(right: 20,left: 20,bottom: 20),
+        color: Colors.white,
+        padding: EdgeInsets.only(right: 20,left: 20,bottom: 20),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: AppConfig.assistLineColor,
@@ -165,7 +271,7 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
         ),),
       );
     }
-    return widget;
+    return widgets;
   }
 
   /// 商品详情内容区域
@@ -181,30 +287,63 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
           child: _swiperWidget(),
         ),
         Container(
-          margin: EdgeInsets.only(top: 10),
+          padding: EdgeInsets.only(top: 10),
           alignment: Alignment.center,
+          color: Colors.white,
           child: _comTitleProdName(),
         ),
         Container(
           width: ScreenAdapter.width(750),
-          margin: EdgeInsets.only(top: 20),
+          padding: EdgeInsets.only(top: 20),
           alignment: Alignment.center,
+          color: Colors.white,
           child: _comTitleSalesPrice(),
         ),
-        _promptingMessage!=null?
+        widget._detailProvide.commodityModels.presaleDesc!=null?
+            Container(
+              padding: EdgeInsets.only(left: 20,right: 20),
+              color: Colors.white,
+              child: Text(widget._detailProvide.commodityModels.presaleDesc,
+              style: TextStyle(color: Colors.grey),),
+            ):Container(height: 0,width: 0,),
+        _promptingMessage!=null&&widget.pages==null?
           Container(
             width: ScreenAdapter.width(750),
-            margin: EdgeInsets.only(top: 20,right: 20,left: 20),
+            padding: EdgeInsets.only(top: 20,right: 20,left: 20),
             alignment: Alignment.center,
+            color: Colors.white,
             child: Text(_promptingMessage,style: TextStyle(
               color: AppConfig.blueBtnColor
             ),),
           ):Container(width: 0,height: 0,),
-        Container(
+
+        widget.pages=="tickets"?
+            Container(
+              padding: EdgeInsets.only(top: 20,right: 20,left: 20),
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("购买数量",style: TextStyle(
+                    color: Colors.grey,fontSize: ScreenAdapter.size(28)
+                  ),),
+                  CounterWidget(provide: widget._cartProvide,
+                    model: widget._detailProvide.commodityModels,)
+                ],
+              ),
+            ):Container(width: 0,height: 0,),
+        widget.pages!="tickets"?Container(
           width: ScreenAdapter.width(750),
-          margin: EdgeInsets.only(top: 20,right: 20,left: 20),
+          padding: EdgeInsets.only(top: 20,right: 20,left: 20),
+          color: Colors.white,
           alignment: Alignment.centerLeft,
           child: _comRemark(),
+        ):Container(
+          padding: EdgeInsets.only(right: 20,left: 20),
+          color: Colors.white,
+          child: Html(
+            data: html==null?"":html,
+          ),
         ),
         SizedBox(width: double.infinity,height: ScreenAdapter.height(80),)
       ],
@@ -222,7 +361,7 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
             CachedNetworkImage(imageUrl: "${skuModel.pics[index].skuPicUrl}${ConstConfig.BANNER_TWO_SIZE}",)
                 :new Container();
           },
-          loop: true,
+          loop: false,
           itemCount: skuModel!=null?skuModel.pics.length:1,
           pagination: new SwiperPagination(
               builder: DotSwiperPaginationBuilder(
@@ -244,7 +383,7 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
             CommodityDetailProvide provide) {
           CommodityModels models = provide.commodityModels;
           return new Text(models!=null?models.prodName:"",style: TextStyle(fontSize: ScreenAdapter.size(38),
-              fontWeight: FontWeight.w800
+              fontWeight: FontWeight.w800,color: _isShowBottom?Colors.grey:Colors.black
           ),);
         }
     );
@@ -256,7 +395,10 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
             CommodityDetailProvide provide) {
           CommodityModels models = provide.commodityModels;
           String price =models!=null?models.salesPrice.toString():"";
-          return Text("¥ $price");
+          return Text("¥ $price",style: TextStyle(
+            color: _isShowBottom?Colors.grey:AppConfig.blueBtnColor,
+            fontSize: ScreenAdapter.size(32)
+          ),);
         }
     );
   }
@@ -269,10 +411,40 @@ class _HighCommodityContentState extends State<HighCommodityContent> {
           return new Text(models!=null?models.remark:"",
             softWrap: true,
             style: TextStyle(fontSize: ScreenAdapter.size(28),
+            color:_isShowBottom?Colors.grey:Colors.black
           ),);
         }
     );
   }
 
+  /// 图片和文字结合，垂直布局
+  Widget _iconAndTextMerge({String title,String icon,Function() onTap}){
+    return InkWell(
+      onTap: (){
+        onTap();
+      },
+      child: new Container(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Image.asset(icon,width: ScreenAdapter.width(32),height: ScreenAdapter.height(32),fit: BoxFit.fitWidth,),
+            new Text(title,style: TextStyle(fontSize: ScreenAdapter.size(18)),)
+          ],
+        ),
+      ),
+    );
+  }
 
+  bool isLogin(){
+    bool flag = false;
+    if(UserTools().getUserData()==null){
+      flag = true;
+      Navigator.push(context, MaterialPageRoute(
+          builder: (BuildContext context){
+            return LoginPage();
+          }
+      ));
+    }
+    return flag;
+  }
 }

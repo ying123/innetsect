@@ -107,7 +107,7 @@ class _AllContentPageState extends State<AllContentPage> {
                 },
                 child: new Container(
                   color: Colors.white,
-                  margin: EdgeInsets.only(top: 10,right: 5,left:5),
+                  margin: EdgeInsets.only(bottom: 5),
                   padding: EdgeInsets.only(left: 10,right: 10),
                   child: new Column(
                     children: <Widget>[
@@ -255,17 +255,90 @@ class _AllContentPageState extends State<AllContentPage> {
 
   /// 底部操作栏
   Widget _bottomAction(OrderDetailModel model){
-    Widget widget;
+    Widget widget=Container(width: 0,height: 0,);
     //0待支付 1待收货 2已完成 -1已取消 -2已取消待退款 -4已取消已退款
-    if(model.status==1&&model.syncStatus<3){
-      widget = new Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          this._cancelOrderWidget(model.orderID),
-          this._logisticsWidget(model)
-        ],
-      );
-    }else if(model.status==0){
+    if(model.status==1){
+      if(model.shopID==37){
+        if(model.syncStatus<3){
+          widget = new Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              this._cancelOrderWidget(model.orderID),
+              this._logisticsWidget(model)
+            ],
+          );
+        } else{
+          widget = new Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              this._logisticsWidget(model)
+            ],
+          );
+        }
+      }else if(model.ladingMode==1&&model.syncStatus==3
+          &&DateTime.now().isAfter(DateTime.parse(model.ladingTime))){
+        widget = new Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            new Container(
+                height: ScreenAdapter.height(60),
+                padding:EdgeInsets.only(left: 10,) ,
+                child: new RaisedButton(
+                  color: AppConfig.fontBackColor,
+                  onPressed: () async{
+                    _commodityDetailProvide.ladingQrCode(model.orderID).doOnListen(() {
+                      print('doOnListen');
+                    })
+                        .doOnCancel(() {})
+                        .listen((item) {
+                      ///加载数据
+                      print('listen data->$item');
+                      if(item!=null&&item.data!=null){
+                        showDialog(context: context,
+                            builder: (context){
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      width: ScreenAdapter.width(400),
+                                      height: ScreenAdapter.height(400),
+                                      color: Colors.white,
+                                      child: QrImage(
+                                        padding: EdgeInsets.all(20),
+                                        data: item.data['qrCode'],
+                                        size: 2000,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: ScreenAdapter.width(400),
+                                      height: ScreenAdapter.height(100),
+                                      color:Colors.white,
+                                      alignment: Alignment.center,
+                                      child: Text(item.data['remark']==null?"":item.data['remark'],
+                                      style: TextStyle(
+                                        fontSize: ScreenAdapter.size(24),
+                                        color: Colors.black,decoration: TextDecoration.none
+                                      ),)
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                        );
+                      }
+                    }, onError: (e) {});
+                  },
+                  child: new Text("提货码",style: TextStyle(
+                      fontSize: ScreenAdapter.size(24),color: Colors.white),),
+                )
+            )
+          ],
+        );
+      }
+    }
+    if(model.status==0){
       widget = new Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -293,14 +366,7 @@ class _AllContentPageState extends State<AllContentPage> {
           )
         ],
       );
-    }else if(model.status==1){
-      widget = new Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          this._logisticsWidget(model)
-        ],
-      );
-    }else if(model.status==2){
+    }else if(model.status==2 && model.shopID==37){
       widget = new Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -312,62 +378,6 @@ class _AllContentPageState extends State<AllContentPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           _delOrderWidget(model.orderID)
-        ],
-      );
-    }
-    if(model.status==1&&model.ladingMode==1&&model.syncStatus==3
-        &&DateTime.now().isAfter(DateTime.parse(model.ladingTime))){
-      widget = new Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          new Container(
-              height: ScreenAdapter.height(60),
-              padding:EdgeInsets.only(left: 10,) ,
-              child: new RaisedButton(
-                color: AppConfig.fontBackColor,
-                onPressed: () async{
-                  await _provide.ladingQrCode(model.orderID).doOnListen(() {
-                    print('doOnListen');
-                  })
-                      .doOnCancel(() {})
-                      .listen((item) {
-                    ///加载数据
-                    print('listen data->$item');
-                    if(item!=null&&item.data!=null){
-                      showDialog(context: context,
-                        builder: (context){
-                          return AlertDialog(
-                            content: Container(
-                                  width: ScreenAdapter.width(400),
-                                  height: ScreenAdapter.height(400),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Expanded(
-                                        flex:2,
-                                        child: QrImage(
-                                          padding: EdgeInsets.only(left: 50,bottom: 20),
-                                          data: item.data['qrCode'],
-                                          size: 2000,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(model.remark==null?"":model.remark),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                          );
-                        }
-                      );
-                    }
-                  }, onError: (e) {});
-                },
-                child: new Text("提货码",style: TextStyle(
-                    fontSize: ScreenAdapter.size(24),color: Colors.white),),
-              )
-          )
         ],
       );
     }

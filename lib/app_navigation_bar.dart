@@ -208,12 +208,12 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
               ),
               new BottomNavigationBarItem(
                 icon: new Image.asset(
-                  'assets/images/我的.png',
+                  'assets/images/mall/tab_me.png',
                   width: 30.0,
                   height: 30.0,
                 ),
                 activeIcon: Image.asset(
-                  'assets/images/我的选中.png',
+                  'assets/images/mall/tab_me_h.png',
                   width: 30.0,
                   height: 30.0,
                 ),
@@ -232,7 +232,7 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
   }
 
   onTap(int index) {
-    if(index==4){
+    if(index==4 || index==3){
       // 获取用户信息，如果请求错误弹出登录页面
       /// 获取用户信息
       _loginProvide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
@@ -242,27 +242,28 @@ class _AppNavigationContentBarState extends State<AppNavigationContentBar>
           rammus.bindAccount(model.acctID.toString());
           _loginProvide.setUserInfoModel(model);
           _provide.currentIndex = index;
+          if(index==3){
+            _cartProvide.getMyCarts(context).doOnListen(() {
+              print('doOnListen');
+            })
+                .doOnCancel(() {})
+                .listen((item) {
+              ///加载数据
+              print('listen data->$item');
+              if(item!=null&&item.data!=null){
+                List<CommodityModels> list = CommodityList.fromJson(item.data).list;
+                _cartProvide.commodityTypesModelLists.clear();
+                _cartProvide.setMode(mode: "multiple");
+                list.forEach((res){
+                  _cartProvide.addCarts(res);
+                });
+                _provide.currentIndex = index;
+              }
+            }, onError: (e) {});
+          }
         }
       },onError: (e){
       });
-    }else if(index==3){
-      _cartProvide.getMyCarts().doOnListen(() {
-        print('doOnListen');
-      })
-          .doOnCancel(() {})
-          .listen((item) {
-        ///加载数据
-        print('listen data->$item');
-        if(item!=null&&item.data!=null){
-          List<CommodityModels> list = CommodityList.fromJson(item.data).list;
-          _cartProvide.commodityTypesModelLists.clear();
-          _cartProvide.setMode(mode: "multiple");
-          list.forEach((res){
-            _cartProvide.addCarts(res);
-          });
-          _provide.currentIndex = index;
-        }
-      }, onError: (e) {});
     }else{
       _provide.currentIndex = index;
     }

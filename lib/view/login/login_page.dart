@@ -12,6 +12,7 @@ import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/mall/mall_provide.dart';
 import 'package:provide/provide.dart';
 import 'dart:async';
+import 'package:rammus/rammus.dart' as rammus;
 
 class LoginPage extends PageProvideNode {
   final LoginProvide _provide = LoginProvide.instance;
@@ -385,7 +386,9 @@ class _LoginContentPageState extends State<LoginContentPage> {
                   /// 获取用户信息
                   provide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
                     if(userItem.data!=null){
-                      provide.setUserInfoModel(UserInfoModel.fromJson(userItem.data));
+                      UserInfoModel model = UserInfoModel.fromJson(userItem.data);
+                      provide.setUserInfoModel(model);
+                      rammus.bindAccount(model.acctID.toString());
                     }
                   },onError: (e){});
                   UserTools().setUserData(item.data);

@@ -177,6 +177,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         ),
         _comTitle(),
         _selCol(),
+        _showDesc(),
         html!=null?new Container(
           child: Html(
             data: html,
@@ -194,6 +195,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         return _listImage[index];
       },
       itemCount: _listImage.length,
+      loop: false,
       pagination: new SwiperPagination(
           builder: DotSwiperPaginationBuilder(
               color: Colors.white70,              // 其他点的颜色
@@ -288,16 +290,36 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     );
   }
 
+  Widget _showDesc(){
+    if(widget._provide.commodityModels.presaleDesc!=null){
+      return Container(
+        color: Colors.white,
+        height: ScreenAdapter.height(110),
+        padding: EdgeInsets.only(left: 20,right: 20),
+        child: Text(widget._provide.commodityModels.presaleDesc,
+          style: TextStyle(color:Colors.grey),
+        )
+      );
+    }else{
+      return Container(width: 0,height: 0,);
+    }
+
+  }
+
   /// 已选skuName
   Provide<CommodityDetailProvide> _selColSkuName() {
     return Provide<CommodityDetailProvide>(
         builder: (BuildContext context, Widget widget,CommodityDetailProvide provide) {
           CommoditySkusModel model = provide.skusModel;
-          List list;
+          List list=List();
           if(model!=null){
             list = CommonUtil.skuNameSplit(model.skuName);
           }
-          return new Text(list!=null?list[1]:model!=null?model.skuName:"");
+          if(list!=null&&list.length>0){
+            return new Text(list!=null?list[1]:model!=null?model.skuName:"");
+          }else{
+            return Text("");
+          }
         }
     );
   }
@@ -411,6 +433,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                   // 如果需要返回，设置isBack为true,
                   // 设置settings为传参
                   // 默认为false,不返回
+                  _cartProvide.setMode(mode: "multiple");
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context){
                         return CommodityCartPage();
@@ -427,6 +450,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                     _provide.setInitData();
                     _cartProvide.setInitCount();
                     _provide.isBuy = false;
+                    _cartProvide.setMode(mode: "single");
                     CommodityModalBottom.showBottomModal(context:context);
                   },
                   child: new Container(
@@ -448,6 +472,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                   _provide.setInitData();
                   _cartProvide.setInitCount();
                   _provide.isBuy = true;
+                  _cartProvide.setMode(mode: "single");
                   // 存储当前商品信息
                   CommodityModalBottom.showBottomModal(context:context);
                 },

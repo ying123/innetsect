@@ -336,12 +336,13 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                                   text: provide.postalCode!=null?provide.postalCode:'',
                                   selection: TextSelection.fromPosition(TextPosition(
                                       affinity: TextAffinity.downstream,
-                                      offset: provide.postalCode!=null?provide.postalCode.toString().length:''.length
+                                      offset: provide.postalCode.toString().length
                                   ))
                               )),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.postalCode:"请输入邮政编码"
+                                  hintText: widget._addressManagementProvide.addressModel!=null?
+                                  widget._addressManagementProvide.addressModel.postalCode:"请输入邮政编码"
                               ),
                               onChanged: (text){
                                 provide.postalCode=text;
@@ -407,6 +408,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
     _provide.provincesModel=null;
     _provide.cityModel = null;
     _provide.countyModel = null;
+    _provide.postalCode = null;
   }
 
   Provide<NewAddressProvide> _setupBottomBtn() {
@@ -424,6 +426,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                 CustomsWidget().showToast(title: "请选择国家和所在地区");
               }else if(provide.addressDetail==null){
                 CustomsWidget().showToast(title: "请填写详细地址");
+              }else if(provide.postalCode==null ||provide.postalCode==""){
+                CustomsWidget().showToast(title: "请填写邮政编码");
               } else if(widget._addressManagementProvide.addressModel!=null){
                 provide.createAndEditAddresses(context,isEdit: true,
                     addressModel:widget._addressManagementProvide.addressModel)
@@ -536,6 +540,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
         _provide.tel = widget._addressManagementProvide.addressModel.tel;
         _provide.addressDetail = widget._addressManagementProvide.addressModel.addressDetail;
         _provide.lastUsed = widget._addressManagementProvide.addressModel.lastUsed;
+        _provide.postalCode = widget._addressManagementProvide.addressModel.postalCode;
         setState(() {
           isSelected = widget._addressManagementProvide.addressModel.lastUsed;
         });

@@ -48,12 +48,27 @@ class _CounterWidgetState extends State<CounterWidget> {
     super.initState();
     this.provide = widget.provide;
     this.model = widget.model;
+
+    if(this.model==null){
+      this.model = CommodityModels();
+    }
     if(this.provide.mode!="multiple"){
       setState(() {
         count = widget.provide.count;
       });
     }
+    if(this.provide.mode=="multiple"){
+      setState(() {
+        count=widget.model.quantity;
+      });
+    }
     this.model.quantity = widget.provide.count;
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+//    widget.provide.setInitCount();
   }
 
   /// 减少按钮
@@ -113,11 +128,9 @@ class _CounterWidgetState extends State<CounterWidget> {
   Widget _showNumWidget(){
     double fontSize = 38.0;
     double circular =8.0;
-    int count = this.count;
     if(this.provide.mode=="multiple"){
       fontSize=28.0;
       circular=4.0;
-      count=widget.model.quantity;
     }
     return new Container(
       padding: EdgeInsets.only(bottom: 5,left: 5,right: 5,top: 2),
@@ -127,7 +140,8 @@ class _CounterWidgetState extends State<CounterWidget> {
         color: AppConfig.backGroundColor,
         borderRadius: BorderRadius.circular(circular)
       ),
-      child: new Text(count.toString(),style: TextStyle(
+      child: new Text(this.provide.mode=="multiple"?widget.model.quantity.toString():
+      widget.provide.count.toString(),style: TextStyle(
         fontSize: ScreenAdapter.size(fontSize),
         fontWeight: FontWeight.w900,
         color: model!=null&&model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct<2
@@ -148,6 +162,7 @@ class _CounterWidgetState extends State<CounterWidget> {
             (model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct>1)){
           this.provide.increment(idx: widget.idx,model: widget.model);
           if(this.provide.mode!="multiple"){
+            this.model.quantity=this.provide.count;
             setState(() {
               count = this.provide.count;
             });

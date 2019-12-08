@@ -1,31 +1,44 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/exhibition/ticket_model.dart';
+import 'package:innetsect/main_provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
-import 'package:innetsect/view/show_tickets/ticket_page.dart';
+import 'package:innetsect/view/shopping/high_commodity_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/show_tickets/show_tickets_provide.dart';
+import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 
 class ShowTicketsPage extends PageProvideNode {
   final ShowTicketsProvide _provide = ShowTicketsProvide();
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final MainProvide _mainProvide = MainProvide.instance;
   Map showId;
   ShowTicketsPage({this.showId}) {
     mProviders.provide(Provider<ShowTicketsProvide>.value(_provide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+    mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
+    mProviders.provide(Provider<MainProvide>.value(_mainProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return ShowTicketsContentPage(_provide,showId);
+    return ShowTicketsContentPage(_provide,showId,_detailProvide,_cartProvide,_mainProvide);
   }
 }
 
 class ShowTicketsContentPage extends StatefulWidget {
   final ShowTicketsProvide _provide;
+  final CommodityDetailProvide _detailProvide;
+  final CommodityAndCartProvide _cartProvide;
+  final MainProvide _mainProvide;
   Map showId;
-  ShowTicketsContentPage(this._provide,this.showId);
+  ShowTicketsContentPage(this._provide,this.showId,this._detailProvide,this._cartProvide,
+      this._mainProvide);
   @override
   _ShowTicketsContentPageState createState() => _ShowTicketsContentPageState();
 }
@@ -39,13 +52,12 @@ ShowTicketsProvide _provide;
     _loadTickets();
   }
   _loadTickets(){
-    _provide.tickets(widget.showId['shopID']).doOnListen((){
+    _provide.tickets(widget._mainProvide.splashModel.exhibitionID,widget.showId['shopID']).doOnListen((){
 
     }).listen((item){
       if (item!= null) {
         setState(() {
-        _provide.addTickets(TicketModelList.fromJson(item.data).list);
-        print('_provide.showTickets[0].prodPic===>${_provide.showTickets[0].prodPic}');
+          _provide.addTickets(TicketModelList.fromJson(item.data).list);
         });
       }
     },onError: (e, stack){
@@ -82,16 +94,10 @@ ShowTicketsProvide _provide;
             runSpacing: 10,
             spacing: 10,
             children: provide.showTickets.map((value) {
-              return GestureDetector(
+              return InkWell(
                 onTap: () {
                   print('value$value');
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) {
-                            return new TicketPage();
-                          },
-                          settings: RouteSettings(arguments: value)));
+                  _loadDetail(value.prodID,value.shopID);
                 },
                 child: Container(
                   width: itemWidth,
@@ -159,4 +165,32 @@ ShowTicketsProvide _provide;
       },
     );
   }
+
+_loadDetail(int prodID,int shopID){
+  widget._detailProvide.clearCommodityModels();
+  widget._detailProvide.prodId = prodID;
+  /// 加载详情数据
+  widget._detailProvide.detailData(types: shopID,prodId:prodID,context: context )
+      .doOnListen(() {
+    print('doOnListen');
+  })
+      .doOnCancel(() {})
+      .listen((item) {
+    ///加载数据
+    print('listen data->$item');
+    CommodityModels models = CommodityModels.fromJson(item.data);
+    widget._detailProvide.setCommodityModels(models);
+    widget._detailProvide.setInitData();
+    widget._detailProvide.prodId = models.prodID;
+    widget._cartProvide.setInitCount();
+    widget._detailProvide.isBuy = false;
+    widget._cartProvide.setMode(mode: "single");
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context){
+          return HighCommodityPage(pages: "tickets",);
+        }
+    ));
+//      _provide
+  }, onError: (e) {});
+}
 }

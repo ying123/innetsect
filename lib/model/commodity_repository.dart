@@ -19,9 +19,9 @@ class CommodityService {
   }
 
   /// 详情请求
-  Observable<BaseResponse> detailData(int types,int prodId){
+  Observable<BaseResponse> detailData(int types,int prodId,{BuildContext context}){
     var url = '/api/eshop/$types/products/$prodId';
-    var response = get(url);
+    var response = get(url,context: context);
     return response;
   }
 
@@ -33,9 +33,9 @@ class CommodityService {
   }
 
   /// 提交订单
-  Observable<BaseResponse> submitShopping(int addrID){
+  Observable<BaseResponse> submitShopping(int addrID,{BuildContext context}){
     var url = '/api/eshop/salesorders/submit?addrID=$addrID&channel=Android';
-    var response = post(url);
+    var response = post(url,context: context);
     return response;
   }
 
@@ -54,17 +54,17 @@ class CommodityService {
   }
 
   /// 加入购物车
-  Observable<BaseResponse> addCarts (CommodityModels model){
+  Observable<BaseResponse> addCarts (CommodityModels model,BuildContext context){
     var url = '/api/eshop/shoppingcart/add';
     var json = this.cartJson(model);
-    var response = post(url,body: json);
+    var response = post(url,body: json,context: context);
     return response;
   }
 
   /// 购物车请求
-  Observable<BaseResponse> getMyCarts (){
+  Observable<BaseResponse> getMyCarts (BuildContext context){
     var url = '/api/eshop/shoppingcart/my';
-    var response = get(url);
+    var response = get(url,context: context);
     return response;
   }
   /// 购物车加减请求
@@ -137,6 +137,13 @@ class CommodityService {
     return getHtml(url);
   }
 
+  /// 提货码
+  Observable<BaseResponse> ladingQrCode (int orderID){
+    String url = "/api/eshop/salesorders/$orderID/ladingQrCode";
+    var response = get(url);
+    return response;
+  }
+
 }
 
 
@@ -156,8 +163,8 @@ class CommodityRepo {
   /// 详情请求
   /// *[types] 37：商城，47：展会
   /// *[prodId] 商品id
-  Observable<BaseResponse> detailData(int types,int prodId){
-    return _remote.detailData(types,prodId);
+  Observable<BaseResponse> detailData(int types,int prodId,{BuildContext context}){
+    return _remote.detailData(types,prodId,context:context);
   }
 
   /// 立即下单
@@ -166,8 +173,8 @@ class CommodityRepo {
   }
 
   /// 提交订单
-  Observable<BaseResponse> submitShopping(int addrID){
-    return _remote.submitShopping(addrID);
+  Observable<BaseResponse> submitShopping(int addrID,{BuildContext context}){
+    return _remote.submitShopping(addrID,context:context);
   }
 
   /// 订单支付
@@ -181,12 +188,12 @@ class CommodityRepo {
   }
 
   /// 加入购物车
-  Observable<BaseResponse> addCarts (CommodityModels model){
-    return _remote.addCarts(model);
+  Observable<BaseResponse> addCarts (CommodityModels model, BuildContext context){
+    return _remote.addCarts(model,context);
   }
   /// 购物车列表
-  Observable<BaseResponse> getMyCarts (){
-    return _remote.getMyCarts();
+  Observable<BaseResponse> getMyCarts (BuildContext context){
+    return _remote.getMyCarts(context);
   }
   /// 购物车加减
   Observable<BaseResponse> reAndIcCarts (CommodityModels model){
@@ -208,5 +215,10 @@ class CommodityRepo {
   /// 商品详情底部webview
   Future getDetailHtml(int prodId){
     return _remote.getDetailHtml(prodId);
+  }
+
+  /// 提货码
+  Observable<BaseResponse> ladingQrCode (int orderID){
+    return _remote.ladingQrCode(orderID);
   }
 }

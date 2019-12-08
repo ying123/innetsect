@@ -7,6 +7,7 @@ import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/activity/activity_detail_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
+import 'package:innetsect/view/widget/pre_view_page.dart';
 import 'package:innetsect/view_model/activity/activity_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -52,6 +53,7 @@ class _ActivityMarkContentState extends State<ActivityMarkContent> {
         controller: _easyRefreshController,
         onRefresh: () async{
           _page = 0;
+          _list.clear();
           _loadList();
         },
         onLoad: () async{
@@ -80,6 +82,7 @@ class _ActivityMarkContentState extends State<ActivityMarkContent> {
                       Container(
                         height: ScreenAdapter.height(220),
                         margin: EdgeInsets.only(left: 10,right: 10,top: 10),
+                        padding: EdgeInsets.only(top: 12),
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.contain,
@@ -88,20 +91,29 @@ class _ActivityMarkContentState extends State<ActivityMarkContent> {
                         ),
                         child: Row(
                           children: <Widget>[
-                            Container(
-                              width: ScreenAdapter.width(180),
-                              height: ScreenAdapter.height(180),
-                              margin: EdgeInsets.only(left: 40),
-                              child: QrImage(
-                                foregroundColor: item.status==2?Colors.black26:Color(0xFF000000),
-                                data: item.reservationCode,
-                                size: 1000,
+                            InkWell(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context){
+                                    return PreViewPage();
+                                  }
+                                ));
+                              },
+                              child: Container(
+                                width: ScreenAdapter.width(180),
+                                height: ScreenAdapter.height(180),
+                                margin: EdgeInsets.only(left: 40),
+                                child: QrImage(
+                                  foregroundColor: item.status==2?Colors.black26:Color(0xFF000000),
+                                  data: item.reservationCode,
+                                  size: 1000,
+                                ),
                               ),
                             ),
                             Expanded(
                               child: Container(
                                 height: ScreenAdapter.height(180),
-                                padding: EdgeInsets.only(top: 6,left: 40),
+                                padding: EdgeInsets.only(top: 6,left: 40,right: 20),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,

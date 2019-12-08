@@ -193,4 +193,17 @@ static Route customCreateRoute(Widget page){
     return str;
   }
 
+  static bool isIdCard(String cardId){
+    if (cardId.length != 18) {
+      return false; // 位数不够
+    }
+    // 身份证号码正则
+    RegExp postalCode = new RegExp(r'^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|[Xx])$');
+    // 通过验证，说明格式正确，但仍需计算准确性
+    if (!postalCode.hasMatch(cardId)) {
+      return false;
+    }
+    return true;
+  }
+
 }

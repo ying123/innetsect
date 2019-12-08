@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/tools/user_tool.dart';
-import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:rxdart/rxdart.dart';
@@ -19,7 +18,8 @@ Observable<BaseResponse> get(String url, {Map<String, dynamic> params,BuildConte
 
 Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext context}) async {
   var res;
-  await HttpUtil().dio.get(url, queryParameters: params).then((response){
+  await HttpUtil().dio.get(url, queryParameters: params,
+      options:Options(extra: {"context": context})).then((response){
      if (response.data is Map) {
   //  print('response是map类型');
     print('responsr->${response.data}');
@@ -32,9 +32,18 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
   }).catchError((error){
     print('error------${error.response.data['path']}');
     if(error.response.data['path']=='/api/eshop/shoppingcart/my'){
-      print(error);
+//      Future.delayed(Duration.zero,(){
+//        Navigator.push(context, MaterialPageRoute(
+//          builder: (context){
+//            return LoginPage();
+//          },
+//        ));
+//      });
     }
-    if(error.response.data['path']=="/accounts/me" || error.response.statusCode==401){
+    if(error.response.data['path']=="/accounts/me"
+      || error.response.statusCode==401
+      ||error.response.data['message']=="jwt.token.expired"
+    ){
       print(context.widget);
       Future.delayed(Duration.zero,(){
         Navigator.push(context, MaterialPageRoute(
@@ -82,7 +91,8 @@ Future<BaseResponse> _post(String url, dynamic body,
   try{
     await HttpUtil()
         .dio
-        .post(url, data: body, queryParameters: queryParameters).then((res){
+        .post(url, data: body, queryParameters: queryParameters,
+        options:Options(extra: {"context": context})).then((res){
       if(res.data is Map){
         response = BaseResponse.fromJson(res.data);
       }else if(res.data is List){
@@ -108,6 +118,15 @@ Future<BaseResponse> _post(String url, dynamic body,
           });
         }
       }
+      if(error.response.data['message']=="jwt.token.expired"){
+        Future.delayed(Duration.zero,(){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (BuildContext context){
+                return LoginPage();
+              }
+          ));
+        });
+      }
     });
   }on DioError catch(e){
     print(e);
@@ -126,18 +145,19 @@ Future<BaseResponse> _post(String url, dynamic body,
 
 /// patch请求
 Future patch(String url,
-    {dynamic body, Map<String, dynamic> qureyParameters}) {
+    {dynamic body, Map<String, dynamic> qureyParameters,BuildContext context}) {
   print('patch url:->$url body:->$body qureyParameters:->$qureyParameters');
-  return _patch(url, body, queryParameters: qureyParameters);
+  return _patch(url, body, queryParameters: qureyParameters,context: context);
 }
 
 Future _patch(String url, dynamic body,
-    {Map<String, dynamic> queryParameters}) async{
+    {Map<String, dynamic> queryParameters,BuildContext context}) async{
   Response response;
   try{
     await HttpUtil()
         .dio
-        .patch(url, data: body, queryParameters: queryParameters).then((item){
+        .patch(url, data: body, queryParameters: queryParameters,
+        options:Options(extra: {"context": context})).then((item){
       response = item;
     }).catchError((error){
       if(error.response.data['message']!=null){
@@ -165,7 +185,8 @@ Future<BaseResponse> _put(String url, dynamic body,
   var response;
   await HttpUtil()
       .dio
-      .put(url, data: body, queryParameters: queryParameters).then((res){
+      .put(url, data: body, queryParameters: queryParameters,
+      options:Options(extra: {"context": context})).then((res){
     response = BaseResponse.fromJson(res.data);
     print('response _post:->$response');
   }).catchError((error){
@@ -195,7 +216,7 @@ Future<BaseResponse> _getCountries(String url, {Map<String, dynamic> params,Buil
   );
   dio.options = options;
   dio.interceptors.add(HeaderInterceptor());
-  await dio.get(url, queryParameters: params).then((response){
+  await dio.get(url, queryParameters: params,options:Options(extra: {"context": context})).then((response){
     if (response.data is Map) {
       print('response是map类型');
       print('responsr->${response.data}');
@@ -227,7 +248,7 @@ Future _getHtml(String url, {Map<String, dynamic> params,BuildContext context}) 
   );
   dio.options = options;
   dio.interceptors.add(HeaderInterceptor());
-  await dio.get(url, queryParameters: params).then((res){
+  await dio.get(url, queryParameters: params,options:Options(extra: {"context": context})).then((res){
     response = res;
   }).catchError((error){
   });
@@ -245,7 +266,8 @@ Future _delete(String url, dynamic body,
   Response response;
   await HttpUtil()
       .dio
-      .delete(url, data: body, queryParameters: queryParameters).then((res){
+      .delete(url, data: body, queryParameters: queryParameters,
+      options:Options(extra: {"context": context})).then((res){
     response = res;
     print('response _post:->$response');
   }).catchError((error) {

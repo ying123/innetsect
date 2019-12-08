@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/base.dart';
 import 'package:rxdart/rxdart.dart';
@@ -26,12 +27,12 @@ class ExhibitionHomeService {
   }
 
   /// 扫码
-  Observable<BaseResponse> qrCodeWhisk(Map<String,dynamic> json){
+  Observable<BaseResponse> qrCodeWhisk(Map<String,dynamic> json,{BuildContext context}){
     var url = '/api/promotion/vipCards/takeByQrCode';
     if(json['qrType']=="EXHIBIT_PRODUCT"){
       url="/api/eshop/47/products/panicBuy";
     }
-    var response = post(url,body: json);
+    var response = post(url,body: json,context:context);
     return response;
   }
 
@@ -56,7 +57,7 @@ class ExhibitionHomeRepo {
   }
 
   /// 扫码
-  Observable<BaseResponse> qrCodeWhisk(Map<String,dynamic> json){
-    return _remote.qrCodeWhisk(json);
+  Observable<BaseResponse> qrCodeWhisk(Map<String,dynamic> json,{BuildContext context}){
+    return _remote.qrCodeWhisk(json,context:context);
   }
 }

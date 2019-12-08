@@ -203,15 +203,16 @@ class _BindingSignInContentPageState extends State<BindingSignInContentPage> {
               }
             });
           },
-          child: Container(
+          child: SizedBox(
               width: ScreenAdapter.width(377),
               height: ScreenAdapter.height(377),
               child: provide.qrCode!=""?QrImage(
                 data: provide.qrCode,
                 size: provide.size,
                 version: QrVersions.auto,
-                embeddedImage:AssetImage("assets/images/main/logo180x180.png"),
-              ):Container(
+                padding: EdgeInsets.all(0),
+//                embeddedImage:AssetImage("assets/images/main/logo180x180.png"),
+              ):SizedBox(
                 width: ScreenAdapter.width(377),
                 height: ScreenAdapter.height(377),
                 child: Text('请点击刷新二维码',style: TextStyle(

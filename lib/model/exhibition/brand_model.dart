@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -16,11 +17,10 @@ class BrandService {
     return response;
   }
 
-
 ///品牌商场
- Observable brandMallModel ( String branName ,int pageNo){
-    var url = '/api/event/exhibitions/201058021/products/preview?brand=$branName&pageNo=$pageNo';
-    var response = get(url);
+ Observable brandMallModel (int exhibitionID, String branName ,int pageNo,BuildContext context){
+    var url = '/api/event/exhibitions/$exhibitionID/products/preview?brand=$branName&pageNo=$pageNo';
+    var response = get(url,context: context);
     return response;
   }
 
@@ -41,8 +41,8 @@ class BrandRepo {
   }
 
 ///品牌商场
-  Observable brandMallModel (String branName, int exhibitionID){
-    return _remote.brandMallModel( branName ,exhibitionID );
+  Observable brandMallModel (int exhibitionID,String branName, int pageNo,BuildContext context){
+    return _remote.brandMallModel(exhibitionID, branName ,pageNo,context );
   }
 
 

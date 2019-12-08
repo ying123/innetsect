@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
 import 'package:innetsect/view/my/activity/activity_mark_page.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
+import 'package:innetsect/view/my/allocating/allocating_page.dart';
+import 'package:innetsect/view/my/allocating/allocating_record_page.dart';
 import 'package:innetsect/view/my/exhibition/lucky_sign_page.dart';
 import 'package:innetsect/view/my/feedback/feedback_page.dart';
 import 'package:innetsect/view/my/notice/notice_page.dart';
 import 'package:innetsect/view/my/settings/my_settings_page.dart';
+import 'package:innetsect/view/my/tickets/tickets_page.dart';
 import 'package:innetsect/view/my/vip_card/vip_card_page.dart';
 import 'package:innetsect/view/my_order/after_service_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
@@ -21,7 +23,6 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/my/my_provide.dart';
 import 'package:provide/provide.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 ///我的页面
 class MyPage extends PageProvideNode {
@@ -86,6 +87,7 @@ class _MyContentPageState extends State<MyContentPage> {
               _setupCenter(),
               page=="exhibition"?
                   _exhibitionAction():Container(width: 0,height: 0,),
+              _allocatingAction(),
               _setupBoady(),
             ],
           );
@@ -243,7 +245,11 @@ class _MyContentPageState extends State<MyContentPage> {
               InkWell(
                 onTap: () {
                   // 我的门票
-
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return TicketsPage();
+                    }
+                  ));
                 },
                 child: _setupBtn(
                     'assets/images/user/my_ticket@3x.png',
@@ -316,6 +322,66 @@ class _MyContentPageState extends State<MyContentPage> {
         ),
       ],
     );
+  }
+
+  /// 调货操作
+  Widget _allocatingAction(){
+    dynamic model = UserTools().getUserData();
+    if(model!=null&&model['acct_type']==10){
+      return Column(
+        children: <Widget>[
+          Container(
+            width: ScreenAdapter.width(750),
+            height: ScreenAdapter.height(150),
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.only(left: 20),
+            child: Wrap(
+              spacing: 20,
+              runSpacing: 10,
+              children: <Widget>[
+                InkWell(
+                  onTap: () {
+                    // 调货
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context){
+                          return AllocatingPage();
+                        })
+                    );
+                  },
+                  child: _setupBtn(
+                      'assets/images/mall/exhibition.png',
+                      '调货',
+                      36.0,
+                      39.0),
+                ),
+                InkWell(
+                  onTap: () {
+                    UserInfoModel models = _loginProvide.userInfoModel;
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return AllocatingRecordPage(mobile:models.mobile);
+                      }
+                    ));
+                  },
+                  child: _setupBtn(
+                      'assets/images/mall/exhibition.png',
+                      '调货记录',
+                      35.0,
+                      40.0),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: ScreenAdapter.width(750),
+            height: ScreenAdapter.height(10),
+            color: Color.fromRGBO(249, 249, 249, 1.0),
+          )
+        ],
+      );
+    }else{
+      return Container(width: 0,height: 0,);
+    }
   }
 
   Provide<MyProvide> _setupBtn(

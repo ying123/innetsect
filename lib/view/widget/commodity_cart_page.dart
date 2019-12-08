@@ -516,7 +516,8 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                               borderRadius: BorderRadius.all(Radius.circular(10.0)),
                               color: AppConfig.blueBtnColor
                           ),
-                          child: new Text("0",style: TextStyle(fontWeight: FontWeight.w700),),
+                          child: new Text("0",style: TextStyle(fontWeight: FontWeight.w700,
+                          color: Colors.white),),
                         )
                     )
                   ],
@@ -569,7 +570,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
   }
 
   void _loadList(){
-    provide.getMyCarts().doOnListen(() {
+    provide.getMyCarts(context).doOnListen(() {
       print('doOnListen');
     })
         .doOnCancel(() {})

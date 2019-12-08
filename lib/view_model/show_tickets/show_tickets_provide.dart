@@ -16,8 +16,8 @@ class ShowTicketsProvide extends BaseProvide {
 
   TicketsRepo _repo = TicketsRepo();
 
-  Observable tickets(int showId){
-   return _repo.tickets(showId).doOnData((item){
+  Observable tickets(int exhibitionsID,int showId){
+   return _repo.tickets(exhibitionsID,showId).doOnData((item){
 
     }).doOnError((e, stack){
 
@@ -25,5 +25,7 @@ class ShowTicketsProvide extends BaseProvide {
 
     });
   }
+
+
 
 }

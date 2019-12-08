@@ -137,7 +137,6 @@ class _AddressManagementContentPageState
                         // 订单详情
                         //TODO 调用地址运费计算请求
                         _addressFreight(item.addressID);
-                        _orderDetailProvide.editAddress(item);
                         Navigator.pop(context);
                       }else if(mapData['pages']=="afterApply"){
                         // 售后申请
@@ -323,6 +322,7 @@ class _AddressManagementContentPageState
       print('listen data->$item');
       if(item!=null&&item.data!=null){
         _orderDetailProvide.orderDetailModel = OrderDetailModel.fromJson(item.data);
+        _orderDetailProvide.editAddress(item);
       }
     }, onError: (e) {});
   }

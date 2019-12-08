@@ -1,8 +1,5 @@
-
-
-
-import 'package:innetsect/data/exhibition/home_contents_model.dart';
-
+import 'package:innetsect/data/mall/content_model.dart';
+import 'package:innetsect/data/mall/promotion_model.dart';
 class  HomePortletsModel {
   int portletID;
   int portalID;
@@ -12,8 +9,8 @@ class  HomePortletsModel {
   int layout;
   String renderer;
   ///促销活动
-  dynamic promotion;
-  List<HomeContentsModel> contents;
+  PromotionModel promotion;
+  List<ContentModel> contents;
 
   HomePortletsModel({
     this.portletID,
@@ -36,8 +33,8 @@ class  HomePortletsModel {
       promotionCode: json['promotionCode'],
       layout: json['layout'],
       renderer: json['renderer'],
-      promotion: json['promotion'],
-      contents: json['contents']!= null? HomeContentsModelList.fromJson(json['contents']).list:null,
+      promotion: json['promotion']!=null?PromotionModel.fromJson(json['promotion']):null,
+      contents: json['contents']!= null? ContentModelList.fromJson(json['contents']).list:null,
     );
   }
 

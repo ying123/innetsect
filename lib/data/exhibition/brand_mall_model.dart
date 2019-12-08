@@ -20,7 +20,7 @@ class BrandMallModel {
   bool panicBuying;
   String panicBuyingStart;
   String panicBuyingEnd;
-  String panicBuyingPreview;
+  dynamic panicBuyingPreview;
   int panicBuyQtyPerAcct;
   String panicBuyDesc;
   int shopID;

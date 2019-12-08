@@ -1,13 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/exhibition/brand_mall_model.dart';
+import 'package:innetsect/main_provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/brand/brand_mall_provide.dart';
+import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
+import 'package:innetsect/view_model/home/home_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
@@ -17,16 +21,21 @@ class BrandMallPage extends PageProvideNode {
   final BrandMallPrvide _prvide = BrandMallPrvide();
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final MainProvide _mainProvide = MainProvide.instance;
+  final HomeProvide _homeProvide = HomeProvide();
   String brandName;
   String pic;
   BrandMallPage(this.brandName,this.pic) {
     mProviders.provide(Provider<BrandMallPrvide>.value(_prvide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
+    mProviders.provide(Provider<MainProvide>.value(_mainProvide));
+    mProviders.provide(Provider<HomeProvide>.value(_homeProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
-    return BrandMallContentPage(_prvide, brandName,pic,_detailProvide,_cartProvide);
+    return BrandMallContentPage(_prvide, brandName,pic,_detailProvide,
+        _cartProvide,_mainProvide,_homeProvide);
   }
 }
 
@@ -34,10 +43,13 @@ class BrandMallContentPage extends StatefulWidget {
   final BrandMallPrvide _prvide;
   final CommodityDetailProvide _detailProvide;
   final CommodityAndCartProvide _cartProvide;
+  final MainProvide _mainProvide;
+  final HomeProvide _homeProvide;
   String brandName;
   String pic;
   BrandMallContentPage(this._prvide, this.brandName,this.pic,
-      this._detailProvide,this._cartProvide);
+      this._detailProvide,this._cartProvide,
+      this._mainProvide,this._homeProvide);
   @override
   _BrandMallContentPageState createState() => _BrandMallContentPageState();
 }
@@ -61,7 +73,8 @@ class _BrandMallContentPageState extends State<BrandMallContentPage> {
 
   _initBrandMallData() {
     _prvide
-        .brandMallData(brandName, pageNo)
+        .brandMallData(widget._mainProvide.splashModel.exhibitionID,brandName, pageNo,
+    context)
         .doOnListen(() {})
         .doOnError((e, stack) {})
         .listen((items) {
@@ -148,8 +161,47 @@ class _BrandMallContentPageState extends State<BrandMallContentPage> {
             return InkWell(
               onTap: (){
                 /// 跳转详情
-                _loadDetail(provide.brandMallList[index].prodID,
-                    provide.brandMallList[index].shopID);
+                // 解析二维码
+                String result = provide.brandMallList[index].qrCode;
+                List list = result.split("&&");
+                var json = {
+                  "qrType":list[0],
+                  "qrCode":list[1]
+                };
+//                Loading.ctx=context;
+//                Loading.show();
+                widget._homeProvide.qrCodeWhisk(json,context:context)
+                    .doOnListen((){}).doOnCancel((){})
+                    .listen((item){
+//                      Loading.remove();
+                  if(item!=null&&item.data!=null){
+                    if(list[0]=="EXHIBIT_PRODUCT"){
+                      // 商品详情
+                      CommodityModels models = CommodityModels.fromJson(item.data);
+                      widget._detailProvide.clearCommodityModels();
+                      widget._detailProvide.prodId = models.prodID;
+                      /// 加载详情数据
+                      widget._detailProvide.setCommodityModels(models);
+                      widget._detailProvide.setInitData();
+                      widget._cartProvide.setInitCount();
+                      widget._detailProvide.isBuy = false;
+                      Navigator.push(context, MaterialPageRoute(
+                          builder:(context){
+                            return new CommodityDetailPage(pages: ConstConfig.EXHIBIT_PRODUCT,);
+                          }
+                      )
+                      );
+                    }
+                  }else{
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return LoginPage();
+                      }
+                    ));
+                  }
+                });
+//                _loadDetail(provide.brandMallList[index].prodID,
+//                    provide.brandMallList[index].shopID);
               },
               child: Container(
                 width: ScreenAdapter.width(340),
@@ -157,7 +209,9 @@ class _BrandMallContentPageState extends State<BrandMallContentPage> {
                   children: <Widget>[
                     Container(
                       width: ScreenAdapter.width(340),
-                      child: CachedNetworkImage(
+                      child: provide.brandMallList[index].prodPic==null?
+                          Image.asset("assets/images/default/default_img.png",
+                          fit: BoxFit.fitWidth,):CachedNetworkImage(
                         imageUrl:"${provide.brandMallList[index].prodPic}${ConstConfig.BANNER_FOUR_SIZE}",
                         fit: BoxFit.fitWidth,
                       ),
@@ -207,7 +261,7 @@ class _BrandMallContentPageState extends State<BrandMallContentPage> {
     widget._detailProvide.clearCommodityModels();
     widget._detailProvide.prodId = prodID;
     /// 加载详情数据
-    widget._detailProvide.detailData(types: shopID,prodId:prodID )
+    widget._detailProvide.detailData(types: shopID,prodId:prodID,context: context )
         .doOnListen(() {
       print('doOnListen');
     })
@@ -221,7 +275,7 @@ class _BrandMallContentPageState extends State<BrandMallContentPage> {
       widget._detailProvide.isBuy = false;
       Navigator.push(context, MaterialPageRoute(
           builder:(context){
-            return new CommodityDetailPage();
+            return new CommodityDetailPage(pages: ConstConfig.EXHIBIT_PRODUCT,);
           }
       )
       );

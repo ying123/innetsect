@@ -22,6 +22,10 @@ class  TicketModel {
   int shopID;
   String salesPriceRange;
   int orderableQuantity;
+  /// 我的订单扩展
+  int ticketID;
+  String ticketNo;
+  String ticketName;
 
   TicketModel({
     this.ticketTypeID,
@@ -44,6 +48,9 @@ class  TicketModel {
     this.shopID,
     this.salesPriceRange,
     this.orderableQuantity,
+    this.ticketID,
+    this.ticketName,
+    this.ticketNo
   });
 
   factory TicketModel.fromJson(Map<String, dynamic> json){
@@ -68,6 +75,9 @@ class  TicketModel {
       shopID: json['shopID'],
       salesPriceRange: json['salesPriceRange'],
       orderableQuantity: json['orderableQuantity'],
+      ticketID: json['ticketID'],
+      ticketName: json['ticketName'],
+      ticketNo: json['ticketNo']
     );
   }
 
@@ -92,6 +102,9 @@ class  TicketModel {
     'shopID':shopID,
     'salesPriceRange':salesPriceRange,
     'orderableQuantity':orderableQuantity,
+    'ticketID': ticketID,
+    'ticketName': ticketName,
+    'ticketNo': ticketNo
   };
 }
 

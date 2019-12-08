@@ -111,84 +111,86 @@ class _ActivityContextPageState extends State<ActivityContextPage> {
         body: Column(
           children: <Widget>[
             Container(
-              width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(280),
               alignment: Alignment.center,
               child: Wrap(
                 spacing: 20,
                 runSpacing: 10,
                 children: _appNavProvide.activityList.asMap().keys.map((key){
-                  ActivityModel item = _appNavProvide.activityList[key];
-                  DateTime dates = DateTime.parse(item.sessionDate);
-                  String weekday = CommonUtil.formatWeekday(dates.weekday);
-                  String month = CommonUtil.formatMonth(dates.month);
-                  String day = dates.day<10?"0${dates.day}":dates.day.toString();
-                  Color colors = Colors.black;
-                  Color textColors = Colors.white;
-                  if(_provide.currentIndex!=key){
-                    colors = Colors.black45;
-                    textColors = Colors.white60;
+                  if(key<3){
+                    ActivityModel item = _appNavProvide.activityList[key];
+                    DateTime dates = DateTime.parse(item.sessionDate);
+                    String weekday = CommonUtil.formatWeekday(dates.weekday);
+                    String month = CommonUtil.formatMonth(dates.month);
+                    String day = dates.day<10?"0${dates.day}":dates.day.toString();
+                    Color colors = Colors.black;
+                    Color textColors = Colors.white;
+                    if(_provide.currentIndex!=key){
+                      colors = Colors.black45;
+                      textColors = Colors.white60;
+                    }
+                    return InkWell(
+                      onTap: () async{
+                        setState(() {
+                          _provide.currentIndex = key;
+                          _provide.days = _appNavProvide.activityList[key].sessionDate;
+                        });
+                        _loadData(_provide.days);
+                      },
+                      child: Container(
+                        width: ScreenAdapter.getScreenWidth()/4,
+                        height: ScreenAdapter.height(240),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: colors),
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                width: ScreenAdapter.getScreenWidth()/3,
+                                color: colors,
+                                alignment: Alignment.center,
+                                child: Text(weekday,style: TextStyle(
+                                    color: textColors,
+                                    fontSize: ScreenAdapter.size(32)
+                                ),),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(month, style: TextStyle(
+                                    color: colors,
+                                    fontSize: ScreenAdapter.size(52),
+                                    fontWeight: FontWeight.w800
+                                ),),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.only(bottom: 10),
+                                child: Text(day,style: TextStyle(
+                                    fontSize: ScreenAdapter.size(62),
+                                    color: colors,
+                                    fontWeight: FontWeight.w800
+                                ),),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }else{
+                    return Container(width: 0,height: 0,);
                   }
-                  return InkWell(
-                    onTap: () async{
-                      setState(() {
-                        _provide.currentIndex = key;
-                        _provide.days = _appNavProvide.activityList[key].sessionDate;
-                      });
-                      _loadData(_provide.days);
-                    },
-                    child: Container(
-                      width: ScreenAdapter.getScreenWidth()/4,
-                      height: ScreenAdapter.height(240),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: colors),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              width: ScreenAdapter.getScreenWidth()/3,
-                              color: colors,
-                              alignment: Alignment.center,
-                              child: Text(weekday,style: TextStyle(
-                                color: textColors,
-                                fontSize: ScreenAdapter.size(32)
-                              ),),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(month, style: TextStyle(
-                                color: colors,
-                                fontSize: ScreenAdapter.size(52),
-                                fontWeight: FontWeight.w800
-                              ),),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.only(bottom: 10),
-                              child: Text(day,style: TextStyle(
-                                fontSize: ScreenAdapter.size(62),
-                                color: colors,
-                                fontWeight: FontWeight.w800
-                              ),),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
                 }).toList(),
               ),
             ),
             Expanded(
-              child: RefreshIndicator(
+              child:_exAcivityList.length>0? RefreshIndicator(
                 onRefresh: () async{
                   _loadData(_provide.days);
                 },
@@ -409,6 +411,8 @@ class _ActivityContextPageState extends State<ActivityContextPage> {
                     ) ;
                   },
             )
+              ):Column(
+                children: CustomsWidget().noDataWidget(),
               )
             )
           ],

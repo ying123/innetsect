@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/exhibition/exhibitions_model.dart';
 import 'package:innetsect/data/exhibition/halls_model.dart';
@@ -66,8 +67,8 @@ class HomeProvide extends BaseProvide {
     });
   }
   /// 扫码
-  Observable qrCodeWhisk(Map<String,dynamic> json){
-    return _repo.qrCodeWhisk(json).doOnData((item){
+  Observable qrCodeWhisk(Map<String,dynamic> json,{BuildContext context}){
+    return _repo.qrCodeWhisk(json,context:context).doOnData((item){
 
     }).doOnError((e, sitack){
 

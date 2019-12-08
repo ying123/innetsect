@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:innetsect/api/net_utils.dart';
 import 'package:innetsect/data/base.dart';
 import 'package:rxdart/rxdart.dart';
@@ -6,15 +7,15 @@ import 'package:rxdart/rxdart.dart';
 class SearchService {
 
   /// 标签请求
-  Observable<BaseResponse> onRecommendedTags (){
+  Observable<BaseResponse> onRecommendedTags ({BuildContext context}){
     var url = '/api/eshop/app/products/words/hotest';
-    var response = get(url);
+    var response = get(url,context: context);
     return response;
   }
 
   /// 搜索
-  Observable<BaseResponse> onSearch (String url){
-    var response = get(url);
+  Observable<BaseResponse> onSearch (String url,{BuildContext context}){
+    var response = get(url,context: context);
     return response;
   }
 }
@@ -24,12 +25,12 @@ class SearchRepo {
   final SearchService _remote = SearchService();
 
   /// 标签请求
-  Observable<BaseResponse> onRecommendedTags(){
-    return _remote.onRecommendedTags();
+  Observable<BaseResponse> onRecommendedTags({BuildContext context}){
+    return _remote.onRecommendedTags(context: context);
   }
 
   /// 搜索
-  Observable<BaseResponse> onSearch (String url){
-    return _remote.onSearch(url);
+  Observable<BaseResponse> onSearch (String url,{BuildContext context}){
+    return _remote.onSearch(url,context:context);
   }
 }
