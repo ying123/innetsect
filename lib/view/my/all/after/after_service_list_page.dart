@@ -126,7 +126,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
   }
   @override
   void initState() {
-    // TODO: implement initState
+   
     super.initState();
     _afterServiceProvide ??= widget._afterServiceProvide;
     _easyRefreshController = EasyRefreshController();
@@ -139,7 +139,7 @@ class _AfterServiceListContentState extends State<AfterServiceListContent> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    
     super.dispose();
     pageNo = 1;
   }
