@@ -348,6 +348,21 @@ class _MallHomeContentState extends State<MallHomeContent> {
           if(item.prodName.length>10){
             title = title.substring(0,10) + "...";
           }
+          Widget widgets=Container();
+          if( double.parse(item.salesPriceRange) < double.parse(item.originalPrice.toString()) ){
+            widgets = new Container(
+              padding:EdgeInsets.only(top: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CustomsWidget().priceTitle(price: item.originalPrice.toString(),color: Colors.grey, decoration: TextDecoration.lineThrough,
+                      fontWeight: FontWeight.w400,
+                      fontSize: ScreenAdapter.size(18))
+                ],
+              ),
+            );
+          }
+
           return InkWell(
             onTap: (){
               /// 跳转商品详情
@@ -383,7 +398,8 @@ class _MallHomeContentState extends State<MallHomeContent> {
                             fontWeight: FontWeight.w500,fontSize: ScreenAdapter.size(24))
                       ],
                     ),
-                  )
+                  ),
+                  widgets
                 ],
               ),
             ),

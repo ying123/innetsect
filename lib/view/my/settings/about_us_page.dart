@@ -56,7 +56,7 @@ class AboutUsPage extends StatelessWidget {
             child: new Container(
               width: double.infinity,
               alignment: Alignment.center,
-              child: new Text("©上海映市信息科技有限公司",style: TextStyle(color: Colors.grey),),
+              child: new Text("©礼高文化传播(上海)有限公司",style: TextStyle(color: Colors.grey),),
             ),
           )
         ],

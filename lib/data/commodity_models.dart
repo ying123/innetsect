@@ -1,5 +1,6 @@
 
 
+import 'package:innetsect/data/commodity_badges_model.dart';
 import 'package:innetsect/data/commodity_feature_model.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
 
@@ -39,6 +40,7 @@ class CommodityModels{
   List<CommoditySkusModel> skus;
   // feature
   List<CommodityFeatureModel> features;
+  List<CommodityBadgesModel> badges;
 
   ///订单详情
   int itemID;
@@ -142,7 +144,8 @@ class CommodityModels{
     this.panicBuyQtyPerAcct,
     this.panicCountdownTime,
     this.panicBuyingStart,
-    this.orderType
+    this.orderType,
+    this.badges
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -194,7 +197,8 @@ class CommodityModels{
         panicBuyQtyPerAcct: json['panicBuyQtyPerAcct'],
         panicCountdownTime: json['panicCountdownTime'],
         panicBuyingStart: json['panicBuyingStart'],
-        orderType: json['orderType']
+        orderType: json['orderType'],
+        badges: json['badges']!=null?CommodityBadgesModelList.fromJson(json['badges']).list:json['badges']
     );
   }
 

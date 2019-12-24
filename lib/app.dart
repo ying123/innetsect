@@ -199,27 +199,33 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
   Provide<MainProvide> enterAPP() {
     return Provide<MainProvide>(
       builder: (BuildContext context, Widget child, MainProvide provide) {
-        return Align(
-          alignment: Alignment.topRight,
-          child: Container(
-            margin: EdgeInsets.only(top: 60,right: 20),
-            padding: EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 5),
-            child: GestureDetector(
-              onTap: () {
-                onDone();
-              },
-              child: Text(
+        if(provide.splashModel!=null
+            &&provide.splashModel.splashes!=null
+            &&provide.splashModel.splashes.length>0){
+          return Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              margin: EdgeInsets.only(top: 60,right: 20),
+              padding: EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 5),
+              child: GestureDetector(
+                onTap: () {
+                  onDone();
+                },
+                child: Text(
 //                '${IntlUtil.getString(context, Ids.x_jump_welcome)}(${provide.countdown})',
-              '跳过 $_countDown',
-                style: TextStyle(fontSize: 14.0, color: Colors.white),
+                  '跳过 $_countDown',
+                  style: TextStyle(fontSize: 14.0, color: Colors.white),
+                ),
               ),
+              decoration: BoxDecoration(
+                  color: Color(0x66000000),
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  border: Border.all(width: 0.33, color: Colors.grey)),
             ),
-            decoration: BoxDecoration(
-                color: Color(0x66000000),
-                borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                border: Border.all(width: 0.33, color: Colors.grey)),
-          ),
-        );
+          );
+        }else{
+          return Container(width: 0,height: 0,);
+        }
       },
     );
   }
@@ -269,28 +275,14 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
             setState(() {});
           });
         }else{
-          if(model.attended){
-            Future.delayed(Duration(seconds: 1),(){
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                  builder: (context){
-                    _appNavigationBarProvide.currentIndex = 2;
-                    return AppNavigationBar();
-                  }
-              ), ModalRoute.withName('/appNavigationBarPage'));
-            });
-          }else{
-            Future.delayed(Duration(seconds: 1),(){
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context){
-                    return EntrancePage();
-                  }
-              ));
-            });
-          }
+          onDone();
         }
 
         // 活动请求
-        _loadExhibition(model.exhibitionID);
+        if(model.exhibitionID!=null){
+          _loadExhibition(model.exhibitionID);
+        }
+
       }
 
     }, onError: (e) {});

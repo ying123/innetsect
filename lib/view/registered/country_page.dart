@@ -48,7 +48,7 @@ class _CountryContentPageState extends State<CountryContentPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
-          widget: new Text("请选择国家",style: TextStyle(fontSize: ScreenAdapter.size((30)),
+          widget: new Text("请选择国家/地区",style: TextStyle(fontSize: ScreenAdapter.size((30)),
               fontWeight: FontWeight.w900
           ),
           )

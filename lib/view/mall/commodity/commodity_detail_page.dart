@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -5,7 +7,11 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
+import 'package:innetsect/data/user_info_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/common_util.dart';
+import 'package:innetsect/view/login/login_page.dart';
+import 'package:innetsect/view/mall/commodity/qimo_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
@@ -107,7 +113,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       if(skuModel.pics.length>0){
         skuModel.pics.forEach((item){
           _listImage..add(CachedNetworkImage(
-              imageUrl: "${item.skuPicUrl}${ConstConfig.BANNER_TWO_SIZE}",fit: BoxFit.fill
+              imageUrl: "${item.skuPicUrl}${ConstConfig.BANNER_TWO_SIZE}",fit: BoxFit.fitWidth
           ));
         });
       }else{
@@ -219,7 +225,14 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           _comTitleProdName(),
           new Container(
             padding: EdgeInsets.only(top: 10),
-            child: _comTitleSalesPrice()
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                _comTitleSalesPrice(),
+                _comSalesPrice()
+              ],
+            )
           ),
         ],
       ),
@@ -239,13 +252,37 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
     );
   }
   /// 标题价格
-  ///TODO 商品详情（salesPrice和原价对比）
   Provide<CommodityDetailProvide> _comTitleSalesPrice() {
     return Provide<CommodityDetailProvide>(
         builder: (BuildContext context, Widget widget,
             CommodityDetailProvide provide) {
           CommodityModels models = provide.commodityModels;
-          return CustomsWidget().priceTitle(price: models!=null?models.salesPrice.toString():"");
+          String price = "";
+          if(models!=null&&models.originalPrice!=null){
+            price = models.originalPrice.toString();
+          }
+          if(models!=null&&models.originalPrice!=null&&models.salesPrice!=null){
+            price = models.salesPrice.toString();
+          }
+          return CustomsWidget().priceTitle(price: price);
+        }
+    );
+  }
+  /// 原价
+  Provide<CommodityDetailProvide> _comSalesPrice() {
+    return Provide<CommodityDetailProvide>(
+        builder: (BuildContext context, Widget widget,
+            CommodityDetailProvide provide) {
+          CommodityModels models = provide.commodityModels;
+          if(double.parse(models.salesPriceRange)<double.parse(models.originalPrice.toString())){
+            return Padding(
+              padding: EdgeInsets.only(left: 10),
+              child:  CustomsWidget().priceTitle(price: models.originalPrice.toString(),decoration: TextDecoration.lineThrough,
+                  color: Colors.grey,fontWeight: FontWeight.w400,fontSize: ScreenAdapter.size(20)
+              ),
+            );
+          }
+          return Container();
         }
     );
   }
@@ -421,7 +458,55 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             flex: 1,
             child: _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"
                 ,onTap: (){
-                  CustomsWidget().serviceWidget(context: context);
+                  if(UserTools().getUserToken()==''){
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return LoginPage();
+                      }
+                    ));
+                  }else{
+                    UserInfoModel userInfoModel = UserTools().getUserInfo();
+                    // 数据结构组装
+                    var url = Uri.encodeComponent("https://proadmin.innersect.net/eshop/products/detail?id=${_provide.skusModel.prodID}");
+                    var json={
+                      "nickName": userInfoModel.nickName==null?userInfoModel.mobile:userInfoModel.nickName,
+                      "peerId":"10052522",
+                      "cardInfo":{
+                        "left":{
+                          "url": _provide.skusModel.skuPic
+                        },
+                        "right1":{
+                          "text": _provide.skusModel.skuName,  // 首行文字内容，展示时超出两行隐藏，卡片上单行隐藏
+                          "color": "#595959",                 // 字体颜色，支持十六位 #ffffff 格式的颜色，不填或错误格式默认#595959
+                          "fontSize": 12
+                        },
+                        "right2": {
+                          "text": "¥${_provide.commodityModels.salesPriceRange}",        // 第二行文字内容，展示时超出两行隐藏，卡片上单行隐藏
+                          "color": "#595959",                 // 字体颜色，支持十六位 #ffffff 格式的颜色，不填或错误格式默认#595959
+                          "fontSize": 12                      // 字体大小， 默认12 ， 请传入number类型的数字
+                        },
+                        "url": url
+                      }
+                    };
+                    var otherParams = jsonEncode(json);
+                    // 用户id
+                    var clientId = "1000${userInfoModel.acctID}";
+                    // 自定义字段
+                    var userInfo={
+                      "手机号":userInfoModel.mobile
+                    };
+
+                    var qimoPath = "https://webchat.7moor.com/wapchat.html?accessId=20ed0990-2268-11ea-a2c3-49801d5a0f66"
+                        +"&fromUrl=m3.innersect.net&urlTitle=innersect"
+                        +"&otherParams="+Uri.encodeFull(otherParams)+"&clientId="+clientId+"&customField="+Uri.encodeFull(jsonEncode(userInfo));
+
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context){
+                          return QimoPage(url: qimoPath,);
+                        }
+                    ));
+                  }
+//                  CustomsWidget().serviceWidget(context: context);
                 }),
           ),
           Expanded(

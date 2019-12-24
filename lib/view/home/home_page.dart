@@ -145,19 +145,20 @@ class _HomeContentPageState extends State<HomeContentPage>
             _poster = poster;
           });
         }
+        if(_provide.exhibitionID!=null){
+          _provide.exhibitions(_provide.exhibitionID).doOnListen((){
 
-        _provide.exhibitions(_provide.exhibitionID).doOnListen((){
+          }).doOnError((e, siack){
 
-        }).doOnError((e, siack){
-
-        }).listen((item){
-          print('exhibitions=====>${item.data}');
-          if (item != null) {
-           _provide.addHalls(HallsModelList.fromJson(item.data['halls']).list);
-           _provide.shopID = item.data['shopID'];
-           _provide.locOverview = item.data['locOverview'];
-          }
-        });
+          }).listen((item){
+            print('exhibitions=====>${item.data}');
+            if (item != null) {
+              _provide.addHalls(HallsModelList.fromJson(item.data['halls']).list);
+              _provide.shopID = item.data['shopID'];
+              _provide.locOverview = item.data['locOverview'];
+            }
+          });
+        }
       }
     });
   }

@@ -9,13 +9,13 @@ class AppConfig{
   ///基础链接
 
 // static const baseUrl = 'https://gate.innersect.net';
-//  static const baseUrl = "http://test.innersect.net";
-  static const baseUrl = "https://m3.innersect.net";
+  static const baseUrl = "http://test.innersect.net";
+//  static const baseUrl = "https://m3.innersect.net";
 
   /// 测试环境（调货）\
-//  static const allocatingUrl = "http://exwms.exfox.com.cn/service/api/Transfer/getPCode";
+  static const allocatingUrl = "http://exwms.exfox.com.cn/service/api/Transfer/getPCode";
   ///正式环境
-    static const allocatingUrl = "http://ligaowms.exfox.com.cn/service/api/Transfer/getPCode";
+//    static const allocatingUrl = "http://ligaowms.exfox.com.cn/service/api/Transfer/getPCode";
 
 
   //todo App的所有基础配置

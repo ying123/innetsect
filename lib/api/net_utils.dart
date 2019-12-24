@@ -42,9 +42,16 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
     }
     if(error.response.data['path']=="/accounts/me"
       || error.response.statusCode==401
-      ||error.response.data['message']=="jwt.token.expired"
     ){
-      print(context.widget);
+      Future.delayed(Duration.zero,(){
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context){
+            return LoginPage();
+          },
+          settings: RouteSettings(arguments: {"pages":context.widget}),
+        ));
+      });
+    }else if(error.response.data['message']=="jwt.token.expired"){
       Future.delayed(Duration.zero,(){
         Navigator.push(context, MaterialPageRoute(
           builder: (context){
@@ -101,12 +108,6 @@ Future<BaseResponse> _post(String url, dynamic body,
       print('response _post:->$response');
     }).catchError((error){
 
-      if(error.response.data['message']=='密钥不正确'&&error.response.data['status']==400){
-        CustomsWidget().showToast(title: error.response.data['message']);
-        return ;
-      }else {
-        CustomsWidget().showToast(title: error.response.data['message']);
-      }
       if(error.response.data['path']=="/salesorders/shoppingorder/create"){
         if(UserTools().getUserToken()==null){
           Future.delayed(Duration.zero,(){
@@ -117,8 +118,8 @@ Future<BaseResponse> _post(String url, dynamic body,
             ));
           });
         }
-      }
-      if(error.response.data['message']=="jwt.token.expired"){
+      }else if(error.response.data['message']=="jwt.token.expired"
+      || error.response.data['message']=='密钥不正确'){
         Future.delayed(Duration.zero,(){
           Navigator.push(context, MaterialPageRoute(
               builder: (BuildContext context){
@@ -126,6 +127,8 @@ Future<BaseResponse> _post(String url, dynamic body,
               }
           ));
         });
+      }else {
+        CustomsWidget().showToast(title: error.response.data['message']);
       }
     });
   }on DioError catch(e){
@@ -251,6 +254,7 @@ Future _getHtml(String url, {Map<String, dynamic> params,BuildContext context}) 
   await dio.get(url, queryParameters: params,options:Options(extra: {"context": context})).then((res){
     response = res;
   }).catchError((error){
+
   });
   return response;
 }

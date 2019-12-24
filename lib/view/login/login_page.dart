@@ -383,15 +383,16 @@ class _LoginContentPageState extends State<LoginContentPage> {
                 print('listen data->$item');
                 ///加载数据
                 if(item!=null&&item.data!=null){
+                  UserTools().setUserData(item.data);
                   /// 获取用户信息
                   provide.getUserInfo(context:context).doOnListen((){}).doOnCancel((){}).listen((userItem){
                     if(userItem.data!=null){
                       UserInfoModel model = UserInfoModel.fromJson(userItem.data);
                       provide.setUserInfoModel(model);
+                      UserTools().setUserInfo(userItem.data);
                       rammus.bindAccount(model.acctID.toString());
                     }
                   },onError: (e){});
-                  UserTools().setUserData(item.data);
                   Navigator.pop(context);
                   if(pages == 'orderDetail'){
                     Navigator.pop(context);

@@ -202,7 +202,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                 child: Row(
                   children: <Widget>[
                     Center(
-                      child: Text('所在国家',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                      child: Text('国家地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 40),
@@ -423,7 +423,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
               }else if(provide.tel==null){
                 CustomsWidget().showToast(title: "请输入收货人手机号");
               }else if(provide.countryModel==null||provide.cityModel==null){
-                CustomsWidget().showToast(title: "请选择国家和所在地区");
+                CustomsWidget().showToast(title: "请选择国家地区");
               }else if(provide.addressDetail==null){
                 CustomsWidget().showToast(title: "请填写详细地址");
               }else if(provide.postalCode==null ||provide.postalCode==""){

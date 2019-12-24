@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:innetsect/api/loading.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
+import 'package:innetsect/data/commodity_badges_model.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
@@ -226,9 +228,9 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
                           child: new Column(
                             children: <Widget>[
                               // 商品图片
-                              _imageWidget(item.prodPic),
+                              _imageWidget(item.prodPic,item.badges),
                               // 价格 购物车图标
-                              _priceAndCartWidget(item.salesPriceRange.toString(),item.prodID,item.shopID),
+                              _priceAndCartWidget(item.salesPriceRange.toString(),item.originalPrice.toString(),item.prodID,item.shopID),
                               // 描述
                               _textWidget(item.prodName)
                             ],
@@ -245,20 +247,52 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   }
 
   /// 商品图片
-  Widget _imageWidget(String image){
-    return new Container(
-        width: double.infinity,
-        height: ScreenAdapter.height(320),
-        child:image!=null? CachedNetworkImage(
-          imageUrl:image+ConstConfig.BANNER_FOUR_SIZE,
-          fit: BoxFit.fitWidth,
-        ):Image.asset("assets/images/default/default_img.png",fit: BoxFit.fitWidth,)
-
+  Widget _imageWidget(String image,List<CommodityBadgesModel> badges){
+    return Stack(
+      children: <Widget>[
+        new Container(
+            width: double.infinity,
+            height: ScreenAdapter.height(320),
+            child:image!=null? CachedNetworkImage(
+              imageUrl:image+ConstConfig.BANNER_FOUR_SIZE,
+              fit: BoxFit.fitWidth,
+            ):Image.asset("assets/images/default/default_img.png",fit: BoxFit.fitWidth,)
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: badges!=null&&badges.length>0?
+              Row(
+                children: badges.map((item){
+                  return Container(
+                    width: ScreenAdapter.width(80),
+                    height: ScreenAdapter.height(40),
+                    color: AppConfig.blueBtnColor,
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(left: 5),
+                    child: Text(item.name,style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenAdapter.size(24)
+                    ),),
+                  );
+                }).toList(),
+              ):Container(width: 0,height: 0,),
+        )
+      ],
     );
   }
 
   /// 价格和购物车
-  Widget _priceAndCartWidget(String price,int prodID,int shopID){
+  Widget _priceAndCartWidget(String price,String originalPrice,int prodID,int shopID){
+    Widget widgets = Container();
+    if(double.parse(price)<double.parse(originalPrice)){
+      widgets = Padding(
+        padding: EdgeInsets.only(left: 10),
+        child: CustomsWidget().priceTitle(price: originalPrice,decoration: TextDecoration.lineThrough,fontSize: ScreenAdapter.size(20),
+          fontWeight: FontWeight.w400
+        ),
+      );
+    }
     return new Container(
       width: double.infinity,
       padding: EdgeInsets.only(top: 10,left: 10,right: 10,bottom: 5),
@@ -267,7 +301,13 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           new Container(
-            child: CustomsWidget().priceTitle(price: price),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                CustomsWidget().priceTitle(price: price),
+//                widgets
+              ],
+            )
           ),
           new Container(
             width: ScreenAdapter.width(28),height: ScreenAdapter.height(28),
@@ -343,8 +383,8 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   _loadDetail(int prodID,int shopID){
     _detailProvide.clearCommodityModels();
     _detailProvide.prodId = prodID;
-//    Loading.ctx=context;
-//    Loading.show();
+    Loading.ctx=context;
+    Loading.show();
     /// 加载详情数据
     _detailProvide.detailData(types: shopID,prodId:prodID,context: context )
         .doOnListen(() {
@@ -361,6 +401,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
         _cartProvide.setInitCount();
         _detailProvide.isBuy = false;
         _cartProvide.setMode(mode: "multiple");
+        Loading.remove();
         Navigator.push(context, MaterialPageRoute(
             builder:(context){
               return new CommodityDetailPage();

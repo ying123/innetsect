@@ -125,7 +125,8 @@ class CustomsWidget{
     @required String price,
     Color color,
     FontWeight fontWeight = FontWeight.w900,
-    double fontSize
+    double fontSize,
+    TextDecoration decoration
   }){
     print(price);
     return new Row(
@@ -140,7 +141,8 @@ class CustomsWidget{
         new Container(
             alignment: Alignment.center,
             child: new Text(price, style: TextStyle(
-                fontSize: fontSize!=null?fontSize:ScreenAdapter.size(28),fontWeight: fontWeight,color: color
+                fontSize: fontSize!=null?fontSize:ScreenAdapter.size(28),fontWeight: fontWeight,color: color,
+              decoration: decoration
             ),
             )
         ),
