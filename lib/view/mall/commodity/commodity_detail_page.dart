@@ -499,7 +499,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                     var qimoPath = "https://webchat.7moor.com/wapchat.html?accessId=20ed0990-2268-11ea-a2c3-49801d5a0f66"
                         +"&fromUrl=m3.innersect.net&urlTitle=innersect"
                         +"&otherParams="+Uri.encodeFull(otherParams)+"&clientId="+clientId+"&customField="+Uri.encodeFull(jsonEncode(userInfo));
-
+                    print(qimoPath);
                     Navigator.push(context, MaterialPageRoute(
                         builder: (context){
                           return QimoPage(url: qimoPath,);

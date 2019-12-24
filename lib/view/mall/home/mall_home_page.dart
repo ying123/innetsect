@@ -349,7 +349,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
             title = title.substring(0,10) + "...";
           }
           Widget widgets=Container();
-          if( double.parse(item.salesPriceRange) < double.parse(item.originalPrice.toString()) ){
+          if(item.originalPrice!=null&& double.parse(item.salesPriceRange.toString()) < double.parse(item.originalPrice.toString()) ){
             widgets = new Container(
               padding:EdgeInsets.only(top: 10),
               child: Row(

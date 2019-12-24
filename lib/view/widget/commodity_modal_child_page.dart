@@ -255,6 +255,8 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
               "salesPrice":_detailProvide.commodityModels.salesPrice,
               "allowPointRate":_detailProvide.commodityModels.allowPointRate
             }];
+            Loading.ctx = context;
+            Loading.show();
             _detailProvide.createShopping(json,context)
                 .doOnListen(() {
               print('doOnListen');
@@ -266,12 +268,13 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
               if(item.data!=null){
                 OrderDetailModel model = OrderDetailModel.fromJson(item.data);
                 _orderDetailProvide.orderDetailModel = model;
+                Loading.remove();
+                Navigator.push(context, new MaterialPageRoute(
+                    builder: (context){
+                      return new OrderDetailPage();
+                    })
+                );
               }
-              Navigator.push(context, new MaterialPageRoute(
-                  builder: (context){
-                    return new OrderDetailPage();
-                  })
-              );
               //      _provide
             }, onError: (e) {
               print(e);
