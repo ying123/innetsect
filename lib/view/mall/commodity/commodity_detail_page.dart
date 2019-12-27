@@ -467,7 +467,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                   }else{
                     UserInfoModel userInfoModel = UserTools().getUserInfo();
                     // 数据结构组装
-                    var url = Uri.encodeComponent("https://proadmin.innersect.net/eshop/products/detail?id=${_provide.skusModel.prodID}");
+                    var url = Uri.encodeComponent("https://proadmin.innersect.net/eshop/stores/shopProductDetail?id=${_provide.skusModel.prodID}&shopId=${_provide.commodityModels.shopID}");
                     var json={
                       "nickName": userInfoModel.nickName==null?userInfoModel.mobile:userInfoModel.nickName,
                       "peerId":"10052522",
