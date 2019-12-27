@@ -110,6 +110,19 @@ class _MallHomeContentState extends State<MallHomeContent> {
         centerTitle: true,
         leading: Container(),
         actions: <Widget>[
+          InkWell(
+            onTap: (){
+              print('抽签被点击');
+              Navigator.pushNamed(context, '/drawPage');
+            },
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(right: 20),
+              child: Text(
+                '抽签'
+              ),
+            ),
+          ),
           _mainProvide.splashModel.exhibitionID!=null?
           InkWell(
             child: Container(

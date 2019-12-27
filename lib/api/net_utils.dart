@@ -100,14 +100,16 @@ Future<BaseResponse> _post(String url, dynamic body,
         .dio
         .post(url, data: body, queryParameters: queryParameters,
         options:Options(extra: {"context": context})).then((res){
+          //print('res.data.message------->${res.data['message']}');
       if(res.data is Map){
         response = BaseResponse.fromJson(res.data);
+          print('post-message======>${response.data['message']}');
       }else if(res.data is List){
         response = BaseResponse.fromlist(res.data);
       }
-      print('response _post:->$response');
+     // print('response ========》_post:->${response.data['message']}');
     }).catchError((error){
-
+      print('error----> ${error.response.data['message']}');
       if(error.response.data['path']=="/salesorders/shoppingorder/create"){
         if(UserTools().getUserToken()==null){
           Future.delayed(Duration.zero,(){
@@ -120,6 +122,7 @@ Future<BaseResponse> _post(String url, dynamic body,
         }
       }else if(error.response.data['message']=="jwt.token.expired"
       || error.response.data['message']=='密钥不正确'){
+        print('message=====>${response.data['message']}');
         Future.delayed(Duration.zero,(){
           Navigator.push(context, MaterialPageRoute(
               builder: (BuildContext context){
@@ -164,6 +167,7 @@ Future _patch(String url, dynamic body,
       response = item;
     }).catchError((error){
       if(error.response.data['message']!=null){
+        print('<-----message----->');
         CustomsWidget().showToast(title: error.response.data['message']);
       }
     });

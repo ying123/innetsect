@@ -7,6 +7,13 @@ import 'package:innetsect/entrance_page.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
 import 'package:innetsect/view/binding_sign_in/sign_protocol_page.dart';
 import 'package:innetsect/view/brand/brand_mall_page.dart';
+import 'package:innetsect/view/draw/check_the_registration_page.dart';
+import 'package:innetsect/view/draw/draw_details_page.dart';
+import 'package:innetsect/view/draw/draw_page.dart';
+import 'package:innetsect/view/draw/end_of_the_draw_page.dart';
+import 'package:innetsect/view/draw/registered_page.dart';
+import 'package:innetsect/view/draw/registration_information_page.dart';
+import 'package:innetsect/view/draw/registration_successful_page.dart';
 import 'package:innetsect/view/exhibition/home_portlets_details_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/login/login_page.dart';
@@ -42,7 +49,15 @@ final routes = {
   // '/brandMallPage':(context)=>BrandMallPage(),
   '/homePortletsDetailsPage':(context,{arguments})=>HomePortletsDetailsPage(contentID: arguments,),
   '/ProfilePage':(context)=>ProfilePage(),
-  '/SignProtocolPage':(context)=>SignProtocolPage()
+  '/SignProtocolPage':(context)=>SignProtocolPage(),
+  '/drawPage':(context)=>DrawPage(),
+  '/drawDetailsPage':(context)=>DrawDetailsPage(),
+  '/registrationInformationPage':(context)=>RegistrationInformationPage(),
+  '/registrationSuccessfulPage':(context)=>RegistrationSuccessfulPage(),
+  '/checkTheRegistrationPage':(context)=>CheckTheRegistrationPage(),
+  '/drawRegisteredPage':(context)=>DrawRegisteredPage(),
+  '/endOfTheDrawPage':(context)=>EndOfTheDrawPage(),
+  
 };
 
 //固定写法

@@ -37,7 +37,7 @@ dependencies:
   json_serializable: ^3.2.2
   fluttertoast: ^3.0.4
   # 图片缓存
-  cached_network_image: ^0.8.0
+  cached_network_image: ^2.0.0-rc
   #cached_network_image: ^0.5.1
   flutter_swiper: ^1.1.6
   image_picker: ^0.6.1+4
@@ -198,6 +198,9 @@ flutter:
     - assets/images/newpersonalcentre/消息@1x.png
     - assets/images/yifi1.png
     - assets/images/yifu2.png
+    - assets/images/chouqian.jpg
+    - assets/images/registration_successful.jpg
+    - assets/images/zhongqian.jpg
 
     #展会首页
     - assets/images/showhome/展会活动.png

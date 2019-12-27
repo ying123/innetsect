@@ -8,9 +8,9 @@ class AppConfig{
 
   ///基础链接
 
-// static const baseUrl = 'https://gate.innersect.net';
+ //static const baseUrl = 'https://gate.innersect.net';
   static const baseUrl = "http://test.innersect.net";
-//  static const baseUrl = "https://m3.innersect.net";
+  //static const baseUrl = "https://m3.innersect.net";
 
   /// 测试环境（调货）\
   static const allocatingUrl = "http://exwms.exfox.com.cn/service/api/Transfer/getPCode";
@@ -20,7 +20,7 @@ class AppConfig{
 
   //todo App的所有基础配置
 
-  //样式åå
+  //样式
   static final themedata = ThemeData(
     primaryColor: Colors.white,
     accentColor: Colors.white,
