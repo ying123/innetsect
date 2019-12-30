@@ -183,6 +183,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         ),
         _comTitle(),
         _selCol(),
+        _selCommodityPlicy(),
         _showDesc(),
         html!=null?new Container(
           child: Html(
@@ -320,6 +321,103 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             new Expanded(
               flex:1,
               child: new Icon(Icons.more_horiz),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 策略
+  Widget _selCommodityPlicy(){
+    String title='';
+    String content='';
+    // 0:不退不换，1：可退 2：可换 3：可退可换
+    switch(widget._provide.commodityModels.rmaPolicy){
+      case 0:
+        title = '不支持退换';
+        content = '该商品不支持退换';
+        break;
+      case 1:
+        title = '七天退货';
+        content = '签收7天内可无条件申请退货。INNERSECT收到并确定商品符合退货标准后，将原路返还您所支付的钱款。';
+        break;
+      case 2:
+        title = '七天换货';
+        content = '签收7天内可无条件申请换货。INNERSECT收到并确定商品符合换货标准后,将给予换货服务。';
+        break;
+      case 3:
+        title = '七天退换';
+        content = '签收7天内可无条件申请退换货。INNERSECT收到并确定商品符合退换货标准后，将原路返还您所支付的钱款。';
+        break;
+    }
+    List list = [
+      {'icon':'assets/images/mall/zhengpin1.png','title':'100%正品','content':'INNERSECT所售商品皆由品牌官方认证授权，100%官方品牌，请您放心购买。'},
+      {'icon':'assets/images/mall/zhengpin2.png','title':title,'content':content},
+      {'icon':'assets/images/mall/zhengpin3.png','title':'全国配送','content':'支持全国配送，包括港澳台地区。'},
+    ];
+    return Container(
+      width: double.infinity,
+      height: ScreenAdapter.height(80),
+      color:Colors.white,
+      margin:EdgeInsets.only(top: 10,bottom: 10),
+      padding: EdgeInsets.only(left: 20),
+      child: InkWell(
+        onTap: (){
+          // 蒙版
+          showModalBottomSheet(context: context,
+              builder: (context){
+                return Container(
+                  padding: EdgeInsets.only(left: 20,right: 20,top: 20),
+                  child: Column(
+                    children: list.map((item){
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Image.asset(item['icon'],fit: BoxFit.fitWidth,width: ScreenAdapter.width(36),),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Text(item['title']),
+                              )
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 10,bottom: 10),
+                            child: Text(item['content'])
+                          )
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                );
+              });
+        },
+        child: Row(
+          children: <Widget>[
+            Image.asset(list[0]['icon'],fit: BoxFit.fitWidth,width: ScreenAdapter.width(36),),
+            Padding(
+              padding: EdgeInsets.only(left: 10,right: 10),
+              child: Text(list[0]['title']),
+            ),
+            Image.asset(list[1]['icon'],fit: BoxFit.fitWidth,width: ScreenAdapter.width(36),),
+            Padding(
+              padding: EdgeInsets.only(left: 10,right: 10),
+              child: Text(list[1]['title']),
+            ),
+            Image.asset(list[2]['icon'],fit: BoxFit.fitWidth,width: ScreenAdapter.width(36),),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Text(list[2]['title']),
+            ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(right: 20),
+                alignment: Alignment.centerRight,
+                child: Icon(Icons.chevron_right),
+              ),
             )
           ],
         ),

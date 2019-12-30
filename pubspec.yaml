@@ -270,6 +270,10 @@ flutter:
     - assets/images/mall/product1.png
     - assets/images/mall/product2.png
     - assets/images/mall/find.png
+    # 策略----
+    - assets/images/mall/zhengpin1.png
+    - assets/images/mall/zhengpin2.png
+    - assets/images/mall/zhengpin3.png
     # 下拉刷新图---
     - assets/images/mall/fresh.png
     # ---支付成功、失败--
