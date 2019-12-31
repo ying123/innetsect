@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:innetsect/data/draw/drawee_data.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/draw/registration_information_provide.dart';
 import 'package:provide/provide.dart';
@@ -8,9 +12,12 @@ import 'package:provide/provide.dart';
 class RegistrationInformationPage extends PageProvideNode {
   final RegistrationInformationProvide _provide =
       RegistrationInformationProvide();
-  RegistrationInformationPage() {
+  final Map lotteryRegistrationPageModel;
+  RegistrationInformationPage({this.lotteryRegistrationPageModel}) {
     mProviders
         .provide(Provider<RegistrationInformationProvide>.value(_provide));
+    _provide.lotteryRegistrationPageModel =
+        lotteryRegistrationPageModel['lotteryRegistrationPageModel'];
   }
 
   @override
@@ -30,6 +37,17 @@ class RegistrationInformationContentPage extends StatefulWidget {
 class _RegistrationInformationContentPageState
     extends State<RegistrationInformationContentPage> {
   RegistrationInformationProvide provide;
+  @override
+  void initState() {
+    super.initState();
+    provide ??= widget.provide;
+    print('登记信息');
+    if (Platform.isAndroid) {
+      provide.platform = 'android';
+    } else if (Platform.isIOS) {
+      provide.platform = 'ios';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +163,9 @@ class _RegistrationInformationContentPageState
                       border: InputBorder.none
                       // contentPadding: EdgeInsets.all(0)
                       ),
-                  onChanged: (str) {},
+                  onChanged: (str) {
+                    provide.userName = str;
+                  },
                 ),
               ),
             ),
@@ -183,7 +203,9 @@ class _RegistrationInformationContentPageState
                       border: InputBorder.none
                       // contentPadding: EdgeInsets.all(0)
                       ),
-                  onChanged: (str) {},
+                  onChanged: (str) {
+                    provide.certificate = str;
+                  },
                 ),
               ),
             ),
@@ -221,7 +243,9 @@ class _RegistrationInformationContentPageState
                       border: InputBorder.none
                       // contentPadding: EdgeInsets.all(0)
                       ),
-                  onChanged: (str) {},
+                  onChanged: (str) {
+                    provide.phoneNumber = str;
+                  },
                 ),
               ),
             )
@@ -262,7 +286,29 @@ class _RegistrationInformationContentPageState
             ),
             InkWell(
               onTap: () {
-                _showCallPhoneDialog('13718220555');
+                var today = DateTime.now();
+                print('today==>$today');
+                print('today.str==>${today.toString()}');
+                var date1 = today.microsecondsSinceEpoch;
+                print('date1===>$date1');
+
+                var date2 = DateTime.fromMillisecondsSinceEpoch(date1);
+                print('date2===>$date2');
+                if (provide.groupValuea == false) {
+                  Fluttertoast.showToast(
+                      msg: '请勾选用户须知', gravity: ToastGravity.CENTER);
+                } else if (provide.userName == null) {
+                  Fluttertoast.showToast(
+                      msg: '请输入姓名', gravity: ToastGravity.CENTER);
+                } else if (provide.certificate == null) {
+                  Fluttertoast.showToast(
+                      msg: '请输入证件号码', gravity: ToastGravity.CENTER);
+                } else if (provide.phoneNumber == null) {
+                  Fluttertoast.showToast(
+                      msg: '请输入手机号码', gravity: ToastGravity.CENTER);
+                } else {
+                  _showCallPhoneDialog();
+                }
               },
               child: Container(
                 width: ScreenAdapter.width(695),
@@ -283,7 +329,7 @@ class _RegistrationInformationContentPageState
     );
   }
 
-  void _showCallPhoneDialog(String phone) {
+  void _showCallPhoneDialog() {
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -291,7 +337,7 @@ class _RegistrationInformationContentPageState
           return Center(
             child: Container(
               width: ScreenAdapter.width(580),
-              height: ScreenAdapter.width(480),
+              height: ScreenAdapter.width(540),
               color: Colors.white,
               child: Column(
                 children: <Widget>[
@@ -309,7 +355,6 @@ class _RegistrationInformationContentPageState
                       ),
                     ),
                   ),
-                 
                   Row(
                     children: <Widget>[
                       SizedBox(
@@ -317,14 +362,13 @@ class _RegistrationInformationContentPageState
                       ),
                       Container(
                         child: Text(
-                          '手机号: 15865894784',
+                          '购买门店: ${provide.lotteryRegistrationPageModel.shopName}',
                           style: TextStyle(
-                              color: Colors.black54,
-                              decorationColor: Colors.white,
-                              fontSize: ScreenAdapter.size(30),
-                              fontWeight: FontWeight.w100,
-                              
-                              ),
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
                         ),
                       ),
                     ],
@@ -339,14 +383,13 @@ class _RegistrationInformationContentPageState
                       ),
                       Container(
                         child: Text(
-                          '姓名: 颜佳琪',
+                          '门店地址: ${provide.lotteryRegistrationPageModel.addr}',
                           style: TextStyle(
-                              color: Colors.black54,
-                              decorationColor: Colors.white,
-                              fontSize: ScreenAdapter.size(30),
-                              fontWeight: FontWeight.w100,
-                              
-                              ),
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
                         ),
                       ),
                     ],
@@ -361,14 +404,13 @@ class _RegistrationInformationContentPageState
                       ),
                       Container(
                         child: Text(
-                          '身份证号: 310118954878474481',
+                          '手机号码: ${provide.phoneNumber}',
                           style: TextStyle(
-                              color: Colors.black54,
-                              decorationColor: Colors.white,
-                              fontSize: ScreenAdapter.size(30),
-                              fontWeight: FontWeight.w100,
-                              
-                              ),
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
                         ),
                       ),
                     ],
@@ -383,14 +425,34 @@ class _RegistrationInformationContentPageState
                       ),
                       Container(
                         child: Text(
-                          '购买城市: 上海',
+                          '姓名: ${provide.userName}',
                           style: TextStyle(
-                              color: Colors.black54,
-                              decorationColor: Colors.white,
-                              fontSize: ScreenAdapter.size(30),
-                              fontWeight: FontWeight.w100,
-                              
-                              ),
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: ScreenAdapter.height(20),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(
+                        width: ScreenAdapter.width(40),
+                      ),
+                      Container(
+                        child: Text(
+                          '证件号: ${provide.certificate}',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
                         ),
                       ),
                     ],
@@ -399,10 +461,27 @@ class _RegistrationInformationContentPageState
                     height: ScreenAdapter.height(35),
                   ),
                   GestureDetector(
-                    onTap: (){
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/registrationSuccessfulPage');
-                      
+                    onTap: () {
+                     
+
+                      provide
+                          .drawshop()
+                          .doOnListen(() {})
+                          .doOnError((e, stack) {})
+                          .doOnDone(() {})
+                          .listen((items) {
+                        print('items.data====>${items.data}');
+                        if (items.data != null) {
+                          provide.draweeModel =
+                              DraweeModel.fromJson(items.data);
+                          Navigator.pop(context);
+                          Navigator.pushNamed(
+                              context, '/registrationSuccessfulPage',arguments: {
+                                'draweeModel':provide.draweeModel
+                              });
+                        }
+                        print('items.message======>${items.message}');
+                      });
                     },
                     child: Container(
                       width: ScreenAdapter.width(530),
@@ -412,10 +491,9 @@ class _RegistrationInformationContentPageState
                         child: Text(
                           '提交',
                           style: TextStyle(
-                            color: Colors.white,
-                            decorationColor: Colors.black,
-                            fontSize: ScreenAdapter.size(30)
-                          ),
+                              color: Colors.white,
+                              decorationColor: Colors.black,
+                              fontSize: ScreenAdapter.size(30)),
                         ),
                       ),
                     ),

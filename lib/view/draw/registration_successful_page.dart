@@ -8,8 +8,12 @@ import 'package:provide/provide.dart';
 class RegistrationSuccessfulPage extends PageProvideNode {
   final RegistrationSuccessfulProvide _provide =
       RegistrationSuccessfulProvide();
-  RegistrationSuccessfulPage() {
+  final Map draweeModel;
+  RegistrationSuccessfulPage({this.draweeModel}) {
     mProviders.provide(Provider<RegistrationSuccessfulProvide>.value(_provide));
+    _provide.draweeModel = draweeModel['draweeModel'];
+    print('_provide.draweeModel.drawID=====>${_provide.draweeModel.drawID}');
+    print('_provide.draweeModel.shopID=====>${_provide.draweeModel.shopID}');
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -54,14 +58,11 @@ class _RegistrationSuccessfulContentPageState
       ),
       body: Column(
         children: <Widget>[
-     
           _setupBody(),
-       
         ],
       ),
     );
   }
-
 
   Provide<RegistrationSuccessfulProvide> _setupBody() {
     return Provide<RegistrationSuccessfulProvide>(
@@ -100,44 +101,74 @@ class _RegistrationSuccessfulContentPageState
             SizedBox(
               height: ScreenAdapter.height(110),
             ),
-            InkWell(
-              onTap: (){
-                Navigator.pushNamed(context, '/checkTheRegistrationPage');
-              },
-              child: Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(90),
-                color: Colors.black,
-                child: Center(
-                  child: Text('查看登记',style: TextStyle(color:Colors.white,fontSize: ScreenAdapter.size(30),fontWeight: FontWeight.w800),),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+
+                  ),
                 ),
-              ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: ScreenAdapter.width(690 / 2),
+                    height: ScreenAdapter.height(90),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black87)),
+                    child: Center(
+                      child: Text(
+                        '返回',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/checkTheRegistrationPage',
+                        arguments: {
+                          'draweeModel': provide.draweeModel,
+                        });
+                  },
+                  child: Container(
+                    width: ScreenAdapter.width(690 / 2),
+                    height: ScreenAdapter.height(90),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(146, 169, 201, 1.0),
+                      border: Border(right: BorderSide(color: Colors.black),
+                        top: BorderSide(color: Colors.black),
+                        bottom: BorderSide(color: Colors.black),
+                      )
+                    ),
+                    child: Center(
+                      child: Text(
+                        '查看登记',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: ScreenAdapter.height(55),
-            ),
-            InkWell(
-              onTap: (){
-                Navigator.pop(context);
-              },
-              child: Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(90),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black87
-                  )
-                ),
-                child: Center(
-                  child: Text('返回',style: TextStyle(color:Colors.black,fontSize: ScreenAdapter.size(30),fontWeight: FontWeight.w800),),
-                ),
-              ),
             ),
           ],
         );
       },
     );
   }
-
- 
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/draw/draw_data.dart';
@@ -54,7 +55,9 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+       
         title: Text('抽签'),
         centerTitle: true,
         elevation: 0.0,
@@ -75,9 +78,10 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
         physics: BouncingScrollPhysics(),
         child: Column(
           children: <Widget>[
-            _setupHead(),
             _setupBody(),
+            _setupHead(),
             _setupEnd(),
+            _setupActivityIsIntroduced()
           ],
         ),
       ),
@@ -100,8 +104,29 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                 child: Center(
                   child: Text(provide.drawsModel.drawName,
                       style: TextStyle(
-                          fontSize: ScreenAdapter.size(40),
+                          fontSize: ScreenAdapter.size(37),
                           fontWeight: FontWeight.w800)),
+                ),
+              ),
+              Expanded(
+                child: Container(
+
+                ),
+              ),
+              Container(
+                width: ScreenAdapter.width(680),
+                child: Center(
+                  child: Text(
+                    '${provide.drawsModel.startTime}至${provide.drawsModel.endTime}',style: TextStyle(
+                      fontSize: ScreenAdapter.size(30),color: Color.fromRGBO(159, 177, 189, 1.0),
+                      fontWeight: FontWeight.w600
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+
                 ),
               ),
             ],
@@ -163,7 +188,12 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
               child: InkWell(
                 onTap: () {
                   print('北京被点击');
-                  Navigator.pushNamed(context, '/drawDetailsPage');
+                  // Navigator.pushNamed(context, '/drawDetailsPage',arguments: {
+                  //   'shopID':provide.drawsModel.shops[index].shopID
+                  // });
+                  Navigator.pushNamed(context, '/endOfTheDrawPage',arguments: {
+                   'pics': provide.drawsModel.pics
+                  });
                 },
                 child: Center(
                   child: Container(
@@ -189,4 +219,43 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
       },
     );
   }
+  
+  Provide<DrawProvide> _setupActivityIsIntroduced() {
+    return Provide<DrawProvide>(
+      builder: (BuildContext context, Widget child, DrawProvide provide) {
+        return Column(
+          children: <Widget>[
+             Center(
+              child: Container(
+                width: ScreenAdapter.width(680),
+                height: ScreenAdapter.height(1),
+                color: Colors.black12,
+              ),
+            ),
+            SizedBox(
+              height: ScreenAdapter.height(20),
+            ),
+            Container(
+              width: ScreenAdapter.width(680),
+              child: Text(
+                '活动介绍',
+                style: TextStyle(fontSize: ScreenAdapter.size(35)),
+              ),
+            ),
+            SizedBox(
+              height: ScreenAdapter.height(48),
+            ),
+            
+            Container(
+              width: ScreenAdapter.width(680),
+              child: Html(
+                data: provide.drawsModel.drawRule,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }

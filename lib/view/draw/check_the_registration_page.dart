@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/data/draw/view_registration_information.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/draw/check_the_registration_provide.dart';
+import 'package:innetsect/view/widget/loading_state_widget.dart';
 import 'package:provide/provide.dart';
 
 class CheckTheRegistrationPage extends PageProvideNode {
   final CheckTheRegistrationProvide _provide = CheckTheRegistrationProvide();
-  CheckTheRegistrationPage() {
+  final Map draweeModel;
+  CheckTheRegistrationPage({this.draweeModel}) {
     mProviders.provide(Provider<CheckTheRegistrationProvide>.value(_provide));
+    _provide.draweeModel = draweeModel['draweeModel'];
+    print('_provide.draweeModel.drawID=====>${_provide.draweeModel.drawID}');
+    print('_provide.draweeModel.shopID=====>${_provide.draweeModel.shopID}');
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -26,11 +32,37 @@ class CheckTheRegistrationContentPage extends StatefulWidget {
 class _CheckTheRegistrationContentPageState
     extends State<CheckTheRegistrationContentPage> {
   CheckTheRegistrationProvide provide;
+  LoadState _loadState = LoadState.State_Loading;
   @override
   void initState() {
     super.initState();
     provide ??= widget.provide;
+    _loadViewRegistrationInformation();
   }
+
+    _loadViewRegistrationInformation(){
+      provide.viewRegistrationInformation().doOnListen((){
+
+      }).doOnError((e,stack){
+
+      }).doOnDone((){
+ //DraweeModel
+ // DraweeModel drawee;
+  //ShopProductModel
+  //ShopProductModel shopProduct;
+      }).listen((items){
+        print('items.data=====>${items.data}');
+        if (items.data!= null) {
+          provide.viewRegistrationInformationModel = ViewRegistrationInformationModel.fromJson(items.data);
+          print('DraweeModel=======>${provide.viewRegistrationInformationModel.drawee.shopID}');
+          print('ShopProductModel=======>${provide.viewRegistrationInformationModel.shopProduct.shopID}');
+          setState(() {
+          _loadState = LoadState.State_Success;
+        });
+        }
+        
+      });
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -50,22 +82,28 @@ class _CheckTheRegistrationContentPageState
           ),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          _setupHead(),
-          Container(
-            width: ScreenAdapter.width(690),
-            height: ScreenAdapter.height(1),
-            color: Colors.black12,
-          ),
-          SizedBox(
-            height: ScreenAdapter.height(20),
-          ),
-          _setupBody(),
+      body: LoadStateLayout(
+        state: _loadState,
+        loadingContent: '加载中...',
+        successWidget: SingleChildScrollView(
+          child: Column(
+          children: <Widget>[
+            _setupHead(),
+            Container(
+              width: ScreenAdapter.width(690),
+              height: ScreenAdapter.height(1),
+              color: Colors.black12,
+            ),
+            SizedBox(
+              height: ScreenAdapter.height(20),
+            ),
+            _setupBody(),
 
-          _setupEnd(),
-        ],
+            _setupEnd(),
+          ],
       ),
+        ),
+      )
     );
   }
 
@@ -73,6 +111,7 @@ class _CheckTheRegistrationContentPageState
     return Provide<CheckTheRegistrationProvide>(
       builder: (BuildContext context, Widget child,
           CheckTheRegistrationProvide provide) {
+      //  print('status====>${provide.viewRegistrationInformationModel.shopProduct.status}');
         return Stack(
           children: <Widget>[
             Container(
@@ -86,8 +125,8 @@ class _CheckTheRegistrationContentPageState
                   Container(
                     width: ScreenAdapter.width(210),
                     height: ScreenAdapter.height(210),
-                    child: Image.asset(
-                      'assets/images/chouqian.jpg',
+                    child: Image.network(
+                      provide.viewRegistrationInformationModel.shopProduct.prodPic,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -100,7 +139,7 @@ class _CheckTheRegistrationContentPageState
                       Container(
                         width: ScreenAdapter.width(400),
                         child: Text(
-                          'Nike Air Fear of God 180',
+                          provide.viewRegistrationInformationModel.shopProduct.prodName,
                           style: TextStyle(
                               fontSize: ScreenAdapter.size(30),
                               fontWeight: FontWeight.w700),
@@ -109,22 +148,14 @@ class _CheckTheRegistrationContentPageState
                       SizedBox(
                         height: ScreenAdapter.height(10),
                       ),
-                      Container(
-                        width: ScreenAdapter.width(400),
-                        child: Text(
-                          '抽签资格',
-                          style: TextStyle(
-                              fontSize: ScreenAdapter.size(30),
-                              fontWeight: FontWeight.w700),
-                        ),
-                      ),
+                     
                       SizedBox(
                         height: ScreenAdapter.height(30),
                       ),
                       Container(
                         width: ScreenAdapter.width(400),
                         child: Text(
-                          '北京   |   ￥1198',
+                          '${provide.viewRegistrationInformationModel.shopProduct.shopName}   |   ￥${provide.viewRegistrationInformationModel.shopProduct.prodPrice}',
                           style: TextStyle(
                               fontSize: ScreenAdapter.size(30),
                               color: Color.fromRGBO(160, 160, 160, 1.0),
@@ -137,12 +168,14 @@ class _CheckTheRegistrationContentPageState
               ),
             ),
             Positioned(
-              left: ScreenAdapter.width(540),
-              top: ScreenAdapter.height(120),
-              child: Image.asset(
-                'assets/images/zhongqian.jpg',
+              left: ScreenAdapter.width(560),
+              top: ScreenAdapter.height(100),
+              child:provide.viewRegistrationInformationModel.shopProduct.status==1? Image.asset(
+                'assets/images/mall/中签大.png',
                 width: ScreenAdapter.width(170),
                 height: ScreenAdapter.height(170),
+              ):Container(
+
               ),
             ),
           ],
@@ -163,7 +196,7 @@ class _CheckTheRegistrationContentPageState
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '身份证: ',
+                      '购买门店: ',
                       style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
                     ),
                     Expanded(
@@ -172,7 +205,7 @@ class _CheckTheRegistrationContentPageState
                       ),
                     ),
                     Text(
-                      '3101131215****0523',
+                      provide.viewRegistrationInformationModel.shopProduct.shopName,
                       style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
                     ),
 
@@ -187,7 +220,7 @@ class _CheckTheRegistrationContentPageState
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '购买城市: ',
+                      '门店地址: ',
                       style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
                     ),
                     Expanded(
@@ -196,7 +229,7 @@ class _CheckTheRegistrationContentPageState
                       ),
                     ),
                     Text(
-                      '上海',
+                      provide.viewRegistrationInformationModel.shopProduct.addr,
                       style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
                     ),
 
@@ -220,7 +253,7 @@ class _CheckTheRegistrationContentPageState
                       ),
                     ),
                     Text(
-                      '18516005100',
+                      provide.viewRegistrationInformationModel.drawee.mobile,
                       style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
                     ),
 
@@ -235,7 +268,7 @@ class _CheckTheRegistrationContentPageState
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '预约开始时间: ',
+                      '有效证件: ',
                       style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
                     ),
                     Expanded(
@@ -244,12 +277,63 @@ class _CheckTheRegistrationContentPageState
                       ),
                     ),
                     Text(
-                      '2019-12-18   09:00:00',
+                      provide.viewRegistrationInformationModel.drawee.icNo,
                       style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
                     ),
 
                   ],
-                )),
+                )
+                ),
+                SizedBox(
+                  height: ScreenAdapter.height(30),
+                ),
+            Container(
+                width: ScreenAdapter.width(690),
+                height: ScreenAdapter.height(65),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      '登记时间: ',
+                      style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
+                    ),
+                    Expanded(
+                      child: Container(
+
+                      ),
+                    ),
+                    Text(
+                      provide.viewRegistrationInformationModel.drawee.registerDate,
+                      style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
+                    ),
+
+                  ],
+                )
+                ),
+                SizedBox(
+                  height: ScreenAdapter.height(30),
+                ),
+            Container(
+                width: ScreenAdapter.width(690),
+                height: ScreenAdapter.height(65),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      '购买开始时间: ',
+                      style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
+                    ),
+                    Expanded(
+                      child: Container(
+
+                      ),
+                    ),
+                    Text(
+                      provide.viewRegistrationInformationModel.shopProduct.startTime,
+                      style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
+                    ),
+
+                  ],
+                )
+                ),
           ],
         );
       },
@@ -263,7 +347,7 @@ class _CheckTheRegistrationContentPageState
         return Column(
           children: <Widget>[
             SizedBox(
-              height: ScreenAdapter.height(400),
+              height: ScreenAdapter.height(200),
             ),
             GestureDetector(
               onTap: (){

@@ -51,13 +51,14 @@ final routes = {
   '/ProfilePage':(context)=>ProfilePage(),
   '/SignProtocolPage':(context)=>SignProtocolPage(),
   '/drawPage':(context)=>DrawPage(),
-  '/drawDetailsPage':(context)=>DrawDetailsPage(),
-  '/registrationInformationPage':(context)=>RegistrationInformationPage(),
-  '/registrationSuccessfulPage':(context)=>RegistrationSuccessfulPage(),
-  '/checkTheRegistrationPage':(context)=>CheckTheRegistrationPage(),
+  '/drawDetailsPage':(context,{arguments})=>DrawDetailsPage(shopID: arguments,),
+  '/registrationInformationPage':(context,{arguments})=>RegistrationInformationPage(lotteryRegistrationPageModel: arguments,),
+  '/registrationSuccessfulPage':(context,{arguments})=>RegistrationSuccessfulPage(draweeModel: arguments,),
+  '/checkTheRegistrationPage':(context,{arguments})=>CheckTheRegistrationPage(draweeModel:arguments ,),
   '/drawRegisteredPage':(context)=>DrawRegisteredPage(),
-  '/endOfTheDrawPage':(context)=>EndOfTheDrawPage(),
-  
+  '/endOfTheDrawPage':(context,{arguments})=>EndOfTheDrawPage(pics: arguments,),
+  ///DrawDetailsPage
+  /////RegistrationInformationPage
 };
 
 //固定写法

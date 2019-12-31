@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/draw/draw_data.dart';
+import 'package:innetsect/data/draw/lottery_registration_page.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/draw/draw_details_provide.dart';
 import 'package:innetsect/view/widget/loading_state_widget.dart';
@@ -9,9 +10,11 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 
 ///抽签详情
 class DrawDetailsPage extends PageProvideNode {
+  final Map shopID;
   final DrawDetailsProvide _provide = DrawDetailsProvide();
-  DrawDetailsPage() {
+  DrawDetailsPage({this.shopID}) {
     mProviders.provide(Provider<DrawDetailsProvide>.value(_provide));
+    _provide.shopID = shopID['shopID'];
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -34,7 +37,22 @@ class _DrawDetailsContentPageState extends State<DrawDetailsContentPage> {
     super.initState();
     provide ??= widget.provide;
     _loadDrawInfo();
+    _loadLotteryRegistrationPage();
+    
   }
+  _loadLotteryRegistrationPage(){
+    provide.lotteryRegistrationPage().doOnListen((){
+
+    }).doOnError((e,stack){
+
+    }).listen((items){
+      print('_loadLotteryRegistrationPageItems.data${items.data}');
+      if (items!=null) {
+        provide.lotteryRegistrationPageModel = LotteryRegistrationPageModel.fromJson(items.data);
+      }
+    });
+  }
+
   _loadDrawInfo(){
     provide.draws().doOnListen((){
 
@@ -43,12 +61,13 @@ class _DrawDetailsContentPageState extends State<DrawDetailsContentPage> {
     }).listen((items){
       if (items != null) {
         provide.drawsModel = DrawsModel.fromJson(items.data);
+        
         setState(() {
           _loadState = LoadState.State_Success;
         });
       }
     },onError: (e){
-
+      
     });
   }
 
@@ -111,6 +130,13 @@ class _DrawDetailsContentPageState extends State<DrawDetailsContentPage> {
     return Provide<DrawDetailsProvide>(
       builder:
           (BuildContext context, Widget child, DrawDetailsProvide provide) {
+            for (var item in provide.drawsModel.shops) {
+              if (item.shopID == provide.shopID) {
+                  provide.model = item;
+                  print('item====>${item.shopID}');
+                  print('provide====>${provide.shopID}');
+              }
+            }
         return Container(
           width: ScreenAdapter.width(750),
           height: ScreenAdapter.height(560),
@@ -121,26 +147,26 @@ class _DrawDetailsContentPageState extends State<DrawDetailsContentPage> {
               ),
               Center(
                 child: Text(
-                  'Nike Air Fear of God 180',
+                  provide.drawsModel.drawName,
                   style: TextStyle(
                       fontSize: ScreenAdapter.size(40),
                       fontWeight: FontWeight.w600),
                 ),
               ),
-              Center(
-                child: Text(
-                  '抽签资格',
-                  style: TextStyle(
-                      fontSize: ScreenAdapter.size(40),
-                      fontWeight: FontWeight.w600),
-                ),
-              ),
+              // Center(
+              //   child: Text(
+              //     '抽签资格',
+              //     style: TextStyle(
+              //         fontSize: ScreenAdapter.size(40),
+              //         fontWeight: FontWeight.w600),
+              //   ),
+              // ),
               SizedBox(
                 height: ScreenAdapter.height(30),
               ),
               Center(
                 child: Text(
-                  '北京    |   ￥1199',
+                  '${provide.model.shopName}    |   ￥${provide.drawsModel.drawProdPrice}',
                   style: TextStyle(
                       color: Color.fromRGBO(167, 166, 171, 1.0),
                       fontSize: ScreenAdapter.size(30),
@@ -152,7 +178,7 @@ class _DrawDetailsContentPageState extends State<DrawDetailsContentPage> {
               ),
               Center(
                 child: Text(
-                  '12月30日  18:00  截止登记',
+                  '${provide.drawsModel.endTime}  截止登记',
                   style: TextStyle(
                       fontSize: ScreenAdapter.size(30),
                       fontWeight: FontWeight.w600),
@@ -359,11 +385,13 @@ class _DrawDetailsContentPageState extends State<DrawDetailsContentPage> {
             ),
             InkWell(
               onTap: (){
-                if (provide.registrationStatus == 1) {//登记
-                  Navigator.pushNamed(context, '/registrationInformationPage');
-                }else if (provide.registrationStatus == 0) {
+                if (provide.model.drawStatus == 0) {//登记
+                  Navigator.pushNamed(context, '/registrationInformationPage',
+                  arguments: {'model':provide.model,
+                              'drawsModel':provide.drawsModel });
+                }else if (provide.model.drawStatus == 1) {
                   Navigator.pushNamed(context, '/drawRegisteredPage');
-                }else if (provide.registrationStatus == 2) {
+                }else if (provide.model.drawStatus == 2) {
                   Navigator.pushNamed(context, '/endOfTheDrawPage');
                 }
                 
