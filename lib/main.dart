@@ -12,6 +12,7 @@ import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
+import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 
 import 'package:rammus/rammus.dart' as rammus;
 
@@ -36,6 +37,7 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
   ]);
+  FlutterBaiduMap.setAK("Q07ulrG0wmUGKcKwtN6ChlafT8eBuEkX");
   runApp(MyApp());
 }
 
@@ -72,6 +74,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
+    /// 百度定位
+    _baiduLocation().then((item){
+
+      print("_baidu========${item.latitude}");
+      print("_baidu========${item.longitude}");
+    });
+
+
+
     if (Platform.isAndroid) {
         SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
           statusBarColor: Colors.white,
@@ -87,9 +99,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // 配置阿里推送
     initPlatformState();
     rammus.setupNotificationManager(name: "innerset",id: "innetsect push");
-//    rammus.initCloudChannelResult.listen((data){
-//      print("----------->init successful ${data.isSuccessful} ${data.errorCode} ${data.errorMessage}");
-//    });
 
     rammus.onNotification.listen((data){
       print("----------->notification here ${data.summary}");
@@ -98,6 +107,35 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     });
     rammus.onNotificationOpened.listen((data){
       print("-----------> ${data.summary} 被点了");
+      /// 跳转商品详情
+//      if(_bannersList[index].redirectType==ConstConfig.PRODUCT_DETAIL){
+//        List list = _bannersList[index].redirectParam.split(":");
+//        _commodityDetail(types:int.parse(list[0]) ,prodID: int.parse(list[1]));
+//      }else if(_bannersList[index].redirectType==ConstConfig.PROMOTION){
+//        /// 跳转集合搜索列表
+//        _searchRequest(_bannersList[index].redirectParam);
+//      }else if(_bannersList[index].redirectType==ConstConfig.CONTENT_DETAIL){
+//        /// 跳转资讯详情
+//        _informationProvide.contentID =int.parse(_bannersList[index].redirectParam) ;
+//        Navigator.push(context, MaterialPageRoute(
+//            builder: (context){
+//              return new InforWebPage();
+//            }
+//        ));
+//      }else if(_bannersList[index].redirectType==ConstConfig.URL){
+//        /// 跳转URL
+//        Navigator.push(context, MaterialPageRoute(
+//            builder: (context){
+//              return new WebView(url: _bannersList[index].redirectParam,);
+//            }
+//        ));
+//      }else if(_bannersList[index].redirectType == ConstConfig.ACTIVITY){
+//        Navigator.push(context, MaterialPageRoute(
+//            builder: (context){
+//              return ActivityDetailPage(activityID: int.parse(_bannersList[index].redirectParam),);
+//            }
+//        ));
+//      }
 
     });
 
@@ -106,6 +144,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     });
 
+  }
+
+  /// 百度定位
+  Future _baiduLocation() async{
+    BaiduLocation location = await FlutterBaiduMap.getCurrentLocation();
+    print("location.locationDescribe======${location.locationDescribe}");
+    print("location.latitude======${location.latitude}");
+    print("location.longitude======${location.longitude}");
+    return location;
   }
 
   Future<void> initPlatformState() async {

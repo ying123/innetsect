@@ -19,30 +19,31 @@
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
          additional functionality it is fine to subclass or reimplement
-         FlutterApplication and put your custom class here. -->
+         FlutterApplication and put your custom class here.
+
+        android:usesCleartextTraffic="true"-->
     <application
         android:name=".MyApplication"
         android:label="innersect"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         tools:replace="android:allowBackup,android:label,android:icon"
         tools:ignore="GoogleAppIndexingWarning"
         >
 
-<!--        <meta-data-->
-<!--            android:name="com.alibaba.app.appkey"-->
-<!--            android:value="28181634" /> &lt;!&ndash; release &ndash;&gt;-->
-<!--        <meta-data-->
-<!--            android:name="com.alibaba.app.appsecret"-->
-<!--            android:value="baf0e25523f2d0311eac9a53f8126924" />-->
-
         <meta-data
             android:name="com.alibaba.app.appkey"
-            android:value="28189103" /> <!-- 请填写你自己的- appKey -->
+            android:value="28181634" /> <!-- release -->
         <meta-data
             android:name="com.alibaba.app.appsecret"
-            android:value="261c3132a0fa660c5ab9a51f36717e6b" />
+            android:value="baf0e25523f2d0311eac9a53f8126924" />
+
+<!--        <meta-data-->
+<!--            android:name="com.alibaba.app.appkey"-->
+<!--            android:value="28189103" /> &lt;!&ndash; 请填写你自己的- appKey &ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="com.alibaba.app.appsecret"-->
+<!--            android:value="261c3132a0fa660c5ab9a51f36717e6b" />-->
 
         <meta-data
             android:name="com.huawei.hms.client.appid"
