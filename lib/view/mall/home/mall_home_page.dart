@@ -381,40 +381,63 @@ class _MallHomeContentState extends State<MallHomeContent> {
               /// 跳转商品详情
               _commodityDetail(types:37,prodID: item.prodID);
             },
-            child: new Container(
-              width: ScreenAdapter.getScreenWidth()/3.8,
-              margin: EdgeInsets.only(top: 10),
-              child: new Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  new SizedBox(
-                    height: ScreenAdapter.height(180),
-                    child: item.prodPic!=null?new CachedNetworkImage(imageUrl:"${item.prodPic}${ConstConfig.BANNER_TWO_SIZE}",fit: BoxFit.fitWidth):
-                    Image.asset("assets/images/default/default_squre_img.png",fit: BoxFit.fitWidth,),
-                  ),
-                  new Container(
-                    padding:EdgeInsets.only(top: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Text(title,overflow: TextOverflow.ellipsis,softWrap: false,
-                          style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600),)
-                      ],
+            child: Stack(
+              children: <Widget>[
+                new Container(
+                width: ScreenAdapter.getScreenWidth()/3.8,
+                margin: EdgeInsets.only(top: 10),
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    new SizedBox(
+                      height: ScreenAdapter.height(180),
+                      child: item.prodPic!=null?new CachedNetworkImage(imageUrl:"${item.prodPic}${ConstConfig.BANNER_TWO_SIZE}",fit: BoxFit.fitWidth):
+                      Image.asset("assets/images/default/default_squre_img.png",fit: BoxFit.fitWidth,),
                     ),
-                  ),
-                  new Container(
-                    padding:EdgeInsets.only(top: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        CustomsWidget().priceTitle(price: item.salesPriceRange,
-                            fontWeight: FontWeight.w500,fontSize: ScreenAdapter.size(24))
-                      ],
+                    new Container(
+                      padding:EdgeInsets.only(top: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          new Text(title,overflow: TextOverflow.ellipsis,softWrap: false,
+                            style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600),)
+                        ],
+                      ),
                     ),
-                  ),
-                  widgets
-                ],
-              ),
+                    new Container(
+                      padding:EdgeInsets.only(top: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          CustomsWidget().priceTitle(price: item.salesPriceRange,
+                              fontWeight: FontWeight.w500,fontSize: ScreenAdapter.size(24))
+                        ],
+                      ),
+                    ),
+                    widgets
+                  ],
+                )),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: item.badges!=null&&item.badges.length>0?
+                  Row(
+                    children: item.badges.map((items){
+                      return Container(
+                        width: ScreenAdapter.width(80),
+                        height: ScreenAdapter.height(40),
+                        color: AppConfig.blueBtnColor,
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(left: 5),
+                        child: Text(items.name,style: TextStyle(
+                            color: Colors.white,
+                            fontSize: ScreenAdapter.size(24)
+                        ),),
+                      );
+                    }).toList(),
+                  ):Container(width: 0,height: 0,),
+                )
+              ],
             ),
           );
         }).toList(),

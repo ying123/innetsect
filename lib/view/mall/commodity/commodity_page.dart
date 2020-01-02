@@ -285,13 +285,15 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   /// 价格和购物车
   Widget _priceAndCartWidget(String price,String originalPrice,int prodID,int shopID){
     Widget widgets = Container();
-    if(double.parse(price)<double.parse(originalPrice)){
-      widgets = Padding(
-        padding: EdgeInsets.only(left: 10),
-        child: CustomsWidget().priceTitle(price: originalPrice,decoration: TextDecoration.lineThrough,fontSize: ScreenAdapter.size(20),
-          fontWeight: FontWeight.w400
-        ),
-      );
+    if(originalPrice!='null'){
+      if(double.parse(price)<double.parse(originalPrice)){
+        widgets = Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: CustomsWidget().priceTitle(price: originalPrice,decoration: TextDecoration.lineThrough,fontSize: ScreenAdapter.size(20),
+              fontWeight: FontWeight.w400
+          ),
+        );
+      }
     }
     return new Container(
       width: double.infinity,
@@ -305,7 +307,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 CustomsWidget().priceTitle(price: price),
-//                widgets
+                widgets
               ],
             )
           ),
