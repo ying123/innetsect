@@ -132,7 +132,8 @@ class _RegistrationSuccessfulContentPageState
                   onTap: () {
                     Navigator.pushNamed(context, '/checkTheRegistrationPage',
                         arguments: {
-                          'draweeModel': provide.draweeModel,
+                          'drawID': provide.draweeModel.drawID,
+                          'shopID':provide.draweeModel.shopID
                         });
                   },
                   child: Container(

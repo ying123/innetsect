@@ -11,9 +11,10 @@ class CheckTheRegistrationPage extends PageProvideNode {
   final Map draweeModel;
   CheckTheRegistrationPage({this.draweeModel}) {
     mProviders.provide(Provider<CheckTheRegistrationProvide>.value(_provide));
-    _provide.draweeModel = draweeModel['draweeModel'];
-    print('_provide.draweeModel.drawID=====>${_provide.draweeModel.drawID}');
-    print('_provide.draweeModel.shopID=====>${_provide.draweeModel.shopID}');
+    _provide.id = draweeModel['id'];
+    _provide.shopId = draweeModel['shopId'];
+    print('_provide.draweeModel.drawID=====>${_provide.id}');
+    print('_provide.draweeModel.shopID=====>${_provide.shopId}');
   }
   @override
   Widget buildContent(BuildContext context) {

@@ -7,10 +7,17 @@ import 'package:innetsect/model/draw/drawshop_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CheckTheRegistrationProvide extends BaseProvide {
-  DraweeModel _draweeModel= DraweeModel();
-  DraweeModel get draweeModel=>_draweeModel;
-  set draweeModel(DraweeModel draweeModel){
-    _draweeModel = draweeModel;
+  
+  int _id;
+  int get id=>_id;
+  set id(int id){
+    _id = id;
+  }
+
+  int _shopId;
+  int get shopId=>_shopId;
+  set shopId(int shopId){
+    _shopId = shopId;
   }
 
   //ViewRegistrationInformationModel
@@ -25,7 +32,7 @@ class CheckTheRegistrationProvide extends BaseProvide {
   
   Observable viewRegistrationInformation(){
     return _drawshopRepo.viewRegistrationInformation(
-      id:draweeModel.drawID,shopId:draweeModel.shopID
+      id:id,shopId:_shopId
       ).doOnData((item){
 
       }).doOnError((e,stack){

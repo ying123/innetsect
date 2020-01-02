@@ -67,13 +67,13 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
           if (provide.lotteryRegistrationPageModel.registered) {
             provide.buttonName = '查看登记';
             provide.buttonStatus = 0;
-          }else{
+          } else {
             provide.buttonName = '去登记';
-             provide.buttonStatus = 1;
+            provide.buttonStatus = 1;
           }
-        }else{
+        } else {
           provide.buttonName = '不在服务范围';
-           provide.buttonStatus = 2;
+          provide.buttonStatus = 2;
         }
         setState(() {
           _loadState = LoadState.State_Success;
@@ -85,7 +85,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('抽签'),
           centerTitle: true,
@@ -184,13 +184,10 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: Container(
-
-                    ),
+                    child: Container(),
                   ),
-                 
                   Text(provide.lotteryRegistrationPageModel.shopName),
-                   SizedBox(
+                  SizedBox(
                     width: ScreenAdapter.width(40),
                   ),
                   Container(
@@ -201,11 +198,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                   SizedBox(
                     width: ScreenAdapter.width(40),
                   ),
-                  Text(provide.lotteryRegistrationPageModel.prodPrice.toString()+'        '),
+                  Text(provide.lotteryRegistrationPageModel.prodPrice
+                          .toString() +
+                      '        '),
                   Expanded(
-                    child: Container(
-
-                    ),
+                    child: Container(),
                   )
                 ],
               ),
@@ -572,27 +569,43 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               height: ScreenAdapter.height(40),
             ),
             InkWell(
-              onTap: (){
+              onTap: () {
                 print('按钮被点击');
-                Navigator.pushNamed(context, '/registrationInformationPage',
-                  arguments: {'lotteryRegistrationPageModel':provide.lotteryRegistrationPageModel});
-                
+               
+
+                if (provide.buttonStatus == 1) {
+                   Navigator.pushNamed(context, '/registrationInformationPage',
+                    arguments: {
+                      'lotteryRegistrationPageModel':
+                          provide.lotteryRegistrationPageModel
+                    });
+                }
+
+                if (provide.buttonStatus == 0) {
+                     Navigator.pushNamed(context, '/checkTheRegistrationPage',arguments: {
+                  'id':provide.lotteryRegistrationPageModel.drawID,
+                  'shopId':provide.lotteryRegistrationPageModel.shopID,
+                });
+                }
+                if (provide.buttonStatus == 2) {
+                  
+                }
               },
               child: Container(
                 width: ScreenAdapter.width(690),
                 height: ScreenAdapter.height(90),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black87),
-                  color:provide.buttonStatus ==1? Color.fromRGBO(146, 169, 201, 1.0):Colors.white
-                ),
+                   // border: Border.all(color: Colors.black87),
+                    color: provide.buttonStatus == 0
+                        ? Color.fromRGBO(146, 169, 201, 1.0)
+                        : Color.fromRGBO(248, 248, 248, 1.0)),
                 child: Center(
                   child: Text(
                     provide.buttonName,
                     style: TextStyle(
-                        fontSize: ScreenAdapter.size(30),
-                        fontWeight: FontWeight.w800,
-                        
-                        ),
+                      fontSize: ScreenAdapter.size(30),
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ),
