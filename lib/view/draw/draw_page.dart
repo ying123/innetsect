@@ -103,6 +103,7 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                 width: ScreenAdapter.width(680),
                 child: Center(
                   child: Text(provide.drawsModel.drawName,
+                  textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: ScreenAdapter.size(37),
                           fontWeight: FontWeight.w800)),
@@ -192,7 +193,8 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                   //   'shopID':provide.drawsModel.shops[index].shopID
                   // });
                   Navigator.pushNamed(context, '/endOfTheDrawPage',arguments: {
-                   'pics': provide.drawsModel.pics
+                   'pics': provide.drawsModel.pics,
+                   'shops':provide.drawsModel.shops[index]
                   });
                 },
                 child: Center(

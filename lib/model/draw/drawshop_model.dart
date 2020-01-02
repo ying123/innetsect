@@ -13,7 +13,7 @@ class DrawshopService {
     return response;
   }
   /// 抽签登记页
-  Observable<BaseResponse> lotteryRegistrationPage ({num longitude,num latitude,String platform} ){
+  Observable<BaseResponse> lotteryRegistrationPage ({double longitude,double latitude,String platform} ){
     var url = '/api/promotion/draws/1/shops/37?longitude=$longitude&latitude=$latitude&platform=$platform';
     var response = get(url);
     return response;
@@ -41,7 +41,7 @@ class DrawshopRepo {
     return _remote.draws();
   }
   ///抽签登记页面
-  Observable<BaseResponse> lotteryRegistrationPage({num longitude,num latitude,String platform }){
+  Observable<BaseResponse> lotteryRegistrationPage({double longitude,double latitude,String platform }){
     return _remote.lotteryRegistrationPage( longitude:longitude,latitude:latitude,platform:platform );
   }
   ///查看我的抽签登记信息

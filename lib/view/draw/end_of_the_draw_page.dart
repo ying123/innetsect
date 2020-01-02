@@ -19,7 +19,9 @@ class EndOfTheDrawPage extends PageProvideNode {
   EndOfTheDrawPage({this.pics}) {
     mProviders.provide(Provider<EndOfTheDrawProvide>.value(_provide));
     _provide.picsList = pics['pics'];
+    _provide.shopsModel = pics['shops'];
     print('length====>${_provide.picsList.length}');
+    print('shopsModel====>${_provide.shopsModel}');
   }
 
   @override
@@ -44,9 +46,26 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
     super.initState();
     provide ??= widget.provide;
 
+      /// 百度定位
+    _baiduLocation().then((item){
+
+      print("_baidu========${item.latitude}");
+      print("_baidu========${item.longitude}");
+    });
     ///加载进入店铺抽签登记页
     _loadLotteryRegistrationPage();
-    
+   
+  }
+  /// 百度定位
+  Future _baiduLocation() async{
+    BaiduLocation location = await FlutterBaiduMap.getCurrentLocation();
+    print("location.locationDescribe======${location.locationDescribe}");
+    print("location.latitude======${location.latitude}");
+    print("location.longitude======${location.longitude}");
+    provide.longitude = location.longitude;
+    provide.latitude = location.latitude;
+
+    return location;
   }
 
   _loadLotteryRegistrationPage() {
@@ -132,13 +151,15 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
           (BuildContext context, Widget child, EndOfTheDrawProvide provide) {
         return Container(
           width: ScreenAdapter.width(750),
-          height: ScreenAdapter.height(360),
+          height: ScreenAdapter.height(550),
           color: Colors.white,
           child: Swiper(
             itemBuilder: (BuildContext context, int index) {
               return Image.network(
                 provide.picsList[index].picUrl,
-                fit: BoxFit.cover,
+                width: ScreenAdapter.width(450),
+                height: ScreenAdapter.width(450),
+                fit: BoxFit.contain,
               );
             },
             itemCount: provide.picsList.length,
@@ -156,7 +177,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
           (BuildContext context, Widget child, EndOfTheDrawProvide provide) {
         return Container(
           width: ScreenAdapter.width(680),
-          height: ScreenAdapter.height(560),
+          height: ScreenAdapter.height(630),
           child: Column(
             children: <Widget>[
               SizedBox(
@@ -165,6 +186,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               Center(
                 child: Text(
                   provide.lotteryRegistrationPageModel.prodName,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: ScreenAdapter.size(37),
                       fontWeight: FontWeight.w600),
@@ -196,47 +218,59 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                   Expanded(
                     child: Container(),
                   ),
-                  Text(provide.lotteryRegistrationPageModel.shopName),
+                  Text(provide.shopsModel.shopName,style: TextStyle(
+                       fontSize: ScreenAdapter.size(30),
+                        fontWeight: FontWeight.w600,
+                       // color: Color.fromRGBO(177, 177, 177, 1.0)
+                      ),),
                   SizedBox(
                     width: ScreenAdapter.width(40),
                   ),
                   Container(
                     width: ScreenAdapter.size(4),
-                    height: ScreenAdapter.height(30),
+                    height: ScreenAdapter.height(35),
                     color: Colors.grey,
                   ),
                   SizedBox(
                     width: ScreenAdapter.width(40),
                   ),
-                  Text(provide.lotteryRegistrationPageModel.prodPrice
+                  Text('￥'+provide.lotteryRegistrationPageModel.prodPrice
                           .toString() +
-                      '        '),
+                      '        ',style: TextStyle(
+                       fontSize: ScreenAdapter.size(30),
+                        fontWeight: FontWeight.w600,
+                       // color: Color.fromRGBO(177, 177, 177, 1.0)
+                      ),),
                   Expanded(
                     child: Container(),
                   )
                 ],
               ),
               SizedBox(
-                height: ScreenAdapter.height(20),
+                height: ScreenAdapter.height(30),
               ),
               Center(
                 child: Text(
-                    '尺码:${provide.lotteryRegistrationPageModel.prodSizeRange}'),
+                    '尺码:${provide.lotteryRegistrationPageModel.prodSizeRange}',style: TextStyle(
+                      // fontSize: ScreenAdapter.size(30),
+                        fontWeight: FontWeight.w600,
+                        color: Color.fromRGBO(177, 177, 177, 1.0)
+                      ),),
               ),
               SizedBox(
-                height: ScreenAdapter.height(20),
+                height: ScreenAdapter.height(30),
               ),
               Center(
                 child: Text(
                   '${provide.lotteryRegistrationPageModel.endTime} 截止登记',
                   style: TextStyle(
-                      // fontSize: ScreenAdapter.size(30),
-                      //  fontWeight: FontWeight.w600
+                       fontSize: ScreenAdapter.size(30),
+                        fontWeight: FontWeight.w600
                       ),
                 ),
               ),
               SizedBox(
-                height: ScreenAdapter.height(30),
+                height: ScreenAdapter.height(20),
               ),
               Center(
                 child: Container(
@@ -482,6 +516,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                   children: <Widget>[
                                     Text(
                                       provide.lotteryRegistrationPageModel
+                                          .winnerMobiles[0]==null?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[0],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -492,6 +527,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length!=2?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[1],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -504,6 +540,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                   children: <Widget>[
                                     Text(
                                       provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length!=3?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[2],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -514,6 +551,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length!=4?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[3],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -526,6 +564,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                   children: <Widget>[
                                     Text(
                                       provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length!=5?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[4],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -536,6 +575,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length!=6?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[5],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -585,11 +625,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
 
                 print(
                     'status====>${provide.lotteryRegistrationPageModel.status}');
-                 Navigator.pushNamed(context, '/registrationInformationPage',
-                      arguments: {
-                        'lotteryRegistrationPageModel':
-                            provide.lotteryRegistrationPageModel
-                      });
+                //  Navigator.pushNamed(context, '/registrationInformationPage',
+                //       arguments: {
+                //         'lotteryRegistrationPageModel':
+                //             provide.lotteryRegistrationPageModel
+                //       });
                 
 
                 if (provide.buttonStatus == 1) {
@@ -620,7 +660,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                     // border: Border.all(color: Colors.black87),
                     color: provide.buttonStatus == 0
                         ? Color.fromRGBO(146, 169, 201, 1.0)
-                        : Color.fromRGBO(248, 248, 248, 1.0)),
+                        : Color.fromRGBO(200, 200, 200, 1.0)),
                 child: Center(
                   child: Text(
                   provide.buttonName,

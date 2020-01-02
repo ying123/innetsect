@@ -241,11 +241,12 @@ class _RegistrationInformationContentPageState
                       onTap: (){
                         Navigator.pushNamed(context, '/country_page.dart').then((value){
                           print('=============>$value');
+                          provide.countryCode = value;
                         });
                         
                       },
                       child: Container(
-                        child: Text('+86',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                        child: Text('+${provide.countryCode}',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                       ),
                     ),
                     Icon(

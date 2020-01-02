@@ -72,6 +72,13 @@ DraweeModel get draweeModel=>_draweeModel;
 set draweeModel(DraweeModel draweeModel){
   _draweeModel = draweeModel;
 }
+///国家编码
+String _countryCode = '86';
+String get countryCode=>_countryCode;
+set countryCode(String countryCode){
+  _countryCode = countryCode;
+  notifyListeners();
+}
 
 ///登记
   DrawshopRepo _repo = DrawshopRepo();
