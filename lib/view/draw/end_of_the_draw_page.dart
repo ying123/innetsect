@@ -62,8 +62,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
     print("location.locationDescribe======${location.locationDescribe}");
     print("location.latitude======${location.latitude}");
     print("location.longitude======${location.longitude}");
-    provide.longitude = location.longitude;
-    provide.latitude = location.latitude;
+  //  provide.longitude = location.longitude;
+   // provide.latitude = location.latitude;
 
     return location;
   }

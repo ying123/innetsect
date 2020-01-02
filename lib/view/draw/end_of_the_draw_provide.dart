@@ -41,13 +41,13 @@ class EndOfTheDrawProvide extends BaseProvide {
     _shopsModel = shopsModel;
   }
 
-  double _longitude;
+  double _longitude = 132.1;
   double get longitude=>_longitude;
   set longitude(double longitude){
     _longitude = longitude;
   }
 
-  double _latitude;
+  double _latitude=1336.11;
   double get latitude=>_latitude;
    set latitude(double latitude){
      _latitude = latitude;

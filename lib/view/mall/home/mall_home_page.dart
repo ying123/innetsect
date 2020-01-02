@@ -112,14 +112,14 @@ class _MallHomeContentState extends State<MallHomeContent> {
         actions: <Widget>[
           InkWell(
             onTap: (){
-              print('抽签被点击');
-              Navigator.pushNamed(context, '/drawPage');
+              // print('抽签被点击');
+              // Navigator.pushNamed(context, '/drawPage');
             },
             child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.only(right: 20),
               child: Text(
-                '抽签'
+                ''
               ),
             ),
           ),
@@ -198,6 +198,10 @@ class _MallHomeContentState extends State<MallHomeContent> {
             return InkWell(
               onTap: () {
                 print('第$index 页被点击=====${_bannersList[index].toString()}');
+                if (index== 0) {
+                  print('抽签被点击');
+                   Navigator.pushNamed(context, '/drawPage');
+                }
 
                 /// 跳转商品详情
                 if(_bannersList[index].redirectType==ConstConfig.PRODUCT_DETAIL){
