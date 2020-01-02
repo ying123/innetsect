@@ -98,6 +98,9 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                BAIDU_MAP_KEY : "Q07ulrG0wmUGKcKwtN6ChlafT8eBuEkX", /// 百度地图AK
+        ]
     }
 
     signingConfigs {

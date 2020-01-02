@@ -10,6 +10,7 @@ import 'package:innetsect/view/draw/end_of_the_draw_provide.dart';
 import 'package:innetsect/view/widget/loading_state_widget.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 
 ///进入店铺抽签登记页
 class EndOfTheDrawPage extends PageProvideNode {
@@ -45,6 +46,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
 
     ///加载进入店铺抽签登记页
     _loadLotteryRegistrationPage();
+    
   }
 
   _loadLotteryRegistrationPage() {
@@ -63,17 +65,25 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
       if (items.data != null) {
         provide.lotteryRegistrationPageModel =
             LotteryRegistrationPageModel.fromJson(items.data);
-        if (provide.lotteryRegistrationPageModel.locatedIn) {
-          if (provide.lotteryRegistrationPageModel.registered) {
-            provide.buttonName = '查看登记';
-            provide.buttonStatus = 0;
+         print('status====>${provide.lotteryRegistrationPageModel.status}');
+        if (provide.lotteryRegistrationPageModel.status == 0) {
+          provide.buttonName = '未开始';
+
+        }else if(provide.lotteryRegistrationPageModel.status == 2){
+              provide.buttonName = '已结束';
+        }else if (provide.lotteryRegistrationPageModel.status == 1) {
+          if (provide.lotteryRegistrationPageModel.locatedIn) {
+            if (provide.lotteryRegistrationPageModel.registered) {
+              provide.buttonName = '查看登记';
+              provide.buttonStatus = 0;
+            } else {
+              provide.buttonName = '去登记';
+              provide.buttonStatus = 1;
+            }
           } else {
-            provide.buttonName = '去登记';
-            provide.buttonStatus = 1;
+            provide.buttonName = '不在服务范围';
+            provide.buttonStatus = 2;
           }
-        } else {
-          provide.buttonName = '不在服务范围';
-          provide.buttonStatus = 2;
         }
         setState(() {
           _loadState = LoadState.State_Success;
@@ -218,7 +228,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               ),
               Center(
                 child: Text(
-                  '${provide.lotteryRegistrationPageModel.expiryTime} 截止登记',
+                  '${provide.lotteryRegistrationPageModel.endTime} 截止登记',
                   style: TextStyle(
                       // fontSize: ScreenAdapter.size(30),
                       //  fontWeight: FontWeight.w600
@@ -460,7 +470,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                               ),
                             ),
                           )
-                        : Container(
+                        :
+                         Container(
                             width: ScreenAdapter.width(680),
                             height: ScreenAdapter.height(150),
                             child: Row(
@@ -571,37 +582,48 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
             InkWell(
               onTap: () {
                 print('按钮被点击');
-               
+
+                print(
+                    'status====>${provide.lotteryRegistrationPageModel.status}');
+                 Navigator.pushNamed(context, '/registrationInformationPage',
+                      arguments: {
+                        'lotteryRegistrationPageModel':
+                            provide.lotteryRegistrationPageModel
+                      });
+                
 
                 if (provide.buttonStatus == 1) {
-                   Navigator.pushNamed(context, '/registrationInformationPage',
-                    arguments: {
-                      'lotteryRegistrationPageModel':
-                          provide.lotteryRegistrationPageModel
-                    });
+                  Navigator.pushNamed(context, '/registrationInformationPage',
+                      arguments: {
+                        'lotteryRegistrationPageModel':
+                            provide.lotteryRegistrationPageModel
+                      });
                 }
 
                 if (provide.buttonStatus == 0) {
-                     Navigator.pushNamed(context, '/checkTheRegistrationPage',arguments: {
-                  'id':provide.lotteryRegistrationPageModel.drawID,
-                  'shopId':provide.lotteryRegistrationPageModel.shopID,
-                });
+                  Navigator.pushNamed(context, '/checkTheRegistrationPage',
+                      arguments: {
+                        'id': provide.lotteryRegistrationPageModel.drawID,
+                        'shopId': provide.lotteryRegistrationPageModel.shopID,
+                      });
                 }
                 if (provide.buttonStatus == 2) {
                   
+
                 }
               },
-              child: Container(
+              child:
+               Container(
                 width: ScreenAdapter.width(690),
                 height: ScreenAdapter.height(90),
                 decoration: BoxDecoration(
-                   // border: Border.all(color: Colors.black87),
+                    // border: Border.all(color: Colors.black87),
                     color: provide.buttonStatus == 0
                         ? Color.fromRGBO(146, 169, 201, 1.0)
                         : Color.fromRGBO(248, 248, 248, 1.0)),
                 child: Center(
                   child: Text(
-                    provide.buttonName,
+                  provide.buttonName,
                     style: TextStyle(
                       fontSize: ScreenAdapter.size(30),
                       fontWeight: FontWeight.w800,

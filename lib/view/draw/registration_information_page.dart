@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/data/draw/drawee_data.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/draw/registration_information_provide.dart';
+import 'package:innetsect/view/registered/country_page.dart';
 import 'package:provide/provide.dart';
 
 ///登记信息
@@ -218,7 +219,7 @@ class _RegistrationInformationContentPageState
                   width: ScreenAdapter.width(65),
                 ),
                 Text(
-                  '手机号码+86',
+                  '手机号码',
                   style: TextStyle(
                       fontSize: ScreenAdapter.size(35),
                       color: Color.fromRGBO(133, 133, 133, 1.0)),
@@ -234,19 +235,41 @@ class _RegistrationInformationContentPageState
                 height: ScreenAdapter.height(90),
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: Colors.black54))),
-                child: TextField(
+                child: Row(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: (){
+                        Navigator.pushNamed(context, '/country_page.dart').then((value){
+                          print('=============>$value');
+                        });
+                        
+                      },
+                      child: Container(
+                        child: Text('+86',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_right
+                    ),
+                    Container(
+                      width: ScreenAdapter.width(490),
+                      height: ScreenAdapter.height(90),
+                      child: TextField(
                   enabled: true,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
-                      hintText: '请输入手机号码',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: InputBorder.none
-                      // contentPadding: EdgeInsets.all(0)
-                      ),
+                        hintText: '请输入手机号码',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: InputBorder.none
+                        // contentPadding: EdgeInsets.all(0)
+                        ),
                   onChanged: (str) {
-                    provide.phoneNumber = str;
+                      provide.phoneNumber = str;
                   },
                 ),
+                    ),
+                  ],
+                )
               ),
             )
           ],
