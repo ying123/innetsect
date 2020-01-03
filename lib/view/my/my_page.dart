@@ -214,6 +214,20 @@ class _MyContentPageState extends State<MyContentPage> {
                           44.0,
                           40.0),
                     ),
+                     SizedBox(
+                      width: ScreenAdapter.width(50),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        print('我的抽签');
+                       Navigator.pushNamed(context, '/myDrawPage');
+                      },
+                      child: _setupBtn(
+                          'assets/images/my_ordered@3x.png',
+                          '我的抽签',
+                          44.0,
+                          40.0),
+                    ),
                   ],
                 )),
             Container(
@@ -401,7 +415,7 @@ class _MyContentPageState extends State<MyContentPage> {
                     imagePath,
                     width: ScreenAdapter.width(width),
                     height: ScreenAdapter.height(height),
-                    fit: BoxFit.fill,
+                    fit: BoxFit.contain,
                   )),
                   SizedBox(
                     height: ScreenAdapter.height(20),

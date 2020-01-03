@@ -11,6 +11,8 @@ import 'package:innetsect/view/draw/check_the_registration_page.dart';
 import 'package:innetsect/view/draw/draw_details_page.dart';
 import 'package:innetsect/view/draw/draw_page.dart';
 import 'package:innetsect/view/draw/end_of_the_draw_page.dart';
+import 'package:innetsect/view/draw/my_draw_info_page.dart';
+import 'package:innetsect/view/draw/my_draw_page.dart';
 import 'package:innetsect/view/draw/registered_page.dart';
 import 'package:innetsect/view/draw/registration_information_page.dart';
 import 'package:innetsect/view/draw/registration_successful_page.dart';
@@ -59,6 +61,8 @@ final routes = {
   '/checkTheRegistrationPage':(context,{arguments})=>CheckTheRegistrationPage(draweeModel:arguments ,),
   '/drawRegisteredPage':(context)=>DrawRegisteredPage(),
   '/endOfTheDrawPage':(context,{arguments})=>EndOfTheDrawPage(pics: arguments,),
+  '/myDrawInfoPage':(context,{arguments})=>MyDrawInfoPage(myDrawDataModel: arguments,),
+  '/myDrawPage':(context)=>MyDrawPage(),
   ///DrawDetailsPage
   /////RegistrationInformationPage
 };
