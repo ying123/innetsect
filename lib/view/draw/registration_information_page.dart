@@ -361,7 +361,7 @@ class _RegistrationInformationContentPageState
           return Center(
             child: Container(
               width: ScreenAdapter.width(580),
-              height: ScreenAdapter.width(540),
+              height: ScreenAdapter.height(560),
               color: Colors.white,
               child: Column(
                 children: <Widget>[

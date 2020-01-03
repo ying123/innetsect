@@ -14,6 +14,24 @@ class DrawProvide extends BaseProvide {
     _drawsModel = drawsModel;
   }
 
+  int _redirectParamId; 
+  int get redirectParamId=>_redirectParamId;
+  set redirectParamId(int redirectParamId){
+    _redirectParamId = redirectParamId;
+  }
+
+  double _longitude ;
+  double get longitude=>_longitude;
+  set longitude(double longitude){
+    _longitude = longitude;
+  }
+
+  double _latitude;
+  double get latitude=>_latitude;
+   set latitude(double latitude){
+     _latitude = latitude;
+  }
+
 
 
   //DrawshopRepo
@@ -21,7 +39,7 @@ class DrawProvide extends BaseProvide {
   DrawshopRepo _repo = DrawshopRepo();
 ///抽签信息
   Observable draws(){
-    return _repo.draws().doOnData((item){
+    return _repo.draws(drawID: redirectParamId).doOnData((item){
 
     }).doOnError((e,stack){
 

@@ -10,6 +10,7 @@ class AppConfig{
 
  //static const baseUrl = 'https://gate.innersect.net';
   static const baseUrl = "http://test.innersect.net";
+ // static const baseUrl = "http://192.168.66.73:8000";
   //static const baseUrl = "https://m3.innersect.net";
 
   /// 测试环境（调货）\

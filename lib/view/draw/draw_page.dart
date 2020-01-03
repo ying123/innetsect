@@ -7,12 +7,16 @@ import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/draw/draw_provide.dart';
 import 'package:innetsect/view/widget/loading_state_widget.dart';
 import 'package:provide/provide.dart';
+import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 
 ///抽签
 class DrawPage extends PageProvideNode {
   final DrawProvide _provide = DrawProvide();
-  DrawPage() {
+  final Map redirectParam;
+  DrawPage({this.redirectParam}) {
     mProviders.provide(Provider<DrawProvide>.value(_provide));
+    print('redirectParam========>${redirectParam['redirectParam']}');
+   _provide.redirectParamId = int.parse(redirectParam['redirectParam']);
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -34,9 +38,27 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
   void initState() {
     super.initState();
     provide ??= widget.provide;
+     /// 百度定位
+     FlutterBaiduMap.setAK("Q07ulrG0wmUGKcKwtN6ChlafT8eBuEkX");
+      _baiduLocation().then((item){
+
+      print("_baidu========${item.latitude}");
+      print("_baidu========${item.longitude}");
+    });
      _loadDrawInfo();
   }
 
+   /// 百度定位
+  Future _baiduLocation() async{
+    BaiduLocation location = await FlutterBaiduMap.getCurrentLocation();
+    print("location.locationDescribe======${location.locationDescribe}");
+    print("location.latitude======${location.latitude}");
+    print("location.longitude======${location.longitude}");
+   provide.longitude = location.longitude;
+   provide.latitude = location.latitude;
+
+    return location;
+  }
   _loadDrawInfo() {
     provide.draws().doOnListen(() {}).listen((items) {
       print('items.data====> ${items.data}');
@@ -194,7 +216,9 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                   // });
                   Navigator.pushNamed(context, '/endOfTheDrawPage',arguments: {
                    'pics': provide.drawsModel.pics,
-                   'shops':provide.drawsModel.shops[index]
+                   'shops':provide.drawsModel.shops[index],
+                   'longitude':provide.longitude,
+                   'latitude':provide.latitude
                   });
                 },
                 child: Center(
@@ -237,23 +261,23 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
             SizedBox(
               height: ScreenAdapter.height(20),
             ),
-            Container(
-              width: ScreenAdapter.width(680),
-              child: Text(
-                '活动介绍',
-                style: TextStyle(fontSize: ScreenAdapter.size(35)),
-              ),
-            ),
+//            Container(
+//              width: ScreenAdapter.width(680),
+//              child: Text(
+//                '活动介绍',
+//                style: TextStyle(fontSize: ScreenAdapter.size(35)),
+//              ),
+//            ),
             SizedBox(
               height: ScreenAdapter.height(48),
             ),
             
-            Container(
-              width: ScreenAdapter.width(680),
-              child: Html(
-                data: provide.drawsModel.drawRule,
-              ),
-            ),
+            // Container(
+            //   width: ScreenAdapter.width(680),
+            //   child: Html(
+            //     data: provide.drawsModel.drawRule,
+            //   ),
+            // ),
           ],
         );
       },

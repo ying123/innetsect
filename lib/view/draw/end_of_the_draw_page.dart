@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/draw/lottery_registration_page.dart';
-import 'package:innetsect/data/draw/pics_data.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/draw/end_of_the_draw_provide.dart';
 import 'package:innetsect/view/widget/loading_state_widget.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:flutter_baidu_map/flutter_baidu_map.dart';
+
 
 ///进入店铺抽签登记页
 class EndOfTheDrawPage extends PageProvideNode {
@@ -22,6 +21,14 @@ class EndOfTheDrawPage extends PageProvideNode {
     _provide.shopsModel = pics['shops'];
     print('length====>${_provide.picsList.length}');
     print('shopsModel====>${_provide.shopsModel}');
+    print('shopsModeldrawID====>${_provide.shopsModel.drawID}');
+// 'longitude':provide.longitude,
+                  // 'latitude':provide.latitude
+    _provide.drawID = _provide.shopsModel.drawID;
+    _provide.shopID = _provide.shopsModel.shopID;
+    _provide.longitude = pics['longitude'];
+    _provide.latitude = pics['latitude'];
+  
   }
 
   @override
@@ -46,27 +53,13 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
     super.initState();
     provide ??= widget.provide;
 
-      /// 百度定位
-    _baiduLocation().then((item){
-
-      print("_baidu========${item.latitude}");
-      print("_baidu========${item.longitude}");
-    });
+     
     ///加载进入店铺抽签登记页
     _loadLotteryRegistrationPage();
    
+   
   }
-  /// 百度定位
-  Future _baiduLocation() async{
-    BaiduLocation location = await FlutterBaiduMap.getCurrentLocation();
-    print("location.locationDescribe======${location.locationDescribe}");
-    print("location.latitude======${location.latitude}");
-    print("location.longitude======${location.longitude}");
-   provide.longitude = location.longitude;
-   provide.latitude = location.latitude;
-
-    return location;
-  }
+ 
 
   _loadLotteryRegistrationPage() {
     if (Platform.isAndroid) {
@@ -91,6 +84,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
         }else if(provide.lotteryRegistrationPageModel.status == 2){
               provide.buttonName = '已结束';
         }else if (provide.lotteryRegistrationPageModel.status == 1) {
+            print('=====>${provide.lotteryRegistrationPageModel.locatedIn}');
           if (provide.lotteryRegistrationPageModel.locatedIn) {
             if (provide.lotteryRegistrationPageModel.registered) {
               provide.buttonName = '查看登记';

@@ -37,7 +37,7 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
   ]);
-  FlutterBaiduMap.setAK("Q07ulrG0wmUGKcKwtN6ChlafT8eBuEkX");
+  // FlutterBaiduMap.setAK("Q07ulrG0wmUGKcKwtN6ChlafT8eBuEkX");
   runApp(MyApp());
 }
 
@@ -76,11 +76,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
 
     /// 百度定位
-    _baiduLocation().then((item){
+    // _baiduLocation().then((item){
 
-      print("_baidu========${item.latitude}");
-      print("_baidu========${item.longitude}");
-    });
+    //   print("_baidu========${item.latitude}");
+    //   print("_baidu========${item.longitude}");
+    // });
 
 
 
@@ -147,13 +147,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   /// 百度定位
-  Future _baiduLocation() async{
-    BaiduLocation location = await FlutterBaiduMap.getCurrentLocation();
-    print("location.locationDescribe======${location.locationDescribe}");
-    print("location.latitude======${location.latitude}");
-    print("location.longitude======${location.longitude}");
-    return location;
-  }
+  // Future _baiduLocation() async{
+  //   BaiduLocation location = await FlutterBaiduMap.getCurrentLocation();
+  //   print("location.locationDescribe======${location.locationDescribe}");
+  //   print("location.latitude======${location.latitude}");
+  //   print("location.longitude======${location.longitude}");
+  //   return location;
+  // }
 
   Future<void> initPlatformState() async {
     try {

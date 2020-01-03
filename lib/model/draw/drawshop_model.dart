@@ -8,13 +8,14 @@ class DrawshopService {
 
   /// 添加抽签信息
   Observable<BaseResponse> draws ({dynamic resouce, int drawID}){
-    var url = '/api/promotion/draws/1';
+    var url = '/api/promotion/draws/$drawID';
     var response = get(url);
     return response;
   }
   /// 抽签登记页
-  Observable<BaseResponse> lotteryRegistrationPage ({double longitude,double latitude,String platform} ){
-    var url = '/api/promotion/draws/1/shops/37?longitude=$longitude&latitude=$latitude&platform=$platform';
+  Observable<BaseResponse> lotteryRegistrationPage ({num drawId,num shopID, double longitude,double latitude,String platform} ){
+    var url = '/api/promotion/draws/$drawId/shops/$shopID?longitude=$longitude&latitude=$latitude&platform=$platform';
+    print('url========>$url');
     var response = get(url);
     return response;
   }
@@ -38,11 +39,11 @@ class DrawshopRepo {
   final DrawshopService _remote = DrawshopService();
   ///抽签信息
   Observable<BaseResponse> draws({dynamic resouce , int drawID}){
-    return _remote.draws();
+    return _remote.draws(drawID:drawID);
   }
   ///抽签登记页面
-  Observable<BaseResponse> lotteryRegistrationPage({double longitude,double latitude,String platform }){
-    return _remote.lotteryRegistrationPage( longitude:longitude,latitude:latitude,platform:platform );
+  Observable<BaseResponse> lotteryRegistrationPage({num drawId,num shopID, double longitude,double latitude,String platform }){
+    return _remote.lotteryRegistrationPage(drawId: drawId, shopID: shopID, longitude:longitude,latitude:latitude,platform:platform );
   }
   ///查看我的抽签登记信息
   Observable<BaseResponse> viewRegistrationInformation({num id,num shopId }){

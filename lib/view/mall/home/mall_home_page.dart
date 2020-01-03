@@ -200,7 +200,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
                 print('第$index 页被点击=====${_bannersList[index].toString()}');
                 if (index== 0) {
                   print('抽签被点击');
-                   Navigator.pushNamed(context, '/drawPage');
+                 
                 }
 
                 /// 跳转商品详情
@@ -231,6 +231,10 @@ class _MallHomeContentState extends State<MallHomeContent> {
                       return ActivityDetailPage(activityID: int.parse(_bannersList[index].redirectParam),);
                     }
                   ));
+                }else if(_bannersList[index].redirectType == ConstConfig.DRAW){
+                      Navigator.pushNamed(context, '/drawPage',arguments: {
+                        'redirectParam':_bannersList[index].redirectParam
+                      });
                 }
               },
               child: ClipPath(

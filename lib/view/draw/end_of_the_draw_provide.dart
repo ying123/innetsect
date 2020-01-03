@@ -41,17 +41,31 @@ class EndOfTheDrawProvide extends BaseProvide {
     _shopsModel = shopsModel;
   }
 
-  double _longitude = 132.1;
+  double _longitude = 1231.1;
   double get longitude=>_longitude;
   set longitude(double longitude){
     _longitude = longitude;
   }
 
-  double _latitude=1336.11;
+  double _latitude= 131.11;
   double get latitude=>_latitude;
    set latitude(double latitude){
      _latitude = latitude;
   }
+
+  num _drawID;
+  num get drawID=>_drawID;
+   set drawID(num drawID){
+    _drawID = drawID;
+  }
+
+  num _shopID;
+  num get shopID=>_shopID;
+  set shopID(num shopID){
+    _shopID = shopID;
+  }
+
+
   
 
   LotteryRegistrationPageModel _lotteryRegistrationPageModel = LotteryRegistrationPageModel();
@@ -63,8 +77,10 @@ class EndOfTheDrawProvide extends BaseProvide {
 
   DrawshopRepo _repo = DrawshopRepo();
   Observable loadLotteryRegistrationPage() {
+   // print('======>shopsModel.drawID${shopsModel.drawID}');
+   // print('======>shopsModel.shopId${shopsModel.shopId}');
     return _repo.lotteryRegistrationPage(
-        longitude: longitude, latitude: latitude, platform: platform).doOnData((items){
+      drawId:shopsModel.drawID,shopID:shopsModel.shopID  , longitude: longitude, latitude: latitude, platform: platform).doOnData((items){
 
         }).doOnError((e,stack){
 
