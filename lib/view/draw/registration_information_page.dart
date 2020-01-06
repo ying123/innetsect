@@ -412,7 +412,7 @@ class _RegistrationInformationContentPageState
                             child: Row(
                           children: <Widget>[
                             Container(
-                              height: ScreenAdapter.height(60),
+                              height: ScreenAdapter.height(70),
                               child: Text(
                                 '门店地址:',
                                 style: TextStyle(

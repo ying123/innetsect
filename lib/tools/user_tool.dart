@@ -115,6 +115,18 @@ void clearUserInfo(){
     }
   }
 
+
+///
+Future<bool> setUserToken(Map<String,dynamic> userInfo){
+  if (_beforCheck()) {
+    return null;
+  }
+  var jsonStr =  json.encode(userInfo);
+  return _spf.setString(ConstConfig.LOGIN_USERINFO, jsonStr);
+}
+  
+  
+
   void setLocal(String local){
       _spf.setString("local", local);
   }

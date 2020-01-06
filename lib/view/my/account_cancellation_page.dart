@@ -1,4 +1,5 @@
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/account_cancellation_provide.dart';
@@ -81,11 +82,15 @@ class _AccountCancellationContentPageState extends State<AccountCancellationCont
                   print('================>$result');
                   print('result.data================>${result.data}');
                   if (result.data == true) {
+                  
+                    AppConfig.userTools.clearUserInfo();
                     Navigator.pop(context);
+                    Navigator.pushNamed(context, '/loginPage');
                     Fluttertoast.showToast(
                       msg: '注销成功',
                       gravity: ToastGravity.CENTER,
                     );
+
                   }
                   
                 });

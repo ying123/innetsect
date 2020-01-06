@@ -28,7 +28,7 @@ class DrawshopService {
 
   /// 添加抽签登记 
   Observable<BaseResponse> drawshop (dynamic resouce, int drawID){
-    var url = '/api/promotion/draws/1/register';
+    var url = '/api/promotion/draws/$drawID/register';
     var response = post(url,body:resouce);
     return response;
   }
