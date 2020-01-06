@@ -100,8 +100,8 @@ set countryCode(String countryCode){
       "icNo": certificate,
       "registerDate": todatSp[0],
       "platform": platform,
-      "longitude": 122,//经度
-      "latitude": 0,//纬度
+      "longitude": 121.494523,//经度
+      "latitude": 31.318514,//纬度
     };
      print('todatSP ======> ${todatSp[0]}');
      print('drawID ======> ${lotteryRegistrationPageModel.drawID}');

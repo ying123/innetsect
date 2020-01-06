@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/api/loading.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/draw/draw_data.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -101,7 +102,24 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
         child: Column(
           children: <Widget>[
             _setupBody(),
+            //  Center(
+            //   child: Container(
+            //     width: ScreenAdapter.width(680),
+            //     height: ScreenAdapter.height(1),
+            //     color: Colors.black12,
+            //   ),
+            // ),
             _setupHead(),
+            SizedBox(
+              height: ScreenAdapter.height(20),
+            ),
+             Center(
+              child: Container(
+                width: ScreenAdapter.width(680),
+                height: ScreenAdapter.height(1),
+                color: Colors.black38,
+              ),
+            ),
             _setupEnd(),
             _setupActivityIsIntroduced()
           ],
@@ -182,13 +200,13 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
             SizedBox(
               height: ScreenAdapter.height(50),
             ),
-            Center(
-              child: Container(
-                width: ScreenAdapter.width(695),
-                height: ScreenAdapter.height(1),
-                color: Colors.black12,
-              ),
-            )
+            // Center(
+            //   child: Container(
+            //     width: ScreenAdapter.width(695),
+            //     height: ScreenAdapter.height(1),
+            //     color: Colors.black12,
+            //   ),
+            // )
           ],
         );
       },
@@ -214,6 +232,10 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                   // Navigator.pushNamed(context, '/drawDetailsPage',arguments: {
                   //   'shopID':provide.drawsModel.shops[index].shopID
                   // });
+                  if (AppConfig.userTools.getUserToken() == '') {
+                    Navigator.pushNamed(context, '/loginPage');
+                  }
+
                   Navigator.pushNamed(context, '/endOfTheDrawPage',arguments: {
                    'pics': provide.drawsModel.pics,
                    'shops':provide.drawsModel.shops[index],
@@ -251,13 +273,13 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
       builder: (BuildContext context, Widget child, DrawProvide provide) {
         return Column(
           children: <Widget>[
-             Center(
-              child: Container(
-                width: ScreenAdapter.width(680),
-                height: ScreenAdapter.height(1),
-                color: Colors.black12,
-              ),
-            ),
+            //  Center(
+            //   child: Container(
+            //     width: ScreenAdapter.width(680),
+            //     height: ScreenAdapter.height(1),
+            //     color: Colors.black12,
+            //   ),
+            // ),
             SizedBox(
               height: ScreenAdapter.height(20),
             ),

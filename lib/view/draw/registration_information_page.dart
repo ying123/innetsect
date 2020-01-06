@@ -231,47 +231,48 @@ class _RegistrationInformationContentPageState
             ),
             Center(
               child: Container(
-                width: ScreenAdapter.width(625),
-                height: ScreenAdapter.height(90),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.black54))),
-                child: Row(
-                  children: <Widget>[
-                    InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(context, '/country_page.dart').then((value){
-                          print('=============>$value');
-                          provide.countryCode = value;
-                        });
-                        
-                      },
-                      child: Container(
-                        child: Text('+${provide.countryCode}',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_right
-                    ),
-                    Container(
-                      width: ScreenAdapter.width(490),
-                      height: ScreenAdapter.height(90),
-                      child: TextField(
-                  enabled: true,
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                        hintText: '请输入手机号码',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        border: InputBorder.none
-                        // contentPadding: EdgeInsets.all(0)
+                  width: ScreenAdapter.width(625),
+                  height: ScreenAdapter.height(90),
+                  decoration: BoxDecoration(
+                      border:
+                          Border(bottom: BorderSide(color: Colors.black54))),
+                  child: Row(
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/country_page.dart')
+                              .then((value) {
+                            print('=============>$value');
+                            provide.countryCode = value;
+                          });
+                        },
+                        child: Container(
+                          child: Text(
+                            '+${provide.countryCode}',
+                            style: TextStyle(fontSize: ScreenAdapter.size(30)),
+                          ),
                         ),
-                  onChanged: (str) {
-                      provide.phoneNumber = str;
-                  },
-                ),
-                    ),
-                  ],
-                )
-              ),
+                      ),
+                      Icon(Icons.arrow_right),
+                      Container(
+                        width: ScreenAdapter.width(490),
+                        height: ScreenAdapter.height(90),
+                        child: TextField(
+                          enabled: true,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                              hintText: '请输入手机号码',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              border: InputBorder.none
+                              // contentPadding: EdgeInsets.all(0)
+                              ),
+                          onChanged: (str) {
+                            provide.phoneNumber = str;
+                          },
+                        ),
+                      ),
+                    ],
+                  )),
             )
           ],
         );
@@ -406,15 +407,37 @@ class _RegistrationInformationContentPageState
                         width: ScreenAdapter.width(40),
                       ),
                       Container(
-                        child: Text(
-                          '门店地址: ${provide.lotteryRegistrationPageModel.addr}',
-                          style: TextStyle(
-                            color: Colors.black54,
-                            decorationColor: Colors.white,
-                            fontSize: ScreenAdapter.size(30),
-                            fontWeight: FontWeight.w100,
-                          ),
-                        ),
+                        //width: ScreenAdapter.width(500),
+                        child: Container(
+                            child: Row(
+                          children: <Widget>[
+                            Container(
+                              height: ScreenAdapter.height(60),
+                              child: Text(
+                                '门店地址:',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  decorationColor: Colors.white,
+                                  fontSize: ScreenAdapter.size(30),
+                                  fontWeight: FontWeight.w100,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: ScreenAdapter.width(400),
+                              height: ScreenAdapter.height(60),
+                              child: Text(
+                                '${provide.lotteryRegistrationPageModel.addr}',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  decorationColor: Colors.white,
+                                  fontSize: ScreenAdapter.size(30),
+                                  fontWeight: FontWeight.w100,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
                       ),
                     ],
                   ),
@@ -486,8 +509,6 @@ class _RegistrationInformationContentPageState
                   ),
                   GestureDetector(
                     onTap: () {
-                     
-
                       provide
                           .drawshop()
                           .doOnListen(() {})
@@ -500,9 +521,8 @@ class _RegistrationInformationContentPageState
                               DraweeModel.fromJson(items.data);
                           Navigator.pop(context);
                           Navigator.pushNamed(
-                              context, '/registrationSuccessfulPage',arguments: {
-                                'draweeModel':provide.draweeModel
-                              });
+                              context, '/registrationSuccessfulPage',
+                              arguments: {'draweeModel': provide.draweeModel});
                         }
                         print('items.message======>${items.message}');
                       });

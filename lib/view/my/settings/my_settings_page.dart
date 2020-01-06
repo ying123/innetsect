@@ -83,6 +83,11 @@ class _MySettingsContentState extends State<MySettingsContent> {
                   }
               ));
             }),
+            new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
+            _listWidgets(icon: Icons.account_balance_wallet, title: "账户安全",onTap:(){
+              Navigator.pushNamed(context, '/accountCancellationPage');
+            },
+            ),
             // 退出登录
             _loginOutWidget()
           ],
@@ -90,6 +95,26 @@ class _MySettingsContentState extends State<MySettingsContent> {
       ),
     );
   }
+
+  // _topUp(){
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (BuildContext context){
+  //       return Container(
+  //         height: ScreenAdapter.height(120),
+  //         child: Center(
+  //           child: Container(
+  //             width: ScreenAdapter.width(710),
+  //             height: ScreenAdapter.height(100),
+  //             child: Center(
+  //               child: Text('注销账号',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     }
+  //   );
+  // }
   @override
   void initState() {
     // TODO: implement initState

@@ -28,6 +28,9 @@ class EndOfTheDrawPage extends PageProvideNode {
     _provide.shopID = _provide.shopsModel.shopID;
     _provide.longitude = pics['longitude'];
     _provide.latitude = pics['latitude'];
+    print('longitude====>${_provide.longitude}');
+    print('latitude====>${_provide.latitude}');
+
   
   }
 
@@ -136,7 +139,61 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               ],
             ),
           ),
-        ));
+        ),
+        bottomNavigationBar:  InkWell(
+              onTap: () {
+                print('按钮被点击');
+
+                print(
+                    'status====>${provide.lotteryRegistrationPageModel.status}');
+                //  Navigator.pushNamed(context, '/registrationInformationPage',
+                //       arguments: {
+                //         'lotteryRegistrationPageModel':
+                //             provide.lotteryRegistrationPageModel
+                //       });
+                
+
+                if (provide.buttonStatus == 1) {
+                  Navigator.pushNamed(context, '/registrationInformationPage',
+                      arguments: {
+                        'lotteryRegistrationPageModel':
+                            provide.lotteryRegistrationPageModel
+                      });
+                }
+
+                if (provide.buttonStatus == 0) {
+                  Navigator.pushNamed(context, '/checkTheRegistrationPage',
+                      arguments: {
+                        'id': provide.lotteryRegistrationPageModel.drawID,
+                        'shopId': provide.lotteryRegistrationPageModel.shopID,
+                      });
+                }
+                if (provide.buttonStatus == 2) {
+                  
+
+                }
+              },
+              child:
+               Container(
+                width: ScreenAdapter.width(690),
+                height: ScreenAdapter.height(90),
+                decoration: BoxDecoration(
+                    // border: Border.all(color: Colors.black87),
+                    color: provide.buttonStatus == 0
+                        ? Color.fromRGBO(146, 169, 201, 1.0)
+                        : Color.fromRGBO(248, 248, 248, 1.0)),
+                child: Center(
+                  child: Text(
+                  provide.buttonName == null?'':provide.buttonName,
+                    style: TextStyle(
+                      fontSize: ScreenAdapter.size(30),
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        );
   }
 
   Provide<EndOfTheDrawProvide> _setupHead() {
@@ -521,7 +578,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length!=2?'':provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length<2?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[1],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -534,7 +591,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                   children: <Widget>[
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length!=3?'':provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length<3?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[2],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -545,7 +602,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length!=4?'':provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length<4?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[3],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -558,7 +615,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                   children: <Widget>[
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length!=5?'':provide.lotteryRegistrationPageModel
+                                          .winnerMobiles.length<5?'':provide.lotteryRegistrationPageModel
                                           .winnerMobiles[4],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
@@ -613,59 +670,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
             SizedBox(
               height: ScreenAdapter.height(40),
             ),
-            InkWell(
-              onTap: () {
-                print('按钮被点击');
-
-                print(
-                    'status====>${provide.lotteryRegistrationPageModel.status}');
-                //  Navigator.pushNamed(context, '/registrationInformationPage',
-                //       arguments: {
-                //         'lotteryRegistrationPageModel':
-                //             provide.lotteryRegistrationPageModel
-                //       });
-                
-
-                if (provide.buttonStatus == 1) {
-                  Navigator.pushNamed(context, '/registrationInformationPage',
-                      arguments: {
-                        'lotteryRegistrationPageModel':
-                            provide.lotteryRegistrationPageModel
-                      });
-                }
-
-                if (provide.buttonStatus == 0) {
-                  Navigator.pushNamed(context, '/checkTheRegistrationPage',
-                      arguments: {
-                        'id': provide.lotteryRegistrationPageModel.drawID,
-                        'shopId': provide.lotteryRegistrationPageModel.shopID,
-                      });
-                }
-                if (provide.buttonStatus == 2) {
-                  
-
-                }
-              },
-              child:
-               Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(90),
-                decoration: BoxDecoration(
-                    // border: Border.all(color: Colors.black87),
-                    color: provide.buttonStatus == 0
-                        ? Color.fromRGBO(146, 169, 201, 1.0)
-                        : Color.fromRGBO(200, 200, 200, 1.0)),
-                child: Center(
-                  child: Text(
-                  provide.buttonName,
-                    style: TextStyle(
-                      fontSize: ScreenAdapter.size(30),
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+           
             SizedBox(
               height: ScreenAdapter.height(40),
             ),

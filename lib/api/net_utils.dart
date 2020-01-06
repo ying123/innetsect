@@ -266,6 +266,7 @@ Future _getHtml(String url, {Map<String, dynamic> params,BuildContext context}) 
 ////delete请求
 Future delete(String url,
     {dynamic body, Map<String, dynamic> qureyParameters,BuildContext context}) {
+    print('========delete=========');
   return _delete(url, body, queryParameters: qureyParameters,context: context);
 }
 
@@ -281,6 +282,7 @@ Future _delete(String url, dynamic body,
   }).catchError((error) {
     if(error.response.data['path'].toString().indexOf("/reservations")>-1){
       CustomsWidget().showToast(title: error.response.data['message']);
+      print('_delete error=========>${ error.response.data['message']}');
     }
   });
   return response;

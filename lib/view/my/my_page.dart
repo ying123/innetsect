@@ -468,6 +468,12 @@ class _MyContentPageState extends State<MyContentPage> {
                 }
               ));
                 }),
+            // new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
+            // CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/反馈意@2x.png',
+            //     title: '账户与安全',onTap: (){
+            //   Navigator.pushNamed(context, '/accountCancellationPage');
+            //     }
+            //     ),
             new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
           ],
         ));

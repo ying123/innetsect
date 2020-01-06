@@ -24,6 +24,7 @@ import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
+import 'package:innetsect/view/my/account_cancellation_page.dart';
 import 'package:innetsect/view/my/all/all_page.dart';
 import 'package:innetsect/view/my/profile/profile_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
@@ -63,6 +64,7 @@ final routes = {
   '/endOfTheDrawPage':(context,{arguments})=>EndOfTheDrawPage(pics: arguments,),
   '/myDrawInfoPage':(context,{arguments})=>MyDrawInfoPage(myDrawDataModel: arguments,),
   '/myDrawPage':(context)=>MyDrawPage(),
+  '/accountCancellationPage':(context)=>AccountCancellationPage(),///账户注销
   ///DrawDetailsPage
   /////RegistrationInformationPage
 };
