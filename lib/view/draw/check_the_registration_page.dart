@@ -11,8 +11,8 @@ class CheckTheRegistrationPage extends PageProvideNode {
   final Map draweeModel;
   CheckTheRegistrationPage({this.draweeModel}) {
     mProviders.provide(Provider<CheckTheRegistrationProvide>.value(_provide));
-    _provide.id = draweeModel['id'];
-    _provide.shopId = draweeModel['shopId'];
+    _provide.id = draweeModel['drawID'];
+    _provide.shopId = draweeModel['shopID'];
     print('_provide.draweeModel.drawID=====>${_provide.id}');
     print('_provide.draweeModel.shopID=====>${_provide.shopId}');
   }
@@ -93,7 +93,7 @@ class _CheckTheRegistrationContentPageState
             Container(
               width: ScreenAdapter.width(690),
               height: ScreenAdapter.height(1),
-              color: Colors.black12,
+              color: Colors.black54,
             ),
             SizedBox(
               height: ScreenAdapter.height(20),
@@ -128,7 +128,7 @@ class _CheckTheRegistrationContentPageState
                     height: ScreenAdapter.height(210),
                     child: Image.network(
                       provide.viewRegistrationInformationModel.shopProduct.prodPic,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   ),
                   SizedBox(
@@ -143,7 +143,8 @@ class _CheckTheRegistrationContentPageState
                           provide.viewRegistrationInformationModel.shopProduct.prodName,
                           style: TextStyle(
                               fontSize: ScreenAdapter.size(30),
-                              fontWeight: FontWeight.w700),
+                              fontWeight: FontWeight.w700
+                              ),
                         ),
                       ),
                       SizedBox(
@@ -160,7 +161,8 @@ class _CheckTheRegistrationContentPageState
                           style: TextStyle(
                               fontSize: ScreenAdapter.size(30),
                               color: Color.fromRGBO(160, 160, 160, 1.0),
-                              fontWeight: FontWeight.w700),
+                          //    fontWeight: FontWeight.w700
+                              ),
                         ),
                       ),
                     ],
@@ -168,17 +170,17 @@ class _CheckTheRegistrationContentPageState
                 ],
               ),
             ),
-            Positioned(
-              left: ScreenAdapter.width(560),
-              top: ScreenAdapter.height(100),
-              child:provide.viewRegistrationInformationModel.shopProduct.status==1? Image.asset(
-                'assets/images/mall/中签大.png',
-                width: ScreenAdapter.width(170),
-                height: ScreenAdapter.height(170),
-              ):Container(
+            // Positioned(
+            //   left: ScreenAdapter.width(560),
+            //   top: ScreenAdapter.height(100),
+            //   child:provide.viewRegistrationInformationModel.shopProduct.status==1? Image.asset(
+            //     'assets/images/mall/中签大.png',
+            //     width: ScreenAdapter.width(170),
+            //     height: ScreenAdapter.height(170),
+            //   ):Container(
 
-              ),
-            ),
+            //   ),
+            // ),
           ],
         );
       },
@@ -231,6 +233,7 @@ class _CheckTheRegistrationContentPageState
                     ),
                     Text(
                       provide.viewRegistrationInformationModel.shopProduct.addr,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.black54),
                     ),
 
@@ -347,12 +350,23 @@ class _CheckTheRegistrationContentPageState
           CheckTheRegistrationProvide provide) {
         return Column(
           children: <Widget>[
+             
+            Container(
+              height: ScreenAdapter.height(170),
+              child: provide.viewRegistrationInformationModel.shopProduct.status==1? Image.asset(
+                'assets/images/mall/中签大.png',
+                width: ScreenAdapter.width(170),
+                height: ScreenAdapter.height(170),
+              ):Container(
+
+              ),
+            ),
             SizedBox(
-              height: ScreenAdapter.height(200),
+              height: ScreenAdapter.height(40),
             ),
             GestureDetector(
               onTap: (){
-                Navigator.pop(context);
+                Navigator.pushNamedAndRemoveUntil(context, '/mallPage', (route)=>route == null);
               },
               child: Container(
                 width: ScreenAdapter.width(690),

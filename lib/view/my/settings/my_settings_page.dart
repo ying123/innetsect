@@ -89,9 +89,31 @@ class _MySettingsContentState extends State<MySettingsContent> {
             },
             ),
             // 退出登录
-            _loginOutWidget()
+            _loginOutWidget(),
+            ///活动测试
+            _setUpActivityTest()
+
           ],
         ),
+      ),
+    );
+  }
+
+int tapNum = 0;
+
+  _setUpActivityTest(){
+    return InkWell(
+      onTap: (){
+         ++tapNum;
+        if (tapNum == 5) {
+          Navigator.pushNamed(context, '/listOfActivitiesPage');
+          tapNum = 0;
+        }
+      },
+      child: Container(
+        width: ScreenAdapter.width(750),
+        height: ScreenAdapter.height(500),
+        //color: Colors.yellow,
       ),
     );
   }

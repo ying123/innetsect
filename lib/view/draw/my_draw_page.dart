@@ -137,7 +137,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                         height: ScreenAdapter.height(305),
                         decoration: BoxDecoration(
                             border: Border(
-                                bottom: BorderSide(color: Colors.black12))),
+                                bottom: BorderSide(color: Colors.black54))),
                         child: Row(
                           children: <Widget>[
                             Container(
@@ -145,7 +145,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                               height: ScreenAdapter.width(210),
                               child: Image.network(
                                 provide.dataModel[index].drawPic,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                                 width: ScreenAdapter.width(210),
                                 height: ScreenAdapter.height(210),
                               ),
@@ -156,7 +156,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                             Column(
                               children: <Widget>[
                                 SizedBox(
-                                  height: ScreenAdapter.height(40),
+                                  height: ScreenAdapter.height(70),
                                 ),
                                 Container(
                                   width: ScreenAdapter.width(418),
@@ -165,12 +165,13 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                                     provide.dataModel[index].drawName,
                                     style: TextStyle(
                                         fontSize: ScreenAdapter.size(35),
-                                        fontWeight: FontWeight.w600),
+                                       // fontWeight: FontWeight.w600
+                                        ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: ScreenAdapter.height(30),
-                                ),
+                                // SizedBox(
+                                //   height: ScreenAdapter.height(20),
+                                // ),
                                 Container(
                                   width: ScreenAdapter.width(418),
                                   child: Text(
@@ -178,7 +179,8 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                                     style: TextStyle(
                                         fontSize: ScreenAdapter.size(30),
                                         color: Color.fromRGBO(153, 151, 158, 1.0),
-                                        fontWeight: FontWeight.w600),
+                                       // fontWeight: FontWeight.w600
+                                        ),
                                   ),
                                 ),
                                 SizedBox(
@@ -191,7 +193,8 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                                     style: TextStyle(
                                         fontSize: ScreenAdapter.size(30),
                                         color: Color.fromRGBO(153, 151, 158, 1.0),
-                                        fontWeight: FontWeight.w600),
+                                       // fontWeight: FontWeight.w600
+                                        ),
                                   ),
                                 ),
                               ],

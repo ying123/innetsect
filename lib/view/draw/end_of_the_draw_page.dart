@@ -164,8 +164,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                 if (provide.buttonStatus == 0) {
                   Navigator.pushNamed(context, '/checkTheRegistrationPage',
                       arguments: {
-                        'id': provide.lotteryRegistrationPageModel.drawID,
-                        'shopId': provide.lotteryRegistrationPageModel.shopID,
+                        'drawID': provide.lotteryRegistrationPageModel.drawID,
+                        'shopID': provide.lotteryRegistrationPageModel.shopID,
                       });
                 }
                 if (provide.buttonStatus == 2) {
@@ -173,25 +173,33 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
 
                 }
               },
-              child:
-               Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(90),
-                decoration: BoxDecoration(
-                    // border: Border.all(color: Colors.black87),
-                    color: provide.buttonStatus == 0
-                        ? Color.fromRGBO(146, 169, 201, 1.0)
-                        : Color.fromRGBO(248, 248, 248, 1.0)),
+              child:Container(
+                height: ScreenAdapter.height(120),
                 child: Center(
-                  child: Text(
-                  provide.buttonName == null?'':provide.buttonName,
-                    style: TextStyle(
-                      fontSize: ScreenAdapter.size(30),
-                      fontWeight: FontWeight.w800,
+                  child: Container(
+                  width: ScreenAdapter.width(690),
+                  height: ScreenAdapter.height(90),
+                  decoration: BoxDecoration(
+                      // border: Border.all(color: Colors.black87),
+                      color: provide.buttonStatus == 0 || provide.buttonStatus == 1
+                          ? Color.fromRGBO(146, 169, 201, 1.0)
+                          : Color.fromRGBO(248, 248, 248, 1.0)),
+                  child: Center(
+                    child: Text(
+                    provide.buttonName == null?'':provide.buttonName,
+                      style: TextStyle(
+                        fontSize: ScreenAdapter.size(30),
+                        fontWeight: FontWeight.w800,
+                        color: provide.buttonStatus == 0 || provide.buttonStatus == 1?
+                        Colors.white:Colors.black
+
+                      ),
                     ),
                   ),
-                ),
               ),
+                ),
+              )
+               
             ),
         );
   }
@@ -228,7 +236,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
           (BuildContext context, Widget child, EndOfTheDrawProvide provide) {
         return Container(
           width: ScreenAdapter.width(680),
-          height: ScreenAdapter.height(630),
+         // height: ScreenAdapter.height(520),
           child: Column(
             children: <Widget>[
               SizedBox(
@@ -269,9 +277,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                   Expanded(
                     child: Container(),
                   ),
-                  Text(provide.shopsModel.shopName,style: TextStyle(
+                  Text(
+                    provide.shopsModel.shopName,
+                    style: TextStyle(
                        fontSize: ScreenAdapter.size(30),
-                        fontWeight: FontWeight.w600,
+                       // fontWeight: FontWeight.w600,
                        // color: Color.fromRGBO(177, 177, 177, 1.0)
                       ),),
                   SizedBox(
@@ -279,8 +289,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                   ),
                   Container(
                     width: ScreenAdapter.size(4),
-                    height: ScreenAdapter.height(35),
-                    color: Colors.grey,
+                    height: ScreenAdapter.height(40),
+                    color: Color.fromRGBO(220, 220, 220, 1.0)
                   ),
                   SizedBox(
                     width: ScreenAdapter.width(40),
@@ -289,7 +299,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                           .toString() +
                       '        ',style: TextStyle(
                        fontSize: ScreenAdapter.size(30),
-                        fontWeight: FontWeight.w600,
+                       // fontWeight: FontWeight.w600,
                        // color: Color.fromRGBO(177, 177, 177, 1.0)
                       ),),
                   Expanded(
@@ -304,8 +314,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                 child: Text(
                     '尺码:${provide.lotteryRegistrationPageModel.prodSizeRange}',style: TextStyle(
                       // fontSize: ScreenAdapter.size(30),
-                        fontWeight: FontWeight.w600,
-                        color: Color.fromRGBO(177, 177, 177, 1.0)
+                       // fontWeight: FontWeight.w600,
+                        //color: Color.fromRGBO(177, 177, 177, 1.0)
                       ),),
               ),
               SizedBox(
@@ -327,7 +337,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                 child: Container(
                   width: ScreenAdapter.width(680),
                   height: ScreenAdapter.height(1),
-                  color: Colors.black12,
+                  color: Colors.black54,
                 ),
               ),
               Container(
@@ -492,7 +502,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                 child: Container(
                   width: ScreenAdapter.width(680),
                   height: ScreenAdapter.height(1),
-                  color: Colors.black12,
+                  color: Colors.black54,
                 ),
               ),
             ],
@@ -512,6 +522,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               child: Container(
                 width: ScreenAdapter.width(680),
                 height: ScreenAdapter.height(268),
+              //  color: Colors.yellow,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -551,7 +562,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                 '敬请期待',
                                 style: TextStyle(
                                     fontSize: ScreenAdapter.size(30),
-                                    fontWeight: FontWeight.w700),
+                                    color: Colors.black54
+                                    ),
                               ),
                             ),
                           )
@@ -645,7 +657,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               child: Container(
                 width: ScreenAdapter.width(680),
                 height: ScreenAdapter.height(1),
-                color: Colors.black12,
+                color: Colors.black54,
               ),
             ),
             SizedBox(

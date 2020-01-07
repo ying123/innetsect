@@ -122,7 +122,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                     child: Image.network(
                       provide
                           .dataModel.drawPic,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   ),
                   SizedBox(
@@ -138,7 +138,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                               .drawName,
                           style: TextStyle(
                               fontSize: ScreenAdapter.size(30),
-                              fontWeight: FontWeight.w700),
+                             // fontWeight: FontWeight.w700
+                              ),
                         ),
                       ),
                       SizedBox(
@@ -153,8 +154,9 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                           '${provide.viewRegistrationInformationModel.shopProduct.shopName}   |   ￥${provide.viewRegistrationInformationModel.shopProduct.prodPrice}',
                           style: TextStyle(
                               fontSize: ScreenAdapter.size(30),
-                              color: Color.fromRGBO(160, 160, 160, 1.0),
-                              fontWeight: FontWeight.w700),
+                              color: Colors.black54
+                              //fontWeight: FontWeight.w700
+                              ),
                         ),
                       ),
                     ],
@@ -228,6 +230,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                     ),
                     Text(
                      provide.viewRegistrationInformationModel.shopProduct.addr,
+                     overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontSize: ScreenAdapter.size(30),
                           color: Colors.black54),

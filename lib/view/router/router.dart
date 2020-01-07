@@ -27,6 +27,8 @@ import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/my/account_cancellation_page.dart';
 import 'package:innetsect/view/my/all/all_page.dart';
 import 'package:innetsect/view/my/profile/profile_page.dart';
+import 'package:innetsect/view/my/settings/draw_activitied_test_page.dart';
+import 'package:innetsect/view/my/settings/list_of_activities_page.dart';
 import 'package:innetsect/view/my_order/my_order_page.dart';
 import 'package:innetsect/view/registered/country_page.dart';
 import 'package:innetsect/view/registered/registered_page.dart';
@@ -64,6 +66,8 @@ final routes = {
   '/endOfTheDrawPage':(context,{arguments})=>EndOfTheDrawPage(pics: arguments,),
   '/myDrawInfoPage':(context,{arguments})=>MyDrawInfoPage(myDrawDataModel: arguments,),
   '/myDrawPage':(context)=>MyDrawPage(),
+  '/listOfActivitiesPage':(context)=>ListOfActivitiesPage(),///GM获得配置
+  '/drwaActivitiedTestPage':(context)=>DrwaActivitiedTestPage(),///GM获得配置
   '/accountCancellationPage':(context)=>AccountCancellationPage(),///账户注销
   ///DrawDetailsPage
   /////RegistrationInformationPage

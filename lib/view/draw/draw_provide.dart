@@ -19,14 +19,16 @@ class DrawProvide extends BaseProvide {
   set redirectParamId(int redirectParamId){
     _redirectParamId = redirectParamId;
   }
+  ///   "longitude": 121.494523,//经度
+  ///    "latitude": 31.318514,//纬度
 
-  double _longitude ;
+  double _longitude  = 121.494523;
   double get longitude=>_longitude;
   set longitude(double longitude){
     _longitude = longitude;
   }
 
-  double _latitude;
+  double _latitude = 31.318514;
   double get latitude=>_latitude;
    set latitude(double latitude){
      _latitude = latitude;
