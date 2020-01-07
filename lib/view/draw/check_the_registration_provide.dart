@@ -20,6 +20,18 @@ class CheckTheRegistrationProvide extends BaseProvide {
     _shopId = shopId;
   }
 
+   double _longitude = 1231.1;
+  double get longitude=>_longitude;
+  set longitude(double longitude){
+    _longitude = longitude;
+  }
+
+  double _latitude= 131.11;
+  double get latitude=>_latitude;
+   set latitude(double latitude){
+     _latitude = latitude;
+  }
+
   //ViewRegistrationInformationModel
   ViewRegistrationInformationModel _viewRegistrationInformationModel = ViewRegistrationInformationModel();
   ViewRegistrationInformationModel get viewRegistrationInformationModel=>_viewRegistrationInformationModel;

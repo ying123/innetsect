@@ -13,6 +13,9 @@ import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/mall/user/user_provide.dart';
 import 'package:provide/provide.dart';
 
+
+
+
 class MySettingsPage extends PageProvideNode{
   final UserProvide _provide = UserProvide();
   final LoginProvide _loginProvide = LoginProvide.instance;

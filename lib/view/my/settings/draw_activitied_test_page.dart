@@ -5,6 +5,7 @@ import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/settings/draw_activitied_test_provide.dart';
 import 'package:provide/provide.dart';
 
+
 ///抽签活动测试
 class DrwaActivitiedTestPage extends PageProvideNode {
   final DrwaActivitiedTestProvide _provide = DrwaActivitiedTestProvide();

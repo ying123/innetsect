@@ -12,8 +12,15 @@ class RegistrationSuccessfulPage extends PageProvideNode {
   RegistrationSuccessfulPage({this.draweeModel}) {
     mProviders.provide(Provider<RegistrationSuccessfulProvide>.value(_provide));
     _provide.draweeModel = draweeModel['draweeModel'];
+    _provide.longitude = draweeModel['longitude'];
+    _provide.latitude = draweeModel['latitude'];
+
+
     print('_provide.draweeModel.drawID=====>${_provide.draweeModel.drawID}');
     print('_provide.draweeModel.shopID=====>${_provide.draweeModel.shopID}');
+    print('登记成功longitude:=====>${_provide.longitude}');
+    print('登记成功latitude:=====>${_provide.latitude}');
+
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -133,7 +140,9 @@ class _RegistrationSuccessfulContentPageState
                     Navigator.pushNamed(context, '/checkTheRegistrationPage',
                         arguments: {
                           'drawID': provide.draweeModel.drawID,
-                          'shopID':provide.draweeModel.shopID
+                          'shopID':provide.draweeModel.shopID,
+                          'longitude':provide.longitude,
+                          'latitude':provide.latitude
                         });
                   },
                   child: Container(

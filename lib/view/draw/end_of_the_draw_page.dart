@@ -157,7 +157,10 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                   Navigator.pushNamed(context, '/registrationInformationPage',
                       arguments: {
                         'lotteryRegistrationPageModel':
-                            provide.lotteryRegistrationPageModel
+                            provide.lotteryRegistrationPageModel,
+                        'longitude':provide.longitude,
+                        'latitude':provide.latitude
+                        
                       });
                 }
 

@@ -80,6 +80,18 @@ set countryCode(String countryCode){
   notifyListeners();
 }
 
+ double _longitude = 1231.1;
+  double get longitude=>_longitude;
+  set longitude(double longitude){
+    _longitude = longitude;
+  }
+
+  double _latitude= 131.11;
+  double get latitude=>_latitude;
+   set latitude(double latitude){
+     _latitude = latitude;
+  }
+
 ///登记
   DrawshopRepo _repo = DrawshopRepo();
   Observable drawshop(){
@@ -95,13 +107,13 @@ set countryCode(String countryCode){
       "shopID": lotteryRegistrationPageModel.shopID,
      // "acctID": 1,
       "realName": userName,
-      "telPrefix": "86",
+      "telPrefix":countryCode,
       "mobile": phoneNumber,
       "icNo": certificate,
       "registerDate": todatSp[0],
       "platform": platform,
-      "longitude": 121.494523,//经度
-      "latitude": 31.318514,//纬度
+      "longitude": longitude,//经度
+      "latitude": latitude,//纬度
     };
      print('todatSP ======> ${todatSp[0]}');
      print('drawID ======> ${lotteryRegistrationPageModel.drawID}');

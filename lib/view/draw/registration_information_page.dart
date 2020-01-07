@@ -19,6 +19,11 @@ class RegistrationInformationPage extends PageProvideNode {
         .provide(Provider<RegistrationInformationProvide>.value(_provide));
     _provide.lotteryRegistrationPageModel =
         lotteryRegistrationPageModel['lotteryRegistrationPageModel'];
+     _provide.longitude = lotteryRegistrationPageModel['longitude'];
+   	 _provide.latitude = lotteryRegistrationPageModel['latitude'];
+    print('longitude=============>${ _provide.longitude}');
+    print('latitude=============>${ _provide.latitude}');
+    print('登记信息');
   }
 
   @override
@@ -42,7 +47,7 @@ class _RegistrationInformationContentPageState
   void initState() {
     super.initState();
     provide ??= widget.provide;
-    print('登记信息');
+    print('===>登记信息');
     if (Platform.isAndroid) {
       provide.platform = 'android';
     } else if (Platform.isIOS) {
@@ -522,7 +527,11 @@ class _RegistrationInformationContentPageState
                           Navigator.pop(context);
                           Navigator.pushNamed(
                               context, '/registrationSuccessfulPage',
-                              arguments: {'draweeModel': provide.draweeModel});
+                              arguments: {
+                                'draweeModel': provide.draweeModel,
+                                'longitude':provide.longitude,
+                                'latitude':provide.latitude
+                              });
                         }
                         print('items.message======>${items.message}');
                       });
