@@ -331,8 +331,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                       child: Container(),
                     ),
                     Text(
-                      provide.dataModel
-                          .startTime,
+                      provide.viewRegistrationInformationModel.shopProduct
+                          .startBuyingTime,
                       style: TextStyle(
                           fontSize: ScreenAdapter.size(30),
                           color: Colors.black54),

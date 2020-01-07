@@ -105,9 +105,10 @@ class _MySettingsContentState extends State<MySettingsContent> {
 int tapNum = 0;
 
   _setUpActivityTest(){
-    return InkWell(
+    return GestureDetector(
       onTap: (){
          ++tapNum;
+         print('sdfsdf');
         if (tapNum == 5) {
           Navigator.pushNamed(context, '/listOfActivitiesPage');
           tapNum = 0;
@@ -116,6 +117,7 @@ int tapNum = 0;
       child: Container(
         width: ScreenAdapter.width(750),
         height: ScreenAdapter.height(500),
+        color: Colors.transparent,
         //color: Colors.yellow,
       ),
     );
@@ -157,7 +159,7 @@ int tapNum = 0;
     IconData icon,
     String title
   }){
-    return new InkWell(
+    return new GestureDetector(
       onTap: (){
         onTap();
       },

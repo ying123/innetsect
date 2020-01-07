@@ -137,19 +137,19 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
         builder: (BuildContext context) {
           return Container(
             width: ScreenAdapter.width(750),
-            height: ScreenAdapter.height(310),
+            height: ScreenAdapter.height(210),
             child: Column(
               children: <Widget>[
-                Container(
-                  width: ScreenAdapter.width(750),
-                  height: ScreenAdapter.height(100),
-                  child: Center(
-                    child: Text(
-                      '拍摄',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   width: ScreenAdapter.width(750),
+                //   height: ScreenAdapter.height(100),
+                //   child: Center(
+                //     child: Text(
+                //       '拍摄',
+                //       style: TextStyle(color: Colors.blue),
+                //     ),
+                //   ),
+                // ),
                 Container(
                     width: ScreenAdapter.width(750),
                     height: ScreenAdapter.height(3),

@@ -2,6 +2,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/draw/lottery_registration_page.dart';
 import 'package:innetsect/data/draw/pics_data.dart';
 import 'package:innetsect/data/draw/shops_data.dart';
+import 'package:innetsect/data/draw/steps_data.dart';
 import 'package:innetsect/model/draw/drawshop_model.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -40,6 +41,20 @@ class EndOfTheDrawProvide extends BaseProvide {
   set shopsModel (ShopsModel shopsModel ){
     _shopsModel = shopsModel;
   }
+
+  List<StepsModel> _smodel = List<StepsModel>();
+  List<StepsModel> get smodel=>_smodel;
+  set smodel(List<StepsModel> smodel){
+    _smodel = smodel;
+  }
+  // StepsModel _stepsModel = StepsModel();
+  // StepsModel get stepsModel=>_stepsModel;
+  // set stupsModel(StepsModel stepsModel){
+  //   _stepsModel = stepsModel;
+  // }
+
+
+
 
   double _longitude = 1231.1;
   double get longitude=>_longitude;

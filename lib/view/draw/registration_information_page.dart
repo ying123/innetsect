@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:innetsect/data/draw/drawee_data.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/draw/registration_information_provide.dart';
+import 'package:innetsect/view/my/settings/protocol_page.dart';
 import 'package:innetsect/view/registered/country_page.dart';
 import 'package:provide/provide.dart';
 
@@ -103,24 +104,18 @@ class _RegistrationInformationContentPageState
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Text(
-                  '请填写您的真实身份信息以用于进行抽签,并确保',
-                  style: TextStyle(
-                      fontSize: ScreenAdapter.size(28),
-                      color: Color.fromRGBO(84, 84, 84, 1.0)),
+                Center(
+                  child: Container(
+                    width: ScreenAdapter.width(710),
+                    child: Text(
+                      provide.lotteryRegistrationPageModel.registerPrompt,
+                      style: TextStyle(
+                          fontSize: ScreenAdapter.size(28),
+                          color: Color.fromRGBO(84, 84, 84, 1.0)),
+                    ),
+                  ),
                 ),
-                Text('注册手机号能够正常使用',
-                    style: TextStyle(
-                        fontSize: ScreenAdapter.size(28),
-                        color: Color.fromRGBO(84, 84, 84, 1.0))),
-                Text('如中签后因信息核实不正确，手机无法正常通信等',
-                    style: TextStyle(
-                        fontSize: ScreenAdapter.size(28),
-                        color: Color.fromRGBO(84, 84, 84, 1.0))),
-                Text('个人原因,INNERSECT将有权取消您的中签资格',
-                    style: TextStyle(
-                        fontSize: ScreenAdapter.size(28),
-                        color: Color.fromRGBO(84, 84, 84, 1.0))),
+               
               ],
             ),
           ),
@@ -311,7 +306,15 @@ class _RegistrationInformationContentPageState
                     },
                   ),
                 ),
-                Text('用户须知'),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context){
+                          return ProtocolPage(title: "innersect用户须知",leading: true,);
+                        }
+                    ));
+                  },
+                  child: Text('用户须知')),
               ],
             ),
             InkWell(

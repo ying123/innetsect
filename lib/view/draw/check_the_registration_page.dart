@@ -342,7 +342,7 @@ class _CheckTheRegistrationContentPageState
                     ),
                     Text(
                       provide.viewRegistrationInformationModel.shopProduct
-                          .startTime,
+                          .startBuyingTime,
                       style: TextStyle(
                           fontSize: ScreenAdapter.size(30),
                           color: Colors.black54),
@@ -364,9 +364,10 @@ class _CheckTheRegistrationContentPageState
             Container(
               height: ScreenAdapter.height(170),
               child:
-                  provide.viewRegistrationInformationModel.shopProduct.status ==
+                  provide.viewRegistrationInformationModel.drawee.status ==
                           1
-                      ? Image.asset(
+                      ?
+                       Image.asset(
                           'assets/images/mall/中签大.png',
                           width: ScreenAdapter.width(170),
                           height: ScreenAdapter.height(170),

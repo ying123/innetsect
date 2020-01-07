@@ -94,17 +94,17 @@ class _RegistrationSuccessfulContentPageState
               child: Text(
                 '恭喜你, 你已完成信息登记!',
                 style: TextStyle(
-                    fontSize: ScreenAdapter.size(35), color: Colors.black54),
+                    fontSize: ScreenAdapter.size(35)),
               ),
             ),
             SizedBox(
               height: ScreenAdapter.height(135),
             ),
-            Container(
-              width: ScreenAdapter.width(690),
-              height: ScreenAdapter.height(1),
-              color: Colors.black12,
-            ),
+            // Container(
+            //   width: ScreenAdapter.width(690),
+            //   height: ScreenAdapter.height(1),
+            //   color: Colors.black12,
+            // ),
             SizedBox(
               height: ScreenAdapter.height(110),
             ),
@@ -120,19 +120,25 @@ class _RegistrationSuccessfulContentPageState
                     Navigator.pop(context);
                   },
                   child: Container(
-                    width: ScreenAdapter.width(690 / 2),
-                    height: ScreenAdapter.height(90),
+                    width: ScreenAdapter.width(340),
+                    height: ScreenAdapter.height(85),
                     decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black87)),
+                      color: Colors.black
+                    ),
                     child: Center(
                       child: Text(
                         '返回',
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: ScreenAdapter.size(30),
                             fontWeight: FontWeight.w800),
                       ),
                     ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+
                   ),
                 ),
                 InkWell(
@@ -146,20 +152,20 @@ class _RegistrationSuccessfulContentPageState
                         });
                   },
                   child: Container(
-                    width: ScreenAdapter.width(690 / 2),
-                    height: ScreenAdapter.height(90),
+                    width: ScreenAdapter.width(340),
+                    height: ScreenAdapter.height(85),
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(146, 169, 201, 1.0),
-                      border: Border(right: BorderSide(color: Colors.black),
-                        top: BorderSide(color: Colors.black),
-                        bottom: BorderSide(color: Colors.black),
-                      )
+                      color: Color.fromRGBO(149, 169, 201, 1.0),
+                      // border: Border(right: BorderSide(color: Colors.black),
+                      //   top: BorderSide(color: Colors.black),
+                      //   bottom: BorderSide(color: Colors.black),
+                      // )
                     ),
                     child: Center(
                       child: Text(
                         '查看登记',
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: ScreenAdapter.size(30),
                             fontWeight: FontWeight.w800),
                       ),

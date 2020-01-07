@@ -10,6 +10,7 @@ import 'package:innetsect/view/widget/loading_state_widget.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 
+
 ///抽签
 class DrawPage extends PageProvideNode {
   final DrawProvide _provide = DrawProvide();
@@ -17,7 +18,7 @@ class DrawPage extends PageProvideNode {
   DrawPage({this.redirectParam}) {
     mProviders.provide(Provider<DrawProvide>.value(_provide));
     print('redirectParam========>${redirectParam['redirectParam']}');
-   _provide.redirectParamId = int.parse(redirectParam['redirectParam']);
+    _provide.redirectParamId = int.parse(redirectParam['redirectParam']);
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -39,27 +40,34 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
   void initState() {
     super.initState();
     provide ??= widget.provide;
-     /// 百度定位
-     FlutterBaiduMap.setAK("Q07ulrG0wmUGKcKwtN6ChlafT8eBuEkX");
-      _baiduLocation().then((item){
 
+    /// 百度定位
+    FlutterBaiduMap.setAK("Q07ulrG0wmUGKcKwtN6ChlafT8eBuEkX");
+    _baiduLocation().then((item) {
       print("_baidu========${item.latitude}");
       print("_baidu========${item.longitude}");
     });
-     _loadDrawInfo();
+    _loadDrawInfo();
   }
 
-   /// 百度定位
-  Future _baiduLocation() async{
+  @override
+  void didChangeDependencies()  {
+    super.didChangeDependencies();
+    
+  }
+
+  /// 百度定位
+  Future _baiduLocation() async {
     BaiduLocation location = await FlutterBaiduMap.getCurrentLocation();
     print("location.locationDescribe======${location.locationDescribe}");
     print("location.latitude======${location.latitude}");
     print("location.longitude======${location.longitude}");
-  //  provide.longitude = location.longitude;
-  //  provide.latitude = location.latitude;
+    provide.longitude = location.longitude;
+    provide.latitude = location.latitude;
 
     return location;
   }
+
   _loadDrawInfo() {
     provide.draws().doOnListen(() {}).listen((items) {
       print('items.data====> ${items.data}');
@@ -68,6 +76,7 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
         print('steps=====>${provide.drawsModel.steps.length}');
         print('shops=====>${provide.drawsModel.shops.length}');
         print('pics====>${provide.drawsModel.pics.length}');
+
         setState(() {
           _loadState = LoadState.State_Success;
         });
@@ -78,55 +87,53 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-       
-        title: Text('抽签'),
-        centerTitle: true,
-        elevation: 0.0,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.chevron_left,
-            size: ScreenAdapter.size(60),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text('抽签'),
+          centerTitle: true,
+          elevation: 0.0,
+          leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.chevron_left,
+              size: ScreenAdapter.size(60),
+            ),
           ),
         ),
-      ),
-      body: LoadStateLayout(
-        state: _loadState,
-        loadingContent: '加载中...',
-        successWidget: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: <Widget>[
-            _setupBody(),
-            //  Center(
-            //   child: Container(
-            //     width: ScreenAdapter.width(680),
-            //     height: ScreenAdapter.height(1),
-            //     color: Colors.black12,
-            //   ),
-            // ),
-            _setupHead(),
-            SizedBox(
-              height: ScreenAdapter.height(20),
+        body: LoadStateLayout(
+          state: _loadState,
+          loadingContent: '加载中...',
+          successWidget: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: <Widget>[
+                _setupBody(),
+                //  Center(
+                //   child: Container(
+                //     width: ScreenAdapter.width(680),
+                //     height: ScreenAdapter.height(1),
+                //     color: Colors.black12,
+                //   ),
+                // ),
+                _setupHead(),
+                SizedBox(
+                  height: ScreenAdapter.height(20),
+                ),
+                Center(
+                  child: Container(
+                    width: ScreenAdapter.width(680),
+                    height: ScreenAdapter.height(1),
+                    color: Colors.black38,
+                  ),
+                ),
+                _setupEnd(),
+                _setupActivityIsIntroduced()
+              ],
             ),
-             Center(
-              child: Container(
-                width: ScreenAdapter.width(680),
-                height: ScreenAdapter.height(1),
-                color: Colors.black38,
-              ),
-            ),
-            _setupEnd(),
-            _setupActivityIsIntroduced()
-          ],
-        ),
-      ),
-      )
-    );
+          ),
+        ));
   }
 
   Provide<DrawProvide> _setupHead() {
@@ -143,32 +150,29 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                 width: ScreenAdapter.width(680),
                 child: Center(
                   child: Text(provide.drawsModel.drawName,
-                  textAlign: TextAlign.center,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: ScreenAdapter.size(37),
                           fontWeight: FontWeight.w800)),
                 ),
               ),
               Expanded(
-                child: Container(
-
-                ),
+                child: Container(),
               ),
               Container(
                 width: ScreenAdapter.width(680),
                 child: Center(
                   child: Text(
-                    '${provide.drawsModel.startTime}至${provide.drawsModel.endTime}',style: TextStyle(
-                      fontSize: ScreenAdapter.size(30),color: Color.fromRGBO(159, 177, 189, 1.0),
-                      fontWeight: FontWeight.w600
-                    ),
+                    '${provide.drawsModel.startTime}至${provide.drawsModel.endTime}',
+                    style: TextStyle(
+                        fontSize: ScreenAdapter.size(30),
+                        color: Color.fromRGBO(159, 177, 189, 1.0),
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
               Expanded(
-                child: Container(
-
-                ),
+                child: Container(),
               ),
             ],
           ),
@@ -228,7 +232,8 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
               height: ScreenAdapter.height(135),
               child: InkWell(
                 onTap: () {
-                  print('北京被点击');
+                  print('北京被点��');
+
                   // Navigator.pushNamed(context, '/drawDetailsPage',arguments: {
                   //   'shopID':provide.drawsModel.shops[index].shopID
                   // });
@@ -236,11 +241,12 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                     Navigator.pushNamed(context, '/loginPage');
                   }
 
-                  Navigator.pushNamed(context, '/endOfTheDrawPage',arguments: {
-                   'pics': provide.drawsModel.pics,
-                   'shops':provide.drawsModel.shops[index],
-                   'longitude':provide.longitude,
-                   'latitude':provide.latitude
+                  Navigator.pushNamed(context, '/endOfTheDrawPage', arguments: {
+                    'pics': provide.drawsModel.pics,
+                    'shops': provide.drawsModel.shops[index],
+                    'longitude': provide.longitude,
+                    'latitude': provide.latitude,
+                    'steps':provide.drawsModel.steps
                   });
                 },
                 child: Center(
@@ -267,7 +273,7 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
       },
     );
   }
-  
+
   Provide<DrawProvide> _setupActivityIsIntroduced() {
     return Provide<DrawProvide>(
       builder: (BuildContext context, Widget child, DrawProvide provide) {
@@ -293,7 +299,7 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
             SizedBox(
               height: ScreenAdapter.height(48),
             ),
-            
+
             // Container(
             //   width: ScreenAdapter.width(680),
             //   child: Html(
@@ -305,5 +311,4 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
       },
     );
   }
-
 }

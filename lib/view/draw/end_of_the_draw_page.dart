@@ -10,7 +10,6 @@ import 'package:innetsect/view/widget/loading_state_widget.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
-
 ///进入店铺抽签登记页
 class EndOfTheDrawPage extends PageProvideNode {
   final EndOfTheDrawProvide _provide = EndOfTheDrawProvide();
@@ -19,19 +18,23 @@ class EndOfTheDrawPage extends PageProvideNode {
     mProviders.provide(Provider<EndOfTheDrawProvide>.value(_provide));
     _provide.picsList = pics['pics'];
     _provide.shopsModel = pics['shops'];
+    //_provide.stepsModel = pics['steps'];
+    _provide.smodel = pics['steps'];
+    print('stepsdrawID========>${_provide.smodel.length}');
+    print('stepsstepIdx========>${_provide.smodel}');
+    print('stepsstepName========>${_provide.smodel}');
+
     print('length====>${_provide.picsList.length}');
     print('shopsModel====>${_provide.shopsModel}');
     print('shopsModeldrawID====>${_provide.shopsModel.drawID}');
 // 'longitude':provide.longitude,
-                  // 'latitude':provide.latitude
+    // 'latitude':provide.latitude
     _provide.drawID = _provide.shopsModel.drawID;
     _provide.shopID = _provide.shopsModel.shopID;
     _provide.longitude = pics['longitude'];
     _provide.latitude = pics['latitude'];
     print('longitude====>${_provide.longitude}');
     print('latitude====>${_provide.latitude}');
-
-  
   }
 
   @override
@@ -56,13 +59,9 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
     super.initState();
     provide ??= widget.provide;
 
-     
     ///加载进入店铺抽签登记页
     _loadLotteryRegistrationPage();
-   
-   
   }
- 
 
   _loadLotteryRegistrationPage() {
     if (Platform.isAndroid) {
@@ -80,14 +79,13 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
       if (items.data != null) {
         provide.lotteryRegistrationPageModel =
             LotteryRegistrationPageModel.fromJson(items.data);
-         print('status====>${provide.lotteryRegistrationPageModel.status}');
+        print('status====>${provide.lotteryRegistrationPageModel.status}');
         if (provide.lotteryRegistrationPageModel.status == 0) {
           provide.buttonName = '未开始';
-
-        }else if(provide.lotteryRegistrationPageModel.status == 2){
-              provide.buttonName = '已结束';
-        }else if (provide.lotteryRegistrationPageModel.status == 1) {
-            print('=====>${provide.lotteryRegistrationPageModel.locatedIn}');
+        } else if (provide.lotteryRegistrationPageModel.status == 2) {
+          provide.buttonName = '已结束';
+        } else if (provide.lotteryRegistrationPageModel.status == 1) {
+          print('=====>${provide.lotteryRegistrationPageModel.locatedIn}');
           if (provide.lotteryRegistrationPageModel.locatedIn) {
             if (provide.lotteryRegistrationPageModel.registered) {
               provide.buttonName = '查看登记';
@@ -111,100 +109,93 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text('抽签'),
-          centerTitle: true,
-          elevation: 0.0,
-          leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(
-              Icons.chevron_left,
-              size: ScreenAdapter.size(60),
-            ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('抽签'),
+        centerTitle: true,
+        elevation: 0.0,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.chevron_left,
+            size: ScreenAdapter.size(60),
           ),
         ),
-        body: LoadStateLayout(
-          state: _loadState,
-          loadingContent: '加载中...',
-          successWidget: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              children: <Widget>[
-                _setupHead(),
-                _setupBody(),
-                _setupEnd(),
-              ],
-            ),
+      ),
+      body: LoadStateLayout(
+        state: _loadState,
+        loadingContent: '加载中...',
+        successWidget: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            children: <Widget>[
+              _setupHead(),
+              _setupBody(),
+              _setupEnd(),
+            ],
           ),
         ),
-        bottomNavigationBar:  InkWell(
-              onTap: () {
-                print('按钮被点击');
+      ),
+      bottomNavigationBar: InkWell(
+          onTap: () {
+            print('按钮被点击');
 
-                print(
-                    'status====>${provide.lotteryRegistrationPageModel.status}');
-                //  Navigator.pushNamed(context, '/registrationInformationPage',
-                //       arguments: {
-                //         'lotteryRegistrationPageModel':
-                //             provide.lotteryRegistrationPageModel
-                //       });
-                
+            print('status====>${provide.lotteryRegistrationPageModel.status}');
+            //  Navigator.pushNamed(context, '/registrationInformationPage',
+            //       arguments: {
+            //         'lotteryRegistrationPageModel':
+            //             provide.lotteryRegistrationPageModel
+            //       });
 
-                if (provide.buttonStatus == 1) {
-                  Navigator.pushNamed(context, '/registrationInformationPage',
-                      arguments: {
-                        'lotteryRegistrationPageModel':
-                            provide.lotteryRegistrationPageModel,
-                        'longitude':provide.longitude,
-                        'latitude':provide.latitude
-                        
-                      });
-                }
+            if (provide.buttonStatus == 1) {
+              Navigator.pushNamed(context, '/registrationInformationPage',
+                  arguments: {
+                    'lotteryRegistrationPageModel':
+                        provide.lotteryRegistrationPageModel,
+                    'longitude': provide.longitude,
+                    'latitude': provide.latitude
+                  });
+            }
 
-                if (provide.buttonStatus == 0) {
-                  Navigator.pushNamed(context, '/checkTheRegistrationPage',
-                      arguments: {
-                        'drawID': provide.lotteryRegistrationPageModel.drawID,
-                        'shopID': provide.lotteryRegistrationPageModel.shopID,
-                      });
-                }
-                if (provide.buttonStatus == 2) {
-                  
-
-                }
-              },
-              child:Container(
-                height: ScreenAdapter.height(120),
+            if (provide.buttonStatus == 0) {
+              Navigator.pushNamed(context, '/checkTheRegistrationPage',
+                  arguments: {
+                    'drawID': provide.lotteryRegistrationPageModel.drawID,
+                    'shopID': provide.lotteryRegistrationPageModel.shopID,
+                  });
+            }
+            if (provide.buttonStatus == 2) {}
+          },
+          child: Container(
+            height: ScreenAdapter.height(120),
+            child: Center(
+              child: Container(
+                width: ScreenAdapter.width(690),
+                height: ScreenAdapter.height(90),
+                decoration: BoxDecoration(
+                    // border: Border.all(color: Colors.black87),
+                    color:
+                        provide.buttonStatus == 0 || provide.buttonStatus == 1
+                            ? Color.fromRGBO(146, 169, 201, 1.0)
+                            : Color.fromRGBO(248, 248, 248, 1.0)),
                 child: Center(
-                  child: Container(
-                  width: ScreenAdapter.width(690),
-                  height: ScreenAdapter.height(90),
-                  decoration: BoxDecoration(
-                      // border: Border.all(color: Colors.black87),
-                      color: provide.buttonStatus == 0 || provide.buttonStatus == 1
-                          ? Color.fromRGBO(146, 169, 201, 1.0)
-                          : Color.fromRGBO(248, 248, 248, 1.0)),
-                  child: Center(
-                    child: Text(
-                    provide.buttonName == null?'':provide.buttonName,
-                      style: TextStyle(
+                  child: Text(
+                    provide.buttonName == null ? '' : provide.buttonName,
+                    style: TextStyle(
                         fontSize: ScreenAdapter.size(30),
                         fontWeight: FontWeight.w800,
-                        color: provide.buttonStatus == 0 || provide.buttonStatus == 1?
-                        Colors.white:Colors.black
-
-                      ),
-                    ),
+                        color: provide.buttonStatus == 0 ||
+                                provide.buttonStatus == 1
+                            ? Colors.white
+                            : Colors.black),
                   ),
-              ),
                 ),
-              )
-               
+              ),
             ),
-        );
+          )),
+    );
   }
 
   Provide<EndOfTheDrawProvide> _setupHead() {
@@ -239,7 +230,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
           (BuildContext context, Widget child, EndOfTheDrawProvide provide) {
         return Container(
           width: ScreenAdapter.width(680),
-         // height: ScreenAdapter.height(520),
+          // height: ScreenAdapter.height(520),
           child: Column(
             children: <Widget>[
               SizedBox(
@@ -275,51 +266,56 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               //         ),
               //   ),
               // ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(),
-                  ),
-                  Text(
-                    provide.shopsModel.shopName,
-                    style: TextStyle(
-                       fontSize: ScreenAdapter.size(30),
-                       // fontWeight: FontWeight.w600,
-                       // color: Color.fromRGBO(177, 177, 177, 1.0)
-                      ),),
-                  SizedBox(
-                    width: ScreenAdapter.width(40),
-                  ),
-                  Container(
-                    width: ScreenAdapter.size(4),
-                    height: ScreenAdapter.height(40),
-                    color: Color.fromRGBO(220, 220, 220, 1.0)
-                  ),
-                  SizedBox(
-                    width: ScreenAdapter.width(40),
-                  ),
-                  Text('￥'+provide.lotteryRegistrationPageModel.prodPrice
-                          .toString() +
-                      '        ',style: TextStyle(
-                       fontSize: ScreenAdapter.size(30),
-                       // fontWeight: FontWeight.w600,
-                       // color: Color.fromRGBO(177, 177, 177, 1.0)
-                      ),),
-                  Expanded(
-                    child: Container(),
-                  )
-                ],
+              Container(
+                width: ScreenAdapter.width(750),
+                height: ScreenAdapter.height(100),
+                //  color: Colors.yellow,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      provide.shopsModel.shopName,
+                      style: TextStyle(
+                        fontSize: ScreenAdapter.size(30),
+                        // fontWeight: FontWeight.w600,
+                        // color: Color.fromRGBO(177, 177, 177, 1.0)
+                      ),
+                    ),
+                    SizedBox(
+                      width: ScreenAdapter.width(40),
+                    ),
+                    Container(
+                        width: ScreenAdapter.size(4),
+                        height: ScreenAdapter.height(50),
+                        color: Color.fromRGBO(220, 220, 220, 1.0)),
+                    SizedBox(
+                      width: ScreenAdapter.width(40),
+                    ),
+                    Text(
+                      '￥' +
+                          provide.lotteryRegistrationPageModel.prodPrice
+                              .toString(),
+                      style: TextStyle(
+                        fontSize: ScreenAdapter.size(30),
+                        // fontWeight: FontWeight.w600,
+                        // color: Color.fromRGBO(177, 177, 177, 1.0)
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: ScreenAdapter.height(30),
               ),
               Center(
                 child: Text(
-                    '尺码:${provide.lotteryRegistrationPageModel.prodSizeRange}',style: TextStyle(
+                  '尺码: ${provide.lotteryRegistrationPageModel.prodSizeRange}',
+                  style: TextStyle(
                       // fontSize: ScreenAdapter.size(30),
-                       // fontWeight: FontWeight.w600,
-                        //color: Color.fromRGBO(177, 177, 177, 1.0)
-                      ),),
+                      // fontWeight: FontWeight.w600,
+                      //color: Color.fromRGBO(177, 177, 177, 1.0)
+                      ),
+                ),
               ),
               SizedBox(
                 height: ScreenAdapter.height(30),
@@ -328,9 +324,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                 child: Text(
                   '${provide.lotteryRegistrationPageModel.endTime} 截止登记',
                   style: TextStyle(
-                       fontSize: ScreenAdapter.size(30),
-                        fontWeight: FontWeight.w600
-                      ),
+                      fontSize: ScreenAdapter.size(30),
+                      fontWeight: FontWeight.w600),
                 ),
               ),
               SizedBox(
@@ -344,163 +339,314 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                 ),
               ),
               Container(
-                width: ScreenAdapter.width(750),
-                height: ScreenAdapter.height(170),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: ScreenAdapter.width(50),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              width: ScreenAdapter.width(18),
-                              height: ScreenAdapter.width(18),
-                              decoration: BoxDecoration(
-                                  color: Color.fromRGBO(202, 202, 202, 1.0),
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(
-                                          ScreenAdapter.width(10)))),
-                              child: Center(
-                                child: Container(
-                                  width: ScreenAdapter.width(8),
-                                  height: ScreenAdapter.width(8),
-                                  decoration: BoxDecoration(
-                                      color: Color.fromRGBO(152, 152, 160, 1.0),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(
-                                              ScreenAdapter.width(10)))),
+                  width: ScreenAdapter.width(750),
+                  height: ScreenAdapter.height(170),
+                  child: provide.smodel.length > 4
+                      ? ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: provide.smodel.length,
+                          shrinkWrap: true,
+                          primary: false,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Row(
+                              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: ScreenAdapter.width(20)),
+                                  width: ScreenAdapter.width(130),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            width: ScreenAdapter.width(18),
+                                            height: ScreenAdapter.width(18),
+                                            decoration: BoxDecoration(
+                                                color: Color.fromRGBO(
+                                                    202, 202, 202, 1.0),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(
+                                                        ScreenAdapter.width(
+                                                            10)))),
+                                            child: Center(
+                                              child: Container(
+                                                width: ScreenAdapter.width(8),
+                                                height: ScreenAdapter.width(8),
+                                                decoration: BoxDecoration(
+                                                    color: Color.fromRGBO(
+                                                        152, 152, 160, 1.0),
+                                                    borderRadius: BorderRadius
+                                                        .all(Radius.circular(
+                                                            ScreenAdapter.width(
+                                                                10)))),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: ScreenAdapter.width(10),
+                                          ),
+                                          Text(
+                                            'STEP ${provide.smodel[index].stepIdx}',
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    150, 150, 150, 1.0)),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: ScreenAdapter.height(10),
+                                      ),
+                                      Text(
+                                        provide.smodel[index].stepName,
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(
+                                                150, 150, 150, 1.0),
+                                            fontSize: ScreenAdapter.size(30)),
+                                      )
+                                    ],
+                                  ),
                                 ),
+                              ],
+                            );
+                          },
+                        )
+                      : Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+
                               ),
                             ),
-                            SizedBox(
-                              width: ScreenAdapter.width(10),
-                            ),
-                            Text(
-                              'STEP 1',
-                              style: TextStyle(
-                                  color: Color.fromRGBO(150, 150, 150, 1.0)),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: ScreenAdapter.height(10),
-                        ),
-                        Text(
-                          '登记信息',
-                          style: TextStyle(
-                              color: Color.fromRGBO(150, 150, 150, 1.0),
-                              fontSize: ScreenAdapter.size(30)),
-                        )
-                      ],
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              width: ScreenAdapter.width(18),
-                              height: ScreenAdapter.width(18),
-                              decoration: BoxDecoration(
-                                  color: Color.fromRGBO(202, 202, 202, 1.0),
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(
-                                          ScreenAdapter.width(10)))),
-                              child: Center(
-                                child: Container(
-                                  width: ScreenAdapter.width(8),
-                                  height: ScreenAdapter.width(8),
-                                  decoration: BoxDecoration(
-                                      color: Color.fromRGBO(152, 152, 160, 1.0),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(
-                                              ScreenAdapter.width(10)))),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      width: ScreenAdapter.width(18),
+                                      height: ScreenAdapter.width(18),
+                                      decoration: BoxDecoration(
+                                          color: Color.fromRGBO(
+                                              202, 202, 202, 1.0),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                  ScreenAdapter.width(10)))),
+                                      child: Center(
+                                        child: Container(
+                                          width: ScreenAdapter.width(8),
+                                          height: ScreenAdapter.width(8),
+                                          decoration: BoxDecoration(
+                                              color: Color.fromRGBO(
+                                                  152, 152, 160, 1.0),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(
+                                                      ScreenAdapter.width(
+                                                          10)))),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: ScreenAdapter.width(10),
+                                    ),
+                                    Text(
+                                      'STEP ${provide.smodel[0].stepIdx}',
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(
+                                              150, 150, 150, 1.0)),
+                                    )
+                                  ],
                                 ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: ScreenAdapter.width(10),
-                            ),
-                            Text(
-                              'STEP 1',
-                              style: TextStyle(
-                                  color: Color.fromRGBO(150, 150, 150, 1.0)),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: ScreenAdapter.height(10),
-                        ),
-                        Text(
-                          '等待结果',
-                          style: TextStyle(
-                              color: Color.fromRGBO(150, 150, 150, 1.0),
-                              fontSize: ScreenAdapter.size(30)),
-                        )
-                      ],
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Container(
-                              width: ScreenAdapter.width(18),
-                              height: ScreenAdapter.width(18),
-                              decoration: BoxDecoration(
-                                  color: Color.fromRGBO(202, 202, 202, 1.0),
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(
-                                          ScreenAdapter.width(10)))),
-                              child: Center(
-                                child: Container(
-                                  width: ScreenAdapter.width(8),
-                                  height: ScreenAdapter.width(8),
-                                  decoration: BoxDecoration(
-                                      color: Color.fromRGBO(152, 152, 160, 1.0),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(
-                                              ScreenAdapter.width(10)))),
+                                SizedBox(
+                                  height: ScreenAdapter.height(10),
                                 ),
-                              ),
+                                Text(
+                                  provide.smodel[0].stepName,
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(150, 150, 150, 1.0),
+                                      fontSize: ScreenAdapter.size(30)),
+                                )
+                              ],
                             ),
-                            SizedBox(
-                              width: ScreenAdapter.width(10),
+                            Expanded(
+                              child: Container(),
                             ),
-                            Text(
-                              'STEP 1',
-                              style: TextStyle(
-                                  color: Color.fromRGBO(150, 150, 150, 1.0)),
-                            )
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      width: ScreenAdapter.width(18),
+                                      height: ScreenAdapter.width(18),
+                                      decoration: BoxDecoration(
+                                          color: Color.fromRGBO(
+                                              202, 202, 202, 1.0),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                  ScreenAdapter.width(10)))),
+                                      child: Center(
+                                        child: Container(
+                                          width: ScreenAdapter.width(8),
+                                          height: ScreenAdapter.width(8),
+                                          decoration: BoxDecoration(
+                                              color: Color.fromRGBO(
+                                                  152, 152, 160, 1.0),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(
+                                                      ScreenAdapter.width(
+                                                          10)))),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: ScreenAdapter.width(10),
+                                    ),
+                                    Text(
+                                      'STEP ${provide.smodel[1].stepIdx}',
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(
+                                              150, 150, 150, 1.0)),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: ScreenAdapter.height(10),
+                                ),
+                                Text(
+                                  provide.smodel[1].stepName,
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(150, 150, 150, 1.0),
+                                      fontSize: ScreenAdapter.size(30)),
+                                )
+                              ],
+                            ),
+                            Expanded(
+                              child: Container(),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    provide.smodel.length == 3?
+                                    Container(
+                                      width: ScreenAdapter.width(18),
+                                      height: ScreenAdapter.width(18),
+                                      decoration: BoxDecoration(
+                                          color: Color.fromRGBO(
+                                              202, 202, 202, 1.0),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(
+                                                  ScreenAdapter.width(10)))),
+                                      child: Center(
+                                        child: Container(
+                                          width: ScreenAdapter.width(8),
+                                          height: ScreenAdapter.width(8),
+                                          decoration: BoxDecoration(
+                                              color: Color.fromRGBO(
+                                                  152, 152, 160, 1.0),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(
+                                                      ScreenAdapter.width(
+                                                          10)))),
+                                        ),
+                                      ),
+                                    ):Container(
+                                      
+                                    )
+                                    ,
+                                    SizedBox(
+                                      width: ScreenAdapter.width(10),
+                                    ),
+                                    provide.smodel.length == 3
+                                        ? Text(
+                                            'STEP ${provide.smodel[2].stepIdx}',
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    150, 150, 150, 1.0)),
+                                          )
+                                        : Container()
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: ScreenAdapter.height(10),
+                                ),
+                                provide.smodel.length == 3
+                                    ? Text(
+                                        provide.smodel[2].stepName,
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(
+                                                150, 150, 150, 1.0),
+                                            fontSize: ScreenAdapter.size(30)),
+                                      )
+                                    : Container()
+                              ],
+                            ),
+                            Expanded(
+                              child: Container(),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    provide.smodel.length == 4
+                                        ? Container(
+                                            width: ScreenAdapter.width(18),
+                                            height: ScreenAdapter.width(18),
+                                            decoration: BoxDecoration(
+                                                color: Color.fromRGBO(
+                                                    202, 202, 202, 1.0),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(
+                                                        ScreenAdapter.width(
+                                                            10)))),
+                                            child: Center(
+                                              child: Container(
+                                                width: ScreenAdapter.width(8),
+                                                height: ScreenAdapter.width(8),
+                                                decoration: BoxDecoration(
+                                                    color: Color.fromRGBO(
+                                                        152, 152, 160, 1.0),
+                                                    borderRadius: BorderRadius
+                                                        .all(Radius.circular(
+                                                            ScreenAdapter.width(
+                                                                10)))),
+                                              ),
+                                            ),
+                                          )
+                                        : Container(),
+                                    SizedBox(
+                                      width: ScreenAdapter.width(10),
+                                    ),
+                                    provide.smodel.length == 4
+                                        ? Text(
+                                            'STEP ${provide.smodel[3].stepIdx}',
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    150, 150, 150, 1.0)),
+                                          )
+                                        : Container()
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: ScreenAdapter.height(10),
+                                ),
+                                provide.smodel.length == 4
+                                    ? Text(
+                                        provide.smodel[3].stepName,
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(
+                                                150, 150, 150, 1.0),
+                                            fontSize: ScreenAdapter.size(30)),
+                                      )
+                                    : Container()
+                              ],
+                            ),
                           ],
-                        ),
-                        SizedBox(
-                          height: ScreenAdapter.height(10),
-                        ),
-                        Text(
-                          '线下够买',
-                          style: TextStyle(
-                              color: Color.fromRGBO(150, 150, 150, 1.0),
-                              fontSize: ScreenAdapter.size(30)),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: ScreenAdapter.height(70),
-                    ),
-                  ],
-                ),
-              ),
+                        )),
               Center(
                 child: Container(
                   width: ScreenAdapter.width(680),
@@ -525,7 +671,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
               child: Container(
                 width: ScreenAdapter.width(680),
                 height: ScreenAdapter.height(268),
-              //  color: Colors.yellow,
+                //  color: Colors.yellow,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -565,13 +711,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                 '敬请期待',
                                 style: TextStyle(
                                     fontSize: ScreenAdapter.size(30),
-                                    color: Colors.black54
-                                    ),
+                                    color: Colors.black54),
                               ),
                             ),
                           )
-                        :
-                         Container(
+                        : Container(
                             width: ScreenAdapter.width(680),
                             height: ScreenAdapter.height(150),
                             child: Row(
@@ -582,8 +726,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                   children: <Widget>[
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles[0]==null?'':provide.lotteryRegistrationPageModel
-                                          .winnerMobiles[0],
+                                                  .winnerMobiles[0] ==
+                                              null
+                                          ? ''
+                                          : provide.lotteryRegistrationPageModel
+                                              .winnerMobiles[0],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               150, 150, 150, 1.0)),
@@ -593,8 +740,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length<2?'':provide.lotteryRegistrationPageModel
-                                          .winnerMobiles[1],
+                                                  .winnerMobiles.length <
+                                              2
+                                          ? ''
+                                          : provide.lotteryRegistrationPageModel
+                                              .winnerMobiles[1],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               150, 150, 150, 1.0)),
@@ -606,8 +756,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                   children: <Widget>[
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length<3?'':provide.lotteryRegistrationPageModel
-                                          .winnerMobiles[2],
+                                                  .winnerMobiles.length <
+                                              3
+                                          ? ''
+                                          : provide.lotteryRegistrationPageModel
+                                              .winnerMobiles[2],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               150, 150, 150, 1.0)),
@@ -617,8 +770,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length<4?'':provide.lotteryRegistrationPageModel
-                                          .winnerMobiles[3],
+                                                  .winnerMobiles.length <
+                                              4
+                                          ? ''
+                                          : provide.lotteryRegistrationPageModel
+                                              .winnerMobiles[3],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               150, 150, 150, 1.0)),
@@ -630,8 +786,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                   children: <Widget>[
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length<5?'':provide.lotteryRegistrationPageModel
-                                          .winnerMobiles[4],
+                                                  .winnerMobiles.length <
+                                              5
+                                          ? ''
+                                          : provide.lotteryRegistrationPageModel
+                                              .winnerMobiles[4],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               150, 150, 150, 1.0)),
@@ -641,8 +800,11 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                          .winnerMobiles.length!=6?'':provide.lotteryRegistrationPageModel
-                                          .winnerMobiles[5],
+                                                  .winnerMobiles.length !=
+                                              6
+                                          ? ''
+                                          : provide.lotteryRegistrationPageModel
+                                              .winnerMobiles[5],
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               150, 150, 150, 1.0)),
@@ -685,7 +847,6 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
             SizedBox(
               height: ScreenAdapter.height(40),
             ),
-           
             SizedBox(
               height: ScreenAdapter.height(40),
             ),

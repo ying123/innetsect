@@ -27,7 +27,8 @@ import 'package:innetsect/base/app_config.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
-
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 class MallHomePage extends PageProvideNode {
   final MallHomeProvide _provide = MallHomeProvide();
   final SearchProvide _searchProvide = SearchProvide();
@@ -172,6 +173,8 @@ class _MallHomeContentState extends State<MallHomeContent> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    /// 百度定位
+    FlutterBaiduMap.setAK("Q07ulrG0wmUGKcKwtN6ChlafT8eBuEkX");
     _controller = new EasyRefreshController();
     _detailProvide ??= widget._detailProvide;
     _commodityListProvide ??= widget._commodityListProvide;
@@ -183,6 +186,22 @@ class _MallHomeContentState extends State<MallHomeContent> {
     // 加载首页数据
     _loadBannerData();
   }
+
+  @override
+  void didChangeDependencies() async{
+    super.didChangeDependencies();
+    PermissionStatus permission = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.location);
+    bool hasPermission = permission == PermissionStatus.granted;
+    if (!hasPermission) {
+      Map<PermissionGroup, PermissionStatus> map = await PermissionHandler()
+          .requestPermissions([PermissionGroup.location]);
+      if (map.values.toList()[0] != PermissionStatus.granted) {
+        print('权限获取失败');
+      }
+    }
+  }
+
 
   ///轮播图
   Widget _setupSwiperImage() {
@@ -232,11 +251,13 @@ class _MallHomeContentState extends State<MallHomeContent> {
                     }
                   ));
                 }else if(_bannersList[index].redirectType == ConstConfig.DRAW){
+
                       Navigator.pushNamed(context, '/drawPage',arguments: {
                         'redirectParam':_bannersList[index].redirectParam
                       });
                 }
               },
+
               child: ClipPath(
                 child: Stack(
                   children: <Widget>[
