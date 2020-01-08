@@ -164,7 +164,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                                   height: ScreenAdapter.height(98),
                                   child: Text(
                                     
-                                   '空间打开书法家',// provide.dataModel[index].drawName,
+                                   provide.dataModel[index].drawName,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       

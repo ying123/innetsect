@@ -22,13 +22,13 @@ class DrawProvide extends BaseProvide {
   ///   "longitude": 121.494523,//经度
   ///    "latitude": 31.318514,//纬度
 
-  double _longitude  = 0;
+  double _longitude  = 121.494523;
   double get longitude=>_longitude;
   set longitude(double longitude){
     _longitude = longitude;
   }
 
-  double _latitude = 0;
+  double _latitude = 31.318514;
   double get latitude=>_latitude;
    set latitude(double latitude){
      _latitude = latitude;
