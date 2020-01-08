@@ -812,7 +812,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                     ),
                                     Text(
                                       provide.lotteryRegistrationPageModel
-                                                  .winnerMobiles.length !=
+                                                  .winnerMobiles.length <
                                               6
                                           ? ''
                                           : provide.lotteryRegistrationPageModel
