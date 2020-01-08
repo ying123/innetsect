@@ -477,6 +477,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
+                                     provide.smodel.length >= 2
+                                        ? 
                                     Container(
                                       width: ScreenAdapter.width(18),
                                       height: ScreenAdapter.width(18),
@@ -499,26 +501,36 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                                                           10)))),
                                         ),
                                       ),
+                                    ):Container(
+
                                     ),
                                     SizedBox(
                                       width: ScreenAdapter.width(10),
                                     ),
+                                     provide.smodel.length >= 2
+                                        ? 
                                     Text(
                                       'STEP ${provide.smodel[1].stepIdx}',
                                       style: TextStyle(
                                           color: Color.fromRGBO(
                                               150, 150, 150, 1.0)),
+                                    ):Container(
+
                                     )
                                   ],
                                 ),
                                 SizedBox(
                                   height: ScreenAdapter.height(10),
                                 ),
+                                 provide.smodel.length >= 2
+                                        ? 
                                 Text(
                                   provide.smodel[1].stepName,
                                   style: TextStyle(
                                       color: Color.fromRGBO(150, 150, 150, 1.0),
                                       fontSize: ScreenAdapter.size(30)),
+                                ):Container(
+
                                 )
                               ],
                             ),
