@@ -216,25 +216,34 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
             ),
             Container(
                 width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(65),
+                height: ScreenAdapter.height(90),
                 child: Row(
                   children: <Widget>[
-                    Text(
-                      '门店地址: ',
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(30),
-                          color: Colors.black54),
+                    Container(
+                      height: ScreenAdapter.height(90),
+                      child: Text(
+                        '门店地址: ',
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(30),
+                            color: Colors.black54),
+                      ),
                     ),
                     Expanded(
                       child: Container(),
                     ),
-                    Text(
-                     provide.viewRegistrationInformationModel.shopProduct.addr,
-                     overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(30),
-                          color: Colors.black54),
+                    Container(
+                      alignment: Alignment.topRight,
+                      width: ScreenAdapter.width(500),
+                      height: ScreenAdapter.height(90),
+                      child: Text(
+                      provide.viewRegistrationInformationModel.shopProduct.addr,
+                       //overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(30),
+                            color: Colors.black54),
+                      ),
                     ),
+                   
                   ],
                 )),
             SizedBox(

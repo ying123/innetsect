@@ -370,7 +370,7 @@ class _RegistrationInformationContentPageState
           return Center(
             child: Container(
               width: ScreenAdapter.width(580),
-              height: ScreenAdapter.height(600),
+              height: ScreenAdapter.height(630),
               color: Colors.white,
               child: Column(
                 children: <Widget>[
@@ -420,7 +420,7 @@ class _RegistrationInformationContentPageState
                             child: Row(
                           children: <Widget>[
                             Container(
-                              height: ScreenAdapter.height(70),
+                              height: ScreenAdapter.height(90),
                               child: Text(
                                 '门店地址:',
                                 style: TextStyle(
@@ -433,9 +433,9 @@ class _RegistrationInformationContentPageState
                             ),
                             Container(
                               width: ScreenAdapter.width(400),
-                              height: ScreenAdapter.height(60),
+                              height: ScreenAdapter.height(90),
                               child: Text(
-                                '${provide.lotteryRegistrationPageModel.addr}',
+                             '${provide.lotteryRegistrationPageModel.addr}',
                                 style: TextStyle(
                                   color: Colors.black54,
                                   decorationColor: Colors.white,

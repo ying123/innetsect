@@ -156,14 +156,18 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                             Column(
                               children: <Widget>[
                                 SizedBox(
-                                  height: ScreenAdapter.height(70),
+                                  height: ScreenAdapter.height(35),
                                 ),
                                 Container(
+                                  alignment: Alignment.centerLeft,
                                   width: ScreenAdapter.width(418),
                                   height: ScreenAdapter.height(98),
                                   child: Text(
-                                    provide.dataModel[index].drawName,
+                                    
+                                   '空间打开书法家',// provide.dataModel[index].drawName,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
+                                      
                                         fontSize: ScreenAdapter.size(35),
                                        // fontWeight: FontWeight.w600
                                         ),
@@ -213,7 +217,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                     height: ScreenAdapter.width(160),
                     child: provide.dataModel[index].status == 1
                         ? Image.asset(//以中签
-                            'assets/images/mall/中签大.png')
+                            'assets/images/mall/中签大.png',)
                         : provide.dataModel[index].status == 0
                             ? Container() //已登记
                             : provide.dataModel[index].status == 2

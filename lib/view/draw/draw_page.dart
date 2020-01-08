@@ -10,7 +10,6 @@ import 'package:innetsect/view/widget/loading_state_widget.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 
-
 ///抽签
 class DrawPage extends PageProvideNode {
   final DrawProvide _provide = DrawProvide();
@@ -51,9 +50,8 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
   }
 
   @override
-  void didChangeDependencies()  {
+  void didChangeDependencies() {
     super.didChangeDependencies();
-    
   }
 
   /// 百度定位
@@ -196,7 +194,7 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                   height: ScreenAdapter.height(360),
                   child: Image.network(
                     provide.drawsModel.drawPic,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -232,22 +230,25 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
               height: ScreenAdapter.height(135),
               child: InkWell(
                 onTap: () {
-                  print('北京被点��');
+                  print('北京被点击');
 
                   // Navigator.pushNamed(context, '/drawDetailsPage',arguments: {
                   //   'shopID':provide.drawsModel.shops[index].shopID
                   // });
-                  if (AppConfig.userTools.getUserToken() == '') {
+                  if (AppConfig.userTools.getUserToken() == '' ||
+                      AppConfig.userTools.getUserToken() == null) {
+                    print('===========>getUserToken为空');
                     Navigator.pushNamed(context, '/loginPage');
+                  } else {
+                    Navigator.pushNamed(context, '/endOfTheDrawPage',
+                        arguments: {
+                          'pics': provide.drawsModel.pics,
+                          'shops': provide.drawsModel.shops[index],
+                          'longitude': provide.longitude,
+                          'latitude': provide.latitude,
+                          'steps': provide.drawsModel.steps
+                        });
                   }
-
-                  Navigator.pushNamed(context, '/endOfTheDrawPage', arguments: {
-                    'pics': provide.drawsModel.pics,
-                    'shops': provide.drawsModel.shops[index],
-                    'longitude': provide.longitude,
-                    'latitude': provide.latitude,
-                    'steps':provide.drawsModel.steps
-                  });
                 },
                 child: Center(
                   child: Container(
