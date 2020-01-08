@@ -66,6 +66,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('中签详情'),
         centerTitle: true,
@@ -89,7 +90,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
           Container(
             width: ScreenAdapter.width(690),
             height: ScreenAdapter.height(1),
-            color: Colors.black12,
+            color: Colors.black54,
           ),
           SizedBox(
             height: ScreenAdapter.height(20),
