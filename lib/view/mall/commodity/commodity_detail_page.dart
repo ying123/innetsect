@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
+import 'package:innetsect/data/commodity_brand_model.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
 import 'package:innetsect/data/user_info_model.dart';
@@ -12,9 +13,12 @@ import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/commodity/qimo_page.dart';
+import 'package:innetsect/view/mall/search/search_screen_page.dart';
 import 'package:innetsect/view/widget/commodity_cart_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_list_provide.dart';
+import 'package:innetsect/view_model/mall/search/search_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -26,6 +30,8 @@ class CommodityDetailPage extends PageProvideNode{
 
   final CommodityDetailProvide _provide = CommodityDetailProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final CommodityListProvide _commodityListProvide = CommodityListProvide.instance;
+  final SearchProvide _searchProvide = SearchProvide.instance;
   final String pages;
 
   CommodityDetailPage({
@@ -33,11 +39,13 @@ class CommodityDetailPage extends PageProvideNode{
   }){
     mProviders.provide(Provider<CommodityDetailProvide>.value(_provide));
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
+    mProviders.provide(Provider<CommodityListProvide>.value(_commodityListProvide));
+    mProviders.provide(Provider<SearchProvide>.value(_searchProvide));
   }
 
   @override
   Widget buildContent(BuildContext context) {
-    return CommodityDetailContent(_provide,_cartProvide,pages:this.pages);
+    return CommodityDetailContent(_provide,_cartProvide,_commodityListProvide,_searchProvide,pages:this.pages);
   }
   
 }
@@ -45,8 +53,10 @@ class CommodityDetailPage extends PageProvideNode{
 class CommodityDetailContent extends StatefulWidget {
   final CommodityDetailProvide _provide;
   final CommodityAndCartProvide _cartProvide;
+  final CommodityListProvide _commodityListProvide;
+  final SearchProvide _searchProvide;
   final String pages;
-  CommodityDetailContent(this._provide,this._cartProvide,{this.pages});
+  CommodityDetailContent(this._provide,this._cartProvide,this._commodityListProvide,this._searchProvide,{this.pages});
   @override
   _CommodityDetailContentState createState() => new _CommodityDetailContentState();
 }
@@ -58,6 +68,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   ScrollController _scrollController ;
   CommodityDetailProvide _provide;
   CommodityAndCartProvide _cartProvide;
+  CommodityListProvide _commodityListProvide;
+  SearchProvide _searchProvide;
   bool _isShowBottom=true;
   // webview
   String html;
@@ -86,6 +98,8 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 
     _provide ??= widget._provide;
     _cartProvide ??= widget._cartProvide;
+    _commodityListProvide ??= widget._commodityListProvide;
+    _searchProvide ??= widget._searchProvide;
 
 //    _tabController = new TabController(length: detailTabBarList.length, vsync: this);
     _scrollController = new ScrollController();
@@ -182,6 +196,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           child: _swiperWidget(),
         ),
         _comTitle(),
+        _brandCol(),
         _selCol(),
         _selCommodityPlicy(),
         _showDesc(),
@@ -285,6 +300,40 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           }
           return Container();
         }
+    );
+  }
+  /// 品牌
+  Widget _brandCol(){
+    CommodityBrandModel brandModel = _provide.commodityModels.brandModel;
+    return Container(
+      width: double.infinity,
+      height: ScreenAdapter.height(80),
+      color:Colors.white,
+      margin:EdgeInsets.only(top: 10,bottom: 10),
+      padding: EdgeInsets.only(left: 20),
+      child: InkWell(
+        onTap: (){
+          _searchRequest(catCode: _provide.commodityModels.catCode,brands: brandModel.brandName);
+        },
+        child: Row(
+          children: <Widget>[
+            Text(brandModel.brandName),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(right: 20),
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Image.network(brandModel.brandLogo,fit: BoxFit.fitWidth,),
+                    Icon(Icons.chevron_right),
+                  ],
+                )
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -718,6 +767,31 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         });
       }
     });
+  }
+  /// 品牌搜索跳转
+  void _searchRequest({int catCode,String brands}){
+    // 清除原数据
+    _commodityListProvide.clearList();
+    String brandParams = 'brand=';
+    if(brands!=null){
+      brandParams = 'brand=$brands';
+    }
+    _commodityListProvide.requestUrl = "/api/eshop/app/products/filterByCatCode?catCode=$catCode&$brandParams";
+    _searchProvide.onSearch(_commodityListProvide.requestUrl+'&pageNo=1&pageSize=8').doOnListen(() { }).doOnCancel(() {}).listen((items) {
+      ///加载数据
+      print('listen data->$items');
+      if(items!=null&&items.data!=null){
+        if(!mounted) return;
+        _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
+      }
+
+    }, onError: (e) {});
+
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context){
+          return SearchScreenPage();
+        }
+    ));
   }
 
   ///TODO 商品推荐(暂时隐藏)

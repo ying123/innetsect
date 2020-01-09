@@ -1,6 +1,7 @@
 
 
 import 'package:innetsect/data/commodity_badges_model.dart';
+import 'package:innetsect/data/commodity_brand_model.dart';
 import 'package:innetsect/data/commodity_feature_model.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
 
@@ -41,6 +42,9 @@ class CommodityModels{
   // feature
   List<CommodityFeatureModel> features;
   List<CommodityBadgesModel> badges;
+  // brand
+  CommodityBrandModel brandModel;
+  int catCode;
 
   ///订单详情
   int itemID;
@@ -145,7 +149,9 @@ class CommodityModels{
     this.panicCountdownTime,
     this.panicBuyingStart,
     this.orderType,
-    this.badges
+    this.badges,
+    this.brandModel,
+    this.catCode
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -168,6 +174,8 @@ class CommodityModels{
         defSkuCode: json['defSkuCode'],
         skus: json['skus']!=null?CommoditySkusList.fromJson(json['skus']).list:json['skus'],
         features: json['features']!=null?CommodityFeatureList.fromJson(json['features']).list:json['features'],
+        brandModel: json['brand']!=null?CommodityBrandModel.fromJson(json['brand']):json['brand'],
+        catCode: json['catCode'],
         itemID: json['itemID'],
         orderID: json['orderID'],
         skuCode: json['skuCode'],
