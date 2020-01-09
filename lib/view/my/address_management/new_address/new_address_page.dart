@@ -202,7 +202,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                 child: Row(
                   children: <Widget>[
                     Center(
-                      child: Text('国家地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
+                      child: Text('国家/地区',style: TextStyle(fontSize: ScreenAdapter.size(30)),),
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 40),

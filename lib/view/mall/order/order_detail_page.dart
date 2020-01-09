@@ -59,7 +59,6 @@ class _OrderContentState extends State<OrderContent> {
   LogisticsProvide _logisticsProvide;
   bool isShowToast=false;
   String pages;
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
