@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -7,12 +9,11 @@ import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
 import 'dart:async';
 
-
 /// 修改手机号
-class EditPhonePage extends PageProvideNode{
+class EditPhonePage extends PageProvideNode {
   final LoginProvide _loginProvide = LoginProvide.instance;
 
-  EditPhonePage(){
+  EditPhonePage() {
     mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
 
@@ -35,16 +36,21 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
 
   // 验证码
   bool isButtonEnable = true;
+
   ///倒计时定时器
   Timer timer;
   int count = 60;
-  String buttonText="获取验证码";
+  String buttonText = "获取验证码";
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: CustomsWidget().customNav(context: context, widget: new Text("更换手机号",style: TextStyle(fontSize: ScreenAdapter.size((30)),
-          fontWeight: FontWeight.w900)),
+      appBar: CustomsWidget().customNav(
+        context: context,
+        widget: new Text("更换手机号",
+            style: TextStyle(
+                fontSize: ScreenAdapter.size((30)),
+                fontWeight: FontWeight.w900)),
       ),
       body: Container(
         width: double.infinity,
@@ -57,18 +63,15 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
           children: <Widget>[
             // 手机号
             Container(
-                margin: EdgeInsets.only(left: 20,right: 20),
+                margin: EdgeInsets.only(left: 20, right: 20),
                 decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: Colors.grey))
-                ),
-                child: _phoneText()
-            ),
+                    border: Border(bottom: BorderSide(color: Colors.grey))),
+                child: _phoneText()),
             // 验证码
             Container(
-              margin: EdgeInsets.only(top: 10,left: 20,right: 20),
+              margin: EdgeInsets.only(top: 10, left: 20, right: 20),
               decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey))
-              ),
+                  border: Border(bottom: BorderSide(color: Colors.grey))),
               child: Stack(
                 children: <Widget>[
                   _validCodeText(),
@@ -78,39 +81,42 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
                       bottom: 2,
                       child: Container(
                         width: ScreenAdapter.width(220),
-                        padding: EdgeInsets.only(top: 5,bottom: 5),
+                        padding: EdgeInsets.only(top: 5, bottom: 5),
                         child: _validCodeBtn(),
                       ))
                 ],
               ),
             )
-
           ],
         ),
       ),
       bottomSheet: Container(
         width: double.infinity,
         color: Colors.white,
-        padding: EdgeInsets.only(left: 20,right: 20),
+        padding: EdgeInsets.only(left: 20, right: 20),
         child: RaisedButton(
           color: Colors.black,
           textColor: Colors.white,
-          onPressed: (){
-            if(_loginProvide.userCode==null) {
+          onPressed: () {
+            if (_loginProvide.userCode == null) {
               CustomsWidget().showToast(title: "请输入手机号");
-            }else if(_loginProvide.vaildCode==null){
+            } else if (_loginProvide.vaildCode == null) {
               CustomsWidget().showToast(title: "请输入验证码");
-            }else{
+            } else {
               // 请求修改手机号
               _updatePhone();
             }
           },
-          child: Text('修改',style: TextStyle(fontSize: ScreenAdapter.size(24),
-              fontWeight: FontWeight.w600),),
+          child: Text(
+            '修改',
+            style: TextStyle(
+                fontSize: ScreenAdapter.size(24), fontWeight: FontWeight.w600),
+          ),
         ),
       ),
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -129,94 +135,102 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
   }
 
   /// phone文本
-  Provide<LoginProvide> _phoneText(){
+  Provide<LoginProvide> _phoneText() {
     return Provide<LoginProvide>(
         builder: (BuildContext context, Widget child, LoginProvide provide) {
-          return new TextField(
-            controller: TextEditingController.fromValue(
-                TextEditingValue(
-                    text: provide.userCode==null?'':provide.userCode,
-                    selection: TextSelection.fromPosition(TextPosition(
-                        affinity: TextAffinity.downstream,
-                        offset: provide.userCode==null?''.length:provide.userCode.length
-                    ))
-                )),
-            enabled: true,
-            style: new TextStyle(color: Colors.black),
-            decoration: InputDecoration(
-                hintText: provide.userCode==null?"请输入手机号":provide.userCode,
-                hintStyle: new TextStyle(color: Colors.grey),
-                focusedBorder: InputBorder.none,
-                border: InputBorder.none
-            ),
-            onChanged: (str) {
-              provide.userCode = str;
-            },
-          );
-        });
+      return new TextField(
+        controller: TextEditingController.fromValue(TextEditingValue(
+            text: provide.userCode == null ? '' : provide.userCode,
+            selection: TextSelection.fromPosition(TextPosition(
+                affinity: TextAffinity.downstream,
+                offset: provide.userCode == null
+                    ? ''.length
+                    : provide.userCode.length)))),
+        enabled: true,
+        style: new TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+            hintText: provide.userCode == null ? "请输入手机号" : provide.userCode,
+            hintStyle: new TextStyle(color: Colors.grey),
+            focusedBorder: InputBorder.none,
+            border: InputBorder.none),
+        onChanged: (str) {
+          provide.userCode = str;
+        },
+      );
+    });
   }
+
   /// 验证码
   Provide<LoginProvide> _validCodeText() {
     return Provide<LoginProvide>(
         builder: (BuildContext context, Widget child, LoginProvide provide) {
-          return new TextField(
-            controller: TextEditingController.fromValue(
-                TextEditingValue(
-                    text: provide.vaildCode==null?'':provide.vaildCode,
-                    selection: TextSelection.fromPosition(TextPosition(
-                        affinity: TextAffinity.downstream,
-                        offset: provide.vaildCode==null?''.length:provide.vaildCode.length
-                    ))
-                )),
-            enabled: true,
-            style: new TextStyle(color: Colors.black),
-            decoration: InputDecoration(
-                hintText: provide.vaildCode==null?"请输入验证码":provide.vaildCode,
-                hintStyle: new TextStyle(color: Colors.grey),
-                focusedBorder: InputBorder.none,
-                border: InputBorder.none
-            ),
-            onChanged: (str) {
-              provide.vaildCode = str;
-            },
-          );
-        });
+      return new TextField(
+        controller: TextEditingController.fromValue(TextEditingValue(
+            text: provide.vaildCode == null ? '' : provide.vaildCode,
+            selection: TextSelection.fromPosition(TextPosition(
+                affinity: TextAffinity.downstream,
+                offset: provide.vaildCode == null
+                    ? ''.length
+                    : provide.vaildCode.length)))),
+        enabled: true,
+        style: new TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+            hintText: provide.vaildCode == null ? "请输入验证码" : provide.vaildCode,
+            hintStyle: new TextStyle(color: Colors.grey),
+            focusedBorder: InputBorder.none,
+            border: InputBorder.none),
+        onChanged: (str) {
+          provide.vaildCode = str;
+        },
+      );
+    });
   }
+
   /// 验证码按钮
   Provide<LoginProvide> _validCodeBtn() {
     return Provide<LoginProvide>(
         builder: (BuildContext context, Widget child, LoginProvide provide) {
-          return FlatButton(
-            disabledColor: Colors.grey.withOpacity(0.1),
-            disabledTextColor: Colors.white,
-            textColor: isButtonEnable ? Colors.white : Colors.white,
-            color: isButtonEnable
-                ? Colors.black
-                : Colors.grey.withOpacity(0.8),
-            onPressed: () {
-              if(provide.userCode==null){
-                CustomsWidget().showToast(title: "请输入手机号");
-              }else{
-                _buttonClickListen(provide);
-              }
-            },
-            child: Text(
-              buttonText,
-              style: TextStyle(fontSize: ScreenAdapter.size(22)),
-            ),
-          );
-        });
+      return FlatButton(
+        disabledColor: Colors.grey.withOpacity(0.1),
+        disabledTextColor: Colors.white,
+        textColor: isButtonEnable ? Colors.white : Colors.white,
+        color: isButtonEnable ? Colors.black : Colors.grey.withOpacity(0.8),
+        onPressed: () {
+          if (provide.userCode == null) {
+            CustomsWidget().showToast(title: "请输入手机号");
+          } else {
+            _buttonClickListen(provide);
+          }
+        },
+        child: Text(
+          buttonText,
+          style: TextStyle(fontSize: ScreenAdapter.size(22)),
+        ),
+      );
+    });
   }
 
-
-  void  _buttonClickListen(LoginProvide provide) {
+  void _buttonClickListen(LoginProvide provide) {
     if (isButtonEnable) {
+
+      Map map = AppConfig.userTools.getUserData();
+      print('map==========>$map');
       /// 验证手机号
-      _loginProvide.getVaildPhone().doOnListen(() {
+      print('更换手机号码被点击');
+     bool isUserCode =  RegExp('^((13[0-9])|(15[^4])|(166)|(17[0-8])|(18[0-9])|(19[8-9])|(147,145))\\d{8}\$')
+          .hasMatch(provide.userCode);
+      print('==========>$isUserCode');
+      if (isUserCode == false) {
+        Fluttertoast.showToast(
+          msg: '请输入正确的手机号码',
+          gravity: ToastGravity.CENTER
+        );
+      }else{
+           _loginProvide.getVaildPhone().doOnListen(() {
         print('doOnListen');
       }).doOnCancel(() {}).listen((item) {
         ///加载数据
-        print('listen data->$item');
+        print('listen data------>$item');
         if(item!=null&&item.data!=null&&item.data['passed']){
           _loginProvide.getVaildCode().then((items){
             if(items!=null&&items.data){
@@ -231,7 +245,7 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
           CustomsWidget().showToast(title: item.data['error']);
         }
       }, onError: (e) {});
-
+      }
       return null;
     } else {
       return null;
@@ -258,10 +272,10 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
   }
 
   /// 修改手机请求
-  void _updatePhone(){
-    _loginProvide.editPhone().then((item){
+  void _updatePhone() {
+    _loginProvide.editPhone().then((item) {
       print(item);
-      if(item!=null&&item.data){
+      if (item != null && item.data) {
         UserInfoModel model = _loginProvide.userInfoModel;
         model.mobile = _loginProvide.userCode;
         CustomsWidget().showToast(title: "修改成功");
@@ -269,5 +283,4 @@ class _EditPhoneContentState extends State<EditPhoneContent> {
       }
     });
   }
-
 }

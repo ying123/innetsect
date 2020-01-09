@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
@@ -9,10 +10,10 @@ import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:provide/provide.dart';
 
-class EditNickNamePage extends PageProvideNode{
+class EditNickNamePage extends PageProvideNode {
   final LoginProvide _loginProvide = LoginProvide.instance;
-  
-  EditNickNamePage(){
+
+  EditNickNamePage() {
     mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
   }
 
@@ -38,31 +39,43 @@ class _EditNickNameContentState extends State<EditNickNameContent> {
   Widget build(BuildContext context) {
     UserInfoModel userModel = _loginProvide.userInfoModel;
     return new Scaffold(
-      appBar: CustomsWidget().customNav(context: context, widget: new Text("修改昵称",style: TextStyle(fontSize: ScreenAdapter.size((30)),
-        fontWeight: FontWeight.w900)),
+      appBar: AppBar(
+        title: Text(
+          '修改昵称',
+        ),
+        centerTitle: true,
+        elevation: 0.0,
+        leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.chevron_left,
+              size: ScreenAdapter.size(60),
+            ),
+          ),
+
       ),
       body: Center(
         child: Column(
           children: <Widget>[
             new IntrinsicHeight(
               child: Padding(
-                padding: EdgeInsets.only(right: 10,left: 10),
+                padding: EdgeInsets.only(right: 10, left: 10),
                 child: TextField(
-                  controller: TextEditingController.fromValue(
-                    TextEditingValue(
-                        text: userModel.nickName==null?'':userModel.nickName,
-                        selection: TextSelection.fromPosition(TextPosition(
-                            affinity: TextAffinity.downstream,
-                            offset: userModel.nickName.toString().length
-                        ))
-                    )),
+                  controller: TextEditingController.fromValue(TextEditingValue(
+                      text:
+                          userModel.nickName == null ? '' : userModel.nickName,
+                      selection: TextSelection.fromPosition(TextPosition(
+                          affinity: TextAffinity.downstream,
+                          offset: userModel.nickName.toString().length)))),
                   inputFormatters: [
                     WhitelistingTextInputFormatter(RegExp(
-                    "[a-zA-Z]|[\u4e00-\u9fa5]|[0-9]")), //只能输入汉字或者字母或数字
+                        "[a-zA-Z]|[\u4e00-\u9fa5]|[0-9]")), //只能输入汉字或者字母或数字
                   ],
                   maxLength: 30,
-                  maxLengthEnforced:true,
-                  onChanged: (val){
+                  maxLengthEnforced: true,
+                  onChanged: (val) {
                     print(val);
                     userModel.nickName = val;
                     setState(() {
@@ -74,9 +87,9 @@ class _EditNickNameContentState extends State<EditNickNameContent> {
             ),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.only(left: 10,right: 10,top: 20),
+              padding: EdgeInsets.only(left: 10, right: 10, top: 20),
               child: RaisedButton(
-                onPressed: (){
+                onPressed: () {
                   // 修改昵称
                   _editName();
                 },
@@ -90,6 +103,7 @@ class _EditNickNameContentState extends State<EditNickNameContent> {
       ),
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -104,30 +118,38 @@ class _EditNickNameContentState extends State<EditNickNameContent> {
   }
 
   /// 修改昵称
-  void _editName(){
+  void _editName() {
     print("_nickName--------$_nickName");
-    _loginProvide.getVaildNick(_nickName).doOnListen(() {
-      print('doOnListen');
-    }).doOnCancel(() {}).listen((item) {
-      ///加载数据
-      print('listen data->$item');
-      if(item!=null&&item.data!=null){
-        if(item.data['passed']){
-          _loginProvide.editUserNick(_nickName).then((item){
-            if(item!=null&&item.data){
-              CustomsWidget().showToast(title: "修改成功");
-              UserTools().clearUserInfo();
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                builder: (context){
-                  return LoginPage();
-                }
-              ));
+    UserInfoModel userModel = _loginProvide.userInfoModel;
+    if (userModel.nickName == '' || userModel.nickName == null) {
+      Fluttertoast.showToast(msg: '昵称不能为空', gravity: ToastGravity.CENTER);
+    } else {
+      _loginProvide
+          .getVaildNick(_nickName)
+          .doOnListen(() {
+            print('doOnListen');
+          })
+          .doOnCancel(() {})
+          .listen((item) {
+            ///加载数据
+            print('listen data->$item');
+            if (item != null && item.data != null) {
+              if (item.data['passed']) {
+                _loginProvide.editUserNick(_nickName).then((item) {
+                  if (item != null && item.data) {
+                    CustomsWidget().showToast(title: "修改成功");
+                    UserTools().clearUserInfo();
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) {
+                      return LoginPage();
+                    }));
+                  }
+                });
+              } else {
+                CustomsWidget().showToast(title: item.data['error']);
+              }
             }
-          });
-        }else{
-          CustomsWidget().showToast(title: item.data['error']);
-        }
-      }
-    }, onError: (e) {});
+          }, onError: (e) {});
+    }
   }
 }

@@ -69,7 +69,8 @@ class _PersonalCenterContentPageState extends State<PersonalCenterContentPage> {
               color: AppConfig.assistLineColor),
           CustomsWidget().listSlider(
             title: "昵称",rightTitle: true,
-            rightDesc: userModel.nickName,titleFont: FontWeight.w800,
+            rightDesc: userModel.nickName,
+            titleFont: FontWeight.w800,
             titleFontSize: ScreenAdapter.size(28),titleColor: Colors.black,
             onTap: (){
                 Navigator.push(context, MaterialPageRoute(
