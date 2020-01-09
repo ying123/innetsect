@@ -190,6 +190,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
   @override
   void didChangeDependencies() async{
     super.didChangeDependencies();
+    print('========================didChangeDependencies');
     PermissionStatus permission = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.location);
     bool hasPermission = permission == PermissionStatus.granted;

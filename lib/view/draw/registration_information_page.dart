@@ -243,6 +243,9 @@ class _RegistrationInformationContentPageState
                           Navigator.pushNamed(context, '/country_page.dart')
                               .then((value) {
                             print('=============>$value');
+                            if (value == null) {
+                              return;
+                            }
                             provide.countryCode = value;
                           });
                         },

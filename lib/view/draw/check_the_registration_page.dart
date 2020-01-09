@@ -382,9 +382,9 @@ class _CheckTheRegistrationContentPageState
                         )
                       : Container(),
             ),
-            SizedBox(
-              height: ScreenAdapter.height(40),
-            ),
+            // SizedBox(
+            //   height: ScreenAdapter.height(30),
+            // ),
             GestureDetector(
               onTap: () {
                 Navigator.pushNamedAndRemoveUntil(
@@ -392,15 +392,21 @@ class _CheckTheRegistrationContentPageState
               },
               child: Container(
                 width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(90),
-                color: Colors.black,
+                height: ScreenAdapter.height(120),
                 child: Center(
-                  child: Text(
-                    '返回',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: ScreenAdapter.size(30),
-                        fontWeight: FontWeight.w800),
+                  child: Container(
+                    width: ScreenAdapter.width(690),
+                    height: ScreenAdapter.height(90),
+                    color: Colors.black,
+                    child: Center(
+                      child: Text(
+                        '返回',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w800),
+                      ),
+                    ),
                   ),
                 ),
               ),

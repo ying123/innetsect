@@ -140,7 +140,7 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
         return Container(
           color: Colors.white,
           width: ScreenAdapter.width(750),
-          height: ScreenAdapter.height(200),
+          height: ScreenAdapter.height(220),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
