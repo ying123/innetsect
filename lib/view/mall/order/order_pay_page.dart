@@ -106,12 +106,14 @@ class _OrderPayContentState extends State<OrderPayContent> {
                       print('doOnListen');
                     }).doOnCancel(() {}).listen((item) {
                       ///加载数据
-                      print('listen data->$item');
+                      print('listen data-===========>${item.data}');
                       if(item.data!=null){
                         if(widget._provide.payMode==1){
                           // 微信支付，注册
+                      
                           SyFlutterWechat.register(item.data['appid']);
                           // package,orderID,appid,sign,partnerid,prepayid,noncestr,timestamp
+                          print('========');
                           PayUtils().weChatPay(item.data).then((result){
                             if(result.index==0){
                               widget._provide.resultStatus = true;

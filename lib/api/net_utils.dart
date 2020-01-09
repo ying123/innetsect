@@ -22,7 +22,14 @@ Future<BaseResponse> _get(String url, {Map<String, dynamic> params,BuildContext 
       options:Options(extra: {"context": context})).then((response){
      if (response.data is Map) {
   //  print('response是map类型');
-    print('responsr->${response.data}');
+    print('responsr======->${response.data}');
+    if (response.data['passed'] == false) {
+      print('号码重复');
+      // Fluttertoast.showToast(
+      //   msg: '手机号码重复',
+      //   gravity: ToastGravity.CENTER
+      // );
+    }
     //将json数据转换成BaseResponse实例
     res = BaseResponse.fromJson(response.data);
   } else if (response.data is List) {
@@ -110,6 +117,12 @@ Future<BaseResponse> _post(String url, dynamic body,
      // print('response ========》_post:->${response.data['message']}');
     }).catchError((error){
       print('error----> ${error.response.data['message']}');
+      if (error.response.data['message']== '密钥不正确') {
+        Fluttertoast.showToast(
+          msg: error.response.data['message'],
+          gravity: ToastGravity.CENTER
+        );
+      }
       if(error.response.data['path']=="/salesorders/shoppingorder/create"){
         if(UserTools().getUserToken()==null){
           Future.delayed(Duration.zero,(){
@@ -226,7 +239,8 @@ Future<BaseResponse> _getCountries(String url, {Map<String, dynamic> params,Buil
   await dio.get(url, queryParameters: params,options:Options(extra: {"context": context})).then((response){
     if (response.data is Map) {
       print('response是map类型');
-      print('responsr->${response.data}');
+      print('responsr-==>${response.data}');
+      
       //将json数据转换成BaseResponse实例
       res = BaseResponse.fromJson(response.data);
     } else if (response.data is List) {
