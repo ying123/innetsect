@@ -254,7 +254,7 @@ class _AfterGoodsContentState extends State<AfterGoodsContent> {
     if(_afterServiceProvide.afterOrderModel.reasonType!=5&&
         _afterServiceProvide.afterOrderModel.reasonType!=6){
       // 如果不是5、6申请类型，则是物流公司code
-      code = _afterServiceProvide.afterOrderModel.reasonType.toString();
+      code = _afterServiceProvide.shipperModel.shipperCode.toString();
     }
     _afterServiceProvide.submitLogistic(
       rmaID: _afterServiceProvide.afterOrderModel.rmaID,

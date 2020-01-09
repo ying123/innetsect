@@ -122,14 +122,17 @@ Future<BaseResponse> _post(String url, dynamic body,
         }
       }else if(error.response.data['message']=="jwt.token.expired"
       || error.response.data['message']=='密钥不正确'){
-        print('message=====>${response.data['message']}');
-        Future.delayed(Duration.zero,(){
-          Navigator.push(context, MaterialPageRoute(
-              builder: (BuildContext context){
-                return LoginPage();
-              }
-          ));
-        });
+        if(error.response.data['message']=='密钥不正确'){
+          CustomsWidget().showToast(title: error.response.data['message']);
+        }else{
+          Future.delayed(Duration.zero,(){
+            Navigator.push(context, MaterialPageRoute(
+                builder: (BuildContext context){
+                  return LoginPage();
+                }
+            ));
+          });
+        }
       }else {
         CustomsWidget().showToast(title: error.response.data['message']);
       }
