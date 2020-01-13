@@ -131,7 +131,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
             child: new Container(
               padding: EdgeInsets.all(10),
               alignment: Alignment.center,
-              child: new Icon(Icons.clear),
+              child: new Icon(Icons.close),
             )
           )
         ],

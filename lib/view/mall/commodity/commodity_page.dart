@@ -404,6 +404,11 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
       if(item!=null&&item.data!=null){
         _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
         _detailProvide.setInitData();
+//        if(_detailProvide.skusModel!=null
+//            &&_detailProvide.skusModel.features!=null
+//            &&_detailProvide.skusModel.features.length>0){
+//          _detailProvide.featuresClear();
+//        }
         _cartProvide.setInitCount();
         _detailProvide.isBuy = false;
         _cartProvide.setMode(mode: "multiple");

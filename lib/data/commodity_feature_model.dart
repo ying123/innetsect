@@ -10,22 +10,26 @@ class CommodityFeatureModel{
   String featureValue;
   // 是否选中
   bool isSelected;
+  // 可售卖数量
+  int qtyInHand;
 
   CommodityFeatureModel({
     this.prodID,
     this.featureCode,
     this.featureGroup,
     this.featureValue,
-    this.isSelected
+    this.isSelected,
+    this.qtyInHand
   });
 
   factory CommodityFeatureModel.fromJson(Map<String,dynamic> json){
-    return CommodityFeatureModel(
+    return new CommodityFeatureModel(
         prodID: json['prodID'],
       featureGroup: json['featureGroup'],
       featureCode: json['featureCode'],
       featureValue: json['featureValue'],
-        isSelected: json['isSelected']
+        isSelected: json['isSelected'],
+        qtyInHand: json['qtyInHand']
     );
   }
 
@@ -34,7 +38,8 @@ class CommodityFeatureModel{
     'featureGroup': featureGroup,
     'featureCode': featureCode,
     'featureValue': featureValue,
-    'isSelected': isSelected
+    'isSelected': isSelected,
+    'qtyInHand': qtyInHand
   };
 }
 

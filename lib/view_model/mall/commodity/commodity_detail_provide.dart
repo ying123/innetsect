@@ -15,8 +15,12 @@ class CommodityDetailProvide extends BaseProvide {
   CommodityModels _commodityModels;
   /// 默认选中的sku
   CommoditySkusModel _skusModel;
-  /// 过滤的sku
+  /// 过滤的sku（废弃）
   List<CommoditySkusModel> _skusList=[];
+  /// 存储sku颜色特征
+  List<CommoditySkusModel> _colorSkuList = [];
+  /// 存储sku尺寸特征
+  List<CommoditySkusModel> _sizeSkuList = [];
   /// 数组选中下标
   int _index=0;
   /// 订单号
@@ -52,7 +56,12 @@ class CommodityDetailProvide extends BaseProvide {
 
   CommoditySkusModel get skusModel =>_skusModel;
 
+  /// 废弃
   List<CommoditySkusModel> get skusList => _skusList;
+  /// 重构
+  List<CommoditySkusModel> get colorSkuList => _colorSkuList;
+  List<CommoditySkusModel> get sizeSkuList => _sizeSkuList;
+
   List<Map<String,dynamic>> get payList => _payList;
 
   int get index=>_index;
@@ -127,55 +136,56 @@ class CommodityDetailProvide extends BaseProvide {
     _commodityModels = models;
     // 默认sku设置
 //    models.defSkuCode
+    /// TODO 没有默认sku
     List<CommoditySkusModel> skuModel = models.skus.where((item)=>item.skuCode == models.defSkuCode).toList();
     if(skuModel.length>0){
-      skuModel.asMap().keys.map((key){
-        bool flag = false;
-        if(key==0) flag=true;
-        skuModel[key].isSelected=flag;
-        _index = key;
-      });
-      skuModel[0].isSelected = true;
+//      skuModel.asMap().keys.map((key){
+//        bool flag = false;
+//        if(key==0) flag=true;
+//        skuModel[key].isSelected=flag;
+//        _index = key;
+//      });
+//      skuModel[0].isSelected = true;
       _skusModel = skuModel[0];
     }
     notifyListeners();
   }
 
-  // 初始化数据
-  void setInitData(){
-    if(_orderId!=null) _orderId = null;
-    if(_skusList.length>0)_skusList.clear();
-    // 获取选中size
-    String code="";
-    if(_skusModel==null){
-      //如果没有默认sku，默认拿第一个sku为默认sku
-      _skusModel = _commodityModels.skus[0];
-      _commodityModels.defSkuCode = _commodityModels.skus[0].skuCode;
-    }
-    _skusModel.features.forEach((item){
-      if(item.featureGroup=="尺码"){
-        code = item.featureCode;
-      }
-    });
-    // 通过size过滤对象
-    _commodityModels.skus.forEach((item){
-      item.features.forEach((feaItem){
-        if(feaItem.featureCode == code){
-          _skusList.add(item);
-        }
-      });
-      //默认选中赋值
-      if(item.skuCode==_commodityModels.defSkuCode){
-        _commodityModels.skuCode = item.skuCode;
-        _commodityModels.salesPrice = item.salesPrice;
-        _commodityModels.skuName = item.skuName;
-        _commodityModels.skuPic = item.skuPic;
-        _commodityModels.originalPrice = item.originalPrice;
-      }
-    });
-
-    notifyListeners();
-  }
+  ///**TODO初始化数据(废弃）
+//  void setInitData(){
+//    if(_orderId!=null) _orderId = null;
+//    if(_skusList.length>0)_skusList.clear();
+//    // 获取选中size
+//    String code="";
+//    if(_skusModel==null){
+//      //如果没有默认sku，默认拿第一个sku为默认sku
+//      _skusModel = _commodityModels.skus[0];
+//      _commodityModels.defSkuCode = _commodityModels.skus[0].skuCode;
+//    }
+//    _skusModel.features.forEach((item){
+//      if(item.featureGroup=="尺码"){
+//        code = item.featureCode;
+//      }
+//    });
+//    // 通过size过滤对象
+//    _commodityModels.skus.forEach((item){
+//      item.features.forEach((feaItem){
+//        if(feaItem.featureCode == code){
+//          _skusList.add(item);
+//        }
+//      });
+//      //默认选中赋值
+//      if(item.skuCode==_commodityModels.defSkuCode){
+//        _commodityModels.skuCode = item.skuCode;
+//        _commodityModels.salesPrice = item.salesPrice;
+//        _commodityModels.skuName = item.skuName;
+//        _commodityModels.skuPic = item.skuPic;
+//        _commodityModels.originalPrice = item.originalPrice;
+//      }
+//    });
+//
+//    notifyListeners();
+//  }
 
   // 设置选中的sku，动态变化
   void setSelectSku(CommodityFeatureModel featureModel,int count){
@@ -219,7 +229,7 @@ class CommodityDetailProvide extends BaseProvide {
     notifyListeners();
   }
 
-  // 选择颜色
+  /// TODO 选择颜色(废弃)
   void setSelectColor(CommoditySkusModel models,int count){
     _skusModel = models;
     _commodityModels.skuCode = models.skuCode;
@@ -237,7 +247,156 @@ class CommodityDetailProvide extends BaseProvide {
     notifyListeners();
   }
 
+  /// TODO 业务需求改动，sku业务逻辑重构
+  /// TODO 重构初始化
+  void setInitData() {
+    if(_orderId!=null) _orderId = null;
+    if(_colorSkuList.length>0)_colorSkuList.clear();
+    if(_sizeSkuList.length>0)_sizeSkuList.clear();
+    /// 如果颜色和尺寸是一个，则默认选中
+    if(_commodityModels.skus.length==1){
+      _commodityModels.skuName = _commodityModels.skus[0].skuName;
+      _commodityModels.skuCode = _commodityModels.skus[0].skuCode;
+      _commodityModels.skuPic = _commodityModels.skus[0].skuPic;
+      _commodityModels.salesPrice = _commodityModels.skus[0].salesPrice;
+      _commodityModels.originalPrice = _commodityModels.skus[0].originalPrice;
+      _commodityModels.quantity = 1;
+      if(_skusModel==null){
+        _skusModel = new CommoditySkusModel();
+        _skusModel.skuName = _commodityModels.skus[0].skuName;
+        _skusModel.skuCode = _commodityModels.skus[0].skuCode;
+        _skusModel.skuPic = _commodityModels.skus[0].skuPic;
+        _skusModel.pics = _commodityModels.skus[0].pics;
+        _skusModel.features = _commodityModels.skus[0].features;
+        _skusModel.qtyInHand = _commodityModels.skus[0].qtyInHand;
+      }
+    }else{
+      /// 如果是多个的赋值给颜色和尺码sku-list
+      //循环特征list
+//    print(_commodityModels.features);
+      _commodityModels.features.forEach((CommodityFeatureModel featuresItem){
+        print(_commodityModels.skus);
+//      // 赋值
+        CommoditySkusModel skusModel = CommoditySkusModel();
+        skusModel.featureCode = featuresItem.featureCode;
+        skusModel.featureGroup = featuresItem.featureGroup;
+        skusModel.featureValue = featuresItem.featureValue;
+        skusModel.qtyInHand = featuresItem.qtyInHand;
+        for(var i=0;i<_commodityModels.skus.length;i++){
+          CommoditySkusModel items = _commodityModels.skus[i];
+          // 匹配颜色sku
+          if(featuresItem.featureGroup == '颜色'
+              &&featuresItem.featureCode == items.features[1].featureCode){
+            skusModel.skuName = items.skuName;
+            setSkuColorAndSize(skusModel,items);
+            break;
+          }
+          // 匹配尺码
+          if(featuresItem.featureGroup == '尺码'
+              &&featuresItem.featureCode == items.features[0].featureCode){
+            skusModel.skuName = items.skuName;
+            setSkuColorAndSize(skusModel,items);
+            break;
+          }
+        }
+        if(featuresItem.featureGroup == '颜色'){
+          _colorSkuList.add(skusModel);
+        }
+        if(featuresItem.featureGroup == '尺码'){
+          _sizeSkuList.add(skusModel);
+        }
+      });
+    }
+    notifyListeners();
+  }
+  void setSkuColorAndSize(CommoditySkusModel _skusModel,CommoditySkusModel _skus){
+    _skusModel.prodID = _skus.prodID;
+    _skusModel.skuCode = _skus.skuCode;
+    _skusModel.salesPrice = _skus.salesPrice;
+    _skusModel.skuPic = _skus.skuPic;
+    _skusModel.originalPrice = _skus.originalPrice;
+  }
+  /// TODO 选择颜色（重构）
+  void onSelectColor(CommoditySkusModel models,int count){
+    _commodityModels.salesPrice = models.salesPrice;
+    _commodityModels.originalPrice = models.originalPrice;
+    _commodityModels.quantity = count;
+    _skusModel.qtyInHand = models.qtyInHand;
+    CommodityFeatureModel model = CommodityFeatureModel();
+    model.prodID = models.prodID;
+    model.featureGroup = models.featureGroup;
+    model.featureCode = models.featureCode;
+    model.featureValue = models.featureValue;
+    model.qtyInHand = models.qtyInHand;
+    if(_skusModel.features!=null&&_skusModel.features.length>0){
+      int index = _skusModel.features.indexWhere((items)=>items.featureGroup=='颜色');
+      if(index>-1){
+        _skusModel.features.removeAt(index);
+        _skusModel.features.insert(1,model);
+      }
+    }
+    // 根据选中的颜色和尺寸查询sku
+    _commodityModels.skus.forEach((item){
+      if(item.features[0].featureCode == _skusModel.features[0].featureCode
+          && item.features[1].featureCode == _skusModel.features[1].featureCode){
+        _commodityModels.skuName = item.skuName;
+        _commodityModels.skuCode = item.skuCode;
+        _commodityModels.skuPic = models.skuPic;
+        _skusModel.skuName = item.skuName;
+        _skusModel.skuCode = item.skuCode;
+        _skusModel.skuPic = item.skuPic;
+      }
+    });
+    notifyListeners();
+  }
+
+  /// TODO 选择尺寸（重构）
+  void onSizeChange(CommoditySkusModel models,int count){
+//    _commodityModels.skuCode = models.skuCode;
+    _skusModel.qtyInHand = models.qtyInHand;
+    CommodityFeatureModel model = CommodityFeatureModel();
+    model.prodID = models.prodID;
+    model.featureGroup = models.featureGroup;
+    model.featureCode = models.featureCode;
+    model.featureValue = models.featureValue;
+    model.qtyInHand = models.qtyInHand;
+    if(_skusModel.features!=null&&_skusModel.features.length>0){
+      int index = _skusModel.features.indexWhere((items)=>items.featureGroup=='尺码');
+      if(index>-1){
+        _skusModel.features.removeAt(index);
+        _skusModel.features.insert(0,model);
+      }
+    }
+    // 根据选中的颜色和尺寸查询sku
+    _commodityModels.skus.forEach((item){
+      if(item.features[0].featureCode == _skusModel.features[0].featureCode
+        && item.features[1].featureCode == _skusModel.features[1].featureCode){
+        _commodityModels.skuName = item.skuName;
+        _commodityModels.skuCode = item.skuCode;
+        _commodityModels.skuPic = models.skuPic;
+        _skusModel.skuName = item.skuName;
+        _skusModel.skuCode = item.skuCode;
+        _skusModel.skuPic = item.skuPic;
+      }
+    });
+    notifyListeners();
+  }
+
+  void featuresClear(){
+    _skusModel.features.clear();
+    notifyListeners();
+  }
+
   final CommodityRepo _repo = CommodityRepo();
+  /// 颜色尺码请求
+  Observable colorAndSizeData({int types,int prodId,String featureGroup,String featureCode}){
+    return _repo.colorAndSizeData(types:types, prodId:prodId,featureGroup:featureGroup,featureCode:featureCode)
+        .doOnData((result) {
+    })
+        .doOnError((e, stacktrace) {})
+        .doOnListen(() {})
+        .doOnDone(() {});
+  }
 
   /// 详情数据
   Observable detailData({int types,int prodId,BuildContext context}) {
