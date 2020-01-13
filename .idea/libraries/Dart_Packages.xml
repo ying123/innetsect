@@ -463,6 +463,13 @@
             </list>
           </value>
         </entry>
+        <entry key="permission_handler">
+          <value>
+            <list>
+              <option value="/Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-3.3.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="petitparser">
           <value>
             <list>
@@ -806,6 +813,7 @@
       <root url="file:///Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/path-1.6.4/lib" />
       <root url="file:///Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/path_provider-0.5.0+1/lib" />
       <root url="file:///Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/pedantic-1.8.0+1/lib" />
+      <root url="file:///Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/permission_handler-3.3.0/lib" />
       <root url="file:///Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/petitparser-2.4.0/lib" />
       <root url="file:///Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/photo_view-0.9.0/lib" />
       <root url="file:///Applications/flutter/.pub-cache/hosted/pub.flutter-io.cn/platform-2.2.1/lib" />

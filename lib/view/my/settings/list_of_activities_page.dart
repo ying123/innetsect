@@ -64,7 +64,11 @@ class _ListOfActivitiesContentPageState extends State<ListOfActivitiesContentPag
                 if ('抽签活动'== provide.activitiesTitl[index]) {
                   print(provide.activitiesTitl[index]);
                   Navigator.pushNamed(context, '/drwaActivitiedTestPage');
-                }else{
+                }else if('热区'== provide.activitiesTitl[index]){
+                    print('热区被点击');
+                    Navigator.pushNamed(context, '/hotSpotsHomePage');
+                }
+                else{
                   Fluttertoast.showToast(
                     msg: '暂未开启',
                     gravity: ToastGravity.CENTER

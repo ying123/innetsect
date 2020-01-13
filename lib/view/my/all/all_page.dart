@@ -383,7 +383,7 @@ class _AllContentPageState extends State<AllContentPage> {
     }
     return widget;
   }
-
+bool isCancelButton = false;
   // 取消订单按钮
   Widget _cancelOrderWidget(int orderID){
     return new Container(
@@ -396,7 +396,10 @@ class _AllContentPageState extends State<AllContentPage> {
                 context: context,
                 content: "确定取消该订单!",
                 onPressed: () async{
-                  await _provide.cancelOrder(orderID).then((item){
+                  isCancelButton = !isCancelButton;
+                  if (isCancelButton == true) {
+                    print('================isCancelButton');
+                     await _provide.cancelOrder(orderID).then((item){
                     if(item.data){
                       int index=_orderDetailList.indexWhere((val)=>val.orderID==orderID);
                       if(_orderDetailList[index].status==0){
@@ -408,6 +411,10 @@ class _AllContentPageState extends State<AllContentPage> {
                       this.setState((){});
                     }
                   });
+                  }else{
+                  //  isCancelButton = false;
+                  }
+                 
                 }
             );
           },

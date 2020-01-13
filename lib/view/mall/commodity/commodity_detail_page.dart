@@ -196,7 +196,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           child: _swiperWidget(),
         ),
         _comTitle(),
-        _brandCol(),
+        //_brandCol(),
         _selCol(),
         _selCommodityPlicy(),
         _showDesc(),
