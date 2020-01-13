@@ -290,7 +290,11 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         builder: (BuildContext context, Widget widget,
             CommodityDetailProvide provide) {
           CommodityModels models = provide.commodityModels;
-          if(double.parse(models.salesPriceRange)<double.parse(models.originalPrice.toString())){
+          String _price = models.salesPriceRange;
+          if(_price.indexOf("-")>-1){
+            _price = models.salesPriceRange.split("-")[0].toString();
+          }
+          if(double.parse(_price)<double.parse(models.originalPrice.toString())){
             return Padding(
               padding: EdgeInsets.only(left: 10),
               child:  CustomsWidget().priceTitle(price: models.originalPrice.toString(),decoration: TextDecoration.lineThrough,
@@ -781,17 +785,16 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       ///加载数据
       print('listen data->$items');
       if(items!=null&&items.data!=null){
-        if(!mounted) return;
+        _searchProvide.searchValue = brands;
         _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context){
+              return SearchScreenPage();
+            }
+        ));
       }
 
     }, onError: (e) {});
-
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context){
-          return SearchScreenPage();
-        }
-    ));
   }
 
   ///TODO 商品推荐(暂时隐藏)

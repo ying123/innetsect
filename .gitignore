@@ -32,3 +32,13 @@ android/.idea/caches/build_file_checksums.ser
 .idea/libraries/Dart_Packages.xml
 .flutter-plugins
 android/app/build.gradle
+*.json
+android/app/build.gradle
+*.xml
+.idea/libraries/Flutter_Plugins.xml
+*.jks
+*.apk
+*.apk
+*.lock
+android/build-cache/3.5.3/.cache-eviction-marker
+android/build-cache/3.5.3/.cache-use-marker
