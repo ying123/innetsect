@@ -20,6 +20,7 @@ import 'package:innetsect/view/exhibition/home_portlets_details_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/hot_spots/hot_spots_home_page.dart';
 import 'package:innetsect/view/hot_spots/hot_spots_homt_url_page.dart';
+import 'package:innetsect/view/hot_spots/hot_test_page.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_page.dart';
 import 'package:innetsect/view/mall/mall_page.dart';
@@ -74,7 +75,9 @@ final routes = {
   '/listOfActivitiesPage':(context)=>ListOfActivitiesPage(),///GM获得配置
   '/drwaActivitiedTestPage':(context)=>DrwaActivitiedTestPage(),///GM获得配置
   '/accountCancellationPage':(context)=>AccountCancellationPage(),///账户注销
-  '/hotSpotsHomePage':(context)=>HotSpotsHomePage(),///热区
+  '/hotSpotsHomePage':(context,{arguments})=>HotSpotsHomePage(redirectParam: arguments,),///热区
+  '/hotTestPage':(context)=>HotTestPage(),///热区测试
+  //'/hotSpotsHomePage'
 
   ///DrawDetailsPage
   /////RegistrationInformationPage
