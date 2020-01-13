@@ -554,6 +554,7 @@ class _HomeContentPageState extends State<HomeContentPage>
 
   /// 搜索请求
   void _searchRequest(String code){
+    print('商品列表供应');
     // 清除原数据
     widget._commodityListProvide.clearList();
     widget._commodityListProvide.requestUrl = "/api/promotion/promotions/$code/products?";
@@ -721,6 +722,7 @@ class _HomeContentPageState extends State<HomeContentPage>
         padding: EdgeInsets.only(bottom: 10,top: 20),
         child: InkWell(
           onTap: (){
+            print('查看全部被点击');
             _searchRequest(promotionCode);
           },
           child: new Row(

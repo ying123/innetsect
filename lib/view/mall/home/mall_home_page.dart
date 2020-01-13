@@ -481,6 +481,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
       padding: EdgeInsets.only(bottom: 10,top: 20),
       child: InkWell(
         onTap: (){
+          print('查看全部被点击============》');
           _searchRequest(promotionCode);
         },
         child: new Row(
@@ -535,6 +536,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
 
   /// 搜索请求
   void _searchRequest(String code){
+    print('=====================>_searchRequest');
     // 清除原数据
     _commodityListProvide.clearList();
     _commodityListProvide.requestUrl = "/api/promotion/promotions/$code/products?";

@@ -140,6 +140,22 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
                   ));
              }else if(redirectTypeParam.split('=')[1] == 'CATALOG_PRODUCT_LIST'){
                print('品类列表	');
+             }else if(redirectTypeParam.split('=')[1] == 'PROMOTION'){
+               print('促销活动	');
+
+             }else if(redirectTypeParam.split('=')[1] == 'URL'){
+               print('URL');
+                // Navigator.push(context, MaterialPageRoute(
+                //       builder: (context){
+                //         return new WebView(initialUrl: redirectParam.split('=')[1],
+                //           javascriptMode: JavascriptMode.unrestricted,
+                //         );
+                //       }
+                //   ));
+              // return NavigationDecision.navigate;
+              // return NavigationDecision.prevent;
+             }else if(redirectTypeParam.split('=')[1] == 'PRODUCT_COLLECTION'){
+               print('产品系列');
              }
 
             
