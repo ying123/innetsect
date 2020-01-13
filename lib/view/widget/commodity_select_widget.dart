@@ -159,7 +159,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                       borderWidth = 1;
                       borderColor = AppConfig.blueBtnColor;
                       textColor = AppConfig.blueBtnColor;
-                    }else if(provide.colorSkuList[keys].qtyInHand==0){
+                    }else if(provide.colorSkuList[keys].qtyInHand<=0){
                       borderWidth = 0;
                       borderColor = Colors.transparent;
                       textColor = Colors.grey;
@@ -263,7 +263,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                        sizeSelect = provide.sizeSkuList[keys].isSelected;
                      }
                       Color color = Colors.black;
-                     if(provide.sizeSkuList[keys].qtyInHand==0){
+                     if(provide.sizeSkuList[keys].qtyInHand<=0){
                        color = Colors.grey;
                      }
                      if(sizeSelect){
