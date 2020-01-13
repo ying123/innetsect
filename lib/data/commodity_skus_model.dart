@@ -16,6 +16,12 @@ class CommoditySkusModel{
   bool isSelected = false;
   // 库存
   int qtyInHand;
+  // 特征组 -- 重构
+  String featureGroup;
+  // 特征码 -- 重构
+  String featureCode;
+  // 特征值 -- 重构
+  String featureValue;
 
   CommoditySkusModel({
     this.prodID,
@@ -30,7 +36,10 @@ class CommoditySkusModel{
     this.pics,
     this.features,
     this.isSelected,
-    this.qtyInHand
+    this.qtyInHand,
+    this.featureGroup,
+    this.featureCode,
+    this.featureValue
   });
 
   factory CommoditySkusModel.fromJson(Map<String,dynamic> json){
@@ -47,7 +56,10 @@ class CommoditySkusModel{
         pics: json['pics']!=null?CommodityPicList.fromJson(json['pics']).list:[],
         features: json['features']!=null?CommodityFeatureList.fromJson(json['features']).list:[],
         isSelected: json['isSelected'],
-        qtyInHand: json['qtyInHand']
+        qtyInHand: json['qtyInHand'],
+        featureGroup: json['featureGroup'],
+        featureCode: json['featureCode'],
+        featureValue: json['featureValue']
     );
   }
 
@@ -64,7 +76,10 @@ class CommoditySkusModel{
     'pics': pics.map((item)=>item.toJson()),
     'features': features.map((item)=>item.toJson()),
     'isSelected': isSelected,
-    'qtyInHand': qtyInHand
+    'qtyInHand': qtyInHand,
+    'featureGroup': featureGroup,
+    'featureCode': featureCode,
+    'featureValue': featureValue
   };
 
 }

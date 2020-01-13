@@ -144,6 +144,11 @@ class CommodityService {
     return response;
   }
 
+  /// 颜色尺码选择
+  Observable<BaseResponse> colorAndSizeData ({int types,int prodId,String featureGroup,String featureCode}){
+    String url = "/api/eshop/$types/products/$prodId/otherGroupFeatures?group=$featureGroup&code=$featureCode";
+    return get(url);
+  }
 }
 
 
@@ -221,4 +226,10 @@ class CommodityRepo {
   Observable<BaseResponse> ladingQrCode (int orderID){
     return _remote.ladingQrCode(orderID);
   }
+
+  /// 颜色尺码选择
+  Observable<BaseResponse> colorAndSizeData ({int types,int prodId,String featureGroup,String featureCode}){
+    return _remote.colorAndSizeData(types:types, prodId:prodId,featureGroup:featureGroup,featureCode:featureCode);
+  }
+
 }

@@ -195,7 +195,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           child: _swiperWidget(),
         ),
         _comTitle(),
-        //_brandCol(),
+        _brandCol(),
         _selCol(),
         _selCommodityPlicy(),
         _showDesc(),
@@ -341,43 +341,98 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   }
 
   /// 已选栏目
-  Widget _selCol(){
-    return new InkWell(
-      onTap: (){
-        /// 弹出颜色，尺码选择
-        _provide.setInitData();
-        _cartProvide.setInitCount();
-        _provide.isBuy = false;
-        if(_provide.commodityModels.promptingMessage!=null){
-          CustomsWidget().showToast(title: _provide.commodityModels.promptingMessage);
-        }else{
-          CommodityModalBottom.showBottomModal(context:context);
-        }
-      },
-      child: new Container(
-        height: ScreenAdapter.height(110),
-        color: Colors.white,
-        padding: EdgeInsets.only(top: 20,left: 10,right: 10,bottom: 10),
-        child: new Row(
-          children: <Widget>[
-            new Container(
-              child: CustomsWidget().subTitle(
-                title: "已选", color: AppConfig.blueBtnColor,
+  Provide<CommodityDetailProvide> _selCol(){
+    return Provide<CommodityDetailProvide>(
+        builder: (BuildContext context, Widget widget,
+            CommodityDetailProvide provide) {
+          Widget skuText = Container();
+          String text = "请选择";
+          String colorText = "颜色";
+          String sizeText = "尺码";
+          if(provide.colorSkuList.length>0){
+            skuText = Container(
+              padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                color: AppConfig.blueBtnColor,
               ),
-            ),
-            new Container(
-              width: ScreenAdapter.getScreenWidth()-150,
-              padding: EdgeInsets.only(left: 20,right: 20),
-              child: _selColSkuName(),
-            ),
-            new Expanded(
-              flex:1,
-              child: new Icon(Icons.more_horiz),
-            )
-          ],
-        ),
-      ),
-    );
+              child: Text("共有${provide.colorSkuList.length}种颜色",style: TextStyle(color: Colors.white,fontSize: ScreenAdapter.size(24)),),
+            );
+          }
+          if(provide.skusModel!=null
+              &&provide.skusModel.features!=null
+              &&provide.skusModel.features.length>0){
+            text = "已选";
+            sizeText = provide.skusModel.features[0].featureValue;
+            colorText = provide.skusModel.features[1].featureValue;
+          }
+          return new InkWell(
+              onTap: (){
+                /// 弹出颜色，尺码选择
+//        _provide.setInitData();
+                _cartProvide.setInitCount();
+                provide.isBuy = false;
+                if(_provide.commodityModels.promptingMessage!=null){
+                  CustomsWidget().showToast(title: provide.commodityModels.promptingMessage);
+                }else{
+                  CommodityModalBottom.showBottomModal(context:context);
+                }
+              },
+              child: Container(
+                width: double.infinity,
+                color: Colors.white,
+                padding: EdgeInsets.only(top: 10,left: 20,right: 10,bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    // 选择
+                    new Expanded(
+                        flex:1,
+                        child: Text("选择",style: TextStyle(color: Colors.grey,fontSize: ScreenAdapter.size(28)),)
+                    ),
+                    // 中间
+                    new Expanded(
+                        flex:6,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start ,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text("$text $colorText $sizeText",style: TextStyle(color: Colors.black,fontSize: ScreenAdapter.size(28)),),
+                            Padding(
+                              padding: EdgeInsets.only(top: 5),
+                              child: Wrap(
+                                spacing: 12,
+                                runSpacing: 10,
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: _provide.colorSkuList.map((items){
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(width: 1,color: Colors.grey)
+                                    ),
+                                    child: items.skuPic!=null?
+                                    Image.network(items.skuPic,fit: BoxFit.fitHeight,
+                                      width: ScreenAdapter.width(50),height: ScreenAdapter.height(60),):
+                                    Image.asset("assets/images/default/default_img.png",fit: BoxFit.fitHeight,
+                                      width: ScreenAdapter.width(50),height: ScreenAdapter.height(60),),
+                                  );
+                                }).toList()..add(skuText),
+                              ),
+                            )
+                          ],
+                        )
+                    ),
+                    // 箭头
+                    new Expanded(
+                        flex:1,
+                        child: new Icon(Icons.chevron_right)
+                    )
+                  ],
+                ),
+              )
+          );
+        });
   }
 
   /// 策略
