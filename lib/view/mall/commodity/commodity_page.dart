@@ -286,7 +286,11 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
   Widget _priceAndCartWidget(String price,String originalPrice,int prodID,int shopID){
     Widget widgets = Container();
     if(originalPrice!='null'){
-      if(double.parse(price)<double.parse(originalPrice)){
+      String _price= price;
+      if(price.indexOf("-")>-1){
+        _price = price.split("-")[0].toString();
+      }
+      if(double.parse(_price)<double.parse(originalPrice)){
         widgets = Padding(
           padding: EdgeInsets.only(left: 10),
           child: CustomsWidget().priceTitle(price: originalPrice,decoration: TextDecoration.lineThrough,fontSize: ScreenAdapter.size(20),
