@@ -534,7 +534,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
     });
   }
 
-  /// 搜索请求
+  /// ================>搜索请求
   void _searchRequest(String code){
     print('=====================>_searchRequest');
     // 清除原数据
