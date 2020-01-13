@@ -145,6 +145,7 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
               title: Text(model.name),
               onTap: () {
                 print("OnItemClick: $model");
+                print('======================>');
                 // 点击跳转筛选页
                 _searchProvide.searchValue = model.name;
                 _searchRequest(model.name);
@@ -185,6 +186,7 @@ class _SeriesAzListContentState extends State<SeriesAzListContent> {
 
   /// 搜索请求
   void _searchRequest(String name){
+    print('<==============================>');
 //    Loading.ctx = context;
 //    Loading.show();
     // 清除原数据

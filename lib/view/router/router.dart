@@ -19,12 +19,14 @@ import 'package:innetsect/view/draw/registration_successful_page.dart';
 import 'package:innetsect/view/exhibition/home_portlets_details_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/hot_spots/hot_spots_home_page.dart';
+import 'package:innetsect/view/hot_spots/hot_spots_homt_url_page.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_page.dart';
 import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
+import 'package:innetsect/view/mall/series/series_azlist_page.dart';
 import 'package:innetsect/view/my/account_cancellation_page.dart';
 import 'package:innetsect/view/my/all/all_page.dart';
 import 'package:innetsect/view/my/profile/profile_page.dart';
@@ -65,12 +67,15 @@ final routes = {
   '/checkTheRegistrationPage':(context,{arguments})=>CheckTheRegistrationPage(draweeModel:arguments ,),
   '/drawRegisteredPage':(context)=>DrawRegisteredPage(),
   '/endOfTheDrawPage':(context,{arguments})=>EndOfTheDrawPage(pics: arguments,),
+  '/hotSpotsHomeUrlPage':(context,{arguments})=>HotSpotsHomeUrlPage(url: arguments,),
   '/myDrawInfoPage':(context,{arguments})=>MyDrawInfoPage(myDrawDataModel: arguments,),
   '/myDrawPage':(context)=>MyDrawPage(),
+  '/seriesAzListPage':(context)=>SeriesAzListPage(),
   '/listOfActivitiesPage':(context)=>ListOfActivitiesPage(),///GM获得配置
   '/drwaActivitiedTestPage':(context)=>DrwaActivitiedTestPage(),///GM获得配置
   '/accountCancellationPage':(context)=>AccountCancellationPage(),///账户注销
   '/hotSpotsHomePage':(context)=>HotSpotsHomePage(),///热区
+
   ///DrawDetailsPage
   /////RegistrationInformationPage
 };

@@ -38,8 +38,8 @@ class HotSpotsHomePage extends PageProvideNode {
   }
   @override
   Widget buildContent(BuildContext context) {
-    return HotSpotsHomeContentPage(_provide, _detailProvide,
-        _cartProvide, _informationProvide, _commodityListProvide,_searchProvide);
+    return HotSpotsHomeContentPage(_provide, _detailProvide, _cartProvide,
+        _informationProvide, _commodityListProvide, _searchProvide);
   }
 }
 
@@ -116,6 +116,32 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
         }, onError: (e) {});
   }
 
+   /// 品牌列表
+  void _searchRequest(String name){
+    print('<==============================>');
+//    Loading.ctx = context;
+//    Loading.show();
+    // 清除原数据
+    _commodityListProvide.clearList();
+    _commodityListProvide.requestUrl = "/api/eshop/app/products/filterByBrand?brand=$name";
+    _searchProvide.onSearch(_commodityListProvide.requestUrl+'&pageNo=1&pageSize=8',
+    context: context).doOnListen(() { }).doOnCancel(() {}).listen((items) {
+      ///加载数据
+      print('listen data->$items');
+//      Loading.remove();
+      if(items!=null&&items.data!=null){
+        _commodityListProvide.addList(CommodityList.fromJson(items.data).list);
+      }
+
+    }, onError: (e) {});
+
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context){
+          return SearchScreenPage();
+        }
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,16 +178,18 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
             print('redirectTypeParam=========>$redirectTypeParam');
             String redirectParam = param[1];
             print('redirectParam=========>$redirectParam');
-            if (redirectTypeParam.split('=')[1] == ConstConfig.PRODUCT_DETAIL) {
+            if (redirectTypeParam.split('=')[1] == ConstConfig.PRODUCT_DETAIL) { //ok
               print('跳转商品详情');
               print('=========>${redirectParam.split(':')[0]}');
               print('=========>${redirectParam.split(':')[1]}');
+              String spl = redirectParam.substring(
+                  "redirectParam=".length, redirectParam.length);
               _commodityDetail(
-                  types: int.parse(redirectParam.split(':')[0]),
-                  prodID: int.parse(redirectParam.split(':')[1]));
+                  types: int.parse(spl.split(":")[0]),
+                  prodID: int.parse(spl.split(":")[1]));
               //Navigator.pushNamed(context, '/loginPage');
             } else if (redirectTypeParam.split('=')[1] ==
-                ConstConfig.CONTENT_DETAIL) {
+                ConstConfig.CONTENT_DETAIL) {//ok
               print('资讯详情======>${int.parse(redirectParam.split('=')[1])}');
               _informationProvide.contentID =
                   int.parse(redirectParam.split('=')[1]);
@@ -170,17 +198,17 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
               }));
             } else if (redirectTypeParam.split('=')[1] ==
                 'CATALOG_PRODUCT_LIST') {
-              print('品类列表	');
+               print('品类列表	=======>${redirectParam.split(':')[1]}');
+              _searchRequest(redirectParam.split(':')[1]);
+
+
             } else if (redirectTypeParam.split('=')[1] == 'PROMOTION') {
               print('促销活动	');
             } else if (redirectTypeParam.split('=')[1] == 'URL') {
               print('URL');
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return new WebView(
-                  initialUrl: redirectParam.split('=')[1],
-                  javascriptMode: JavascriptMode.unrestricted,
-                );
-              }));
+              Navigator.pushNamed(context, '/hotSpotsHomeUrlPage',arguments:{
+                'url':redirectParam.split('=')[1],
+              } );
               // return NavigationDecision.navigate;
               // return NavigationDecision.prevent;
             } else if (redirectTypeParam.split('=')[1] ==
@@ -189,34 +217,43 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
               String code = redirectParam.split(':')[1];
               print('==========>$code');
               print('产品系列');
-              //清除源数据
-              _commodityListProvide.clearList();
-              _commodityListProvide.requestUrl =
-                  "/api/promotion/promotions/$code/products?";
-              // Loading.ctx = context;
-              // Loading.show();
-              _searchProvide
-                  .onSearch(
-                      _commodityListProvide.requestUrl +
-                          'pageNo=1&sort=&pageSize=8',
-                      context: context)
-                  .doOnListen(() {})
-                  .doOnCancel(() {})
-                  .listen((items) {
-                Loading.remove();
+              _searchRequest(code);
+              // //清除源数据
+              // _commodityListProvide.clearList();
+              // _commodityListProvide.requestUrl =
+              //     "/api/promotion/promotions/$code/products?";
+              // // Loading.ctx = context;
+              // // Loading.show();
+              // _searchProvide
+              //     .onSearch(
+              //         _commodityListProvide.requestUrl +
+              //             'pageNo=1&sort=&pageSize=8',
+              //         context: context)
+              //     .doOnListen(() {})
+              //     .doOnCancel(() {})
+              //     .listen((items) {
+              //   // Loading.remove();
 
-                ///加载数据
-                print('listen data===========->$items');
-                if (items != null && items.data != null) {
-                  _searchProvide.searchValue = items.data['promotionName'];
-                  _commodityListProvide.addList(
-                      CommodityList.fromJson(items.data['products']).list);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return SearchScreenPage();
-                  }));
+              //   ///加载数据
+              //   print('listen data===========->$items');
+              //   if (items != null && items.data != null) {
+              //     _searchProvide.searchValue = items.data['promotionName'];
+              //     _commodityListProvide.addList(
+              //         CommodityList.fromJson(items.data['products']).list);
+              //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //       return SearchScreenPage();
+              //     }));
+              //   }
+              // }, onError: (e) {});
+            } else if (redirectTypeParam.split('=')[1] == 'DRAW') {
+              print('抽签');
+              Navigator.pushNamed(context, '/drawPage',
+                  arguments: {'redirectParam': redirectParam.split('=')[1]});
+            } else if (redirectTypeParam.split('=')[1] ==
+                'BRAND_PRODUCT_LIST') {
+                  print('品牌列表');
+                 // _searchRequest(redirectParam.split(':')[1]);
                 }
-              }, onError: (e) {});
-            }
 
             return NavigationDecision.prevent;
           }
