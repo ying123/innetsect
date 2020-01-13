@@ -66,7 +66,7 @@ class _ListOfActivitiesContentPageState extends State<ListOfActivitiesContentPag
                   Navigator.pushNamed(context, '/drwaActivitiedTestPage');
                 }else if('热区'== provide.activitiesTitl[index]){
                     print('热区被点击');
-                    Navigator.pushNamed(context, '/hotSpotsHomePage');
+                    Navigator.pushNamed(context, '/hotTestPage');
                 }
                 else{
                   Fluttertoast.showToast(

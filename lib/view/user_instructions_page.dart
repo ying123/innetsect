@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/app.dart';
 import 'package:innetsect/base/app_config.dart';
@@ -238,14 +239,12 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                       children: <Widget>[
                         InkWell(
                           onTap: (){
-                            Fluttertoast.showToast(
-                              msg: '请点击同意我们的服务',
-                              gravity: ToastGravity.CENTER,
-                            );
+                           AppConfig.userTools.setAppNumber('0');
+                           SystemNavigator.pop();
                           },
                           child: Text(
-                            '暂不支持',
-                            style: TextStyle(fontSize: ScreenAdapter.size(30)),
+                            '不同意',
+                            style: TextStyle(fontSize: ScreenAdapter.size(30),color: Colors.blue),
                           ),
                         ),
                         InkWell(

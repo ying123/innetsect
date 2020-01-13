@@ -71,7 +71,8 @@ class _SearchScreenContentState extends State<SearchScreenContent>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomsWidget().customNav(context: context, widget:new Text(
-        _searchProvide.searchValue,style: TextStyle(fontSize: ScreenAdapter.size((30)),
+       _searchProvide.searchValue
+        ,style: TextStyle(fontSize: ScreenAdapter.size((30)),
           fontWeight: FontWeight.w900 ),) ,
       ),
       body:

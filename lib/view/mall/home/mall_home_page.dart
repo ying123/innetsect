@@ -240,11 +240,18 @@ class _MallHomeContentState extends State<MallHomeContent> {
                   ));
                 }else if(_bannersList[index].redirectType==ConstConfig.URL){
                   /// 跳转URL
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context){
-                        return new WebView(url: _bannersList[index].redirectParam,);
-                      }
-                  ));
+                  print('跳转URL=======>${_bannersList[index].redirectParam}');
+                  String url = _bannersList[index].redirectParam;
+                  List urlSP =  url.split('/');
+                  print('${urlSP[urlSP.length-2]}');
+                  Navigator.pushNamed(context, '/hotSpotsHomePage',arguments: {
+                    'redirectParam':urlSP[urlSP.length-2]
+                  });
+                  // Navigator.push(context, MaterialPageRoute(
+                  //     builder: (context){
+                  //       return new WebView(url: _bannersList[index].redirectParam,);
+                  //     }
+                  // ));
                 }else if(_bannersList[index].redirectType == ConstConfig.ACTIVITY){
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context){
