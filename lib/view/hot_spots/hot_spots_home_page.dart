@@ -1,3 +1,4 @@
+import 'package:innetsect/api/http_util.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/commodity_models.dart';
@@ -56,39 +57,7 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
     _cartProvide??=widget._cartProvide;
     _informationProvide ??= widget._informationProvide;
   }
-   /// 商品详情
-  _commodityDetail({int types,int prodID}){
-    print('商品详情');
-    /// 跳转商品详情
-    _detailProvide.clearCommodityModels();
-    _detailProvide.prodId = prodID;
-//    Loading.ctx=context;
-//    Loading.show();
-    /// 加载详情数据
-    _detailProvide.detailData(types: types,prodId:prodID,context:context)
-        .doOnListen(() {
-      print('doOnListen');
-    })
-        .doOnCancel(() {})
-        .listen((item) {
-//          Loading.remove();
-        ///加载数据
-        print('listen data->$item');
-        if(item!=null&&item.data!=null){
-          _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
-          _detailProvide.setInitData();
-          _cartProvide.setInitCount();
-          _detailProvide.isBuy = false;
-          Navigator.push(context, MaterialPageRoute(
-              builder:(context){
-                return new CommodityDetailPage();
-              }
-          )
-          );
-        }
-  //      _provide
-    }, onError: (e) {});
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +81,7 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
         onWebViewCreated: (WebViewController webViewController){
         _controller.complete(webViewController);
         },
-        navigationDelegate: (NavigationRequest request){
+        navigationDelegate: (NavigationRequest request) async{
          // print('request====================>${request.url}');
           if (request.url.startsWith('https://test.innersect.net/')) {
             print('blocking navigation to =====>${request.url}}');
@@ -126,9 +95,10 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
              print('redirectParam=========>$redirectParam');
              if (redirectTypeParam.split('=')[1]== ConstConfig.PRODUCT_DETAIL) {
                print('跳转商品详情');
-               print('=========>${redirectParam.split(':')[0]}');
+               print('=========>${redirectParam.substring("redirectParam=".length,redirectParam.length)}');
                print('=========>${redirectParam.split(':')[1]}');
-               _commodityDetail(types: int.parse(redirectParam.split(':')[0]), prodID: int.parse(redirectParam.split(':')[1]));
+               String spl = redirectParam.substring("redirectParam=".length,redirectParam.length);
+               _commodityDetail(types: int.parse(spl.split(":")[0]),prodID: int.parse(spl.split(":")[1]));
               //Navigator.pushNamed(context, '/loginPage');
              }else if(redirectTypeParam.split('=')[1] == ConstConfig.CONTENT_DETAIL){
                 print('资讯详情======>${int.parse(redirectParam.split('=')[1])}');
@@ -176,5 +146,38 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
       ),
     );
   }
- 
+
+  /// 商品详情
+  _commodityDetail({int types,int prodID}){
+    print('商品详情');
+    /// 跳转商品详情
+    _detailProvide.clearCommodityModels();
+    _detailProvide.prodId = prodID;
+//    Loading.ctx=context;
+//    Loading.show();
+    /// 加载详情数据
+    _detailProvide.detailData(types: types,prodId:prodID,context:context)
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+//          Loading.remove();
+      ///加载数据
+      print('listen data->$item');
+      if(item!=null&&item.data!=null){
+        _detailProvide.setCommodityModels(CommodityModels.fromJson(item.data));
+        _detailProvide.setInitData();
+        _cartProvide.setInitCount();
+        _detailProvide.isBuy = false;
+        Navigator.push(context, MaterialPageRoute(
+            builder:(context){
+              return new CommodityDetailPage();
+            }
+        )
+        );
+      }
+      //      _provide
+    }, onError: (e) {});
+  }
 }

@@ -35,7 +35,7 @@ class CommodityDetailPage extends PageProvideNode{
   final String pages;
 
   CommodityDetailPage({
-    this.pages
+    this.pages,
   }){
     mProviders.provide(Provider<CommodityDetailProvide>.value(_provide));
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
@@ -120,7 +120,6 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         _isShowBottom = _provide.commodityModels.orderable;
       });
     }
-
 
     CommoditySkusModel skuModel = _provide.skusModel;
     if(skuModel!=null){
@@ -748,7 +747,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 
   /// 加载数据
 //  _loadData() {
-//     _provide.detailData()
+//     _provide.detailData(types: _provide.types,prodId: _provide.prodId)
 //        .doOnListen(() {
 //      print('doOnListen');
 //    })
@@ -756,7 +755,12 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 //        .listen((item) {
 //      ///加载数据
 //      print('listen data->$item');
-//      _provide.setCommodityModels(CommodityModels.fromJson(item.data));
+//      if(item!=null&&item.data!=null){
+//        _provide.setCommodityModels(CommodityModels.fromJson(item.data));
+//        _provide.setInitData();
+//        _cartProvide.setInitCount();
+//        _provide.isBuy = false;
+//      }
 ////      _provide
 //    }, onError: (e) {});
 //  }
