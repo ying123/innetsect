@@ -13,6 +13,7 @@ import 'package:innetsect/utils/common_util.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
 import 'package:flutter_baidu_map/flutter_baidu_map.dart';
+import 'package:innetsect/view/user_instructions_page.dart';
 
 import 'package:rammus/rammus.dart' as rammus;
 
@@ -74,7 +75,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
+    
     /// 百度定位
     // _baiduLocation().then((item){
 
@@ -218,7 +219,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         UserTools().setLocal(deviceLocale.toString());
 //        return locale;
       },
-      home: App(),
+      home:AppConfig.userTools.getAppNumber() !='1'? UserInstructionsPage():App(),
 
       //navigatorKey: gNavKey,
     );

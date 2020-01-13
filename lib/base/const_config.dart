@@ -11,6 +11,8 @@ class ConstConfig {
   static const String SEARCH_LIST = '_searchList_';
   // 设备信息
   static const String DEVICE_INFO = 'DEVICE_INFO';
+  // 是否第一次使用App
+  static const String APP_NUMBER = 'APP_NUMBER';
 
 
   // 商城banner跳转

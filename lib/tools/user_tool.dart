@@ -94,6 +94,7 @@ String deviceID}){
   return _spf.setString(ConstConfig.DEVICE_INFO, json.encode(jsons));
 }
 
+
 String getDeviceInfo(){
   return _spf.getString(ConstConfig.DEVICE_INFO);
 }
@@ -123,6 +124,20 @@ Future<bool> setUserToken(Map<String,dynamic> userInfo){
   }
   var jsonStr =  json.encode(userInfo);
   return _spf.setString(ConstConfig.LOGIN_USERINFO, jsonStr);
+}
+
+Future<bool> setAppNumber(String appNumber){
+  if (_beforCheck()) {
+    return null;
+  }
+  return _spf.setString(ConstConfig.APP_NUMBER, appNumber);
+}
+
+String getAppNumber(){
+   if (_beforCheck()) {
+    return null;
+  }
+  return _spf.getString(ConstConfig.APP_NUMBER);
 }
   
   
