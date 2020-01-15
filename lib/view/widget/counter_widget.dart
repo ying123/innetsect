@@ -5,21 +5,24 @@ import 'package:innetsect/data/commodity_types_model.dart';
 import 'package:innetsect/enum/commodity_cart_types.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 
 class CounterWidget extends StatefulWidget {
   final CommodityAndCartProvide provide ;
+  final CommodityDetailProvide detailProvide;
   // 数组下标
   final int idx;
   // 购物车商品列表
   final CommodityModels model;
-  CounterWidget({this.provide,this.idx,this.model});
+  CounterWidget({this.provide,this.idx,this.model,this.detailProvide});
 
   @override
   _CounterWidgetState createState() => new _CounterWidgetState();
 }
 
 class _CounterWidgetState extends State<CounterWidget> {
+  CommodityDetailProvide _detailProvide;
   CommodityAndCartProvide provide;
   CommodityModels model;
   int count=1;
@@ -47,6 +50,7 @@ class _CounterWidgetState extends State<CounterWidget> {
     // TODO: implement initState
     super.initState();
     this.provide = widget.provide;
+    this._detailProvide ??= widget.detailProvide;
     this.model = widget.model;
 
     if(this.model==null){
@@ -81,38 +85,45 @@ class _CounterWidgetState extends State<CounterWidget> {
       onTap: (){
         if(model.panicBuyQtyPerAcct==null||
             (model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct>1)){
-          this.provide.reduce(idx: widget.idx,model: widget.model);
-          if(this.provide.mode!="multiple"){
-            setState(() {
-              count = this.provide.count;
-            });
+          // 判断规则选项
+          if(this._detailProvide.skusModel.features[1].featureValue==null){
+            CustomsWidget().showToast(title: "请选择颜色");
+          }else if(this._detailProvide.skusModel.features[0].featureValue==null){
+            CustomsWidget().showToast(title: "请选择尺码");
           }else{
-            // 如果商品减少到0，提示删除
+            this.provide.reduce(idx: widget.idx,model: widget.model);
+            if(this.provide.mode!="multiple"){
+              setState(() {
+                count = this.provide.count;
+              });
+            }else{
+              // 如果商品减少到0，提示删除
 
-            List<CommodityTypesModel> list = this.provide.commodityTypesModelLists;
-            String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
-            list.forEach((item){
-              if(item.types == types
-                  && item.commodityModelList[widget.idx].quantity==0){
-                CustomsWidget().customShowDialog(context: context,
-                    content: "是否删除该商品",
-                    onCancel:(){
-                      this.provide.setQuantity(item.commodityModelList[widget.idx], widget.idx);
-                      Navigator.pop(context);
-                    },
-                    onPressed: (){
-                      this.provide.removeCarts(item.commodityModelList[widget.idx]).doOnListen((){}).doOnCancel((){})
-                          .listen((res){
-                        if(res.data!=null){
-                          this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
-                          CustomsWidget().showToast(title: "删除成功");
-                          Navigator.pop(context);
-                        }
-                      },onError: (e){});
-                    }
-                );
-              }
-            });
+              List<CommodityTypesModel> list = this.provide.commodityTypesModelLists;
+              String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
+              list.forEach((item){
+                if(item.types == types
+                    && item.commodityModelList[widget.idx].quantity==0){
+                  CustomsWidget().customShowDialog(context: context,
+                      content: "是否删除该商品",
+                      onCancel:(){
+                        this.provide.setQuantity(item.commodityModelList[widget.idx], widget.idx);
+                        Navigator.pop(context);
+                      },
+                      onPressed: (){
+                        this.provide.removeCarts(item.commodityModelList[widget.idx]).doOnListen((){}).doOnCancel((){})
+                            .listen((res){
+                          if(res.data!=null){
+                            this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
+                            CustomsWidget().showToast(title: "删除成功");
+                            Navigator.pop(context);
+                          }
+                        },onError: (e){});
+                      }
+                  );
+                }
+              });
+            }
           }
         }
       },
@@ -160,12 +171,19 @@ class _CounterWidgetState extends State<CounterWidget> {
       onTap: (){
         if(model.panicBuyQtyPerAcct==null||
             (model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct>1)){
-          this.provide.increment(idx: widget.idx,model: widget.model);
-          if(this.provide.mode!="multiple"){
-            this.model.quantity=this.provide.count;
-            setState(() {
-              count = this.provide.count;
-            });
+          // 判断规则选项
+          if(this._detailProvide.skusModel.features[1].featureValue==null){
+            CustomsWidget().showToast(title: "请选择颜色");
+          }else if(this._detailProvide.skusModel.features[0].featureValue==null){
+            CustomsWidget().showToast(title: "请选择尺码");
+          }else{
+            this.provide.increment(idx: widget.idx,model: widget.model);
+            if(this.provide.mode!="multiple"){
+              this.model.quantity=this.provide.count;
+              setState(() {
+                count = this.provide.count;
+              });
+            }
           }
         }
       },

@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/order/shipper_model.dart';
+import 'package:innetsect/data/user_info_model.dart';
+import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/commodity/qimo_page.dart';
 import 'package:innetsect/view/my/all/after/after_shipper_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view_model/my_order/after_service_provide.dart';
@@ -72,50 +78,88 @@ class _AfterGoodsContentState extends State<AfterGoodsContent> {
             _descWidget(desc: "收件地址：上海市浦东新区航川路52号28栋2楼西"),
             _descWidget(desc: "联系电话：400-168-6368"),
             Container(
-              padding: EdgeInsets.only(left:30,top:40,right: 40),
+              padding: EdgeInsets.only(left:40,top:40,right: 40),
               alignment: Alignment.centerLeft,
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Column(
+                  Text("客户服务时间：10:00-18:00",
+                      style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600)),
+                  Container(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Row(
                       children: <Widget>[
-                        Text("客户服务时间：10:00-18:00",
+                        Text("如有疑问，请联系:  ",
                             style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600)),
-                        Text("如有疑问，请联系在线客服:",
-                            style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600)),
-                        Container(
-                          padding: EdgeInsets.only(top: 20,left: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text("或拨打     ",
-                                  style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600)),
-                              GestureDetector(
-                                onTap: () async{
-                                  CustomsWidget().customShowDialog(context: context,
-                                  content: "联系客服",submitTitle: "拨打",onPressed: () async{
-                                      await _call("400-168-6368");
-                                  });
+                        InkWell(
+                          onTap: (){
+                            UserInfoModel userInfoModel = UserTools().getUserInfo();
+                            // 数据结构组装
+                            var url = Uri.encodeComponent("https://proadmin.innersect.net/eshop/stores/shopProductDetail?id=${_afterServiceProvide.afterOrderModel.prodID}"
+                                "&shopId=${_afterServiceProvide.afterOrderModel.shopID}");
+                            var json={
+                              "nickName": userInfoModel.nickName==null?userInfoModel.mobile:userInfoModel.nickName,
+                              "peerId":"10052522",
+                              "cardInfo":{
+                                "left":{
+                                  "url": _afterServiceProvide.afterOrderModel.skuPic
                                 },
-                                child: Text("400-168-6368",
-                                    style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600,
-                                        color: Colors.blue)),
-                              )
-                            ],
-                          ),
+                                "right1":{
+                                  "text": _afterServiceProvide.afterOrderModel.skuName,  // 首行文字内容，展示时超出两行隐藏，卡片上单行隐藏
+                                  "color": "#595959",                 // 字体颜色，支持十六位 #ffffff 格式的颜色，不填或错误格式默认#595959
+                                  "fontSize": 12
+                                },
+                                "right2": {
+                                  "text": "¥${_afterServiceProvide.afterOrderModel.salesPrice}",        // 第二行文字内容，展示时超出两行隐藏，卡片上单行隐藏
+                                  "color": "#595959",                 // 字体颜色，支持十六位 #ffffff 格式的颜色，不填或错误格式默认#595959
+                                  "fontSize": 12                      // 字体大小， 默认12 ， 请传入number类型的数字
+                                },
+                                "url": url
+                              }
+                            };
+                            var otherParams = jsonEncode(json);
+                            // 用户id
+                            var clientId = "1000${userInfoModel.acctID}";
+                            // 自定义字段
+                            var userInfo={
+                              "手机号":userInfoModel.mobile
+                            };
+
+                            var qimoPath = "https://webchat.7moor.com/wapchat.html?accessId=20ed0990-2268-11ea-a2c3-49801d5a0f66"
+                                +"&fromUrl=m3.innersect.net&urlTitle=innersect"
+                                +"&otherParams="+Uri.encodeFull(otherParams)+"&clientId="+clientId+"&customField="+Uri.encodeFull(jsonEncode(userInfo));
+                            print(qimoPath);
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context){
+                                  return QimoPage(url: qimoPath,);
+                                }
+                            ));
+                          },
+                          child: Text("在线客服", style: TextStyle(fontSize: ScreenAdapter.size(28),fontWeight: FontWeight.w600,color: Colors.blue),),
                         )
                       ],
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(top: 20,left: 20),
-                      child: Icon(Icons.phone),
+                  Container(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text("或拨打     ",
+                            style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600)),
+                        GestureDetector(
+                          onTap: () async{
+                            CustomsWidget().customShowDialog(context: context,
+                                content: "联系客服",submitTitle: "拨打",onPressed: () async{
+                                  await _call("400-168-6368");
+                                });
+                          },
+                          child: Text("400-168-6368",
+                              style: TextStyle(fontSize: ScreenAdapter.size(24),fontWeight: FontWeight.w600,
+                                  color: Colors.blue)),
+                        )
+                      ],
                     ),
                   )
                 ],

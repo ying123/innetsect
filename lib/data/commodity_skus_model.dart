@@ -13,7 +13,7 @@ class CommoditySkusModel{
   int status;
   List<CommodityPicModel> pics;
   List<CommodityFeatureModel> features;
-  bool isSelected = false;
+  bool isSelected;
   // 库存
   int qtyInHand;
   // 特征组 -- 重构
@@ -35,7 +35,7 @@ class CommoditySkusModel{
     this.status,
     this.pics,
     this.features,
-    this.isSelected,
+    this.isSelected: false,
     this.qtyInHand,
     this.featureGroup,
     this.featureCode,

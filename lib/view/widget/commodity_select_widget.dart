@@ -154,8 +154,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                     Color borderColor = Colors.transparent;
                     double borderWidth =0;
                     Color textColor = Colors.black;
-                    if(provide.colorSkuList[keys].isSelected!=null
-                        &&provide.colorSkuList[keys].isSelected){
+                    if( provide.colorSkuList[keys].isSelected){
                       borderWidth = 1;
                       borderColor = AppConfig.blueBtnColor;
                       textColor = AppConfig.blueBtnColor;
@@ -193,8 +192,8 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                                 });
                               });
                               // 选中颜色
-                              provide.colorSkuList.forEach((items)=>items.isSelected = false);
-                              provide.colorSkuList[keys].isSelected = true;
+//                              provide.colorSkuList.forEach((items)=>items.isSelected = false);
+//                              provide.colorSkuList[keys].isSelected = !provide.colorSkuList[keys].isSelected;
                               setState(() {});
                             }
                           });
@@ -258,11 +257,8 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                  runSpacing: 10,
                  children: provide.sizeSkuList.length>0?  provide.sizeSkuList.asMap()
                      .keys.map((keys){
-                     bool sizeSelect = false;
-                     if(provide.sizeSkuList[keys].isSelected!=null){
-                       sizeSelect = provide.sizeSkuList[keys].isSelected;
-                     }
-                      Color color = Colors.black;
+                     bool sizeSelect = provide.sizeSkuList[keys].isSelected;
+                     Color color = Colors.black;
                      if(provide.sizeSkuList[keys].qtyInHand<=0){
                        color = Colors.grey;
                      }
@@ -299,8 +295,8 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                                 });
                               });
                               // 选中尺码
-                              provide.sizeSkuList.forEach((items)=>items.isSelected = false);
-                              provide.sizeSkuList[keys].isSelected = true;
+//                              provide.sizeSkuList.forEach((items)=>items.isSelected = false);
+//                              provide.sizeSkuList[keys].isSelected = !provide.sizeSkuList[keys].isSelected;
                               setState(() {});
                             }
                           });
