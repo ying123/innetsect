@@ -154,7 +154,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
     return new Container(
       width: double.infinity,
       alignment: Alignment.center,
-      child: CounterWidget(provide: this._cartProvide,model: provide.commodityModels,),
+      child: CounterWidget(provide: this._cartProvide,model: provide.commodityModels,detailProvide: _detailProvide,),
     );
   }
 
@@ -177,32 +177,40 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
               onPressed: (){
                 //加入购物车
                 if(!isLogin()){
-                  // 请求
-                  if(this._detailProvide.skusModel.qtyInHand>0){
-                    if(!Loading.isShow){
-                      this._cartProvide.addCartsRequest(this._detailProvide.commodityModels,
-                          context)
-                          .doOnListen(() {
-                        print('doOnListen');
-                      })
-                          .doOnCancel(() {})
-                          .listen((item) {
-                        ///加载数据
-                        print('listen data->$item');
-                        if(item.data!=null){
-                          this._detailProvide.commodityModels.types = CommodityCartTypes.commodity.toString();
-                          this._detailProvide.commodityModels.isChecked = false;
-                          this._detailProvide.commodityModels.quantity = this._cartProvide.count;
-                          CustomsWidget().showToast(title: "添加成功");
-                          Navigator.pop(context);
-                        }
-                      }, onError: (e) {});
-                    }else{
-                      CustomsWidget().showToast(title: "购物车读取中...");
-                    }
-
+                  // 判断是否选择颜色
+                  print(this._detailProvide.skusModel.features[1].featureValue);
+                  if(this._detailProvide.skusModel.features[1].featureValue==null){
+                    CustomsWidget().showToast(title: "请选择颜色");
+                  }else if(this._detailProvide.skusModel.features[0].featureValue==null){
+                    CustomsWidget().showToast(title: "请选择尺码");
                   }else{
-                    CustomsWidget().showToast(title: "库存不足");
+                    // 请求
+                    if(this._detailProvide.skusModel.qtyInHand>0){
+                      if(!Loading.isShow){
+                        this._cartProvide.addCartsRequest(this._detailProvide.commodityModels,
+                            context)
+                            .doOnListen(() {
+                          print('doOnListen');
+                        })
+                            .doOnCancel(() {})
+                            .listen((item) {
+                          ///加载数据
+                          print('listen data->$item');
+                          if(item.data!=null){
+                            this._detailProvide.commodityModels.types = CommodityCartTypes.commodity.toString();
+                            this._detailProvide.commodityModels.isChecked = false;
+                            this._detailProvide.commodityModels.quantity = this._cartProvide.count;
+                            CustomsWidget().showToast(title: "添加成功");
+                            Navigator.pop(context);
+                          }
+                        }, onError: (e) {});
+                      }else{
+                        CustomsWidget().showToast(title: "购物车读取中...");
+                      }
+
+                    }else{
+                      CustomsWidget().showToast(title: "库存不足");
+                    }
                   }
                 }else{
                   Navigator.push(context, MaterialPageRoute(
@@ -237,7 +245,12 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
       onPressed: (){
         // 检测本地是否存在token
         if(!isLogin()){
-          if(_detailProvide.skusModel.qtyInHand ==0){
+          // 判断规则选项
+          if(this._detailProvide.skusModel.features[1].featureValue==null){
+            CustomsWidget().showToast(title: "请选择颜色");
+          }else if(this._detailProvide.skusModel.features[0].featureValue==null){
+            CustomsWidget().showToast(title: "请选择尺码");
+          }else if(_detailProvide.skusModel.qtyInHand ==0){
             CustomsWidget().showToast(title: "没有库存");
           }else{
             // 跳转订单详情

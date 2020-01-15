@@ -121,12 +121,13 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
       });
     }
 
-    CommoditySkusModel skuModel = _provide.skusModel;
-    if(skuModel!=null){
-      if(skuModel.pics.length>0){
-        skuModel.pics.forEach((item){
+    /// 显示所有sku图片
+    List<CommoditySkusModel> skuList = _provide.colorSkuList;
+    if(skuList!=null){
+      if(skuList.length>0){
+        skuList.forEach((item){
           _listImage..add(CachedNetworkImage(
-              imageUrl: "${item.skuPicUrl}${ConstConfig.BANNER_TWO_SIZE}",fit: BoxFit.fitWidth
+              imageUrl: "${item.skuPic}${ConstConfig.BANNER_TWO_SIZE}",fit: BoxFit.fitWidth
           ));
         });
       }else{
@@ -272,12 +273,10 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
         builder: (BuildContext context, Widget widget,
             CommodityDetailProvide provide) {
           CommodityModels models = provide.commodityModels;
-          String price = "";
-          if(models!=null&&models.originalPrice!=null){
+          String price = models.salesPriceRange.toString();
+          if(models!=null&&models.salesPriceRange==null
+              &&models.originalPrice!=null){
             price = models.originalPrice.toString();
-          }
-          if(models!=null&&models.originalPrice!=null&&models.salesPrice!=null){
-            price = models.salesPrice.toString();
           }
           return CustomsWidget().priceTitle(price: price);
         }
@@ -349,22 +348,27 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           String text = "请选择";
           String colorText = "颜色";
           String sizeText = "尺码";
-          if(provide.colorSkuList.length>0){
+          if(provide.colorSkuList.length>1){
             skuText = Container(
               padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
                 color: AppConfig.blueBtnColor,
               ),
-              child: Text("共有${provide.colorSkuList.length}种颜色",style: TextStyle(color: Colors.white,fontSize: ScreenAdapter.size(24)),),
+              child: Text("其他颜色",style: TextStyle(color: Colors.white,fontSize: ScreenAdapter.size(24)),),
             );
           }
           if(provide.skusModel!=null
-              &&provide.skusModel.features!=null
-              &&provide.skusModel.features.length>0){
+              &&(provide.skusModel.features[0].featureValue!=null
+                  ||provide.skusModel.features[1].featureValue!=null)
+          ){
             text = "已选";
-            sizeText = provide.skusModel.features[0].featureValue;
-            colorText = provide.skusModel.features[1].featureValue;
+            if(provide.skusModel.features[0].featureValue!=null){
+              sizeText = provide.skusModel.features[0].featureValue;
+            }
+            if(provide.skusModel.features[1].featureValue!=null){
+              colorText = provide.skusModel.features[1].featureValue;
+            }
           }
           return new InkWell(
               onTap: (){
@@ -404,7 +408,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                               child: Wrap(
                                 spacing: 12,
                                 runSpacing: 10,
-                                alignment: WrapAlignment.center,
+                                alignment: WrapAlignment.start,
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 children: _provide.colorSkuList.map((items){
                                   return Container(
@@ -678,10 +682,10 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                       "peerId":"10052522",
                       "cardInfo":{
                         "left":{
-                          "url": _provide.skusModel.skuPic
+                          "url": _provide.commodityModels.skuPic
                         },
                         "right1":{
-                          "text": _provide.skusModel.skuName,  // 首行文字内容，展示时超出两行隐藏，卡片上单行隐藏
+                          "text": _provide.commodityModels.skuName,  // 首行文字内容，展示时超出两行隐藏，卡片上单行隐藏
                           "color": "#595959",                 // 字体颜色，支持十六位 #ffffff 格式的颜色，不填或错误格式默认#595959
                           "fontSize": 12
                         },

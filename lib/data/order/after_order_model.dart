@@ -1,5 +1,7 @@
 /// 售后model
 class AfterOrderModel{
+  int prodID;
+  int shopID;
   // 售后单号ID
   int rmaID;
   //售后单号
@@ -68,6 +70,8 @@ class AfterOrderModel{
   String exShipperCode;
 
   AfterOrderModel({
+    this.prodID,
+    this.shopID,
     this.exAddressID,
     this.exProdID,
     this.exReceipient,
@@ -106,6 +110,8 @@ class AfterOrderModel{
 
   factory AfterOrderModel.fromJson(Map<String,dynamic> json){
     return AfterOrderModel(
+        prodID: json['prodID'],
+        shopID: json['shopID'],
       exAddressID: json['exAddressID'],
           exProdID: json['exProdID'],
       exReceipient: json['exReceipient'],
@@ -144,6 +150,8 @@ class AfterOrderModel{
   }
 
   Map<String,dynamic> toJson()=>{
+    'prodID': prodID,
+    'shopID': shopID,
     'exAddressID': exAddressID,
     'exProdID': exProdID,
     'exReceipient': exReceipient,
