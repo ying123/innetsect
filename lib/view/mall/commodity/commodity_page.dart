@@ -63,6 +63,7 @@ class _CommodityContentState extends State<CommodityContent> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    print('================>sku');
     ScreenAdapter.init(context);
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,

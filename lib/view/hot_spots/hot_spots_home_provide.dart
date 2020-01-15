@@ -8,4 +8,10 @@ class HotSpotsHomeProvide  extends BaseProvide{
   set activitiedId(String activitiedId){
     _activitiedId = activitiedId;
   }
+  String _title = '';
+  String get title=>_title;
+  set title(String title){
+    _title = title;
+   // notifyListeners();
+  }
 }
