@@ -81,6 +81,27 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
         }else{
           widget = bottomBtn();
         }
+        List<Widget> bottomAction = [
+          // 加入购物车、立即购买
+          widget
+        ];
+        if(provide.commodityModels.badges!=null&&provide.commodityModels.badges.length>0) {
+          provide.commodityModels.badges.forEach((items) {
+            if (items.name == "售罄") {
+              bottomAction=[
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(left: 20,right: 20,top: 20),
+                  child: RaisedButton(
+                      disabledColor: Colors.black12,
+                      disabledTextColor: Colors.black54,
+                      child: Text("已售罄",style: TextStyle(fontWeight: FontWeight.w600),),
+                    )
+                )
+              ] ;
+            }
+          });
+        }
         return new Column(
           children: <Widget>[
             // 返回按钮
@@ -89,9 +110,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
             contentWidget(),
             // 计数器
             provide.afterBtn?Container(): counterWidget(provide),
-            // 加入购物车、立即购买
-            widget
-          ],
+          ]..addAll(bottomAction),
         );
       },
     );
@@ -178,8 +197,11 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                 //加入购物车
                 if(!isLogin()){
                   // 判断是否选择颜色
-                  print(this._detailProvide.skusModel.features[1].featureValue);
-                  if(this._detailProvide.skusModel.features[1].featureValue==null){
+                  if(this._detailProvide.skusModel==null
+                      ||(this._detailProvide.skusModel.features[0].featureValue==null
+                          &&this._detailProvide.skusModel.features[1].featureValue==null)){
+                    CustomsWidget().showToast(title: "请选择颜色和尺码");
+                  }else if(this._detailProvide.skusModel.features[1].featureValue==null){
                     CustomsWidget().showToast(title: "请选择颜色");
                   }else if(this._detailProvide.skusModel.features[0].featureValue==null){
                     CustomsWidget().showToast(title: "请选择尺码");
@@ -246,7 +268,11 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
         // 检测本地是否存在token
         if(!isLogin()){
           // 判断规则选项
-          if(this._detailProvide.skusModel.features[1].featureValue==null){
+          if(this._detailProvide.skusModel==null
+              ||(this._detailProvide.skusModel.features[0].featureValue==null
+                  &&this._detailProvide.skusModel.features[1].featureValue==null)){
+            CustomsWidget().showToast(title: "请选择颜色和尺码");
+          }else if(this._detailProvide.skusModel.features[1].featureValue==null){
             CustomsWidget().showToast(title: "请选择颜色");
           }else if(this._detailProvide.skusModel.features[0].featureValue==null){
             CustomsWidget().showToast(title: "请选择尺码");

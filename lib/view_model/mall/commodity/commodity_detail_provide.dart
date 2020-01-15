@@ -327,9 +327,9 @@ class CommodityDetailProvide extends BaseProvide {
     _commodityModels.salesPrice = models.salesPrice;
     _commodityModels.originalPrice = models.originalPrice;
     _commodityModels.quantity = count;
-    if(_skusModel==null ||_skusModel.features==null|| _skusModel.features.length == 0 ) {
-      if(_skusModel==null) _skusModel = CommoditySkusModel();
-      if(_skusModel.features==null) _skusModel.features = List<CommodityFeatureModel>();
+    if(_skusModel==null) _skusModel = CommoditySkusModel();
+    if(_skusModel.features==null|| _skusModel.features.length == 0 ) {
+      _skusModel.features = List<CommodityFeatureModel>();
       _skusModel.qtyInHand = models.qtyInHand;
       CommodityFeatureModel featureModelsTwo = CommodityFeatureModel();
       featureModelsTwo.featureGroup = "尺码";
@@ -342,7 +342,7 @@ class CommodityDetailProvide extends BaseProvide {
       int index = _skusModel.features.indexWhere((items)=>items.featureGroup=='颜色');
       if(index>-1){
         CommodityFeatureModel model = CommodityFeatureModel();
-        if(_skusModel.features[index].featureValue==null){
+        if(models.isSelected){
           model.prodID = models.prodID;
           model.featureGroup = models.featureGroup;
           model.featureCode = models.featureCode;
@@ -385,9 +385,9 @@ class CommodityDetailProvide extends BaseProvide {
     _commodityModels.originalPrice = models.originalPrice;
     _commodityModels.quantity = count;
 
-    if(_skusModel==null || _skusModel.features==null|| _skusModel.features.length == 0 ) {
-      if(_skusModel==null) _skusModel = CommoditySkusModel();
-      if(_skusModel.features==null) _skusModel.features = List<CommodityFeatureModel>();
+    if(_skusModel==null) _skusModel = CommoditySkusModel();
+    if(_skusModel.features==null|| _skusModel.features.length == 0 ) {
+      _skusModel.features = List<CommodityFeatureModel>();
       _skusModel.qtyInHand = models.qtyInHand;
       CommodityFeatureModel featureModelsTwo = CommodityFeatureModel();
       featureModelsTwo.featureGroup = "尺码";
@@ -400,7 +400,7 @@ class CommodityDetailProvide extends BaseProvide {
       int index = _skusModel.features.indexWhere((items)=>items.featureGroup=='尺码');
       if(index>-1){
         CommodityFeatureModel model = CommodityFeatureModel();
-        if(_skusModel.features[index].featureValue==null){
+        if(models.isSelected){
           model.prodID = models.prodID;
           model.featureGroup = models.featureGroup;
           model.featureCode = models.featureCode;
