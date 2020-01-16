@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/binding_sign_in/binding_sign_in_page.dart';
+import 'package:innetsect/view/mall/commodity/qimo_page.dart';
 import 'package:innetsect/view/my/activity/activity_mark_page.dart';
 import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/my/allocating/allocating_page.dart';
@@ -457,7 +460,29 @@ class _MyContentPageState extends State<MyContentPage> {
             new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
             CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/联系客服@2x.png',
                 title: '联系客服',onTap: (){
-                  CustomsWidget().serviceWidget(context: context);
+                  UserInfoModel userInfoModel = UserTools().getUserInfo();
+                  // 数据结构组装
+                  var json={
+                    "nickName": userInfoModel.nickName==null?userInfoModel.mobile:userInfoModel.nickName,
+                    "peerId":"10052522",
+                  };
+                  var otherParams = jsonEncode(json);
+                  // 用户id
+                  var clientId = "1000${userInfoModel.acctID}";
+                  // 自定义字段
+                  var userInfo={
+                    "手机号":userInfoModel.mobile
+                  };
+
+                  var qimoPath = "https://webchat.7moor.com/wapchat.html?accessId=20ed0990-2268-11ea-a2c3-49801d5a0f66"
+                      +"&fromUrl=m3.innersect.net&urlTitle=innersect"
+                      +"&otherParams="+Uri.encodeFull(otherParams)+"&clientId="+clientId+"&customField="+Uri.encodeFull(jsonEncode(userInfo));
+                  print(qimoPath);
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context){
+                        return QimoPage(url: qimoPath,);
+                      }
+                  ));
                 }),
             new Divider(color: Colors.grey,endIndent: 20,indent: 20,height: 3,),
             CustomsWidget().listSlider(icon: 'assets/images/newpersonalcentre/反馈意@2x.png',
