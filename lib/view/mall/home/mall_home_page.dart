@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
@@ -199,6 +200,10 @@ class _MallHomeContentState extends State<MallHomeContent> {
           .requestPermissions([PermissionGroup.location]);
       if (map.values.toList()[0] != PermissionStatus.granted) {
         print('权限获取失败');
+        Fluttertoast.showToast(
+          msg: '权限获取失败',
+          gravity: ToastGravity.CENTER,
+        );
       }
     }
   }

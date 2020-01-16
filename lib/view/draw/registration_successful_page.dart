@@ -15,12 +15,10 @@ class RegistrationSuccessfulPage extends PageProvideNode {
     _provide.longitude = draweeModel['longitude'];
     _provide.latitude = draweeModel['latitude'];
 
-
     print('_provide.draweeModel.drawID=====>${_provide.draweeModel.drawID}');
     print('_provide.draweeModel.shopID=====>${_provide.draweeModel.shopID}');
     print('登记成功longitude:=====>${_provide.longitude}');
     print('登记成功latitude:=====>${_provide.latitude}');
-
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -50,19 +48,20 @@ class _RegistrationSuccessfulContentPageState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('登记信息'),
-        centerTitle: true,
-        elevation: 0.0,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.chevron_left,
-            size: ScreenAdapter.size(60),
+          title: Text('登记信息'),
+          centerTitle: true,
+          elevation: 0.0,
+          leading: Container()
+          //  InkWell(
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //   },
+          //   child: Icon(
+          //     Icons.chevron_left,
+          //     size: ScreenAdapter.size(60),
+          //   ),
+          // ),
           ),
-        ),
-      ),
       body: Column(
         children: <Widget>[
           _setupBody(),
@@ -93,8 +92,7 @@ class _RegistrationSuccessfulContentPageState
             Center(
               child: Text(
                 '恭喜你, 你已完成信息登记!',
-                style: TextStyle(
-                    fontSize: ScreenAdapter.size(35)),
+                style: TextStyle(fontSize: ScreenAdapter.size(35)),
               ),
             ),
             SizedBox(
@@ -111,20 +109,17 @@ class _RegistrationSuccessfulContentPageState
             Row(
               children: <Widget>[
                 Expanded(
-                  child: Container(
-
-                  ),
+                  child: Container(),
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/mallPage', (route) => route == null);
                   },
                   child: Container(
                     width: ScreenAdapter.width(340),
                     height: ScreenAdapter.height(85),
-                    decoration: BoxDecoration(
-                      color: Colors.black
-                    ),
+                    decoration: BoxDecoration(color: Colors.black),
                     child: Center(
                       child: Text(
                         '返回',
@@ -137,18 +132,16 @@ class _RegistrationSuccessfulContentPageState
                   ),
                 ),
                 Expanded(
-                  child: Container(
-
-                  ),
+                  child: Container(),
                 ),
                 InkWell(
                   onTap: () {
                     Navigator.pushNamed(context, '/checkTheRegistrationPage',
                         arguments: {
                           'drawID': provide.draweeModel.drawID,
-                          'shopID':provide.draweeModel.shopID,
-                          'longitude':provide.longitude,
-                          'latitude':provide.latitude
+                          'shopID': provide.draweeModel.shopID,
+                          'longitude': provide.longitude,
+                          'latitude': provide.latitude
                         });
                   },
                   child: Container(
@@ -173,9 +166,7 @@ class _RegistrationSuccessfulContentPageState
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    
-                  ),
+                  child: Container(),
                 ),
               ],
             ),
