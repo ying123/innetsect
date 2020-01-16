@@ -40,6 +40,11 @@ class CommodityAndCartProvide extends BaseProvide{
     notifyListeners();
   }
 
+  set count(int count){
+    _count = count;
+    notifyListeners();
+  }
+
   /// 购物车请求后将商品添加到购物车list
   void addCarts(CommodityModels model){
     String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();

@@ -90,8 +90,8 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
         }
         if(index>-1&&sizeIndex>-1){
           title = "已选";
-          size = "\"${provide.commodityModels.skus[0].features[0].featureValue}\"";
-          color = "\"${provide.commodityModels.skus[0].features[1].featureValue}\"";
+          size = "\"${provide.skusModel.features[0].featureValue}\"";
+          color = "\"${provide.skusModel.features[1].featureValue}\"";
           price = provide.commodityModels.salesPrice.toString();
         }
 
@@ -171,6 +171,10 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                         // 选中颜色并改变选中颜色
                         if(provide.colorSkuList[keys].qtyInHand>0){
                           provide.onSelectColor(provide.colorSkuList[keys],_cartProvide.count);
+                          /// 选取其他颜色时，如果超出范围，则设置该sku最大数量
+                          if(provide.skusModel.qtyInHand<_cartProvide.count){
+                            _cartProvide.count = provide.skusModel.qtyInHand;
+                          }
                           /// 请求尺码
                           provide.colorAndSizeData(types: provide.commodityModels.shopID,
                               prodId: provide.colorSkuList[keys].prodID,
@@ -274,6 +278,10 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
                        ///api/eshop/37/products/15082/otherGroupFeatures?group=尺码&code=L
                        if(provide.sizeSkuList[keys].qtyInHand>0){
                           provide.onSizeChange(provide.sizeSkuList[keys],_cartProvide.count);
+                          /// 选取其他尺寸时，如果超出范围，则设置该sku最大数量
+                          if(provide.skusModel.qtyInHand<_cartProvide.count){
+                            _cartProvide.count = provide.skusModel.qtyInHand;
+                          }
                           /// 请求颜色
                           provide.colorAndSizeData(types: provide.commodityModels.shopID,
                               prodId: provide.sizeSkuList[keys].prodID,
