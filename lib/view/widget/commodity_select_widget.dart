@@ -73,6 +73,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
         String title = "请选择";
         String color = "颜色";
         String size = "尺码";
+
         int index = provide.colorSkuList.indexWhere((items)=>items.isSelected==true);
         int sizeIndex = provide.sizeSkuList.indexWhere((items)=>items.isSelected==true);
         if(index<0&&sizeIndex<0){
@@ -93,6 +94,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
           color = "\"${provide.commodityModels.skus[0].features[1].featureValue}\"";
           price = provide.commodityModels.salesPrice.toString();
         }
+
         return Container(
           width: double.infinity,
           child: Row(

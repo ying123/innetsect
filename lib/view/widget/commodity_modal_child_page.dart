@@ -209,6 +209,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
                     // 请求
                     if(this._detailProvide.skusModel.qtyInHand>0){
                       if(!Loading.isShow){
+                        this._detailProvide.commodityModels.skuPic = this._detailProvide.skusModel.skuPic;
                         this._cartProvide.addCartsRequest(this._detailProvide.commodityModels,
                             context)
                             .doOnListen(() {

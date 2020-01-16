@@ -15,7 +15,8 @@ class CounterWidget extends StatefulWidget {
   final int idx;
   // 购物车商品列表
   final CommodityModels model;
-  CounterWidget({this.provide,this.idx,this.model,this.detailProvide});
+  String page;
+  CounterWidget({this.provide,this.idx,this.model,this.detailProvide,this.page});
 
   @override
   _CounterWidgetState createState() => new _CounterWidgetState();
@@ -68,7 +69,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       });
     }
     this.model.quantity = widget.provide.count;
-    if(_detailProvide.commodityModels.badges!=null&&_detailProvide.commodityModels.badges.length>0){
+    if(_detailProvide.commodityModels!=null&&_detailProvide.commodityModels.badges!=null&&_detailProvide.commodityModels.badges.length>0){
       _detailProvide.commodityModels.badges.forEach((items){
         if(items.name=="售罄"){
           setState(() {
@@ -99,13 +100,16 @@ class _CounterWidgetState extends State<CounterWidget> {
               (model.panicBuyQtyPerAcct != null &&
                   model.panicBuyQtyPerAcct > 1)) {
             // 判断规则选项
-            if(this._detailProvide.skusModel==null
-                ||(this._detailProvide.skusModel.features[0].featureValue==null
-                    &&this._detailProvide.skusModel.features[1].featureValue==null)){
+            if(this._detailProvide.commodityModels!=null
+                &&(this._detailProvide.skusModel==null
+                    ||(this._detailProvide.skusModel.features[0].featureValue==null
+                        &&this._detailProvide.skusModel.features[1].featureValue==null))){
               CustomsWidget().showToast(title: "请选择颜色和尺码");
-            }else if (this._detailProvide.skusModel.features[1].featureValue == null) {
+            }else if (this._detailProvide.commodityModels!=null
+                &&this._detailProvide.skusModel.features[1].featureValue == null) {
               CustomsWidget().showToast(title: "请选择颜色");
-            } else if (this._detailProvide.skusModel.features[0].featureValue == null) {
+            } else if (this._detailProvide.commodityModels!=null
+                &&this._detailProvide.skusModel.features[0].featureValue == null) {
               CustomsWidget().showToast(title: "请选择尺码");
             } else {
               this.provide.reduce(idx: widget.idx, model: widget.model);
@@ -199,17 +203,18 @@ class _CounterWidgetState extends State<CounterWidget> {
         if(model.panicBuyQtyPerAcct==null||
             (model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct>1)){
           // 判断规则选项
-          if(this._detailProvide.skusModel==null
-              ||(this._detailProvide.skusModel.features[0].featureValue==null
-                  &&this._detailProvide.skusModel.features[1].featureValue==null)){
+          if(this._detailProvide.commodityModels!=null
+              &&(this._detailProvide.skusModel==null
+                  ||(this._detailProvide.skusModel.features[0].featureValue==null
+                      &&this._detailProvide.skusModel.features[1].featureValue==null))){
             CustomsWidget().showToast(title: "请选择颜色和尺码");
-          }else if(this._detailProvide.skusModel.features[1].featureValue==null){
+          }else if(this._detailProvide.commodityModels!=null&&this._detailProvide.skusModel.features[1].featureValue==null){
             CustomsWidget().showToast(title: "请选择颜色");
-          }else if(this._detailProvide.skusModel.features[0].featureValue==null){
+          }else if(this._detailProvide.commodityModels!=null&&this._detailProvide.skusModel.features[0].featureValue==null){
             CustomsWidget().showToast(title: "请选择尺码");
           }else{
             // 判断数量不能超过库存数量
-            if(this.provide.count>=_detailProvide.skusModel.qtyInHand){
+            if(this._detailProvide.commodityModels!=null&&this.provide.count>=_detailProvide.skusModel.qtyInHand){
               CustomsWidget().showToast(title: "数量超出范围");
             }else{
               this.provide.increment(idx: widget.idx,model: widget.model);

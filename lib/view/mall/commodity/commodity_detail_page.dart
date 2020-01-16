@@ -348,7 +348,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           String text = "请选择";
           String colorText = "颜色";
           String sizeText = "尺码";
-          if(provide.colorSkuList.length>1){
+          if(provide.colorSkuList.length>3){
             skuText = Container(
               padding: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
               decoration: BoxDecoration(
@@ -861,11 +861,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
   void _searchRequest({int catCode,String brands}){
     // 清除原数据
     _commodityListProvide.clearList();
-    String brandParams = 'brand=';
-    if(brands!=null){
-      brandParams = 'brand=$brands';
-    }
-    _commodityListProvide.requestUrl = "/api/eshop/app/products/filterByCatCode?catCode=$catCode&$brandParams";
+    _commodityListProvide.requestUrl = "/api/eshop/app/products/filterByBrand?brand=$brands";
     _searchProvide.onSearch(_commodityListProvide.requestUrl+'&pageNo=1&pageSize=8').doOnListen(() { }).doOnCancel(() {}).listen((items) {
       ///加载数据
       print('listen data->$items');
