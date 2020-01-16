@@ -94,6 +94,22 @@ String deviceID}){
   return _spf.setString(ConstConfig.DEVICE_INFO, json.encode(jsons));
 }
 
+Future<bool> setBaiduPermission(String baiduPermission){
+  if (_beforCheck()) {
+    return null;
+  }
+  return _spf.setString(ConstConfig.BAIDU_PERMISSION, baiduPermission);
+}
+
+String getBaiduPermission(){
+   if (_beforCheck()) {
+    return null;
+  }
+  return _spf.getString(ConstConfig.BAIDU_PERMISSION);
+}
+
+
+
 
 String getDeviceInfo(){
   return _spf.getString(ConstConfig.DEVICE_INFO);

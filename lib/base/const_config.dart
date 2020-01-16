@@ -13,6 +13,8 @@ class ConstConfig {
   static const String DEVICE_INFO = 'DEVICE_INFO';
   // 是否第一次使用App
   static const String APP_NUMBER = 'APP_NUMBER';
+  // 百度Permission
+  static const String BAIDU_PERMISSION = 'BAIDU_PERMISSION';
 
 
   // 商城banner跳转
