@@ -339,6 +339,9 @@ class CommodityDetailProvide extends BaseProvide {
       _skusModel.features..add(featureModels);
     }
     if(_skusModel.features!=null&&_skusModel.features.length>0){
+      if(_skusModel.features[1].featureGroup==null){
+        _skusModel.features[1].featureGroup = '颜色';
+      }
       int index = _skusModel.features.indexWhere((items)=>items.featureGroup=='颜色');
       if(index>-1){
         CommodityFeatureModel model = CommodityFeatureModel();
@@ -397,6 +400,9 @@ class CommodityDetailProvide extends BaseProvide {
       _skusModel.features..add(featureModels);
     }
     if(_skusModel.features!=null&&_skusModel.features.length>0){
+      if(_skusModel.features[0].featureGroup==null){
+        _skusModel.features[0].featureGroup = '尺码';
+      }
       int index = _skusModel.features.indexWhere((items)=>items.featureGroup=='尺码');
       if(index>-1){
         CommodityFeatureModel model = CommodityFeatureModel();

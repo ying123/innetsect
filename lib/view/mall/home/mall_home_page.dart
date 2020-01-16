@@ -403,7 +403,11 @@ class _MallHomeContentState extends State<MallHomeContent> {
             title = title.substring(0,10) + "...";
           }
           Widget widgets=Container();
-          if(item.originalPrice!=null&& double.parse(item.salesPriceRange.toString()) < double.parse(item.originalPrice.toString()) ){
+          String _price = item.salesPriceRange;
+          if(_price.indexOf("-")>-1){
+            _price = item.salesPriceRange.split("-")[0].toString();
+          }
+          if(item.originalPrice!=null&& double.parse(_price.toString()) < double.parse(item.originalPrice.toString()) ){
             widgets = new Container(
               padding:EdgeInsets.only(top: 10),
               child: Row(

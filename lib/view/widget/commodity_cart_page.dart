@@ -221,8 +221,8 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
               List lists = CommonUtil.skuNameSplit(list[key].skuName);
               return new Container(
                 width: double.infinity,
-                height: ScreenAdapter.height(230),
-                margin: EdgeInsets.only(top: 1,left: 10,right: 10),
+                height: ScreenAdapter.height(240),
+                margin: EdgeInsets.only(left: 10,right: 10),
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: AppConfig.assistLineColor))
                 ),
@@ -265,7 +265,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                 new Expanded(
                                     flex: 3,
                                     child: new Container(
-                                      margin: EdgeInsets.only(top: 15,bottom: 5),
+                                      padding: EdgeInsets.only(top: 15,bottom: 5),
                                       child: new Column(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +306,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                               flex: 1,
                                               child: new Container(
                                                 alignment: Alignment.topCenter,
-                                                child: CounterWidget(provide: provide,model: list[key],idx: key ),
+                                                child: CounterWidget(provide: provide,model: list[key],idx: key,detailProvide: _detailProvide, ),
                                               )
                                           )
 
