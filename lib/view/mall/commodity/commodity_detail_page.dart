@@ -370,6 +370,10 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
               colorText = provide.skusModel.features[1].featureValue;
             }
           }
+          List<CommoditySkusModel> list = _provide.colorSkuList;
+          if(list.length>3){
+            list = list.sublist(0,3);
+          }
           return new InkWell(
               onTap: (){
                 /// 弹出颜色，尺码选择
@@ -410,7 +414,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                                 runSpacing: 10,
                                 alignment: WrapAlignment.start,
                                 crossAxisAlignment: WrapCrossAlignment.center,
-                                children: _provide.colorSkuList.map((items){
+                                children: list.map((items){
                                   return Container(
                                     decoration: BoxDecoration(
                                         border: Border.all(width: 1,color: Colors.grey)
@@ -655,6 +659,69 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
 //    if(widget.pages=="EXHIBIT_PRODUCT"){
 //      return new Container(height: 0.0,width: 0.0,);
 //    }
+    List<Widget> bottomAction = [
+      Expanded(
+        flex: 3,
+        child: new Padding(padding: EdgeInsets.only(left: 10),
+          child: new InkWell(
+              onTap: (){
+                _provide.setInitData();
+                _cartProvide.setInitCount();
+                _provide.isBuy = false;
+                _cartProvide.setMode(mode: "single");
+                CommodityModalBottom.showBottomModal(context:context);
+              },
+              child: new Container(
+                width: ScreenAdapter.width(230),
+                height: ScreenAdapter.height(80),
+                color: Colors.black,
+                alignment: Alignment.center,
+                child: new Text("加入购物车",style: TextStyle(color: Colors.white,
+                    fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+              )
+          ),
+        ),
+      ),
+      Expanded(
+          flex: 3,
+          child: new Padding(padding: EdgeInsets.only(left: 10),
+            child: InkWell(
+              onTap: (){
+                _provide.setInitData();
+                _cartProvide.setInitCount();
+                _provide.isBuy = true;
+                _cartProvide.setMode(mode: "single");
+                // 存储当前商品信息
+                CommodityModalBottom.showBottomModal(context:context);
+              },
+              child: new Container(
+                width: ScreenAdapter.width(230),
+                height: ScreenAdapter.height(80),
+                color: AppConfig.blueBtnColor,
+                alignment: Alignment.center,
+                child: new Text("立即购买",style: TextStyle(color: AppConfig.whiteBtnColor,
+                    fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
+              ),
+            ),
+          )
+      )
+    ];
+    if(_provide.commodityModels.badges!=null&&_provide.commodityModels.badges.length>0){
+      _provide.commodityModels.badges.forEach((items){
+        if(items.name=="售罄"){
+          bottomAction = [
+            Expanded(
+              flex:6,
+              child: RaisedButton(
+                disabledColor: Colors.black12,
+                disabledTextColor: Colors.black54,
+                child: Text("已售罄",style: TextStyle(fontWeight: FontWeight.w600),),
+              ),
+            )
+          ];
+        }
+      });
+    }
     return new Container(
       width: double.infinity,
       height: ScreenAdapter.height(100),
@@ -736,52 +803,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                 }),
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: new Padding(padding: EdgeInsets.only(left: 10),
-              child: new InkWell(
-                  onTap: (){
-                    _provide.setInitData();
-                    _cartProvide.setInitCount();
-                    _provide.isBuy = false;
-                    _cartProvide.setMode(mode: "single");
-                    CommodityModalBottom.showBottomModal(context:context);
-                  },
-                  child: new Container(
-                    width: ScreenAdapter.width(230),
-                    height: ScreenAdapter.height(80),
-                    color: Colors.black,
-                    alignment: Alignment.center,
-                    child: new Text("加入购物车",style: TextStyle(color: Colors.white,
-                        fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
-                  )
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: new Padding(padding: EdgeInsets.only(left: 10),
-              child: InkWell(
-                onTap: (){
-                  _provide.setInitData();
-                  _cartProvide.setInitCount();
-                  _provide.isBuy = true;
-                  _cartProvide.setMode(mode: "single");
-                  // 存储当前商品信息
-                  CommodityModalBottom.showBottomModal(context:context);
-                },
-                child: new Container(
-                  width: ScreenAdapter.width(230),
-                  height: ScreenAdapter.height(80),
-                  color: AppConfig.blueBtnColor,
-                  alignment: Alignment.center,
-                  child: new Text("立即购买",style: TextStyle(color: AppConfig.whiteBtnColor,
-                      fontWeight: FontWeight.w800,fontSize: ScreenAdapter.size(32)),),
-                ),
-              ),
-            )
-          )
-        ],
+        ]..addAll(bottomAction),
       ),
     );
   }

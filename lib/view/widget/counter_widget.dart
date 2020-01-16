@@ -26,6 +26,7 @@ class _CounterWidgetState extends State<CounterWidget> {
   CommodityAndCartProvide provide;
   CommodityModels model;
   int count=1;
+  bool isBadges = false;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +68,15 @@ class _CounterWidgetState extends State<CounterWidget> {
       });
     }
     this.model.quantity = widget.provide.count;
+    if(_detailProvide.commodityModels.badges!=null&&_detailProvide.commodityModels.badges.length>0){
+      _detailProvide.commodityModels.badges.forEach((items){
+        if(items.name=="售罄"){
+          setState(() {
+            isBadges = true;
+          });
+        }
+      });
+    }
   }
   @override
   void dispose() {
@@ -81,48 +91,63 @@ class _CounterWidgetState extends State<CounterWidget> {
     if(this.provide.mode=="multiple"){
       size=60.0;
     }
+
     return new InkWell(
       onTap: (){
-        if(model.panicBuyQtyPerAcct==null||
-            (model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct>1)){
-          // 判断规则选项
-          if(this._detailProvide.skusModel.features[1].featureValue==null){
-            CustomsWidget().showToast(title: "请选择颜色");
-          }else if(this._detailProvide.skusModel.features[0].featureValue==null){
-            CustomsWidget().showToast(title: "请选择尺码");
-          }else{
-            this.provide.reduce(idx: widget.idx,model: widget.model);
-            if(this.provide.mode!="multiple"){
-              setState(() {
-                count = this.provide.count;
-              });
-            }else{
-              // 如果商品减少到0，提示删除
+        if(!isBadges) {
+          if (model.panicBuyQtyPerAcct == null ||
+              (model.panicBuyQtyPerAcct != null &&
+                  model.panicBuyQtyPerAcct > 1)) {
+            // 判断规则选项
+            if(this._detailProvide.skusModel==null
+                ||(this._detailProvide.skusModel.features[0].featureValue==null
+                    &&this._detailProvide.skusModel.features[1].featureValue==null)){
+              CustomsWidget().showToast(title: "请选择颜色和尺码");
+            }else if (this._detailProvide.skusModel.features[1].featureValue == null) {
+              CustomsWidget().showToast(title: "请选择颜色");
+            } else if (this._detailProvide.skusModel.features[0].featureValue == null) {
+              CustomsWidget().showToast(title: "请选择尺码");
+            } else {
+              this.provide.reduce(idx: widget.idx, model: widget.model);
+              if (this.provide.mode != "multiple") {
+                setState(() {
+                  count = this.provide.count;
+                });
+              } else {
+                // 如果商品减少到0，提示删除
 
-              List<CommodityTypesModel> list = this.provide.commodityTypesModelLists;
-              String types = model.shopID==37?CommodityCartTypes.commodity.toString(): CommodityCartTypes.exhibition.toString();
-              list.forEach((item){
-                if(item.types == types
-                    && item.commodityModelList[widget.idx].quantity==0){
-                  CustomsWidget().customShowDialog(context: context,
-                      content: "是否删除该商品",
-                      onCancel:(){
-                        this.provide.setQuantity(item.commodityModelList[widget.idx], widget.idx);
-                        Navigator.pop(context);
-                      },
-                      onPressed: (){
-                        this.provide.removeCarts(item.commodityModelList[widget.idx]).doOnListen((){}).doOnCancel((){})
-                            .listen((res){
-                          if(res.data!=null){
-                            this.provide.onDelCountToZero(idx: widget.idx,model: widget.model,mode: "multiple");
-                            CustomsWidget().showToast(title: "删除成功");
-                            Navigator.pop(context);
-                          }
-                        },onError: (e){});
-                      }
-                  );
-                }
-              });
+                List<CommodityTypesModel> list = this.provide
+                    .commodityTypesModelLists;
+                String types = model.shopID == 37 ? CommodityCartTypes.commodity
+                    .toString() : CommodityCartTypes.exhibition.toString();
+                list.forEach((item) {
+                  if (item.types == types
+                      && item.commodityModelList[widget.idx].quantity == 0) {
+                    CustomsWidget().customShowDialog(context: context,
+                        content: "是否删除该商品",
+                        onCancel: () {
+                          this.provide.setQuantity(item
+                              .commodityModelList[widget.idx], widget.idx);
+                          Navigator.pop(context);
+                        },
+                        onPressed: () {
+                          this.provide.removeCarts(
+                              item.commodityModelList[widget.idx])
+                              .doOnListen(() {}).doOnCancel(() {})
+                              .listen((res) {
+                            if (res.data != null) {
+                              this.provide.onDelCountToZero(idx: widget.idx,
+                                  model: widget.model,
+                                  mode: "multiple");
+                              CustomsWidget().showToast(title: "删除成功");
+                              Navigator.pop(context);
+                            }
+                          }, onError: (e) {});
+                        }
+                    );
+                  }
+                });
+              }
             }
           }
         }
@@ -130,7 +155,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       child: new Container(
         width: ScreenAdapter.width(size),
         alignment: Alignment.center,
-        child: Icon(Icons.remove,color: AppConfig.assistFontColor,),
+        child: Icon(Icons.remove,color: isBadges?Colors.black12: AppConfig.assistFontColor,),
       ),
     );
   }
@@ -143,6 +168,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       fontSize=28.0;
       circular=4.0;
     }
+
     return new Container(
       padding: EdgeInsets.only(bottom: 5,left: 5,right: 5,top: 2),
       margin: EdgeInsets.only(left: 10,right: 10),
@@ -155,7 +181,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       widget.provide.count.toString(),style: TextStyle(
         fontSize: ScreenAdapter.size(fontSize),
         fontWeight: FontWeight.w900,
-        color: model!=null&&model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct<2
+        color:isBadges?Colors.black12: model!=null&&model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct<2
             ?Colors.grey:Colors.black
       ),),
     );
@@ -167,22 +193,32 @@ class _CounterWidgetState extends State<CounterWidget> {
     if(this.provide.mode=="multiple"){
       size=60.0;
     }
+
     return new InkWell(
       onTap: (){
         if(model.panicBuyQtyPerAcct==null||
             (model.panicBuyQtyPerAcct!=null&&model.panicBuyQtyPerAcct>1)){
           // 判断规则选项
-          if(this._detailProvide.skusModel.features[1].featureValue==null){
+          if(this._detailProvide.skusModel==null
+              ||(this._detailProvide.skusModel.features[0].featureValue==null
+                  &&this._detailProvide.skusModel.features[1].featureValue==null)){
+            CustomsWidget().showToast(title: "请选择颜色和尺码");
+          }else if(this._detailProvide.skusModel.features[1].featureValue==null){
             CustomsWidget().showToast(title: "请选择颜色");
           }else if(this._detailProvide.skusModel.features[0].featureValue==null){
             CustomsWidget().showToast(title: "请选择尺码");
           }else{
-            this.provide.increment(idx: widget.idx,model: widget.model);
-            if(this.provide.mode!="multiple"){
-              this.model.quantity=this.provide.count;
-              setState(() {
-                count = this.provide.count;
-              });
+            // 判断数量不能超过库存数量
+            if(this.provide.count>=_detailProvide.skusModel.qtyInHand){
+              CustomsWidget().showToast(title: "数量超出范围");
+            }else{
+              this.provide.increment(idx: widget.idx,model: widget.model);
+              if(this.provide.mode!="multiple"){
+                this.model.quantity=this.provide.count;
+                setState(() {
+                  count = this.provide.count;
+                });
+              }
             }
           }
         }
@@ -190,7 +226,7 @@ class _CounterWidgetState extends State<CounterWidget> {
       child: new Container(
         width: ScreenAdapter.width(size),
         alignment: Alignment.center,
-        child: Icon(Icons.add,color: AppConfig.assistFontColor,),
+        child: Icon(Icons.add,color: isBadges?Colors.black12:AppConfig.assistFontColor,),
       ),
     );
   }

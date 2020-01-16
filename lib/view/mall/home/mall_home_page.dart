@@ -13,7 +13,6 @@ import 'package:innetsect/view/activity/activity_detail_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/mall/information/infor_web_page.dart';
 import 'package:innetsect/view/mall/search/search_screen_page.dart';
-import 'package:innetsect/view/mall/web_view.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
 import 'package:innetsect/view/widget/list_widget_page.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
