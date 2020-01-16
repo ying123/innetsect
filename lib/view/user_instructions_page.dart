@@ -40,7 +40,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
               width: ScreenAdapter.width(630),
               height: ScreenAdapter.height(665),
               decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.black.withAlpha(180),
                   borderRadius: BorderRadius.all(
                       Radius.circular(ScreenAdapter.width(10)))),
               child: Column(
@@ -54,7 +54,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(
-                          height: ScreenAdapter.height(48),
+                          height: ScreenAdapter.height(20),
                         ),
                         Container(
                             width: ScreenAdapter.width(550),
@@ -71,7 +71,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                       child: Text(
                                         '服务协议和隐私政策',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(30)),
+                                            fontSize: ScreenAdapter.size(30),color: Colors.white),
                                       ),
                                     ),
                                     Expanded(
@@ -79,13 +79,16 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                     ),
                                   ],
                                 ),
+                                SizedBox(
+                                  height: ScreenAdapter.height(25),
+                                ),
                                 Row(
                                   children: <Widget>[
                                     Center(
                                       child: Text(
                                         '请你务必审慎阅读、充分理解"服务协议',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -96,7 +99,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                       child: Text(
                                         '和"隐私政策"各条款,包括但不限于:为了',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -107,7 +110,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                       child: Text(
                                         '向你提供即时通讯、内容分享等服务，',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -118,7 +121,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                       child: Text(
                                         '我们需要手机你的设备信息、操作日志等，',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -129,7 +132,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                       child: Text(
                                         '个人信息。你可以在设置中查看，变更删除',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -138,9 +141,9 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                   children: <Widget>[
                                     Center(
                                       child: Text(
-                                        '个人信息并管理你的授权.',
+                                        '个人信息并管理你的授权。',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -151,7 +154,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                       child: Text(
                                         '你可阅读',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                     InkWell(
@@ -161,13 +164,13 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                                 builder: (context) {
                                           //ProtocolPage
                                           return ProtocolPage(
-                                            title: "innersect用户须知",
+                                            title: "innersect用户协议",
                                             leading: true,
                                           );
                                         }));
                                       },
                                       child: Text(
-                                        '《服务协议》',
+                                        '《用户协议》',
                                         style: TextStyle(
                                             fontSize: ScreenAdapter.size(28),
                                             color: Colors.blue),
@@ -176,7 +179,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                     Text(
                                       '和',
                                       style: TextStyle(
-                                          fontSize: ScreenAdapter.size(28)),
+                                          fontSize: ScreenAdapter.size(28),color: Colors.white),
                                     ),
                                     InkWell(
                                       onTap: () {
@@ -185,7 +188,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                                 builder: (context) {
                                           //ProtocolPage
                                           return ProtocolPage(
-                                            title: "innersect用户须知",
+                                            title: "innersect隐私协议",
                                             leading: true,
                                           );
                                         }));
@@ -200,7 +203,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                     Text(
                                       '了解',
                                       style: TextStyle(
-                                          fontSize: ScreenAdapter.size(28)),
+                                          fontSize: ScreenAdapter.size(28),color: Colors.white),
                                     ),
                                   ],
                                 ),
@@ -210,7 +213,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                       child: Text(
                                         '详细信息.如果你同意，请点击"同意"开始接',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                   ],
@@ -219,9 +222,9 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                                   children: <Widget>[
                                     Center(
                                       child: Text(
-                                        '受我们的服务',
+                                        '受我们的服务。',
                                         style: TextStyle(
-                                            fontSize: ScreenAdapter.size(28)),
+                                            fontSize: ScreenAdapter.size(28),color: Colors.white),
                                       ),
                                     ),
                                   ],

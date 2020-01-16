@@ -49,54 +49,61 @@ class _MySettingsContentState extends State<MySettingsContent> {
           widget: new Text("个人设置")),
       body: new Container(
         width: double.infinity,
-        child: new Column(
-          children: <Widget>[
-            // 个人资料
-            _listWidgets(icon: Icons.account_circle,title: "个人资料",onTap: (){
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context){
-                    return PersonalCenterPage();
-                  }
-              ));
-            }),
-            new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
-            // 抽签登记
-            widget.page=="exhibition"?
-            _listWidgets(icon: Icons.book,title: "抽签登记信息",onTap: (){
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (context){
-                    return SortilegePage(pages: "mySetting",);
-                  }
-              ));
-            }):Container(width: 0,height: 0,),
-            new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
-            // 修改密码
-            _listWidgets(icon: Icons.lock_outline,title: "修改密码",onTap: (){
-              Navigator.push(context, MaterialPageRoute(
-                builder: (BuildContext context){
-                  return EditPwdPage();
-                }
-              ));
-            }),
-            new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
-            _listWidgets(icon: Icons.supervised_user_circle, title: "关于我们",onTap: (){
-              Navigator.push(context, MaterialPageRoute(
+        child: SingleChildScrollView(
+          child: new Column(
+            children: <Widget>[
+              // 个人资料
+              _listWidgets(icon: Icons.account_circle,title: "个人资料",onTap: (){
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return PersonalCenterPage();
+                    }
+                ));
+              }),
+              new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
+              // 抽签登记
+              widget.page=="exhibition"?
+              _listWidgets(icon: Icons.book,title: "抽签登记信息",onTap: (){
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context){
+                      return SortilegePage(pages: "mySetting",);
+                    }
+                ));
+              }):Container(width: 0,height: 0,),
+              new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
+              // 修改密码
+              _listWidgets(icon: Icons.lock_outline,title: "修改密码",onTap: (){
+                Navigator.push(context, MaterialPageRoute(
                   builder: (BuildContext context){
-                    return AboutUsPage();
+                    return EditPwdPage();
                   }
-              ));
-            }),
-            new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
-            _listWidgets(icon: Icons.account_balance_wallet, title: "账户安全",onTap:(){
-              Navigator.pushNamed(context, '/accountCancellationPage');
-            },
-            ),
-            // 退出登录
-            _loginOutWidget(),
-            ///活动测试
-            _setUpActivityTest()
+                ));
+              }),
+              new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
+              _listWidgets(icon: Icons.supervised_user_circle, title: "关于我们",onTap: (){
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (BuildContext context){
+                      return AboutUsPage();
+                    }
+                ));
+              }),
+              new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
+              _listWidgets(icon: Icons.account_balance_wallet, title: "账户安全",onTap:(){
+                Navigator.pushNamed(context, '/accountCancellationPage');
+              },
+              ),
+              // new Divider(height: 1,indent: 10,endIndent: 10,color: AppConfig.assistLineColor,),
+              // _listWidgets(icon: Icons.assignment_turned_in, title: "隐私协议",onTap:(){
+              //   Navigator.pushNamed(context, '/accountCancellationPage');
+              // },
+              // ),
+              // 退出登录
+              _loginOutWidget(),
+              ///活动测试
+              _setUpActivityTest()
 
-          ],
+            ],
+          ),
         ),
       ),
     );
