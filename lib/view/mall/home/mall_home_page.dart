@@ -463,8 +463,8 @@ class _MallHomeContentState extends State<MallHomeContent> {
         alignment: WrapAlignment.center,
         children: products.map((item) {
           String title = item.prodName;
-          if (item.prodName.length > 10) {
-            title = title.substring(0, 10) + "...";
+          if (item.prodName.length > 8) {
+            title = title.substring(0, 8) + "...";
           }
           Widget widgets = Container();
           String _price = item.salesPriceRange;
