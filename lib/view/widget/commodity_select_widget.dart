@@ -69,28 +69,29 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
     return Provide<CommodityDetailProvide>(
       builder: (BuildContext context,Widget widget,CommodityDetailProvide provide){
         String price = provide.commodityModels.salesPrice.toString();
-        if(provide.commodityModels.salesPrice == null){
-          price = '0';
-        }
         String prodPic=provide.commodityModels.prodPic;
         String title = "请选择";
         String color = "颜色";
         String size = "尺码";
         int index = provide.colorSkuList.indexWhere((items)=>items.isSelected==true);
         int sizeIndex = provide.sizeSkuList.indexWhere((items)=>items.isSelected==true);
+        if(index<0&&sizeIndex<0){
+          price = provide.commodityModels.salesPriceRange.toString();
+        }
         if(index>-1){
+          price = provide.commodityModels.salesPrice.toString();
           prodPic = provide.colorSkuList[index].skuPic;
-          color = provide.colorSkuList[index].featureValue;
-          title = "已选";
+          color = "";
         }
         if(sizeIndex>-1){
-          size = provide.sizeSkuList[sizeIndex].featureValue;
-          title = "已选";
+          price = provide.commodityModels.salesPrice.toString();
+          size = "";
         }
-        if(provide.commodityModels.skus.length==1){
+        if(index>-1&&sizeIndex>-1){
           title = "已选";
-          size = provide.commodityModels.skus[0].features[0].featureValue;
-          color = provide.commodityModels.skus[0].features[1].featureValue;
+          size = "\"${provide.commodityModels.skus[0].features[0].featureValue}\"";
+          color = "\"${provide.commodityModels.skus[0].features[1].featureValue}\"";
+          price = provide.commodityModels.salesPrice.toString();
         }
         return Container(
           width: double.infinity,
