@@ -166,9 +166,9 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
           ),
         ),
       ),
-      body: WebView(
+      body: WebView(//m3
         initialUrl:
-            'http://test.innersect.net/api/promotion/proartifacts/${provide.activitiedId}/detail',
+            'http://m3.innersect.net/api/promotion/proartifacts/${provide.activitiedId}/detail',
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           //_controller.complete(webViewController);
@@ -208,10 +208,10 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
                 return new InforWebPage();
               }));
             } else if (redirectTypeParam.split('=')[1] ==
-                'CATALOG_PRODUCT_LIST') {
-              print('品类列表	=======>${redirectParam.split(':')[1]}');
+                'CATALOG_PRODUCT_LIST') {//CATALOG_PRODUCT_LIST
+              print('品类列表	=======>${redirectParam.split('=')[1]}');
               _searchProvide.searchValue = ' ';
-              _searchRequest(redirectParam.split(':')[1]);
+              _searchRequest(redirectParam.split('=')[1]);
             } else if (redirectTypeParam.split('=')[1] == 'PROMOTION') {
               print('促销活动	');
               //  _searchRequest(name)
@@ -255,7 +255,8 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
               });
               // return NavigationDecision.navigate;
               // return NavigationDecision.prevent;
-            } else if (redirectTypeParam.split('=')[1] ==
+            }
+             else if (redirectTypeParam.split('=')[1] ==
                 'PRODUCT_COLLECTION') {
               print('产品系列');
               String code = redirectParam.split(':')[1];
@@ -296,16 +297,15 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
                   arguments: {'redirectParam': redirectParam.split('=')[1]});
             } else if (redirectTypeParam.split('=')[1] ==
                 'BRAND_PRODUCT_LIST') {
-              print('品牌列表');
+              print('品牌列表-------');
               List spList = redirectParam.split('=');
-
+            print('spList================$spList');
               String spStr = spList[1];
-              List brandName = spStr.split(':');
-              print('brandName================${brandName[1]}');
-              _searchProvide.searchValue = brandName[1];
-              _searchRequest(brandName[1]);
+           //   List brandName = spStr.split(':');
+              
+              _searchProvide.searchValue = spStr;
+              _searchRequest(spStr);
             }
-
             return NavigationDecision.prevent;
           }
           print('allowing navigation to =====>$request');
