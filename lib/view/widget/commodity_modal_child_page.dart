@@ -63,9 +63,20 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
             margin: EdgeInsets.only(left: 20,right: 20,top: 20),
             child: RaisedButton(
               onPressed: (){
-                // 售后选择规格
-                _afterServiceProvide.skusModel = provide.skusModel;
-                Navigator.pop(context);
+                // 判断是否选择颜色
+                if(this._detailProvide.skusModel==null
+                    ||(this._detailProvide.skusModel.features[0].featureValue==null
+                        &&this._detailProvide.skusModel.features[1].featureValue==null)){
+                  CustomsWidget().showToast(title: "请选择颜色和尺码");
+                }else if(this._detailProvide.skusModel.features[1].featureValue==null){
+                  CustomsWidget().showToast(title: "请选择颜色");
+                }else if(this._detailProvide.skusModel.features[0].featureValue==null){
+                  CustomsWidget().showToast(title: "请选择尺码");
+                }else{
+                  // 售后选择规格
+                  _afterServiceProvide.skusModel = provide.skusModel;
+                  Navigator.pop(context);
+                }
               },
               color: Colors.black,
               textColor: Colors.white,
