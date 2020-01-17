@@ -373,7 +373,7 @@ class _RegistrationInformationContentPageState
           return Center(
             child: Container(
               width: ScreenAdapter.width(580),
-              height: ScreenAdapter.height(630),
+              height: ScreenAdapter.height(720),
               color: Colors.white,
               child: Column(
                 children: <Widget>[
@@ -418,14 +418,17 @@ class _RegistrationInformationContentPageState
                         width: ScreenAdapter.width(40),
                       ),
                       Container(
-                        //width: ScreenAdapter.width(500),
+                     //   width: ScreenAdapter.width(500),
                         child: Container(
                             child: Row(
                           children: <Widget>[
                             Container(
-                              height: ScreenAdapter.height(90),
+                              height: ScreenAdapter.height(180),
+                             alignment: Alignment.topRight,
                               child: Text(
+                                
                                 '门店地址:',
+                                //textAlign: TextAlign.justify,
                                 style: TextStyle(
                                   color: Colors.black54,
                                   decorationColor: Colors.white,
@@ -436,9 +439,9 @@ class _RegistrationInformationContentPageState
                             ),
                             Container(
                               width: ScreenAdapter.width(400),
-                              height: ScreenAdapter.height(90),
+                              height: ScreenAdapter.height(180),
                               child: Text(
-                             '${provide.lotteryRegistrationPageModel.addr}',
+                            '${provide.lotteryRegistrationPageModel.addr}',
                                 style: TextStyle(
                                   color: Colors.black54,
                                   decorationColor: Colors.white,

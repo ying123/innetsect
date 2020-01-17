@@ -226,11 +226,11 @@ class _CheckTheRegistrationContentPageState
             ),
             Container(
                 width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(90),
+                height: ScreenAdapter.height(140),
                 child: Row(
                   children: <Widget>[
                     Container(
-                      height: ScreenAdapter.height(90),
+                      height: ScreenAdapter.height(140),
                       child: Text(
                         '门店地址: ',
                         style: TextStyle(
@@ -244,7 +244,7 @@ class _CheckTheRegistrationContentPageState
                     Container(
                       alignment: Alignment.topRight,
                       width: ScreenAdapter.width(500),
-                      height: ScreenAdapter.height(90),
+                      height: ScreenAdapter.height(140),
                       child: Text(
                         provide.viewRegistrationInformationModel.shopProduct.addr,
                       //  overflow: TextOverflow.ellipsis,
@@ -370,7 +370,7 @@ class _CheckTheRegistrationContentPageState
         return Column(
           children: <Widget>[
             Container(
-              height: ScreenAdapter.height(170),
+              height: ScreenAdapter.height(130),
               child:
                   provide.viewRegistrationInformationModel.drawee.status ==
                           1
@@ -392,7 +392,7 @@ class _CheckTheRegistrationContentPageState
               },
               child: Container(
                 width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(120),
+                height: ScreenAdapter.height(100),
                 child: Center(
                   child: Container(
                     width: ScreenAdapter.width(690),

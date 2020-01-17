@@ -217,11 +217,11 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
             ),
             Container(
                 width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(90),
+                height: ScreenAdapter.height(140),
                 child: Row(
                   children: <Widget>[
                     Container(
-                      height: ScreenAdapter.height(90),
+                      height: ScreenAdapter.height(140),
                       child: Text(
                         '门店地址: ',
                         style: TextStyle(
@@ -235,8 +235,9 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                     Container(
                       alignment: Alignment.topRight,
                       width: ScreenAdapter.width(500),
-                      height: ScreenAdapter.height(90),
+                      height: ScreenAdapter.height(140),
                       child: Text(
+                      //  '电话你副科级安徽的看法几哈大立科技发哈空间大黄蜂科技的恢复了空间划分即可垃圾少得可怜',
                       provide.viewRegistrationInformationModel.shopProduct.addr,
                        //overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -361,7 +362,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
         return Column(
           children: <Widget>[
             SizedBox(
-              height: ScreenAdapter.height(200),
+              height: ScreenAdapter.height(120),
             ),
             GestureDetector(
               onTap: () {
