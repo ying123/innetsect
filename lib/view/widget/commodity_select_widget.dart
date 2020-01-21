@@ -47,8 +47,8 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
       child: new Column(
         children: <Widget>[
           _headerContentWidget(),
-          _detailProvide.commodityModels.skus.length>1?_colorContentWidget():Text(''),
-          _detailProvide.commodityModels.skus.length>1?_sizeContentWidget():Text('')
+          _colorContentWidget(),
+          _sizeContentWidget()
 //          _topContentWidget(),
 //          _bottomContentWidget()
         ],
@@ -78,12 +78,7 @@ class _CommoditySelectContentWidgetState extends State<CommoditySelectContentWid
         int sizeIndex = provide.sizeSkuList.indexWhere((items)=>items.isSelected==true);
         if(index<0&&sizeIndex<0){
           price = provide.commodityModels.salesPriceRange.toString();
-          if(provide.skusModel!=null&&provide.skusModel.features.length>0){
-            title = "已选";
-            size = "\"${provide.skusModel.features[0].featureValue}\"";
-            color = "\"${provide.skusModel.features[1].featureValue}\"";
-            price = provide.commodityModels.salesPrice.toString();
-          }
+
         }
         if(index>-1){
           price = provide.commodityModels.salesPrice.toString();

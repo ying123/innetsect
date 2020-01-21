@@ -742,17 +742,25 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                     ));
                   }else{
                     UserInfoModel userInfoModel = UserTools().getUserInfo();
+                    int prodId = _provide.commodityModels.skus[0].prodID;
+                    String skuPic = _provide.commodityModels.skus[0].skuPic;
+                    String skuName =  _provide.commodityModels.skus[0].skuName;
+                    if(_provide.skusModel.featureGroup!=null){
+                      prodId = _provide.skusModel.prodID;
+                      skuPic = _provide.skusModel.skuPic;
+                      skuName = _provide.skusModel.skuName;
+                    }
                     // 数据结构组装
-                    var url = Uri.encodeComponent("https://proadmin.innersect.net/eshop/stores/shopProductDetail?id=${_provide.skusModel.prodID}&shopId=${_provide.commodityModels.shopID}");
+                    var url = Uri.encodeComponent("https://proadmin.innersect.net/eshop/stores/shopProductDetail?id=$prodId&shopId=${_provide.commodityModels.shopID}");
                     var json={
                       "nickName": userInfoModel.nickName==null?userInfoModel.mobile:userInfoModel.nickName,
                       "peerId":"10052522",
                       "cardInfo":{
                         "left":{
-                          "url": _provide.commodityModels.skuPic
+                          "url": skuPic
                         },
                         "right1":{
-                          "text": _provide.commodityModels.skuName,  // 首行文字内容，展示时超出两行隐藏，卡片上单行隐藏
+                          "text": skuName,  // 首行文字内容，展示时超出两行隐藏，卡片上单行隐藏
                           "color": "#595959",                 // 字体颜色，支持十六位 #ffffff 格式的颜色，不填或错误格式默认#595959
                           "fontSize": 12
                         },

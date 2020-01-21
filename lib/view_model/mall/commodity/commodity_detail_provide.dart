@@ -253,24 +253,7 @@ class CommodityDetailProvide extends BaseProvide {
     if(_orderId!=null) _orderId = null;
     if(_colorSkuList.length>0)_colorSkuList.clear();
     if(_sizeSkuList.length>0)_sizeSkuList.clear();
-    /// 如果颜色和尺寸是一个，则默认选中
-    if(_commodityModels.skus.length==1){
-      _commodityModels.skuName = _commodityModels.skus[0].skuName;
-      _commodityModels.skuCode = _commodityModels.skus[0].skuCode;
-      _commodityModels.skuPic = _commodityModels.skus[0].skuPic;
-      _commodityModels.salesPrice = _commodityModels.skus[0].salesPrice;
-      _commodityModels.originalPrice = _commodityModels.skus[0].originalPrice;
-      _commodityModels.quantity = 1;
-      if(_skusModel==null){
-        _skusModel = new CommoditySkusModel();
-        _skusModel.skuName = _commodityModels.skus[0].skuName;
-        _skusModel.skuCode = _commodityModels.skus[0].skuCode;
-        _skusModel.skuPic = _commodityModels.skus[0].skuPic;
-        _skusModel.pics = _commodityModels.skus[0].pics;
-        _skusModel.features = _commodityModels.skus[0].features;
-        _skusModel.qtyInHand = _commodityModels.skus[0].qtyInHand;
-      }
-    }else{
+
       /// 如果是多个的赋值给颜色和尺码sku-list
       //循环特征list
 //    print(_commodityModels.features);
@@ -305,6 +288,26 @@ class CommodityDetailProvide extends BaseProvide {
           _sizeSkuList.add(skusModels);
         }
       });
+
+    if(_skusModel==null&&_commodityModels.skus.length==1){
+      /// 如果颜色和尺寸是一个，则默认选中
+      _commodityModels.skuName = _commodityModels.skus[0].skuName;
+      _commodityModels.skuCode = _commodityModels.skus[0].skuCode;
+      _commodityModels.skuPic = _commodityModels.skus[0].skuPic;
+      _commodityModels.salesPrice = _commodityModels.skus[0].salesPrice;
+      _commodityModels.originalPrice = _commodityModels.skus[0].originalPrice;
+      _commodityModels.quantity = 1;
+      _skusModel = new CommoditySkusModel();
+      _skusModel.skuName = _commodityModels.skus[0].skuName;
+      _skusModel.skuCode = _commodityModels.skus[0].skuCode;
+      _skusModel.skuPic = _commodityModels.skus[0].skuPic;
+      _skusModel.pics = _commodityModels.skus[0].pics;
+      _skusModel.features = _commodityModels.skus[0].features;
+      _skusModel.qtyInHand = _commodityModels.skus[0].qtyInHand;
+      if(_colorSkuList.length==1 && _sizeSkuList.length==1){
+        _colorSkuList[0].isSelected = true;
+        _sizeSkuList[0].isSelected = true;
+      }
     }
     notifyListeners();
   }
