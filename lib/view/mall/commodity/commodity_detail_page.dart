@@ -292,7 +292,14 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
           if(_price.indexOf("-")>-1){
             _price = models.salesPriceRange.split("-")[0].toString();
           }
-          if(double.parse(_price)<double.parse(models.originalPrice.toString())){
+          if(models.originalPrice==null){
+            return Padding(
+              padding: EdgeInsets.only(left: 10),
+              child:  CustomsWidget().priceTitle(price: models.salesPriceRange.toString(),decoration: TextDecoration.lineThrough,
+                  color: Colors.grey,fontWeight: FontWeight.w400,fontSize: ScreenAdapter.size(20)
+              ),
+            );
+          }else if(double.parse(_price)<double.parse(models.originalPrice.toString())){
             return Padding(
               padding: EdgeInsets.only(left: 10),
               child:  CustomsWidget().priceTitle(price: models.originalPrice.toString(),decoration: TextDecoration.lineThrough,
@@ -745,7 +752,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
                     int prodId = _provide.commodityModels.skus[0].prodID;
                     String skuPic = _provide.commodityModels.skus[0].skuPic;
                     String skuName =  _provide.commodityModels.skus[0].skuName;
-                    if(_provide.skusModel.featureGroup!=null){
+                    if(_provide.skusModel!=null&&_provide.skusModel.features[0]?.featureGroup!=null){
                       prodId = _provide.skusModel.prodID;
                       skuPic = _provide.skusModel.skuPic;
                       skuName = _provide.skusModel.skuName;
