@@ -19,6 +19,7 @@ import 'package:provide/provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+///Y订单详情页
 class OrderDetailPage extends PageProvideNode{
 
   final CommodityAndCartProvide _provide = CommodityAndCartProvide.instance;

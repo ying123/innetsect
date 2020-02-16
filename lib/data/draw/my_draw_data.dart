@@ -18,6 +18,8 @@ class MyDrawDataModel {
   String drawPic;
   String drawName;
   String startTime;
+  int drawAwardType;
+
 
   MyDrawDataModel({
     this.drawID,
@@ -38,6 +40,7 @@ class MyDrawDataModel {
     this.drawPic,
     this.drawName,
     this.startTime,
+    this.drawAwardType,
   });
 
   factory MyDrawDataModel.fromJson(Map<String, dynamic> json) {
@@ -60,6 +63,7 @@ class MyDrawDataModel {
       drawPic: json['drawPic'],
       drawName: json['drawName'],
       startTime: json['startTime'],
+      drawAwardType: json['drawAwardType'],
     
    
     );
@@ -75,15 +79,16 @@ class MyDrawDataModel {
         'icNo': icNo,
         'registerDate': registerDate,
         'picUrl': ipAddr,
-        'picUrl': platform,
-        'picUrl': longitude,
-        'picUrl': latitude,
-        'picUrl': status,
-        'picUrl': expiryTime,
-        'picUrl': remark,
-        'picUrl': drawPic,
-        'picUrl': drawName,
-        'picUrl': startTime,
+        'platform': platform,
+        'longitude': longitude,
+        'latitude': latitude,
+        'status': status,
+        'expiryTime': expiryTime,
+        'remark': remark,
+        'drawPic': drawPic,
+        'drawName': drawName,
+        'startTime': startTime,
+        'drawAwardType': drawAwardType,
       };
 }
 

@@ -32,6 +32,7 @@ class DrawsModel {
   bool valid;
   bool editable;
   bool deletable;
+  bool drawBySku;
  
 
   DrawsModel({
@@ -63,6 +64,7 @@ class DrawsModel {
     this.valid,
     this.editable,
     this.deletable,
+    this.drawBySku,
    
   });
 
@@ -96,6 +98,7 @@ class DrawsModel {
       valid: json['valid'],
       editable: json['editable'],
       deletable: json['deletable'],
+      drawBySku: json['drawBySku'],
    
     );
   }
@@ -129,6 +132,7 @@ class DrawsModel {
         'valid': valid,
         'editable': editable,
         'deletable': deletable,
+        'drawBySku': drawBySku,
       };
 }
 

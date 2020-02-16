@@ -291,7 +291,7 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
           }else if(_detailProvide.skusModel.qtyInHand ==0){
             CustomsWidget().showToast(title: "没有库存");
           }else{
-            // 跳转订单详情
+            // Y跳转订单详情
             List json = [{
               "acctID": UserTools().getUserData()['id'],
               "shopID":_detailProvide.commodityModels.shopID,
@@ -317,14 +317,17 @@ class _CommodityModalChildContentState extends State<CommodityModalChildContent>
               ///加载数据,订单详情
               print('listen data->$item');
               if(item.data!=null){
+                print('==============================>>>>>${item.data}');
                 OrderDetailModel model = OrderDetailModel.fromJson(item.data);
                 _orderDetailProvide.orderDetailModel = model;
+
                 Loading.remove();
                 Navigator.push(context, new MaterialPageRoute(
                     builder: (context){
                       return new OrderDetailPage();
                     })
                 );
+                print('==============>挑战订单详情');
               }
               //      _provide
             }, onError: (e) {

@@ -190,6 +190,10 @@ flutter:
     - assets/images/xiangxia.png
     - assets/images/y场馆地图.png
     - assets/images/my_ordered@3x.png
+    #抽签
+    - assets/images/中签.png
+    - assets/images/未中签.png
+    - assets/images/已过期.png
 
     #新个人中心icon
     - assets/images/newpersonalcentre/购物车@2x.png

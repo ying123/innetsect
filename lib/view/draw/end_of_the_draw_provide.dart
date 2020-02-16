@@ -2,6 +2,7 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/draw/lottery_registration_page.dart';
 import 'package:innetsect/data/draw/pics_data.dart';
 import 'package:innetsect/data/draw/shops_data.dart';
+import 'package:innetsect/data/draw/sku_data.dart';
 import 'package:innetsect/data/draw/steps_data.dart';
 import 'package:innetsect/model/draw/drawshop_model.dart';
 import 'package:rxdart/rxdart.dart';
@@ -47,6 +48,33 @@ class EndOfTheDrawProvide extends BaseProvide {
   set smodel(List<StepsModel> smodel){
     _smodel = smodel;
   }
+///skus数据
+  List<SkusModel> _skus;
+  List<SkusModel> get skus => _skus;
+  set skus(List<SkusModel> sku){
+    _skus = sku;
+  }
+
+  ///抽签奖品ID
+  int _drawProdID;
+  set drawProdID(int drawProdID){
+    _drawProdID = drawProdID;
+  }
+  int get drawProdID=> _drawProdID;
+
+  //是否选择sku
+  bool _drawBySku ;
+  set drawBySku(bool drawBySku){
+    _drawBySku = drawBySku;
+  } 
+  bool get drawBySku => _drawBySku;
+
+///抽签线上线下类型
+  int _drawAwardType;
+  set drawAwardType(int drawAwardType){
+    _drawAwardType = drawAwardType;
+  }
+  int get drawAwardType => _drawAwardType;
   // StepsModel _stepsModel = StepsModel();
   // StepsModel get stepsModel=>_stepsModel;
   // set stupsModel(StepsModel stepsModel){

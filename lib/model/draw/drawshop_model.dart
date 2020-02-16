@@ -8,8 +8,16 @@ class DrawshopService {
 
   /// 添加抽签信息
   Observable<BaseResponse> draws ({dynamic resouce, int drawID}){
+    print('drawID===============>$drawID');
     var url = '/api/promotion/draws/$drawID';
     var response = get(url);
+    return response;
+  }
+  /// 销售订单
+  Observable<BaseResponse> salesOrder ({int drawID}){
+    print('drawID===============>$drawID');
+    var url = '/api/eshop/salesorders/createDrawAwardOrder?drawID=178';
+    var response = post(url);
     return response;
   }
   /// 抽签登记页
@@ -52,6 +60,10 @@ class DrawshopRepo {
   ///抽签登记
   Observable<BaseResponse> drawshop(dynamic resouce , int drawID){
     return _remote.drawshop(resouce,drawID);
+  }
+  ///销售订单
+  Observable<BaseResponse> salesOrder( int drawID){
+    return _remote.salesOrder(drawID: drawID);
   }
 
 }

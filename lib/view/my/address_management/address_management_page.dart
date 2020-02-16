@@ -132,6 +132,10 @@ class _AddressManagementContentPageState
                   AddressModel item = addressProvide.listAddressModel[index];
                   return new InkWell(
                     onTap: (){
+                      print('mapData============>$mapData');
+                      if (mapData == null) {
+                        Navigator.pop(context);
+                      }
                       // 订单详情选中事件
                       if(mapData['pages']=="orderDetail"){
                         // 订单详情
@@ -143,7 +147,7 @@ class _AddressManagementContentPageState
                         _afterServiceProvide.editAddress(item);
                         Navigator.pop(context);
                       }
-                    },
+                   },
                     child: new Container(
                       margin: EdgeInsets.only(left: 20,right: 20),
                       decoration: BoxDecoration(
@@ -275,7 +279,10 @@ class _AddressManagementContentPageState
                     builder: (context) {
                       return NewAddressPage();
                     }
-                ));
+                )
+                ).then((value){
+                  print('provide.listAddressModel=========> ${provide.listAddressModel}');
+                });
               },
               child: Container(
                 width: ScreenAdapter.width(705),

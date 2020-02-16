@@ -74,6 +74,9 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
         print('steps=====>${provide.drawsModel.steps.length}');
         print('shops=====>${provide.drawsModel.shops.length}');
         print('pics====>${provide.drawsModel.pics.length}');
+        print('drawAwardType====>${provide.drawsModel.drawAwardType}');
+        print('drawBySku=========>${provide.drawsModel.drawBySku}');
+        print('skus===============>${provide.drawsModel.shops[0].skus}');
 
         setState(() {
           _loadState = LoadState.State_Success;
@@ -87,7 +90,7 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('抽签'),
+          title:provide.drawsModel.drawAwardType != 0? Text('抽签'):Text('线上抽签'),
           centerTitle: true,
           elevation: 0.0,
           leading: InkWell(
@@ -235,6 +238,8 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                   // Navigator.pushNamed(context, '/drawDetailsPage',arguments: {
                   //   'shopID':provide.drawsModel.shops[index].shopID
                   // });
+
+                  print('drawBySku======================>${provide.drawsModel.drawBySku}');
                   if (AppConfig.userTools.getUserToken() == '' ||
                       AppConfig.userTools.getUserToken() == null) {
                     print('===========>getUserToken为空');
@@ -246,7 +251,12 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                           'shops': provide.drawsModel.shops[index],
                           'longitude': provide.longitude,
                           'latitude': provide.latitude,
-                          'steps': provide.drawsModel.steps
+                          'steps': provide.drawsModel.steps,
+                          'drawAwardType': provide.drawsModel.drawAwardType,
+                          'drawBySku':provide.drawsModel.drawBySku,
+                          'drawProdID':provide.drawsModel.drawProdID,
+                          'suks': provide.drawsModel.shops[index].skus,
+                         
                         });
                   }
                 },

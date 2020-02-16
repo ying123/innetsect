@@ -16,6 +16,7 @@ import 'package:innetsect/view/draw/my_draw_page.dart';
 import 'package:innetsect/view/draw/registered_page.dart';
 import 'package:innetsect/view/draw/registration_information_page.dart';
 import 'package:innetsect/view/draw/registration_successful_page.dart';
+import 'package:innetsect/view/draw/temporary_order_page.dart';
 import 'package:innetsect/view/exhibition/home_portlets_details_page.dart';
 import 'package:innetsect/view/home/home_page.dart';
 import 'package:innetsect/view/hot_spots/hot_spots_home_page.dart';
@@ -29,6 +30,7 @@ import 'package:innetsect/view/mall/search/search_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/mall/series/series_azlist_page.dart';
 import 'package:innetsect/view/my/account_cancellation_page.dart';
+import 'package:innetsect/view/my/address_management/address_management_page.dart';
 import 'package:innetsect/view/my/all/all_page.dart';
 import 'package:innetsect/view/my/profile/profile_page.dart';
 import 'package:innetsect/view/my/settings/draw_activitied_test_page.dart';
@@ -77,6 +79,10 @@ final routes = {
   '/accountCancellationPage':(context)=>AccountCancellationPage(),///账户注销
   '/hotSpotsHomePage':(context,{arguments})=>HotSpotsHomePage(redirectParam: arguments,),///热区
   '/hotTestPage':(context)=>HotTestPage(),///热区测试
+  '/temporaryOrderPage':(context)=>TemporaryOrderPage(),///临时订单也
+  '/addressManagementPage':(context)=>AddressManagementPage(),///临时订单也
+ 
+ 
   //'/hotSpotsHomePage'
 
   ///DrawDetailsPage

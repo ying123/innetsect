@@ -24,6 +24,7 @@ class ShopProductModel {
   bool locatedIn;
   num status;
   bool onlineAwardType;
+ 
   
  
  
@@ -53,6 +54,7 @@ class ShopProductModel {
     this.locatedIn,
     this.status,
     this.onlineAwardType,
+    
     
    
   });

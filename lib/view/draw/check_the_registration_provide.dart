@@ -7,6 +7,20 @@ import 'package:innetsect/model/draw/drawshop_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CheckTheRegistrationProvide extends BaseProvide {
+
+///所选规格
+  String _skuSpecs;
+  String get skuSpecs => _skuSpecs;
+  set skuSpecs(String skuSpecs){
+    _skuSpecs = skuSpecs;
+  }
+
+  ///抽签线上线下类型
+  int _drawAwardType;
+  set drawAwardType(int drawAwardType){
+    _drawAwardType = drawAwardType;
+  }
+  int get drawAwardType => _drawAwardType;
   
   int _id;
   int get id=>_id;
@@ -54,5 +68,17 @@ class CheckTheRegistrationProvide extends BaseProvide {
       });
  
  
+  }
+
+
+  ///销售单
+  Observable salesOrder(int drawId){
+    return _drawshopRepo.salesOrder(drawId).doOnData((item){
+
+    }).doOnError((e, stackTeack){
+
+    }).doOnDone((){
+
+    });
   }
 }

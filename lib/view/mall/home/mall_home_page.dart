@@ -286,9 +286,9 @@ class _MallHomeContentState extends State<MallHomeContent> {
                         }));
                       } else if (_bannersList[index].redirectType ==
                           ConstConfig.DRAW) {
-                        // Navigator.pushNamed(context, '/drawPage',arguments: {
-                        //   'redirectParam':_bannersList[index].redirectParam
-                        // });
+                        Navigator.pushNamed(context, '/drawPage',arguments: {
+                          'redirectParam':_bannersList[index].redirectParam
+                        });
                         _setPermission(index);
                       }
                     },

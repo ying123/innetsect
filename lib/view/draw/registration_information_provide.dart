@@ -1,6 +1,7 @@
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/draw/drawee_data.dart';
 import 'package:innetsect/data/draw/lottery_registration_page.dart';
+import 'package:innetsect/data/draw/sku_data.dart';
 
 import 'package:innetsect/model/draw/drawshop_model.dart';
 import 'package:rxdart/rxdart.dart';
@@ -40,7 +41,48 @@ class RegistrationInformationProvide extends BaseProvide {
 //   }
 
 ///LotteryRegistrationPageModel
-   
+///选择
+  String _selectSkuAndColor = '请选择 颜色 尺码';
+  String get selectSkuAndColor => _selectSkuAndColor;
+  set selectSkuAndColor(String selectSkuAndColor){
+    _selectSkuAndColor = selectSkuAndColor;
+    notifyListeners();
+  }
+
+///选中的sku
+  // String _selectSkuSpecs;
+  // String get selectSkuSpecs => _selectSkuSpecs;
+  // set selectSkuSpecs(String selectSkuSpecs){
+  //   _selectSkuSpecs = selectSkuAndColor;
+  // }
+
+///线上线下 抽签类型
+  int _drawAwardType;
+  int get drawAwardType => _drawAwardType;
+  set drawAwardType(int drawAwardType){
+    _drawAwardType = drawAwardType;
+  }
+
+  ///skus数据
+  List<SkusModel> _skus;
+  List<SkusModel> get skus => _skus;
+  set skus(List<SkusModel> sku){
+    _skus = sku;
+  }
+///选中的SkuSpecs
+  String _selectSkuSpecs;
+  set selectSkuSpecs(String selectSkuSpecs){
+    _selectSkuSpecs = selectSkuSpecs;
+  }
+  String get selectSkuSpecs=>_selectSkuSpecs;
+
+///选中的SkuCode
+  String _selectSkuCode;
+  set selectSkuCode(String selectSkuCode){
+    _selectSkuCode = selectSkuCode;
+  }
+  String get selectSkuCode=>_selectSkuCode;
+
 
 ///姓名
   String _userName;
@@ -91,7 +133,19 @@ set countryCode(String countryCode){
    set latitude(double latitude){
      _latitude = latitude;
   }
+  ///抽签奖品ID
+  int _drawProdID;
+  int get drawProdID => _drawProdID;
+  set drawProdID(int drawProdID){
+    _drawProdID = drawProdID;
+  }
 
+  ///登记时预选Sku
+  bool _drawBySku;
+  bool get drawBySku => _drawBySku;
+  set drawBySku(bool drawBySku){
+    _drawBySku = drawBySku;
+  }
 ///登记
   DrawshopRepo _repo = DrawshopRepo();
   Observable drawshop(){
@@ -114,6 +168,45 @@ set countryCode(String countryCode){
       "platform": platform,
       "longitude": longitude,//经度
       "latitude": latitude,//纬度
+    };
+     print('todatSP ======> ${todatSp[0]}');
+     print('drawID ======> ${lotteryRegistrationPageModel.drawID}');
+     print('shopID ======> ${lotteryRegistrationPageModel.shopID}');
+     print('icNo ======> $certificate');
+    return _repo.drawshop(body, lotteryRegistrationPageModel.drawID).doOnData((item){
+
+    }).doOnError((e,stack){
+
+    }).doOnDone((){
+
+    });
+
+  }
+
+  ///线上登记
+  Observable drawshopNet( String skuCode , String skuSpecs){
+    
+    var today =  DateTime.now();
+    String todatStr = today.toString();
+    List<String> todatSp = todatStr.split('.');
+
+    
+   
+    Map body = {
+      "drawID": lotteryRegistrationPageModel.drawID,
+      "shopID": lotteryRegistrationPageModel.shopID,
+     // "acctID": 1,
+      "realName": userName,
+      "telPrefix":countryCode,
+      "mobile": phoneNumber,
+      "icNo": certificate,
+      "registerDate": todatSp[0],
+      "platform": platform,
+      "longitude": longitude,//经度
+      "latitude": latitude,//纬度
+      "skuCode":skuCode,
+      'skuSpecs':skuSpecs
+
     };
      print('todatSP ======> ${todatSp[0]}');
      print('drawID ======> ${lotteryRegistrationPageModel.drawID}');

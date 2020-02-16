@@ -53,6 +53,8 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
       print('===============>${items.data}');
       if (items.data != null) {
         provide.addDataModel(MyDrawDataModelList.fromJson(items.data).list);
+        print(
+            'drawAwardType===============>${provide.dataModel[0].drawAwardType}');
         setState(() {
           _loadState = LoadState.State_Success;
         });
@@ -121,109 +123,234 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
           itemBuilder: (BuildContext context, int index) {
             return Stack(
               children: <Widget>[
-                Container(
-                  width: ScreenAdapter.width(750),
-                  height: ScreenAdapter.height(305),
-                  child: InkWell(
-                    onTap: (){
-                      print(index);
-                      Navigator.pushNamed(context, '/myDrawInfoPage',arguments: {
-                        'myDrawDataModel':provide.dataModel[index]
-                      });
-                    },
+                InkWell(
+                  onTap: () {
+                    print(index);
+                    Navigator.pushNamed(context, '/myDrawInfoPage', arguments: {
+                      'myDrawDataModel': provide.dataModel[index]
+                    });
+                  },
+                  child: Container(
+                    width: ScreenAdapter.width(750),
+                    height: ScreenAdapter.height(383),
+                    // color: Colors.yellow,
                     child: Center(
                       child: Container(
-                        width: ScreenAdapter.width(690),
-                        height: ScreenAdapter.height(305),
+                        width: ScreenAdapter.width(655),
+                        height: ScreenAdapter.height(383),
                         decoration: BoxDecoration(
                             border: Border(
-                                bottom: BorderSide(color: Colors.black54))),
-                        child: Row(
+                                bottom: BorderSide(color: Colors.black26))),
+                        child: Column(
                           children: <Widget>[
                             Container(
-                              width: ScreenAdapter.width(210),
-                              height: ScreenAdapter.width(210),
-                              child: Image.network(
-                                provide.dataModel[index].drawPic,
-                                fit: BoxFit.contain,
-                                width: ScreenAdapter.width(210),
-                                height: ScreenAdapter.height(210),
+                              width: ScreenAdapter.width(655),
+                              height: ScreenAdapter.height(118),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                provide.dataModel[index].drawName,
+                                style: TextStyle(
+                                    fontSize: ScreenAdapter.size(35),
+                                    fontWeight: FontWeight.w600),
                               ),
                             ),
-                            SizedBox(
-                              width: ScreenAdapter.width(40),
+                            Container(
+                              width: ScreenAdapter.width(655),
+                              height: ScreenAdapter.height(215),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    width: ScreenAdapter.width(215),
+                                    height: ScreenAdapter.height(215),
+                                    child: Image.network(
+                                      provide.dataModel[index].drawPic,
+                                      fit: BoxFit.contain,
+                                      width: ScreenAdapter.width(215),
+                                      height: ScreenAdapter.height(215),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: ScreenAdapter.width(30),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: ScreenAdapter.height(30),
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          provide.dataModel[index].status == 1
+                                              ? '有效期截止于:'
+                                              : "登记时间",
+                                          style: TextStyle(
+                                            fontSize: ScreenAdapter.size(30),
+                                            color: Color.fromRGBO(
+                                                153, 151, 158, 1.0),
+                                            // fontWeight: FontWeight.w600
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: ScreenAdapter.height(10),
+                                      ),
+                                      Container(
+                                        // width: ScreenAdapter.width(418),
+                                        child: Text(
+                                          provide.dataModel[index].status == 1
+                                              ? provide
+                                                  .dataModel[index].expiryTime
+                                              : provide.dataModel[index]
+                                                  .registerDate,
+                                          style: TextStyle(
+                                            fontSize: ScreenAdapter.size(28),
+                                            color: Color.fromRGBO(
+                                                153, 151, 158, 1.0),
+                                            // fontWeight: FontWeight.w600
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: ScreenAdapter.height(38),
+                                      ),
+                                      Container(
+                                        width: ScreenAdapter.width(410),
+                                        height: ScreenAdapter.height(55),
+                                        alignment: Alignment.centerRight,
+                                        child: Container(
+                                          width: ScreenAdapter.width(160),
+                                          height: ScreenAdapter.height(55),
+                                          decoration: BoxDecoration(
+                                              color: Colors.black),
+                                          child: Center(
+                                            child: Text(
+                                              '查看详情',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
-                            Column(
-                              children: <Widget>[
-                                SizedBox(
-                                  height: ScreenAdapter.height(35),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  width: ScreenAdapter.width(418),
-                                  height: ScreenAdapter.height(98),
-                                  child: Text(
-                                    
-                                   provide.dataModel[index].drawName,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      
-                                        fontSize: ScreenAdapter.size(35),
-                                       // fontWeight: FontWeight.w600
-                                        ),
-                                  ),
-                                ),
-                                // SizedBox(
-                                //   height: ScreenAdapter.height(20),
-                                // ),
-                                Container(
-                                  width: ScreenAdapter.width(418),
-                                  child: Text(
-                                    '登记时间:',
-                                    style: TextStyle(
-                                        fontSize: ScreenAdapter.size(30),
-                                        color: Color.fromRGBO(153, 151, 158, 1.0),
-                                       // fontWeight: FontWeight.w600
-                                        ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: ScreenAdapter.height(10),
-                                ),
-                                Container(
-                                  width: ScreenAdapter.width(418),
-                                  child: Text(
-                                    provide.dataModel[index].registerDate,
-                                    style: TextStyle(
-                                        fontSize: ScreenAdapter.size(30),
-                                        color: Color.fromRGBO(153, 151, 158, 1.0),
-                                       // fontWeight: FontWeight.w600
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            )
                           ],
                         ),
                       ),
                     ),
                   ),
                 ),
+
+                // Container(
+                //   width: ScreenAdapter.width(750),
+                //   height: ScreenAdapter.height(305),
+                //   child: InkWell(
+                //     onTap: (){
+                //       print(index);
+                //       Navigator.pushNamed(context, '/myDrawInfoPage',arguments: {
+                //         'myDrawDataModel':provide.dataModel[index]
+                //       });
+                //     },
+                //     child: Center(
+                //       child: Container(
+                //         width: ScreenAdapter.width(690),
+                //         height: ScreenAdapter.height(305),
+                //         decoration: BoxDecoration(
+                //             border: Border(
+                //                 bottom: BorderSide(color: Colors.black54))),
+                //         child: Row(
+                //           children: <Widget>[
+                //             Container(
+                //               width: ScreenAdapter.width(210),
+                //               height: ScreenAdapter.width(210),
+                //               child: Image.network(
+                //                 provide.dataModel[index].drawPic,
+                //                 fit: BoxFit.contain,
+                //                 width: ScreenAdapter.width(210),
+                //                 height: ScreenAdapter.height(210),
+                //               ),
+                //             ),
+                //             SizedBox(
+                //               width: ScreenAdapter.width(40),
+                //             ),
+                //             Column(
+                //               children: <Widget>[
+                //                 SizedBox(
+                //                   height: ScreenAdapter.height(35),
+                //                 ),
+                //                 Container(
+                //                   alignment: Alignment.centerLeft,
+                //                   width: ScreenAdapter.width(418),
+                //                   height: ScreenAdapter.height(98),
+                //                   child: Text(
+
+                //                    provide.dataModel[index].drawName,
+                //                     overflow: TextOverflow.ellipsis,
+                //                     style: TextStyle(
+
+                //                         fontSize: ScreenAdapter.size(35),
+                //                        // fontWeight: FontWeight.w600
+                //                         ),
+                //                   ),
+                //                 ),
+                //                 // SizedBox(
+                //                 //   height: ScreenAdapter.height(20),
+                //                 // ),
+                //                 Container(
+                //                   width: ScreenAdapter.width(418),
+                //                   child: Text(
+                //                     '登记时间:',
+                //                     style: TextStyle(
+                //                         fontSize: ScreenAdapter.size(30),
+                //                         color: Color.fromRGBO(153, 151, 158, 1.0),
+                //                        // fontWeight: FontWeight.w600
+                //                         ),
+                //                   ),
+                //                 ),
+                //                 SizedBox(
+                //                   height: ScreenAdapter.height(10),
+                //                 ),
+                //                 Container(
+                //                   width: ScreenAdapter.width(418),
+                //                   child: Text(
+                //                     provide.dataModel[index].registerDate,
+                //                     style: TextStyle(
+                //                         fontSize: ScreenAdapter.size(30),
+                //                         color: Color.fromRGBO(153, 151, 158, 1.0),
+                //                        // fontWeight: FontWeight.w600
+                //                         ),
+                //                   ),
+                //                 ),
+                //               ],
+                //             )
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Positioned(
                   left: ScreenAdapter.width(560),
                   top: ScreenAdapter.height(90),
                   child: Container(
                     width: ScreenAdapter.width(160),
                     height: ScreenAdapter.width(160),
-                    child: provide.dataModel[index].status == 1
-                        ? Image.asset(//以中签
-                            'assets/images/mall/中签大.png',)
+                    child: provide.dataModel[index].status == 1 //以中签
+                        ? Image.asset(
+                            'assets/images/中签.png',
+                          )
                         : provide.dataModel[index].status == 0
                             ? Container() //已登记
                             : provide.dataModel[index].status == 2
                                 ? Container() //已使用
-                                : provide.dataModel[index].status == -1
-                                    ? Container() //未中签
+                                : provide.dataModel[index].status == -1//未中签
+                                    ? Image.asset(
+                                        'assets/images/未中签.png',
+                                      ) 
                                     : Container(), //其他
                   ),
                 )

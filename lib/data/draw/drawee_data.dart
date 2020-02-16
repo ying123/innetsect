@@ -15,7 +15,9 @@ class DraweeModel {
   num status;
   String expiryTime;
   String remark;
-  
+  String skuCode;
+  String skuSpecs;
+  int drawAwardType;
  
  
 
@@ -35,6 +37,9 @@ class DraweeModel {
     this.status,
     this.expiryTime,
     this.remark,
+    this.skuCode,
+    this.skuSpecs,
+    this.drawAwardType
 
     
    
@@ -57,6 +62,10 @@ class DraweeModel {
       status: json['status'],
       expiryTime: json['expiryTime'],
       remark: json['remark'],
+      skuCode: json['skuCode'],
+      skuSpecs: json['skuSpecs'],
+      drawAwardType: json['drawAwardType'],
+
     
    
     );
@@ -78,6 +87,9 @@ class DraweeModel {
         'expiryTime': expiryTime,
         'remark': remark,
         'ipAddr': ipAddr,
+        'skuCode': skuCode,
+        'skuSpecs': skuSpecs,
+        'drawAwardType': drawAwardType,
        
       };
 }

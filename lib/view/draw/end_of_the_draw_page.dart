@@ -20,9 +20,19 @@ class EndOfTheDrawPage extends PageProvideNode {
     _provide.shopsModel = pics['shops'];
     //_provide.stepsModel = pics['steps'];
     _provide.smodel = pics['steps'];
+    _provide.smodel = pics['steps'];
+    _provide.drawAwardType = pics['drawAwardType'];
+    _provide.drawBySku = pics['drawBySku'];
+    _provide.drawProdID = pics['drawProdID'];
+    _provide.skus = pics['suks'];
+
     print('stepsdrawID========>${_provide.smodel.length}');
     print('stepsstepIdx========>${_provide.smodel}');
     print('stepsstepName========>${_provide.smodel}');
+    print('drawAwardType========>${_provide.drawAwardType}');
+    print('drawBySku========>${_provide.drawBySku}');
+    print('drawProdID========>${_provide.drawProdID}');
+    print('suks========>${_provide.skus}');
 
     print('length====>${_provide.picsList.length}');
     print('shopsModel====>${_provide.shopsModel}');
@@ -155,16 +165,32 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                     'lotteryRegistrationPageModel':
                         provide.lotteryRegistrationPageModel,
                     'longitude': provide.longitude,
-                    'latitude': provide.latitude
+                    'latitude': provide.latitude,
+                    'drawBySku':provide.drawBySku,
+                    'drawProdID':provide.drawProdID,
+                    'skus':provide.skus,
+                    'drawAwardType':provide.drawAwardType,
+
                   });
             }
 
             if (provide.buttonStatus == 0) {
-              Navigator.pushNamed(context, '/checkTheRegistrationPage',
+             if (provide.drawAwardType == 0) {
+                Navigator.pushNamed(context, '/checkTheRegistrationPage',
                   arguments: {
                     'drawID': provide.lotteryRegistrationPageModel.drawID,
                     'shopID': provide.lotteryRegistrationPageModel.shopID,
+                    'drawAwardType':provide.drawAwardType,
+                    
                   });
+             }else{
+                Navigator.pushNamed(context, '/checkTheRegistrationPage',
+                  arguments: {
+                    'drawID': provide.lotteryRegistrationPageModel.drawID,
+                    'shopID': provide.lotteryRegistrationPageModel.shopID,
+                    
+                  });
+             }
             }
             if (provide.buttonStatus == 2) {}
           },

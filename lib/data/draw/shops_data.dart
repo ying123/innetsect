@@ -1,4 +1,6 @@
 
+import 'package:innetsect/data/draw/sku_data.dart';
+
 class ShopsModel {
   num drawID;
   num shopID;
@@ -10,6 +12,8 @@ class ShopsModel {
   String remark;
   num drawStatus;
   num wonQty;
+  List<SkusModel>skus;
+  
   
  
  
@@ -25,7 +29,7 @@ class ShopsModel {
     this.remark,
     this.drawStatus,
     this.wonQty,
-    
+    this.skus
    
   });
 
@@ -41,6 +45,7 @@ class ShopsModel {
       remark: json['remark'],
       drawStatus: json['drawStatus'],
       wonQty: json['wonQty'],
+      skus: json['skus']!=null? SkusModelList.fromJson(json['skus']).list:null,
     
    
     );

@@ -734,6 +734,7 @@ class _CommodityDetailContentState extends State<CommodityDetailContent> with
             flex: 1,
             child: _iconAndTextMerge(title:"客服",icon: "assets/images/mall/service_p_icon.png"
                 ,onTap: (){
+                  print('客服被点击');
                   if(UserTools().getUserToken()==''){
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context){

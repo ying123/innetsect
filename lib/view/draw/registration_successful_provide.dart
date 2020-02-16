@@ -3,6 +3,17 @@ import 'package:innetsect/data/draw/drawee_data.dart';
 
 ///登入成功
 class RegistrationSuccessfulProvide extends BaseProvide {
+
+
+
+///线上线下 抽签类型
+  int _drawAwardType;
+  int get drawAwardType => _drawAwardType;
+  set drawAwardType(int drawAwardType){
+    _drawAwardType = drawAwardType;
+  }
+
+  
   DraweeModel _draweeModel = DraweeModel();
   DraweeModel get draweeModel => _draweeModel;
   set draweeModel(DraweeModel draweeModel) {

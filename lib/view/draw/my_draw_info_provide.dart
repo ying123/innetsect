@@ -40,5 +40,16 @@ class MyDrawInfoProvide extends BaseProvide{
  
  
   }
+///销售单
+  Observable salesOrder(int drawId){
+    return _drawshopRepo.salesOrder(drawId).doOnData((item){
+
+    }).doOnError((e, stackTeack){
+
+    }).doOnDone((){
+
+    });
+  }
+
   
 }

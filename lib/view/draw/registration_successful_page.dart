@@ -14,6 +14,7 @@ class RegistrationSuccessfulPage extends PageProvideNode {
     _provide.draweeModel = draweeModel['draweeModel'];
     _provide.longitude = draweeModel['longitude'];
     _provide.latitude = draweeModel['latitude'];
+    _provide.drawAwardType = draweeModel['drawAwardType'];
 
     print('_provide.draweeModel.drawID=====>${_provide.draweeModel.drawID}');
     print('_provide.draweeModel.shopID=====>${_provide.draweeModel.shopID}');
@@ -96,6 +97,15 @@ class _RegistrationSuccessfulContentPageState
               ),
             ),
             SizedBox(
+              height: ScreenAdapter.height(30),
+            ),
+            Center(
+              child: Text(
+                '温馨提示：本次抽签结果将于${provide.draweeModel.registerDate}在我的中心公布',
+                style: TextStyle(fontSize: ScreenAdapter.size(25)),
+              ),
+            ),
+            SizedBox(
               height: ScreenAdapter.height(135),
             ),
             // Container(
@@ -141,7 +151,8 @@ class _RegistrationSuccessfulContentPageState
                           'drawID': provide.draweeModel.drawID,
                           'shopID': provide.draweeModel.shopID,
                           'longitude': provide.longitude,
-                          'latitude': provide.latitude
+                          'latitude': provide.latitude,
+                          'drawAwardType': provide.drawAwardType
                         });
                   },
                   child: Container(
