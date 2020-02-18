@@ -122,15 +122,17 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           builder: (BuildContext context, Widget child, NewAddressProvide provide) {
                             return TextField(
                               controller: TextEditingController.fromValue(TextEditingValue(
-                                  text: provide.name!=null?provide.name:'',
+                                  text: provide.name!=null&&provide.name.toString().length>0?provide.name:'',
                                   selection: TextSelection.fromPosition(TextPosition(
                                       affinity: TextAffinity.downstream,
-                                      offset: provide.name!=null?provide.name.toString().length:''.length
+                                      offset: provide.name!=null&&provide.name.toString().length>0?provide.name.toString().length:''.length
                                   ))
                               )),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.name:"请输入收货人姓名"
+                                  hintText: widget._addressManagementProvide.addressModel!=null&&
+                                      provide.name!=null&&provide.name.toString().length>0?
+                                  widget._addressManagementProvide.addressModel.name:"请输入收货人姓名"
                               ),
                               onChanged: (text){
                                 provide.name = text;
@@ -162,15 +164,16 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           builder: (BuildContext context, Widget child, NewAddressProvide provide) {
                             return TextField(
                               controller: TextEditingController.fromValue(TextEditingValue(
-                                  text: provide.tel!=null?provide.tel:'',
+                                  text: provide.tel!=null&&provide.tel.toString().length>0?provide.tel:'',
                                   selection: TextSelection.fromPosition(TextPosition(
                                       affinity: TextAffinity.downstream,
-                                      offset: provide.tel!=null?provide.tel.toString().length:''.length
+                                      offset: provide.tel!=null&&provide.tel.toString().length>0?provide.tel.toString().length:''.length
                                   ))
                               )),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.tel:"请输入收货人手机号"
+                                  hintText: widget._addressManagementProvide.addressModel!=null&&
+                                      provide.tel!=null&&provide.tel.toString().length>0?widget._addressManagementProvide.addressModel.tel:"请输入收货人手机号"
                               ),
                               onChanged: (text){
                                 provide.tel=text;
@@ -292,15 +295,16 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                             builder: (BuildContext context, Widget child, NewAddressProvide provide) {
                               return TextField(
                                 controller: TextEditingController.fromValue(TextEditingValue(
-                                    text: provide.addressDetail!=null?provide.addressDetail:'',
+                                    text: provide.addressDetail!=null&&provide.addressDetail.toString().length>0?provide.addressDetail:'',
                                     selection: TextSelection.fromPosition(TextPosition(
                                         affinity: TextAffinity.downstream,
-                                        offset: provide.addressDetail!=null?provide.addressDetail.toString().length:''.length
+                                        offset: provide.addressDetail!=null&&provide.addressDetail.toString().length>0?provide.addressDetail.toString().length:''.length
                                     ))
                                 )),
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: widget._addressManagementProvide.addressModel!=null?widget._addressManagementProvide.addressModel.addressDetail:"请输入详细地址"
+                                    hintText: widget._addressManagementProvide.addressModel!=null
+                                        &&provide.addressDetail!=null&&provide.addressDetail.toString().length>0?widget._addressManagementProvide.addressModel.addressDetail:"请输入详细地址"
                                 ),
                                 onChanged: (text){
                                   provide.addressDetail=text;
@@ -333,7 +337,7 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                           builder: (BuildContext context, Widget child, NewAddressProvide provide) {
                             return TextField(
                               controller: TextEditingController.fromValue(TextEditingValue(
-                                  text: provide.postalCode!=null?provide.postalCode:'',
+                                  text: provide.postalCode!=null&&provide.postalCode.toString().length>0?provide.postalCode:'',
                                   selection: TextSelection.fromPosition(TextPosition(
                                       affinity: TextAffinity.downstream,
                                       offset: provide.postalCode.toString().length
@@ -341,7 +345,8 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                               )),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: widget._addressManagementProvide.addressModel!=null?
+                                  hintText: widget._addressManagementProvide.addressModel!=null
+                                      &&provide.postalCode!=null&&provide.postalCode.toString().length>0?
                                   widget._addressManagementProvide.addressModel.postalCode:"请输入邮政编码"
                               ),
                               onChanged: (text){
@@ -426,7 +431,11 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                 CustomsWidget().showToast(title: "请选择国家地区");
               }else if(provide.addressDetail==null){
                 CustomsWidget().showToast(title: "请填写详细地址");
-              }else if(provide.postalCode==null ||provide.postalCode==""){
+              }else if(provide.countryModel.telPrefix!='86'
+                  &&provide.countryModel.telPrefix!='853'
+                  &&provide.countryModel.telPrefix!='886'
+                  &&provide.countryModel.telPrefix!='852'
+              ){
                 CustomsWidget().showToast(title: "请填写邮政编码");
               } else if(widget._addressManagementProvide.addressModel!=null){
                 provide.createAndEditAddresses(context,isEdit: true,
