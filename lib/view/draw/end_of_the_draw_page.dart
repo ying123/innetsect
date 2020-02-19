@@ -193,6 +193,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                   arguments: {
                     'drawID': provide.lotteryRegistrationPageModel.drawID,
                     'shopID': provide.lotteryRegistrationPageModel.shopID,
+                    'endTime':provide.endTime,
                     
                   });
              }
