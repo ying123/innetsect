@@ -14,6 +14,7 @@ import 'package:provide/provide.dart';
 class MyDrawInfoPage extends PageProvideNode {
   final MyDrawInfoProvide _provide = MyDrawInfoProvide();
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
+  
   final Map myDrawDataModel;
   MyDrawInfoPage({this.myDrawDataModel}) {
     mProviders.provide(Provider<MyDrawInfoProvide>.value(_provide));
@@ -93,37 +94,39 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
         body: LoadStateLayout(
           state: _loadState,
           loadingContent: '加载中...',
-          successWidget: Column(
-            children: <Widget>[
-              _setupHead(),
-              Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(1),
-                color: Colors.black54,
-              ),
-              SizedBox(
-                height: ScreenAdapter.height(20),
-              ),
-              _setupBody(),
-              // provide.dataModel.drawAwardType != 0
-              //     ?
-              _setupEnd()
-              // : provide.dataModel.drawAwardType == 0
-              //     ? provide.dataModel.expiryTime == null ||
-              //             provide.dataModel.expiryTime == ''
-              //         ? _setupEndWaiting()
-              //         : provide.dataModel.drawAwardType == 0 &&
-              //                 provide.dataModel.status == 1
-              //             ? _setupEndBuy()
-              //             : provide.dataModel.drawAwardType == 0 &&
-              //                     provide.dataModel.status == -1
-              //                 ? _setupEndBuyNoCodes()
-              //                 : provide.dataModel.drawAwardType == 0 &&
-              //                         provide.dataModel.status == 0
-              //                     ? _setupEnd()
-              //                     : _setupEndWaiting()
-              //     : Container()
-            ],
+          successWidget: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                _setupHead(),
+                Container(
+                  width: ScreenAdapter.width(690),
+                  height: ScreenAdapter.height(1),
+                  color: Colors.black54,
+                ),
+                SizedBox(
+                  height: ScreenAdapter.height(20),
+                ),
+                _setupBody(),
+                // provide.dataModel.drawAwardType != 0
+                //     ?
+                _setupEnd()
+                // : provide.dataModel.drawAwardType == 0
+                //     ? provide.dataModel.expiryTime == null ||
+                //             provide.dataModel.expiryTime == ''
+                //         ? _setupEndWaiting()
+                //         : provide.dataModel.drawAwardType == 0 &&
+                //                 provide.dataModel.status == 1
+                //             ? _setupEndBuy()
+                //             : provide.dataModel.drawAwardType == 0 &&
+                //                     provide.dataModel.status == -1
+                //                 ? _setupEndBuyNoCodes()
+                //                 : provide.dataModel.drawAwardType == 0 &&
+                //                         provide.dataModel.status == 0
+                //                     ? _setupEnd()
+                //                     : _setupEndWaiting()
+                //     : Container()
+              ],
+            ),
           ),
         ));
   }
@@ -246,319 +249,321 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
   Provide<MyDrawInfoProvide> _setupBody() {
     return Provide<MyDrawInfoProvide>(
       builder: (BuildContext context, Widget child, MyDrawInfoProvide provide) {
-        return Column(
-          children: <Widget>[
-            Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(65),
-                child: Row(
-                  children: <Widget>[
-                    provide.viewRegistrationInformationModel.drawee
-                                .drawAwardType ==
-                            0
-                        ? Text(
-                            '姓名: ',
-                            style: TextStyle(
-                                fontSize: ScreenAdapter.size(30),
-                                color: Colors.black54),
-                          )
-                        : Text(
-                            '购买门店: ',
-                            style: TextStyle(
-                                fontSize: ScreenAdapter.size(30),
-                                color: Colors.black54),
-                          ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    provide.viewRegistrationInformationModel.drawee
-                                .drawAwardType ==
-                            0
-                        ? Text(
-                            provide.viewRegistrationInformationModel.drawee
-                                .realName,
-                            style: TextStyle(
-                                fontSize: ScreenAdapter.size(30),
-                                color: Colors.black54),
-                          )
-                        : Text(
-                            provide.viewRegistrationInformationModel.shopProduct
-                                .shopName,
-                            style: TextStyle(
-                                fontSize: ScreenAdapter.size(30),
-                                color: Colors.black54),
-                          ),
-                  ],
-                )),
-            provide.viewRegistrationInformationModel.drawee.drawAwardType == 0
-                ? Container()
-                : SizedBox(
-                    height: ScreenAdapter.height(30),
-                  ),
-            provide.viewRegistrationInformationModel.drawee.drawAwardType == 0
-                ? Container()
-                : Container(
-                    width: ScreenAdapter.width(690),
-                    height: ScreenAdapter.height(140),
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          height: ScreenAdapter.height(140),
-                          child: Text(
-                            '门店地址: ',
-                            style: TextStyle(
-                                fontSize: ScreenAdapter.size(30),
-                                color: Colors.black54),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(),
-                        ),
-                        provide.viewRegistrationInformationModel.drawee
-                                    .drawAwardType ==
-                                0
-                            ? Container()
-                            : Container(
-                                alignment: Alignment.topRight,
-                                width: ScreenAdapter.width(500),
-                                height: ScreenAdapter.height(140),
-                                child: Text(
-                                  //  '电话你副科级安徽的看法几哈大立科技发哈空间大黄蜂科技的恢复了空间划分即可垃圾少得可怜',
-                                  provide.viewRegistrationInformationModel
-                                      .shopProduct.addr,
-                                  //overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: ScreenAdapter.size(30),
-                                      color: Colors.black54),
-                                ),
-                              ),
-                      ],
-                    )),
-            SizedBox(
-              height: ScreenAdapter.height(30),
-            ),
-            Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(65),
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      '手机号: ',
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(30),
-                          color: Colors.black54),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Text(
-                      '+' +
-                          provide.dataModel.telPrefix +
-                          provide.dataModel.mobile,
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(30),
-                          color: Colors.black54),
-                    ),
-                  ],
-                )),
-            SizedBox(
-              height: ScreenAdapter.height(30),
-            ),
-            Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(65),
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      '有效证件: ',
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(30),
-                          color: Colors.black54),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Text(
-                      provide.dataModel.icNo,
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(30),
-                          color: Colors.black54),
-                    ),
-                  ],
-                )),
-            SizedBox(
-              height: ScreenAdapter.height(30),
-            ),
-            provide.viewRegistrationInformationModel.drawee.drawAwardType == 0
-                ? Container(
-                    width: ScreenAdapter.width(690),
-                    height: ScreenAdapter.height(65),
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          '所选规格: ',
-                          style: TextStyle(
-                              fontSize: ScreenAdapter.size(30),
-                              color: Colors.black54),
-                        ),
-                        Expanded(
-                          child: Container(),
-                        ),
-                        Text(
-                          provide
-                              .viewRegistrationInformationModel.drawee.skuSpecs,
-                          style: TextStyle(
-                              fontSize: ScreenAdapter.size(30),
-                              color: Colors.black54),
-                        ),
-                      ],
-                    ))
-                : Container(),
-            SizedBox(
-              height: ScreenAdapter.height(30),
-            ),
-            Container(
-                width: ScreenAdapter.width(690),
-                height: ScreenAdapter.height(65),
-                child: Row(
-                  children: <Widget>[
-                    Text(
-                      '登记时间: ',
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(30),
-                          color: Colors.black54),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Text(
-                      provide.dataModel.registerDate,
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.size(30),
-                          color: Colors.black54),
-                    ),
-                  ],
-                )),
-            SizedBox(
-              height: ScreenAdapter.height(30),
-            ),
-            provide.viewRegistrationInformationModel.drawee.drawAwardType != 0
-                ? Container(
-                    width: ScreenAdapter.width(690),
-                    height: ScreenAdapter.height(65),
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          '购买开始时间: ',
-                          style: TextStyle(
-                              fontSize: ScreenAdapter.size(30),
-                              color: Colors.black54),
-                        ),
-                        Expanded(
-                          child: Container(),
-                        ),
-                        Text(
-                          provide.viewRegistrationInformationModel.shopProduct
-                              .startBuyingTime,
-                          style: TextStyle(
-                              fontSize: ScreenAdapter.size(30),
-                              color: Colors.black54),
-                        ),
-                      ],
-                    ))
-                : provide.viewRegistrationInformationModel.drawee
-                            .drawAwardType ==
-                        0
-                    ? provide.viewRegistrationInformationModel.drawee
-                                .expiryTime ==
-                            null
-                        ? Container()
-                        : Container(
-                            width: ScreenAdapter.width(690),
-                            height: ScreenAdapter.height(65),
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                  '有效期截至: ',
-                                  style: TextStyle(
-                                      fontSize: ScreenAdapter.size(30),
-                                      color: Colors.black54),
-                                ),
-                                Expanded(
-                                  child: Container(),
-                                ),
-                                Text(
-                                  provide.viewRegistrationInformationModel
-                                      .drawee.expiryTime,
-                                  style: TextStyle(
-                                      fontSize: ScreenAdapter.size(30),
-                                      color: Colors.black54),
-                                ),
-                              ],
+        return Container(
+          child: Column(
+            children: <Widget>[
+              Container(
+                  width: ScreenAdapter.width(690),
+                  height: ScreenAdapter.height(65),
+                  child: Row(
+                    children: <Widget>[
+                      provide.viewRegistrationInformationModel.drawee
+                                  .drawAwardType ==
+                              0
+                          ? Text(
+                              '姓名: ',
+                              style: TextStyle(
+                                  fontSize: ScreenAdapter.size(30),
+                                  color: Colors.black54),
+                            )
+                          : Text(
+                              '购买门店: ',
+                              style: TextStyle(
+                                  fontSize: ScreenAdapter.size(30),
+                                  color: Colors.black54),
                             ),
-                          )
-                    : Container(),
-            Container(
-                alignment: Alignment.center,
-                child: provide.dataModel.status == 1 &&
-                        provide.dataModel.expired == false
-                    ? Image.asset(
-                        'assets/images/中签.png',
-                        width: ScreenAdapter.width(170),
-                        height: ScreenAdapter.height(170),
-                      )
-                    : provide.dataModel.status == 1 &&
-                            provide.dataModel.expired == true
-                        ? Image.asset(
-                            'assets/images/已过期.png',
-                            width: ScreenAdapter.width(170),
-                            height: ScreenAdapter.height(170),
-                          )
-                        : provide.dataModel.status == -1 &&
-                                provide.dataModel.expired == false
-                            ? Image.asset(
-                                'assets/images/未中签.png',
-                                width: ScreenAdapter.width(170),
-                                height: ScreenAdapter.height(170),
-                              )
-                            : provide.dataModel.status == -1 &&
-                                    provide.dataModel.expired == true
-                                ? Image.asset(
-                                    'assets/images/已过期.png',
-                                    width: ScreenAdapter.width(170),
-                                    height: ScreenAdapter.height(170),
-                                  )
-                                : provide.dataModel.status == 2
-                                    ? Image.asset(
-                                        'assets/images/已使用.png',
-                                        width: ScreenAdapter.width(170),
-                                        height: ScreenAdapter.height(170),
-                                      )
-                                    : Container(
-                                        height: ScreenAdapter.height(170),
-                                      )
+                      Expanded(
+                        child: Container(),
+                      ),
+                      provide.viewRegistrationInformationModel.drawee
+                                  .drawAwardType ==
+                              0
+                          ? Text(
+                              provide.viewRegistrationInformationModel.drawee
+                                  .realName,
+                              style: TextStyle(
+                                  fontSize: ScreenAdapter.size(30),
+                                  color: Colors.black54),
+                            )
+                          : Text(
+                              provide.viewRegistrationInformationModel.shopProduct
+                                  .shopName,
+                              style: TextStyle(
+                                  fontSize: ScreenAdapter.size(30),
+                                  color: Colors.black54),
+                            ),
+                    ],
+                  )),
+              provide.viewRegistrationInformationModel.drawee.drawAwardType == 0
+                  ? Container()
+                  : SizedBox(
+                      height: ScreenAdapter.height(30),
+                    ),
+              provide.viewRegistrationInformationModel.drawee.drawAwardType == 0
+                  ? Container()
+                  : Container(
+                      width: ScreenAdapter.width(690),
+                      height: ScreenAdapter.height(140),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            height: ScreenAdapter.height(140),
+                            child: Text(
+                              '门店地址: ',
+                              style: TextStyle(
+                                  fontSize: ScreenAdapter.size(30),
+                                  color: Colors.black54),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          provide.viewRegistrationInformationModel.drawee
+                                      .drawAwardType ==
+                                  0
+                              ? Container()
+                              : Container(
+                                  alignment: Alignment.topRight,
+                                  width: ScreenAdapter.width(500),
+                                  height: ScreenAdapter.height(140),
+                                  child: Text(
+                                    //  '电话你副科级安徽的看法几哈大立科技发哈空间大黄蜂科技的恢复了空间划分即可垃圾少得可怜',
+                                    provide.viewRegistrationInformationModel
+                                        .shopProduct.addr,
+                                    //overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: ScreenAdapter.size(30),
+                                        color: Colors.black54),
+                                  ),
+                                ),
+                        ],
+                      )),
+              SizedBox(
+                height: ScreenAdapter.height(30),
+              ),
+              Container(
+                  width: ScreenAdapter.width(690),
+                  height: ScreenAdapter.height(65),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        '手机号: ',
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(30),
+                            color: Colors.black54),
+                      ),
+                      Expanded(
+                        child: Container(),
+                      ),
+                      Text(
+                        '+' +
+                            provide.dataModel.telPrefix +
+                            provide.dataModel.mobile,
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(30),
+                            color: Colors.black54),
+                      ),
+                    ],
+                  )),
+              SizedBox(
+                height: ScreenAdapter.height(30),
+              ),
+              Container(
+                  width: ScreenAdapter.width(690),
+                  height: ScreenAdapter.height(65),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        '有效证件: ',
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(30),
+                            color: Colors.black54),
+                      ),
+                      Expanded(
+                        child: Container(),
+                      ),
+                      Text(
+                        provide.dataModel.icNo,
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(30),
+                            color: Colors.black54),
+                      ),
+                    ],
+                  )),
+              SizedBox(
+                height: ScreenAdapter.height(30),
+              ),
+              provide.viewRegistrationInformationModel.drawee.drawAwardType == 0
+                  ? Container(
+                      width: ScreenAdapter.width(690),
+                      height: ScreenAdapter.height(65),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            '所选规格: ',
+                            style: TextStyle(
+                                fontSize: ScreenAdapter.size(30),
+                                color: Colors.black54),
+                          ),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          Text(
+                            provide
+                                .viewRegistrationInformationModel.drawee.skuSpecs,
+                            style: TextStyle(
+                                fontSize: ScreenAdapter.size(30),
+                                color: Colors.black54),
+                          ),
+                        ],
+                      ))
+                  : Container(),
+              SizedBox(
+                height: ScreenAdapter.height(30),
+              ),
+              Container(
+                  width: ScreenAdapter.width(690),
+                  height: ScreenAdapter.height(65),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        '登记时间: ',
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(30),
+                            color: Colors.black54),
+                      ),
+                      Expanded(
+                        child: Container(),
+                      ),
+                      Text(
+                        provide.dataModel.registerDate,
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(30),
+                            color: Colors.black54),
+                      ),
+                    ],
+                  )),
+              SizedBox(
+                height: ScreenAdapter.height(30),
+              ),
+              provide.viewRegistrationInformationModel.drawee.drawAwardType != 0
+                  ? Container(
+                      width: ScreenAdapter.width(690),
+                      height: ScreenAdapter.height(65),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            '购买开始时间: ',
+                            style: TextStyle(
+                                fontSize: ScreenAdapter.size(30),
+                                color: Colors.black54),
+                          ),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          Text(
+                            provide.viewRegistrationInformationModel.shopProduct
+                                .startBuyingTime,
+                            style: TextStyle(
+                                fontSize: ScreenAdapter.size(30),
+                                color: Colors.black54),
+                          ),
+                        ],
+                      ))
+                  : provide.viewRegistrationInformationModel.drawee
+                              .drawAwardType ==
+                          0
+                      ? provide.viewRegistrationInformationModel.drawee
+                                  .expiryTime ==
+                              null
+                          ? Container()
+                          : provide.viewRegistrationInformationModel.drawee.status == 0? Container(): Container(
+                              width: ScreenAdapter.width(690),
+                              height: ScreenAdapter.height(65),
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                    '有效期截至: ',
+                                    style: TextStyle(
+                                        fontSize: ScreenAdapter.size(30),
+                                        color: Colors.black54),
+                                  ),
+                                  Expanded(
+                                    child: Container(),
+                                  ),
+                                  Text(
+                                    provide.viewRegistrationInformationModel
+                                        .drawee.expiryTime,
+                                    style: TextStyle(
+                                        fontSize: ScreenAdapter.size(30),
+                                        color: Colors.black54),
+                                  ),
+                                ],
+                              ),
+                            )
+                      : Container(),
+              Container(
+                  alignment: Alignment.center,
+                  child: provide.dataModel.status == 1 &&
+                          provide.dataModel.expired == false
+                      ? Image.asset(
+                          'assets/images/中签.png',
+                          width: ScreenAdapter.width(170),
+                          height: ScreenAdapter.height(170),
+                        )
+                      : provide.dataModel.status == 1 &&
+                              provide.dataModel.expired == true
+                          ? Image.asset(
+                              'assets/images/已过期.png',
+                              width: ScreenAdapter.width(170),
+                              height: ScreenAdapter.height(170),
+                            )
+                          : provide.dataModel.status == -1 &&
+                                  provide.dataModel.expired == false
+                              ? Image.asset(
+                                  'assets/images/未中签.png',
+                                  width: ScreenAdapter.width(170),
+                                  height: ScreenAdapter.height(170),
+                                )
+                              : provide.dataModel.status == -1 &&
+                                      provide.dataModel.expired == true
+                                  ? Image.asset(
+                                      'assets/images/已过期.png',
+                                      width: ScreenAdapter.width(170),
+                                      height: ScreenAdapter.height(170),
+                                    )
+                                  : provide.dataModel.status == 2
+                                      ? Image.asset(
+                                          'assets/images/已使用.png',
+                                          width: ScreenAdapter.width(170),
+                                          height: ScreenAdapter.height(170),
+                                        )
+                                      : Container(
+                                          height: ScreenAdapter.height(170),
+                                        )
 
-                // : provide.dataModel.status == -1
-                //     ? Image.asset(
-                //         'assets/images/未中签.png',
-                //         width: ScreenAdapter.width(170),
-                //         height: ScreenAdapter.height(170),
-                //       )
-                //     : provide.dataModel.status == 0 && provide.viewRegistrationInformationModel.drawee.expired == true
-                //         ? Container(
-                //             height: ScreenAdapter.height(170),
-                //             child: Image.asset(
-                //             'assets/images/已过期.png',
-                //             width: ScreenAdapter.width(170),
-                //             height: ScreenAdapter.height(170),
-                //           ),
-                //           )
-                //         : Container(
-                //           height: ScreenAdapter.height(170),
-                //         )
+                  // : provide.dataModel.status == -1
+                  //     ? Image.asset(
+                  //         'assets/images/未中签.png',
+                  //         width: ScreenAdapter.width(170),
+                  //         height: ScreenAdapter.height(170),
+                  //       )
+                  //     : provide.dataModel.status == 0 && provide.viewRegistrationInformationModel.drawee.expired == true
+                  //         ? Container(
+                  //             height: ScreenAdapter.height(170),
+                  //             child: Image.asset(
+                  //             'assets/images/已过期.png',
+                  //             width: ScreenAdapter.width(170),
+                  //             height: ScreenAdapter.height(170),
+                  //           ),
+                  //           )
+                  //         : Container(
+                  //           height: ScreenAdapter.height(170),
+                  //         )
 
-                )
-          ],
+                  )
+            ],
+          ),
         );
       },
     );
@@ -613,6 +618,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                           OrderDetailModel.fromJson(items.data);
                       print('===========>$model');
                       orderDetailProvide.orderDetailModel = model;
+                      orderDetailProvide.skuSpecs = provide.viewRegistrationInformationModel.drawee.skuSpecs;
+                      orderDetailProvide.prodName = provide.viewRegistrationInformationModel.shopProduct.prodName;
 
                       Navigator.pushNamed(context, '/orderDetailPage'
                           // arguments: {

@@ -102,12 +102,16 @@ class _OrderContentState extends State<OrderContent> {
                 ),),
               ),
               // orderType==2\3
-              isShowToast?
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    child: Text("恭喜您已成功抢到${_orderDetailProvide.orderDetailModel.orderSummary}",
-                    style: TextStyle(color: AppConfig.blueBtnColor),),
-                  ):Container(width: 0,height: 0,),
+
+
+              // isShowToast?
+              //     Container(
+              //       padding: EdgeInsets.all(20),
+              //       child: Text("恭喜您已成功抢到${_orderDetailProvide.orderDetailModel.orderSummary}",
+              //       style: TextStyle(color: AppConfig.blueBtnColor),),
+              //     ):Container(width: 0,height: 0,),
+
+              
               // 商品总价
               _orderCountWidget(),
               // 底部

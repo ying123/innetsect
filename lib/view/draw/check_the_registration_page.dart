@@ -468,7 +468,7 @@ class _CheckTheRegistrationContentPageState
                                 fontSize: ScreenAdapter.size(30),
                                 color: Colors.black54),
                           )
-                        : Text(
+                        :provide.viewRegistrationInformationModel.drawee.status == 0 ? Container(): Text(
                             '有效期截至: ',
                             style: TextStyle(
                                 fontSize: ScreenAdapter.size(30),
@@ -487,7 +487,7 @@ class _CheckTheRegistrationContentPageState
                                 fontSize: ScreenAdapter.size(30),
                                 color: Colors.black54),
                           )
-                        : Text(
+                        :provide.viewRegistrationInformationModel.drawee.status == 0 ? Container():  Text(
                             provide.viewRegistrationInformationModel.shopProduct
                                 .expiryTime,
                             style: TextStyle(
