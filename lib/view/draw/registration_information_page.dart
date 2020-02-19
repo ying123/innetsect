@@ -862,13 +862,16 @@ class _RegistrationInformationContentPageState
                           print('items.message======>${items.message}');
                         });
                       } else {
+                        
                         provide
                             .drawshop()
                             .doOnListen(() {})
                             .doOnError((e, stack) {})
                             .doOnDone(() {})
                             .listen((items) {
+                          print('线下==============》');
                           print('items.data====>${items.data}');
+
                           if (items.data != null) {
                             if (provide.drawAwardType != 0) {
                               provide.draweeModel =
@@ -879,9 +882,11 @@ class _RegistrationInformationContentPageState
                                   arguments: {
                                     'draweeModel': provide.draweeModel,
                                     'longitude': provide.longitude,
-                                    'latitude': provide.latitude
+                                    'latitude': provide.latitude,
+                                     "endTime": provide.endTime,
                                   });
                             } else {
+                              print('=============>>>线下');
                               provide.draweeModel =
                                   DraweeModel.fromJson(items.data);
                               Navigator.pop(context);

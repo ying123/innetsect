@@ -541,6 +541,12 @@ class _CheckTheRegistrationContentPageState
                     // Navigator.pushNamedAndRemoveUntil(
                     //     context, '/mallPage', (route) => route == null);
                   }
+                  if (provide.viewRegistrationInformationModel.drawee.drawAwardType !=0 && provide.viewRegistrationInformationModel.drawee.status ==
+                      0) {
+                    //已登记
+                    // Navigator.pushNamedAndRemoveUntil(
+                    //     context, '/mallPage', (route) => route == null);
+                  }
                   if (provide.viewRegistrationInformationModel.drawee
                               .drawAwardType ==
                           0 &&
@@ -563,6 +569,7 @@ class _CheckTheRegistrationContentPageState
                       }
                     });
                   }
+
                   if (provide.viewRegistrationInformationModel.drawee.status ==
                       2) {
                     //已使用
@@ -604,19 +611,24 @@ class _CheckTheRegistrationContentPageState
                               provide.viewRegistrationInformationModel.drawee
                                       .status ==
                                   0
-                          ? Color.fromRGBO(242, 242, 242, 1)
+                          ? Color.fromRGBO(242, 242, 242, 1) 
+                          : provide.viewRegistrationInformationModel.drawee
+                                      .drawAwardType !=
+                                  0 && provide.viewRegistrationInformationModel.drawee
+                                      .status ==
+                                  0 ? Color.fromRGBO(242, 242, 242, 1) 
                           : Colors.black,
                       child: Center(
                           child: provide.viewRegistrationInformationModel.drawee
                                       .drawAwardType !=
-                                  0
+                                  0 && provide.viewRegistrationInformationModel.drawee.status == 0
                               ? Text(
-                                  '返回',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: ScreenAdapter.size(30),
-                                      fontWeight: FontWeight.w800),
-                                )
+                                      '等待结果',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: ScreenAdapter.size(30),
+                                          fontWeight: FontWeight.w600),
+                                    )
                               : provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
                                       provide.viewRegistrationInformationModel
                                               .drawee.status ==
