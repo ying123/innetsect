@@ -26,28 +26,28 @@
 
         android:usesCleartextTraffic="true"-->
     <application
+        android:allowBackup="false"
         android:name=".MyApplication"
         android:label="innersect"
         android:icon="@mipmap/ic_launcher"
-        android:allowBackup="true"
         tools:replace="android:allowBackup,android:label,android:icon"
         tools:ignore="GoogleAppIndexingWarning"
         android:usesCleartextTraffic="true"
         >
 
-        <meta-data
-            android:name="com.alibaba.app.appkey"
-            android:value="28181634" /> <!-- release -->
-        <meta-data
-            android:name="com.alibaba.app.appsecret"
-            android:value="baf0e25523f2d0311eac9a53f8126924" />
-
 <!--        <meta-data-->
 <!--            android:name="com.alibaba.app.appkey"-->
-<!--            android:value="28189103" /> &lt;!&ndash; 请填写你自己的- appKey &ndash;&gt;-->
+<!--            android:value="28181634" /> &lt;!&ndash; release &ndash;&gt;-->
 <!--        <meta-data-->
 <!--            android:name="com.alibaba.app.appsecret"-->
-<!--            android:value="261c3132a0fa660c5ab9a51f36717e6b" />-->
+<!--            android:value="baf0e25523f2d0311eac9a53f8126924" />-->
+
+        <meta-data
+            android:name="com.alibaba.app.appkey"
+            android:value="28189103" /> <!-- 请填写你自己的- appKey -->
+        <meta-data
+            android:name="com.alibaba.app.appsecret"
+            android:value="261c3132a0fa660c5ab9a51f36717e6b" />
 
         <meta-data
             android:name="com.huawei.hms.client.appid"

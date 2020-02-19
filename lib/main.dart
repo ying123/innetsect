@@ -107,7 +107,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     });
     rammus.onNotificationOpened.listen((data){
+      print(data);
       print("-----------> ${data.summary} 被点了");
+//      if(_bannersList[index].redirectType==ConstConfig.URL){
+//        /// 跳转URL
+//        Navigator.push(context, MaterialPageRoute(
+//            builder: (context){
+//              return new WebView(url: _bannersList[index].redirectParam,);
+//            }
+//        ));
+//      }
       /// 跳转商品详情
 //      if(_bannersList[index].redirectType==ConstConfig.PRODUCT_DETAIL){
 //        List list = _bannersList[index].redirectParam.split(":");
@@ -123,14 +132,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 //              return new InforWebPage();
 //            }
 //        ));
-//      }else if(_bannersList[index].redirectType==ConstConfig.URL){
-//        /// 跳转URL
-//        Navigator.push(context, MaterialPageRoute(
-//            builder: (context){
-//              return new WebView(url: _bannersList[index].redirectParam,);
-//            }
-//        ));
-//      }else if(_bannersList[index].redirectType == ConstConfig.ACTIVITY){
+//      }else else if(_bannersList[index].redirectType == ConstConfig.ACTIVITY){
 //        Navigator.push(context, MaterialPageRoute(
 //            builder: (context){
 //              return ActivityDetailPage(activityID: int.parse(_bannersList[index].redirectParam),);
@@ -160,6 +162,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     try {
      String deviceId =  await rammus.deviceId;
      print("deviceId=======>>>>$deviceId");
+     //c9095149f890469194cd31338cf9d80b
+     rammus.bindAccount(deviceId);
+     rammus.bindTag(target: rammus.CloudPushServiceTarget.DEVICE_TARGET,
+     tags: [deviceId],alias:deviceId);
     } on PlatformException {
     }
 
