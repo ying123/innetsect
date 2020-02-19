@@ -18,6 +18,7 @@ class DraweeModel {
   String skuCode;
   String skuSpecs;
   int drawAwardType;
+  bool expired;
  
  
 
@@ -39,7 +40,8 @@ class DraweeModel {
     this.remark,
     this.skuCode,
     this.skuSpecs,
-    this.drawAwardType
+    this.drawAwardType,
+    this.expired
 
     
    
@@ -65,6 +67,7 @@ class DraweeModel {
       skuCode: json['skuCode'],
       skuSpecs: json['skuSpecs'],
       drawAwardType: json['drawAwardType'],
+      expired: json['expired'],
 
     
    
@@ -90,6 +93,7 @@ class DraweeModel {
         'skuCode': skuCode,
         'skuSpecs': skuSpecs,
         'drawAwardType': drawAwardType,
+        'expired': expired,
        
       };
 }

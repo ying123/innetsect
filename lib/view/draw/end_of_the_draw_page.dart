@@ -25,6 +25,7 @@ class EndOfTheDrawPage extends PageProvideNode {
     _provide.drawBySku = pics['drawBySku'];
     _provide.drawProdID = pics['drawProdID'];
     _provide.skus = pics['suks'];
+    _provide.endTime = pics['endTime'];
 
     print('stepsdrawID========>${_provide.smodel.length}');
     print('stepsstepIdx========>${_provide.smodel}');
@@ -33,6 +34,7 @@ class EndOfTheDrawPage extends PageProvideNode {
     print('drawBySku========>${_provide.drawBySku}');
     print('drawProdID========>${_provide.drawProdID}');
     print('suks========>${_provide.skus}');
+    print('endTime========>${_provide.endTime}');
 
     print('length====>${_provide.picsList.length}');
     print('shopsModel====>${_provide.shopsModel}');
@@ -95,7 +97,8 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
         } else if (provide.lotteryRegistrationPageModel.status == 2) {
           provide.buttonName = '已结束';
         } else if (provide.lotteryRegistrationPageModel.status == 1) {
-          print('=====>${provide.lotteryRegistrationPageModel.locatedIn}');
+          print('locatedIn=================>${provide.lotteryRegistrationPageModel.locatedIn}');
+        //  print('=====>${provide.lotteryRegistrationPageModel.locatedIn}');
           if (provide.lotteryRegistrationPageModel.locatedIn) {
             if (provide.lotteryRegistrationPageModel.registered) {
               provide.buttonName = '查看登记';
@@ -121,7 +124,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('抽签'),
+        title: provide.drawAwardType== 0?Text('线上抽签') : Text('抽签'),
         centerTitle: true,
         elevation: 0.0,
         leading: InkWell(
@@ -170,6 +173,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                     'drawProdID':provide.drawProdID,
                     'skus':provide.skus,
                     'drawAwardType':provide.drawAwardType,
+                    'endTime':provide.endTime,
 
                   });
             }
@@ -181,6 +185,7 @@ class _EndOfTheDrawContentPageState extends State<EndOfTheDrawContentPage> {
                     'drawID': provide.lotteryRegistrationPageModel.drawID,
                     'shopID': provide.lotteryRegistrationPageModel.shopID,
                     'drawAwardType':provide.drawAwardType,
+                    'endTime':provide.endTime,
                     
                   });
              }else{

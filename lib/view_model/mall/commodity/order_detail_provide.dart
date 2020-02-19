@@ -5,6 +5,20 @@ import 'package:innetsect/data/order_detail_model.dart';
 
 class OrderDetailProvide extends BaseProvide {
 
+
+
+  String _prodName;
+  String get prodName => _prodName;
+  set prodName(String prodName){
+    _prodName = prodName;
+  }
+
+  String _skuSpecs;
+  String get skuSpecs => _skuSpecs;
+  set skuSpecs(String skuSpecs){
+    _skuSpecs = skuSpecs;
+  }
+
   OrderDetailModel _orderDetailModel;
   String _pages;
   String get pages => _pages;
@@ -19,6 +33,7 @@ class OrderDetailProvide extends BaseProvide {
     _orderDetailModel = model;
     notifyListeners();
   }
+
 
   /// 修改收货地址
   void editAddress(AddressModel model){

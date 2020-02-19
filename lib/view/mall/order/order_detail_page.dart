@@ -26,12 +26,15 @@ class OrderDetailPage extends PageProvideNode{
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
   final LogisticsProvide _logisticsProvide = LogisticsProvide.instance;
-
-  OrderDetailPage(){
+  final Map drawData;
+  OrderDetailPage({this.drawData}){
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_provide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<OrderDetailProvide>.value(_orderDetailProvide));
     mProviders.provide(Provider<LogisticsProvide>.value(_logisticsProvide));
+    print('drawData ===========> $drawData');
+    // _orderDetailProvide.prodName = drawData['prodName'];
+    // _orderDetailProvide.skuSpecs = drawData['skuSpecs'];
   }
 
   @override
@@ -87,6 +90,17 @@ class _OrderContentState extends State<OrderContent> {
               _addressWidget(),
               // 订单详情
               _orderDetailWidget(),
+              _orderDetailProvide.prodName == null
+              ? Container()
+              : Container(
+                margin: EdgeInsets.only(left: ScreenAdapter.width(30)),
+                alignment: Alignment.centerLeft,
+                width: ScreenAdapter.width(750),
+                height: ScreenAdapter.height(100),
+                child: Text('恭喜您已成功抢到${_orderDetailProvide.prodName}:${_orderDetailProvide.skuSpecs}',style: TextStyle(
+                  color: Color.fromRGBO(154, 163, 184, 1.0),fontSize: ScreenAdapter.size(28)
+                ),),
+              ),
               // orderType==2\3
               isShowToast?
                   Container(
@@ -273,7 +287,7 @@ class _OrderContentState extends State<OrderContent> {
             }
           }, onError: (e) {});
         }
-      },child: new Text("支付"),
+      },child: new Text("提交订单"),
     );
   }
 

@@ -27,6 +27,7 @@ class RegistrationInformationPage extends PageProvideNode {
     _provide.drawProdID = lotteryRegistrationPageModel['drawProdID'];
     _provide.skus = lotteryRegistrationPageModel['skus'];
     _provide.drawAwardType = lotteryRegistrationPageModel['drawAwardType'];
+    _provide.endTime = lotteryRegistrationPageModel['endTime'];
 
     print('longitude=============>${_provide.longitude}');
     print('latitude=============>${_provide.latitude}');
@@ -34,6 +35,7 @@ class RegistrationInformationPage extends PageProvideNode {
     print('drawProdID=============>${_provide.drawProdID}');
     print('skus=============>${_provide.skus}');
     print('drawAwardType=============>${_provide.drawAwardType}');
+    print('endTime=============>${_provide.endTime}');
     print('登记信息');
   }
 
@@ -327,7 +329,7 @@ class _RegistrationInformationContentPageState
                             children: <Widget>[
                               Text(
                                 provide.selectSkuAndColor == '请选择 颜色 尺码'
-                                    ? "'请选择 颜色 尺码'"
+                                    ? "请选择 颜色 尺码"
                                     : "已选：${provide.selectSkuAndColor}",
                                 style:
                                     TextStyle(fontSize: ScreenAdapter.size(28)),
@@ -430,13 +432,14 @@ class _RegistrationInformationContentPageState
                                           provide.selectSkuAndColor =
                                               value.skuSpecs;
                                           provide.selectSkuCode = value.skuCode;
-                                          provide.selectSkuSpecs = value.skuSpecs;
+                                          provide.selectSkuSpecs =
+                                              value.skuSpecs;
                                           print(
                                               'skuSpecs================>>>>>=====> $selectSkuSpecs');
                                         });
                                       },
                                       child: Container(
-                                        width: ScreenAdapter.width(163),
+                                        width: ScreenAdapter.width(680 / 4),
                                         height: ScreenAdapter.height(80),
                                         decoration: BoxDecoration(
                                             border:
@@ -455,7 +458,7 @@ class _RegistrationInformationContentPageState
                                                   ScreenAdapter.width(128 / 3),
                                               child: Image.network(
                                                 value.skuPic,
-                                                fit: BoxFit.cover,
+                                                fit: BoxFit.contain,
                                               ),
                                             ),
                                             Container(
@@ -486,7 +489,7 @@ class _RegistrationInformationContentPageState
                                   width: ScreenAdapter.width(20),
                                 ),
                                 Text(
-                                  limitMaxQty.toString(),
+                                  '1',
                                   style: TextStyle(
                                       fontSize: ScreenAdapter.size(30)),
                                 ),
@@ -505,9 +508,15 @@ class _RegistrationInformationContentPageState
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.pop(
-                                  context,
-                                );
+                                if (selectSkuSpecs == null) {
+                                  Fluttertoast.showToast(
+                                      msg: '请选择颜色和尺码',
+                                      gravity: ToastGravity.CENTER);
+                                } else {
+                                  Navigator.pop(
+                                    context,
+                                  );
+                                }
                               },
                               child: Container(
                                 width: ScreenAdapter.width(680),
@@ -602,7 +611,18 @@ class _RegistrationInformationContentPageState
                   Fluttertoast.showToast(
                       msg: '请输入手机号码', gravity: ToastGravity.CENTER);
                 } else {
-                  _showCallPhoneDialog();
+                  if (provide.drawAwardType == 0) {
+                    print('线上抽签');
+                    if (provide.selectSkuSpecs == null) {
+                      Fluttertoast.showToast(msg: '请选择尺码',gravity: ToastGravity.CENTER);
+                    }else{
+                        _showNetCallPhoneDialog();
+                    }
+                    
+                  } else {
+                    _showCallPhoneDialog();
+                  }
+                  // print('provide.draweeModel.drawAwardType========>${provide.draweeModel.drawAwardType}');
                 }
               },
               child: Container(
@@ -630,6 +650,7 @@ class _RegistrationInformationContentPageState
     );
   }
 
+  ///线下抽签提示
   void _showCallPhoneDialog() {
     showDialog(
         context: context,
@@ -829,15 +850,13 @@ class _RegistrationInformationContentPageState
                           if (items.data != null) {
                             provide.draweeModel =
                                 DraweeModel.fromJson(items.data);
-                           Navigator.pop(context);
+                            Navigator.pop(context);
                             Navigator.pushNamed(
                                 context, '/registrationSuccessfulPage',
                                 arguments: {
                                   'draweeModel': provide.draweeModel,
                                   'longitude': provide.longitude,
                                   'latitude': provide.latitude,
-                                  
-                                  
                                 });
                           }
                           print('items.message======>${items.message}');
@@ -853,17 +872,272 @@ class _RegistrationInformationContentPageState
                           if (items.data != null) {
                             if (provide.drawAwardType != 0) {
                               provide.draweeModel =
-                                DraweeModel.fromJson(items.data);
-                            Navigator.pop(context);
-                            Navigator.pushNamed(
-                                context, '/registrationSuccessfulPage',
-                                arguments: {
-                                  'draweeModel': provide.draweeModel,
-                                  'longitude': provide.longitude,
-                                  'latitude': provide.latitude
-                                });
-                            }else{
+                                  DraweeModel.fromJson(items.data);
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, '/registrationSuccessfulPage',
+                                  arguments: {
+                                    'draweeModel': provide.draweeModel,
+                                    'longitude': provide.longitude,
+                                    'latitude': provide.latitude
+                                  });
+                            } else {
                               provide.draweeModel =
+                                  DraweeModel.fromJson(items.data);
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, '/registrationSuccessfulPage',
+                                  arguments: {
+                                    'draweeModel': provide.draweeModel,
+                                    'longitude': provide.longitude,
+                                    'latitude': provide.latitude,
+                                    'drawAwardType': provide.drawAwardType
+                                  });
+                            }
+                          }
+                          print('items.message======>${items.message}');
+                        });
+                      }
+                    },
+                    child: Container(
+                      width: ScreenAdapter.width(530),
+                      height: ScreenAdapter.height(90),
+                      color: Colors.black,
+                      child: Center(
+                        child: Text(
+                          '提交',
+                          style: TextStyle(
+                              color: Colors.white,
+                              decorationColor: Colors.black,
+                              fontSize: ScreenAdapter.size(30)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: ScreenAdapter.height(20),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  ///线上抽签提示
+  void _showNetCallPhoneDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return Center(
+            child: Container(
+              width: ScreenAdapter.width(580),
+              height: ScreenAdapter.height(580),
+              color: Colors.white,
+              child: Column(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: ScreenAdapter.height(20), right: ScreenAdapter.width(20)),
+                      alignment: Alignment.centerRight,
+                      child: Icon(Icons.clear),
+                    
+                    ),
+                  ),
+                  Container(
+                    width: ScreenAdapter.width(580),
+                    height: ScreenAdapter.height(50),
+                    child: Center(
+                      child: Text(
+                        '登记信息',
+                        style: TextStyle(
+                            fontSize: ScreenAdapter.size(40),
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                            decorationColor: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: ScreenAdapter.height(20),
+                  ),
+                  provide.drawBySku == true
+                      ? Container()
+                      : Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: ScreenAdapter.width(40),
+                            ),
+                            Container(
+                              child: Text(
+                                '购买门店: ${provide.lotteryRegistrationPageModel.shopName}',
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  decorationColor: Colors.white,
+                                  fontSize: ScreenAdapter.size(30),
+                                  fontWeight: FontWeight.w100,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                  provide.drawBySku == true
+                      ? Container()
+                      : SizedBox(
+                          height: ScreenAdapter.height(20),
+                        ),
+                  provide.drawBySku == true
+                      ? Container()
+                      : Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: ScreenAdapter.width(40),
+                            ),
+                            Container(
+                              //   width: ScreenAdapter.width(500),
+                              child: Container(
+                                  child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    height: ScreenAdapter.height(180),
+                                    alignment: Alignment.topRight,
+                                    child: Text(
+                                      '门店地址:',
+                                      //textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        decorationColor: Colors.white,
+                                        fontSize: ScreenAdapter.size(30),
+                                        fontWeight: FontWeight.w100,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: ScreenAdapter.width(400),
+                                    height: ScreenAdapter.height(180),
+                                    child: Text(
+                                      '${provide.lotteryRegistrationPageModel.addr}',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        decorationColor: Colors.white,
+                                        fontSize: ScreenAdapter.size(30),
+                                        fontWeight: FontWeight.w100,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ],
+                        ),
+                  SizedBox(
+                    height: ScreenAdapter.height(20),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(
+                        width: ScreenAdapter.width(40),
+                      ),
+                      Container(
+                        child: Text(
+                          '姓名: ${provide.userName}',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: ScreenAdapter.height(20),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(
+                        width: ScreenAdapter.width(40),
+                      ),
+                      Container(
+                        child: Text(
+                          '身份证号: ${provide.certificate}',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: ScreenAdapter.height(20),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(
+                        width: ScreenAdapter.width(40),
+                      ),
+                      Container(
+                        child: Text(
+                          '电话: ${provide.phoneNumber}',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(
+                    height: ScreenAdapter.height(20),
+                  ),
+
+                  Row(
+                    children: <Widget>[
+                      SizedBox(
+                        width: ScreenAdapter.width(40),
+                      ),
+                      Container(
+                        child: Text(
+                          '所选颜色/尺码: ${provide.selectSkuAndColor}',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            decorationColor: Colors.white,
+                            fontSize: ScreenAdapter.size(30),
+                            fontWeight: FontWeight.w100,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // SizedBox(
+                  //   height: ScreenAdapter.height(35),
+                  // ),
+                  Expanded(child: Container()),
+                  GestureDetector(
+                    onTap: () {
+                      if (provide.drawAwardType == 0) {
+                        ///线上抽签
+                        provide
+                            .drawshopNet(
+                                provide.selectSkuCode, provide.selectSkuSpecs)
+                            .doOnListen(() {})
+                            .doOnError((e, stack) {})
+                            .doOnDone(() {})
+                            .listen((items) {
+                          print('items.data====>${items.data}');
+                          if (items.data != null) {
+                            provide.draweeModel =
                                 DraweeModel.fromJson(items.data);
                             Navigator.pop(context);
                             Navigator.pushNamed(
@@ -872,8 +1146,43 @@ class _RegistrationInformationContentPageState
                                   'draweeModel': provide.draweeModel,
                                   'longitude': provide.longitude,
                                   'latitude': provide.latitude,
-                                  'drawAwardType':provide.drawAwardType
+                                  "endTime": provide.endTime,
                                 });
+                          }
+                          print('items.message======>${items.message}');
+                        });
+                      } else {
+                        provide
+                            .drawshop()
+                            .doOnListen(() {})
+                            .doOnError((e, stack) {})
+                            .doOnDone(() {})
+                            .listen((items) {
+                          print('items.data====>${items.data}');
+                          if (items.data != null) {
+                            if (provide.drawAwardType != 0) {
+                              provide.draweeModel =
+                                  DraweeModel.fromJson(items.data);
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, '/registrationSuccessfulPage',
+                                  arguments: {
+                                    'draweeModel': provide.draweeModel,
+                                    'longitude': provide.longitude,
+                                    'latitude': provide.latitude
+                                  });
+                            } else {
+                              provide.draweeModel =
+                                  DraweeModel.fromJson(items.data);
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, '/registrationSuccessfulPage',
+                                  arguments: {
+                                    'draweeModel': provide.draweeModel,
+                                    'longitude': provide.longitude,
+                                    'latitude': provide.latitude,
+                                    'drawAwardType': provide.drawAwardType
+                                  });
                             }
                           }
                           print('items.message======>${items.message}');

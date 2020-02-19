@@ -286,9 +286,11 @@ class _MallHomeContentState extends State<MallHomeContent> {
                         }));
                       } else if (_bannersList[index].redirectType ==
                           ConstConfig.DRAW) {
-                        Navigator.pushNamed(context, '/drawPage',arguments: {
-                          'redirectParam':_bannersList[index].redirectParam
-                        });
+                            print('===========>draw');
+                        // Navigator.pushNamed(context, '/drawPage',arguments: {
+                        //   'redirectParam':_bannersList[index].redirectParam
+                        // });
+                        //获取百度定位授权
                         _setPermission(index);
                       }
                     },
@@ -343,7 +345,14 @@ class _MallHomeContentState extends State<MallHomeContent> {
         Fluttertoast.showToast(msg: '授权成功', gravity: ToastGravity.CENTER);
         Navigator.pushNamed(context, '/drawPage',
             arguments: {'redirectParam': _bannersList[index].redirectParam});
+      } else if (map.values.toList()[0] == PermissionStatus.granted){
+        Fluttertoast.showToast(msg: '授权成功', gravity: ToastGravity.CENTER);
+        Navigator.pushNamed(context, '/drawPage',
+            arguments: {'redirectParam': _bannersList[index].redirectParam});
       }
+    }else{
+      Navigator.pushNamed(context, '/drawPage',
+            arguments: {'redirectParam': _bannersList[index].redirectParam});
     }
   }
 

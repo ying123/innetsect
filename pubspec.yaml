@@ -194,6 +194,7 @@ flutter:
     - assets/images/中签.png
     - assets/images/未中签.png
     - assets/images/已过期.png
+    - assets/images/已使用.png
 
     #新个人中心icon
     - assets/images/newpersonalcentre/购物车@2x.png

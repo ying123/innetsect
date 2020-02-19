@@ -13,6 +13,14 @@ class RegistrationSuccessfulProvide extends BaseProvide {
     _drawAwardType = drawAwardType;
   }
 
+   ///登记结束时间
+  String _endTime;
+  String get endTime=>_endTime;
+  set endTime(String endTime){
+    _endTime = endTime;
+  }
+
+
   
   DraweeModel _draweeModel = DraweeModel();
   DraweeModel get draweeModel => _draweeModel;

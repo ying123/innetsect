@@ -60,8 +60,8 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
     print("location.locationDescribe======${location.locationDescribe}");
     print("location.latitude======${location.latitude}");
     print("location.longitude======${location.longitude}");
-    provide.longitude = location.longitude;
-    provide.latitude = location.latitude;
+    // provide.longitude = location.longitude;
+    // provide.latitude = location.latitude;
 
     return location;
   }
@@ -256,6 +256,7 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                           'drawBySku':provide.drawsModel.drawBySku,
                           'drawProdID':provide.drawsModel.drawProdID,
                           'suks': provide.drawsModel.shops[index].skus,
+                          'endTime':provide.drawsModel.endTime,
                          
                         });
                   }

@@ -182,8 +182,10 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                                       ),
                                       Container(
                                         child: Text(
-                                          provide.dataModel[index].status == 1
+                                          provide.dataModel[index].status == 1 || provide.dataModel[index].status == 2
                                               ? '有效期截止于:'
+                                              :provide.dataModel[index].status == -1 && provide.dataModel[index].expired == true
+                                              ?'有效期截止于'
                                               : "登记时间",
                                           style: TextStyle(
                                             fontSize: ScreenAdapter.size(30),
@@ -199,10 +201,13 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                                       Container(
                                         // width: ScreenAdapter.width(418),
                                         child: Text(
-                                          provide.dataModel[index].status == 1
+                                          provide.dataModel[index].status == 1|| provide.dataModel[index].status == 2
                                               ? provide
                                                   .dataModel[index].expiryTime
-                                              : provide.dataModel[index]
+                                              :provide.dataModel[index].status == -1 && provide.dataModel[index].expired == true ?
+                                               provide
+                                                  .dataModel[index].expiryTime:
+                                              provide.dataModel[index]
                                                   .registerDate,
                                           style: TextStyle(
                                             fontSize: ScreenAdapter.size(28),
@@ -337,22 +342,61 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                   left: ScreenAdapter.width(560),
                   top: ScreenAdapter.height(90),
                   child: Container(
-                    width: ScreenAdapter.width(160),
-                    height: ScreenAdapter.width(160),
-                    child: provide.dataModel[index].status == 1 //以中签
-                        ? Image.asset(
-                            'assets/images/中签.png',
-                          )
-                        : provide.dataModel[index].status == 0
-                            ? Container() //已登记
-                            : provide.dataModel[index].status == 2
-                                ? Container() //已使用
-                                : provide.dataModel[index].status == -1//未中签
-                                    ? Image.asset(
-                                        'assets/images/未中签.png',
-                                      ) 
-                                    : Container(), //其他
-                  ),
+                      width: ScreenAdapter.width(160),
+                      height: ScreenAdapter.width(160),
+                      child: provide.dataModel[index].status == 0 
+                        ? Container() 
+                        :provide.dataModel[index].status == 1 && provide.dataModel[index].expired == true
+                         ? Image.asset(
+                              'assets/images/已过期.png',
+                            )
+                         :provide.dataModel[index].status == 1 && provide.dataModel[index].expired == false
+                         ?Image.asset(
+                               'assets/images/中签.png',
+                            )
+                          :provide.dataModel[index].status == 2 
+                          ?Image.asset(
+                                'assets/images/已使用.png',
+                             )
+                            :provide.dataModel[index].status == -2
+                            ?Container()
+                            :provide.dataModel[index].status == -1 && provide.dataModel[index].expired == true
+                            ?Image.asset(
+                                 'assets/images/已过期.png',
+                              )
+                              :provide.dataModel[index].status == -1 && provide.dataModel[index].expired ==false ?
+                              Image.asset(
+                                 'assets/images/未中签.png',
+                              ):Container()
+                             ,
+                      // child: provide.dataModel[index].status == 1 &&
+                      //         provide.dataModel[index].expired == true //以中签
+                      //     ? Image.asset(
+                      //         'assets/images/已过期.png',
+                      //       )
+                      //     : provide.dataModel[index].status == 0 &&
+                      //             provide.dataModel[index].expired == true
+                      //         ? Image.asset(
+                      //             'assets/images/已过期.png',
+                      //           ) //已登记
+                      //         : provide.dataModel[index].status == 2
+                      //             ? Image.asset(
+                      //                 'assets/images/已使用.png',
+                      //               ) //已使用
+                      //             : provide.dataModel[index].status == -1 //未中签
+                      //                 ? Image.asset(
+                      //                     'assets/images/未中签.png',
+                      //                   )
+                      //                 : provide.dataModel[index].status == 1 &&
+                      //                         provide.dataModel[index]
+                      //                                 .expired ==
+                      //                             false
+                      //                     ? Image.asset(
+                      //                         'assets/images/中签.png',
+                      //                       )
+                      //                     : Container()
+                      //其他
+                      ),
                 )
               ],
             );

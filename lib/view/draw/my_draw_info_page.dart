@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
 import 'package:innetsect/data/draw/view_registration_information.dart';
@@ -56,14 +57,14 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
       //ShopProductModel
       //ShopProductModel shopProduct;
     }).listen((items) {
-      print('items.data=====>${items.data}');
+      // print('items.data=====>${items.data}');
       if (items.data != null) {
         provide.viewRegistrationInformationModel =
             ViewRegistrationInformationModel.fromJson(items.data);
-        print(
-            'DraweeModel=======>${provide.viewRegistrationInformationModel.drawee.shopID}');
-        print(
-            'ShopProductModel=======>${provide.viewRegistrationInformationModel.shopProduct.shopID}');
+        // print(
+        //     'DraweeModel=======>${provide.viewRegistrationInformationModel.drawee.shopID}');
+        // print(
+        //     'ShopProductModel=======>${provide.viewRegistrationInformationModel.shopProduct.shopID}');
         setState(() {
           _loadState = LoadState.State_Success;
         });
@@ -76,7 +77,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('中签详情'),
+          title: Text('抽签详情'),
           centerTitle: true,
           elevation: 0.0,
           leading: InkWell(
@@ -104,23 +105,24 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                 height: ScreenAdapter.height(20),
               ),
               _setupBody(),
-              provide.dataModel.drawAwardType != 0
-                  ? _setupEnd()
-                  : provide.dataModel.drawAwardType == 0
-                      ? provide.dataModel.expiryTime == null ||
-                              provide.dataModel.expiryTime == ''
-                          ? _setupEndWaiting()
-                          : provide.dataModel.drawAwardType == 0 &&
-                                  provide.dataModel.status == 1
-                              ? _setupEndBuy()
-                              : provide.dataModel.drawAwardType == 0 &&
-                                      provide.dataModel.status == -1
-                                  ? _setupEndBuyNoCodes()
-                                  : provide.dataModel.drawAwardType == 0 &&
-                                          provide.dataModel.status == 0
-                                      ? _setupEndWaiting()
-                                      : Container()
-                      : Container()
+              // provide.dataModel.drawAwardType != 0
+              //     ?
+              _setupEnd()
+              // : provide.dataModel.drawAwardType == 0
+              //     ? provide.dataModel.expiryTime == null ||
+              //             provide.dataModel.expiryTime == ''
+              //         ? _setupEndWaiting()
+              //         : provide.dataModel.drawAwardType == 0 &&
+              //                 provide.dataModel.status == 1
+              //             ? _setupEndBuy()
+              //             : provide.dataModel.drawAwardType == 0 &&
+              //                     provide.dataModel.status == -1
+              //                 ? _setupEndBuyNoCodes()
+              //                 : provide.dataModel.drawAwardType == 0 &&
+              //                         provide.dataModel.status == 0
+              //                     ? _setupEnd()
+              //                     : _setupEndWaiting()
+              //     : Container()
             ],
           ),
         ));
@@ -134,57 +136,106 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
           children: <Widget>[
             Container(
               width: ScreenAdapter.width(750),
-              height: ScreenAdapter.height(300),
-              child: Row(
+              height: ScreenAdapter.height(260),
+              child: Column(
                 children: <Widget>[
-                  SizedBox(
-                    width: ScreenAdapter.width(30),
-                  ),
                   Container(
-                    width: ScreenAdapter.width(210),
-                    height: ScreenAdapter.height(210),
-                    child: Image.network(
-                      provide.viewRegistrationInformationModel.shopProduct.prodPic,
-                      fit: BoxFit.contain,
+                    width: ScreenAdapter.width(690),
+                    height: ScreenAdapter.height(80),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      provide.viewRegistrationInformationModel.shopProduct
+                          .prodName,
+                      style: TextStyle(
+                        fontSize: ScreenAdapter.size(30),
+                        // fontWeight: FontWeight.w700
+                      ),
                     ),
                   ),
-                  SizedBox(
-                    width: ScreenAdapter.width(40),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        width: ScreenAdapter.width(400),
-                        child: Text(
-                          provide.dataModel.drawName,
-                          style: TextStyle(
-                            fontSize: ScreenAdapter.size(30),
-                            // fontWeight: FontWeight.w700
+                  Container(
+                    width: ScreenAdapter.width(690),
+                    height: ScreenAdapter.height(150),
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: ScreenAdapter.width(20),
+                        ),
+                        Container(
+                          width: ScreenAdapter.width(126),
+                          height: ScreenAdapter.width(126),
+                          child: Image.network(
+                            provide.viewRegistrationInformationModel.shopProduct
+                                .prodPic,
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: ScreenAdapter.height(10),
-                      ),
-                      SizedBox(
-                        height: ScreenAdapter.height(30),
-                      ),
-                      Container(
-                        width: ScreenAdapter.width(400),
-                        child: Text(
+                        SizedBox(
+                          width: ScreenAdapter.width(65),
+                        ),
+                        Text(
                           '${provide.viewRegistrationInformationModel.shopProduct.shopName}   |   ￥${provide.viewRegistrationInformationModel.shopProduct.prodPrice}',
                           style: TextStyle(
-                              fontSize: ScreenAdapter.size(30),
-                              color: Colors.black54
-                              //fontWeight: FontWeight.w700
-                              ),
+                            fontSize: ScreenAdapter.size(30),
+                            //               color: Color.fromRGBO(160, 160, 160, 1.0),
+                            //               //    fontWeight: FontWeight.w700
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   )
                 ],
               ),
+              // child: Row(
+              //   children: <Widget>[
+              //     SizedBox(
+              //       width: ScreenAdapter.width(30),
+              //     ),
+              //     Container(
+              //       width: ScreenAdapter.width(210),
+              //       height: ScreenAdapter.height(210),
+              //       child: Image.network(
+              //         provide.viewRegistrationInformationModel.shopProduct.prodPic,
+              //         fit: BoxFit.contain,
+              //       ),
+              //     ),
+              //     SizedBox(
+              //       width: ScreenAdapter.width(40),
+              //     ),
+              //     Column(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: <Widget>[
+              //         Container(
+              //           width: ScreenAdapter.width(400),
+              //           child: Text(
+              //             provide.dataModel.drawName,
+              //             style: TextStyle(
+              //               fontSize: ScreenAdapter.size(30),
+              //               // fontWeight: FontWeight.w700
+              //             ),
+              //           ),
+              //         ),
+              //         SizedBox(
+              //           height: ScreenAdapter.height(10),
+              //         ),
+              //         SizedBox(
+              //           height: ScreenAdapter.height(30),
+              //         ),
+              //         Container(
+              //           width: ScreenAdapter.width(400),
+              //           child: Text(
+              //             '${provide.viewRegistrationInformationModel.shopProduct.shopName}   |   ￥${provide.viewRegistrationInformationModel.shopProduct.prodPrice}',
+              //             style: TextStyle(
+              //                 fontSize: ScreenAdapter.size(30),
+              //                 color: Colors.black54
+              //                 //fontWeight: FontWeight.w700
+              //                 ),
+              //           ),
+              //         ),
+              //       ],
+              //     )
+              //   ],
+              // ),
             ),
           ],
         );
@@ -449,27 +500,64 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                     : Container(),
             Container(
                 alignment: Alignment.center,
-                child: provide.dataModel.status == 1
+                child: provide.dataModel.status == 1 &&
+                        provide.dataModel.expired == false
                     ? Image.asset(
                         'assets/images/中签.png',
                         width: ScreenAdapter.width(170),
                         height: ScreenAdapter.height(170),
                       )
-                    : provide.dataModel.status == -1
+                    : provide.dataModel.status == 1 &&
+                            provide.dataModel.expired == true
                         ? Image.asset(
-                            'assets/images/未中签.png',
+                            'assets/images/已过期.png',
                             width: ScreenAdapter.width(170),
                             height: ScreenAdapter.height(170),
                           )
-                        : provide.dataModel.status == 0
-                            ? Container(
-                                height: ScreenAdapter.height(170),
-                              )
-                            : Image.asset(
-                                'assets/images/已过期.png',
+                        : provide.dataModel.status == -1 &&
+                                provide.dataModel.expired == false
+                            ? Image.asset(
+                                'assets/images/未中签.png',
                                 width: ScreenAdapter.width(170),
                                 height: ScreenAdapter.height(170),
-                              ))
+                              )
+                            : provide.dataModel.status == -1 &&
+                                    provide.dataModel.expired == true
+                                ? Image.asset(
+                                    'assets/images/已过期.png',
+                                    width: ScreenAdapter.width(170),
+                                    height: ScreenAdapter.height(170),
+                                  )
+                                : provide.dataModel.status == 2
+                                    ? Image.asset(
+                                        'assets/images/已使用.png',
+                                        width: ScreenAdapter.width(170),
+                                        height: ScreenAdapter.height(170),
+                                      )
+                                    : Container(
+                                        height: ScreenAdapter.height(170),
+                                      )
+
+                // : provide.dataModel.status == -1
+                //     ? Image.asset(
+                //         'assets/images/未中签.png',
+                //         width: ScreenAdapter.width(170),
+                //         height: ScreenAdapter.height(170),
+                //       )
+                //     : provide.dataModel.status == 0 && provide.viewRegistrationInformationModel.drawee.expired == true
+                //         ? Container(
+                //             height: ScreenAdapter.height(170),
+                //             child: Image.asset(
+                //             'assets/images/已过期.png',
+                //             width: ScreenAdapter.width(170),
+                //             height: ScreenAdapter.height(170),
+                //           ),
+                //           )
+                //         : Container(
+                //           height: ScreenAdapter.height(170),
+                //         )
+
+                )
           ],
         );
       },
@@ -487,20 +575,153 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                // _loadState = LoadState.State_Loading;
+
+                // Navigator.pop(context);
+                if (provide.dataModel.drawAwardType != 0 &&
+                    provide.dataModel.status == 0) {
+                  //线下已登记
+                  // Navigator.pop(context);
+                }
+                if (provide.dataModel.drawAwardType == 0 &&
+                    provide.dataModel.status == 0) {
+                  //线上已登记
+
+                }
+                if (provide.dataModel.drawAwardType != 0 &&
+                    provide.dataModel.status == 0) {
+                  //线下中签
+                  Navigator.pop(context);
+                }
+                if (provide.dataModel.drawAwardType == 0 &&
+                    provide.dataModel.status == 1 &&
+                    provide.dataModel.expired == false) {
+                  //线上已中签
+
+                  Fluttertoast.showToast(
+                      msg: '加载中...', gravity: ToastGravity.CENTER);
+
+                  provide
+                      .salesOrder(provide
+                          .viewRegistrationInformationModel.drawee.drawID)
+                      .doOnListen(() {})
+                      .doOnError((e, stack) {})
+                      .listen((items) {
+                    print('items===============>${items.data}');
+                    if (items.data != null) {
+                      OrderDetailModel model =
+                          OrderDetailModel.fromJson(items.data);
+                      print('===========>$model');
+                      orderDetailProvide.orderDetailModel = model;
+
+                      Navigator.pushNamed(context, '/orderDetailPage'
+                          // arguments: {
+                          //   'prodName': provide.viewRegistrationInformationModel
+                          //       .shopProduct.prodName,
+                          //   'skuSpecs': provide.viewRegistrationInformationModel
+                          //       .drawee.skuSpecs
+                          // }
+                          );
+                      // setState(() {
+                      //   _loadState = LoadState.State_Success;
+                      // });
+                    }
+                  });
+                }
+                if (provide.dataModel.drawAwardType == 0 &&
+                    provide.dataModel.status == 1 &&
+                    provide.dataModel.expired == true) {
+                  ///线上已过期
+                  Navigator.pop(context);
+                }
+                if (provide.dataModel.drawAwardType == 0 &&
+                    provide.dataModel.status == -1) {
+                  ///线上未中签
+                  Navigator.pop(context);
+                }
+                if (provide.dataModel.drawAwardType != 0 &&
+                    provide.dataModel.status == -1) {
+                  //线下未中签
+                  Navigator.pop(context);
+                }
+                if (provide.dataModel.drawAwardType != 0 &&
+                    provide.dataModel.status == 2) {
+                  //线下已使用
+                  Navigator.pop(context);
+                }
+                if (provide.dataModel.drawAwardType == 0 &&
+                    provide.dataModel.status == 2) {
+                  //线上已使用
+                  Navigator.pop(context);
+                }
+                if (provide.dataModel.drawAwardType == 0 &&
+                    provide.dataModel.status == -2) {
+                  //线上黑名单
+                  Navigator.pop(context);
+                }
+                if (provide.dataModel.drawAwardType != 0 &&
+                    provide.dataModel.status == -2) {
+                  //线下黑名单
+                  Navigator.pop(context);
+                }
               },
               child: Container(
                 width: ScreenAdapter.width(690),
                 height: ScreenAdapter.height(90),
-                color: Colors.black,
+                color: provide.dataModel.drawAwardType != 0 &&
+                        provide.dataModel.status == 0
+                    ? Color.fromRGBO(242, 242, 242, 1.0)
+                    : provide.dataModel.drawAwardType == 0 &&
+                            provide.dataModel.status == 0
+                        ? Color.fromRGBO(242, 242, 242, 1.0)
+                        : Colors.black,
                 child: Center(
-                  child: Text(
-                    '返回',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: ScreenAdapter.size(30),
-                        fontWeight: FontWeight.w800),
-                  ),
+                  child: provide.dataModel.drawAwardType != 0 &&
+                          provide.dataModel.status == 0
+                      ? Text(
+                          //线下已登记
+                          '等待结果',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: ScreenAdapter.size(30),
+                              fontWeight: FontWeight.w800),
+                        )
+                      : provide.dataModel.drawAwardType == 0 &&
+                              provide.dataModel.status == 0 //线上已登记
+                          ? Text(
+                              '等待结果',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: ScreenAdapter.size(30),
+                                  fontWeight: FontWeight.w800),
+                            )
+                          : provide.dataModel.drawAwardType == 0 &&
+                                  provide.dataModel.status == 1 &&
+                                  provide.dataModel.expired == false //线上已中签
+                              ? Text(
+                                  '立即购买',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: ScreenAdapter.size(30),
+                                      fontWeight: FontWeight.w800),
+                                )
+                              : provide.dataModel.drawAwardType == 0 &&
+                                      provide.dataModel.status == 1 &&
+                                      provide.dataModel.expired == true //线上已过期
+                                  ? Text(
+                                      '返回',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: ScreenAdapter.size(30),
+                                          fontWeight: FontWeight.w800),
+                                    )
+                                  : Text(
+                                      '返回',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: ScreenAdapter.size(30),
+                                          fontWeight: FontWeight.w800),
+                                    ),
                 ),
               ),
             )
@@ -521,7 +742,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
             ),
             GestureDetector(
               onTap: () {
-               // Navigator.pop(context);
+                // Navigator.pop(context);
               },
               child: Container(
                 width: ScreenAdapter.width(690),
@@ -555,17 +776,22 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
             ),
             GestureDetector(
               onTap: () {
-                provide.salesOrder(provide.viewRegistrationInformationModel.drawee.drawID).doOnListen((){
+                // Fluttertoast.showToast(msg: '加载中...', gravity: ToastGravity.CENTER);
+                provide
+                    .salesOrder(
+                        provide.viewRegistrationInformationModel.drawee.drawID)
+                    .doOnListen(() {})
+                    .doOnError((e, stack) {})
+                    .listen((items) {
+                  print('items===============>${items.data}');
+                  if (items.data != null) {
+                    OrderDetailModel model =
+                        OrderDetailModel.fromJson(items.data);
+                    print('===========>$model');
+                    orderDetailProvide.orderDetailModel = model;
 
-                }).doOnError((e, stack){
-
-                }).listen((items){
-                 if (items.data != null) {
-                   OrderDetailModel model = OrderDetailModel.fromJson(items.data);
-                   print('===========>$model');
-                   orderDetailProvide.orderDetailModel = model;
-                   Navigator.pushNamed(context, '/orderDetailPage');
-                 }
+                    Navigator.pushNamed(context, '/orderDetailPage');
+                  }
                 });
               },
               child: Container(

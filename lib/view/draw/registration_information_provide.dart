@@ -56,6 +56,13 @@ class RegistrationInformationProvide extends BaseProvide {
   //   _selectSkuSpecs = selectSkuAndColor;
   // }
 
+  ///登记结束时间
+  String _endTime;
+  String get endTime=>_endTime;
+  set endTime(String endTime){
+    _endTime = endTime;
+  }
+
 ///线上线下 抽签类型
   int _drawAwardType;
   int get drawAwardType => _drawAwardType;

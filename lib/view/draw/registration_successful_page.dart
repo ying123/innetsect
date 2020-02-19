@@ -15,11 +15,13 @@ class RegistrationSuccessfulPage extends PageProvideNode {
     _provide.longitude = draweeModel['longitude'];
     _provide.latitude = draweeModel['latitude'];
     _provide.drawAwardType = draweeModel['drawAwardType'];
+    _provide.endTime = draweeModel['endTime'];
 
     print('_provide.draweeModel.drawID=====>${_provide.draweeModel.drawID}');
     print('_provide.draweeModel.shopID=====>${_provide.draweeModel.shopID}');
     print('登记成功longitude:=====>${_provide.longitude}');
     print('登记成功latitude:=====>${_provide.latitude}');
+    print('endTime:=====>${_provide.endTime}');
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -99,10 +101,13 @@ class _RegistrationSuccessfulContentPageState
             SizedBox(
               height: ScreenAdapter.height(30),
             ),
-            Center(
-              child: Text(
-                '温馨提示：本次抽签结果将于${provide.draweeModel.registerDate}在我的中心公布',
-                style: TextStyle(fontSize: ScreenAdapter.size(25)),
+            Container(
+              width: ScreenAdapter.width(680),
+              child: Center(
+                child: Text(
+                  '温馨提示：本次抽签结果将于${provide.endTime}后在我的个人中心【我的抽签】中公布，敬请关注.',
+                  style: TextStyle(fontSize: ScreenAdapter.size(28), color: Colors.blue),
+                ),
               ),
             ),
             SizedBox(

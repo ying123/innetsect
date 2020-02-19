@@ -16,7 +16,7 @@ class DrawshopService {
   /// 销售订单
   Observable<BaseResponse> salesOrder ({int drawID}){
     print('drawID===============>$drawID');
-    var url = '/api/eshop/salesorders/createDrawAwardOrder?drawID=178';
+    var url = '/api/eshop/salesorders/createDrawAwardOrder?drawID=$drawID';
     var response = post(url);
     return response;
   }

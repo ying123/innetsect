@@ -19,6 +19,7 @@ class MyDrawDataModel {
   String drawName;
   String startTime;
   int drawAwardType;
+  bool expired;
 
 
   MyDrawDataModel({
@@ -41,6 +42,7 @@ class MyDrawDataModel {
     this.drawName,
     this.startTime,
     this.drawAwardType,
+    this.expired
   });
 
   factory MyDrawDataModel.fromJson(Map<String, dynamic> json) {
@@ -64,6 +66,7 @@ class MyDrawDataModel {
       drawName: json['drawName'],
       startTime: json['startTime'],
       drawAwardType: json['drawAwardType'],
+      expired: json['expired'],
     
    
     );
@@ -89,6 +92,7 @@ class MyDrawDataModel {
         'drawName': drawName,
         'startTime': startTime,
         'drawAwardType': drawAwardType,
+        'expired': expired,
       };
 }
 

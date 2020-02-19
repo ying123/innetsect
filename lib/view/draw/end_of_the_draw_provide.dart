@@ -11,7 +11,13 @@ import 'package:rxdart/rxdart.dart';
 class EndOfTheDrawProvide extends BaseProvide {
 
 
-
+///登记结束时间
+  String _endTime;
+  String get endTime=>_endTime;
+  set endTime(String endTime){
+    _endTime = endTime;
+  }
+  
   String _platform;
   String get platform=>_platform;
   set platform(String platform){
