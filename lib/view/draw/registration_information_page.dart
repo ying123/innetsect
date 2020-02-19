@@ -291,7 +291,7 @@ class _RegistrationInformationContentPageState
             SizedBox(
               height: ScreenAdapter.height(30),
             ),
-            provide.drawBySku == true
+            provide.drawAwardType == 0
                 ? Row(
                     children: <Widget>[
                       SizedBox(
@@ -306,12 +306,12 @@ class _RegistrationInformationContentPageState
                     ],
                   )
                 : Container(),
-            provide.drawBySku == true
+            provide.drawAwardType == 0
                 ? SizedBox(
                     height: ScreenAdapter.height(20),
                   )
                 : Container(),
-            provide.drawBySku == true
+            provide.drawAwardType == 0
                 ? Center(
                     child: InkWell(
                       onTap: () {
@@ -813,7 +813,7 @@ class _RegistrationInformationContentPageState
                     height: ScreenAdapter.height(20),
                   ),
 
-                  Row(
+                provide.drawAwardType != 0? Container() : Row(
                     children: <Widget>[
                       SizedBox(
                         width: ScreenAdapter.width(40),
