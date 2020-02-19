@@ -269,6 +269,10 @@ class _OrderContentState extends State<OrderContent> {
 
   /// 支付按钮
   Widget payBtn(){
+    String btnTitle = "提交订单";
+    if(_orderDetailProvide.orderDetailModel.orderNo!=null){
+      btnTitle = "支付";
+    }
     return  new RaisedButton(
       color: AppConfig.blueBtnColor,
       textColor: Colors.white,
@@ -291,7 +295,7 @@ class _OrderContentState extends State<OrderContent> {
             }
           }, onError: (e) {});
         }
-      },child: new Text("提交订单"),
+      },child: new Text(btnTitle),
     );
   }
 
