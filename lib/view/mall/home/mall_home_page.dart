@@ -300,7 +300,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
                           SizedBox(
                             width: ScreenAdapter.width(750),
                             child: CachedNetworkImage(
-                              fit: BoxFit.fitWidth,
+                              fit: BoxFit.contain,
                               imageUrl:
                                   "${_bannersList[index].bannerPic}${ConstConfig.BANNER_MINI_SIZE}",
                               errorWidget: (context, url, error) {

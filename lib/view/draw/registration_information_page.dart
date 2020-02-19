@@ -8,8 +8,9 @@ import 'package:innetsect/data/draw/drawee_data.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/draw/registration_information_provide.dart';
 import 'package:innetsect/view/my/settings/protocol_page.dart';
-import 'package:innetsect/view/registered/country_page.dart';
+//import 'package:innetsect/view/registered/country_page.dart';
 import 'package:provide/provide.dart';
+import 'btn_sheet.dart';
 
 ///登记信息
 class RegistrationInformationPage extends PageProvideNode {
@@ -352,7 +353,7 @@ class _RegistrationInformationContentPageState
   String selectSkuSpecs;
   int limitMaxQty = 0;
   selectSkuAndColor(BuildContext context) {
-    showModalBottomSheet(
+    showYanModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
@@ -366,7 +367,7 @@ class _RegistrationInformationContentPageState
                       color: Colors.black54,
                     ),
                     Container(
-                        height: ScreenAdapter.height(1000),
+                        height: ScreenAdapter.height(1500),
                         width: double.infinity,
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -439,7 +440,7 @@ class _RegistrationInformationContentPageState
                                         });
                                       },
                                       child: Container(
-                                        width: ScreenAdapter.width(680 / 4),
+                                        width: ScreenAdapter.width(180),
                                         height: ScreenAdapter.height(80),
                                         decoration: BoxDecoration(
                                             border:
@@ -454,8 +455,7 @@ class _RegistrationInformationContentPageState
                                           children: <Widget>[
                                             Container(
                                               height: ScreenAdapter.height(80),
-                                              width:
-                                                  ScreenAdapter.width(128 / 3),
+                                              width:ScreenAdapter.width(128 / 5),
                                               child: Image.network(
                                                 value.skuPic,
                                                 fit: BoxFit.contain,
