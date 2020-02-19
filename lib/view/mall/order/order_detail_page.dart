@@ -111,7 +111,7 @@ class _OrderContentState extends State<OrderContent> {
               //       style: TextStyle(color: AppConfig.blueBtnColor),),
               //     ):Container(width: 0,height: 0,),
 
-              
+
               // 商品总价
               _orderCountWidget(),
               // 底部
@@ -269,7 +269,7 @@ class _OrderContentState extends State<OrderContent> {
 
   /// 支付按钮
   Widget payBtn(){
-    String btnTitle = "提交订单";
+   String btnTitle = "提交订单";
     if(_orderDetailProvide.orderDetailModel.orderNo!=null){
       btnTitle = "支付";
     }
@@ -277,6 +277,7 @@ class _OrderContentState extends State<OrderContent> {
       color: AppConfig.blueBtnColor,
       textColor: Colors.white,
       onPressed: (){
+      
         //提交订单
         if(_orderDetailProvide.orderDetailModel.orderNo!=null){
           _setOrder(_orderDetailProvide.orderDetailModel.orderID);
@@ -295,7 +296,7 @@ class _OrderContentState extends State<OrderContent> {
             }
           }, onError: (e) {});
         }
-      },child: new Text(btnTitle),
+      },child:new Text(btnTitle),
     );
   }
 
