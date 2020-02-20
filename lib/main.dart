@@ -102,12 +102,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     rammus.setupNotificationManager(name: "innerset",id: "innetsect push");
 
     rammus.onNotification.listen((data){
-      print("----------->notification here ${data.summary}");
+      print("----->>>>------>notification here ${data.summary}");
+      print("data----->>>>------>notification here ${data.toString()}");
       print("----------->device here $_deviceId");
 
     });
     rammus.onNotificationOpened.listen((data){
       print(data);
+      print('======================================>onNotificationOpened===>${data.extras}');
       print("-----------> ${data.summary} 被点了");
 //      if(_bannersList[index].redirectType==ConstConfig.URL){
 //        /// 跳转URL
@@ -141,9 +143,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 //      }
 
     });
+   
+    
 
     rammus.onNotificationClickedWithNoAction.listen((data){
-      print("${data.summary} no action");
+     /// print("============================》${data.summary} no action");
+     print('============================》onNotificationClickedWithNoAction');
+     print("============================》${data.extras} no action");
 
     });
 
@@ -164,8 +170,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
      print("deviceId=======>>>>$deviceId");
      //c9095149f890469194cd31338cf9d80b
      rammus.bindAccount(deviceId);
-     rammus.bindTag(target: rammus.CloudPushServiceTarget.DEVICE_TARGET,
-     tags: [deviceId],alias:deviceId);
+     //rammus.bindTag(target: rammus.CloudPushServiceTarget.DEVICE_TARGET,
+    // tags: [deviceId],alias:deviceId);
     } on PlatformException {
     }
 
