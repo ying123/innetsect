@@ -111,14 +111,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       print(data);
       print('======================================>onNotificationOpened===>${data.extras}');
       print("-----------> ${data.summary} 被点了");
-//      if(_bannersList[index].redirectType==ConstConfig.URL){
-//        /// 跳转URL
-//        Navigator.push(context, MaterialPageRoute(
-//            builder: (context){
-//              return new WebView(url: _bannersList[index].redirectParam,);
-//            }
-//        ));
-//      }
+    //  if(_bannersList[index].redirectType==ConstConfig.URL){
+    //    /// 跳转URL
+    //    Navigator.push(context, MaterialPageRoute(
+    //        builder: (context){
+    //          return new WebView(url: _bannersList[index].redirectParam,);
+    //        }
+    //    ));
+    //  }
       /// 跳转商品详情
 //      if(_bannersList[index].redirectType==ConstConfig.PRODUCT_DETAIL){
 //        List list = _bannersList[index].redirectParam.split(":");

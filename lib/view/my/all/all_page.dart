@@ -33,6 +33,7 @@ class AllPage extends PageProvideNode{
     mProviders.provide(Provider<OrderDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_commodityDetailProvide));
     mProviders.provide(Provider<LogisticsProvide>.value(_logisticsProvide));
+    print('idx======================>${this.idx}');
   }
   @override
   Widget buildContent(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:innetsect/api/pay_utils.dart';
 import 'package:innetsect/base/app_config.dart';
@@ -63,8 +65,26 @@ class _OrderContentState extends State<OrderContent> {
   LogisticsProvide _logisticsProvide;
   bool isShowToast=false;
   String pages;
+
+
+//倒计时=================================================
+    Timer _timer;
+    ///秒
+    int seconds = 0;
+    ///时间状态
+    bool _timeState = true;
+    ///标题
+    String _title = 'start';
+    ///倒计时内容
+    String _content = '00:00:00';
+//倒计时==================================================
+
+
   @override
   Widget build(BuildContext context) {
+
+    print('build');
+    _content = constructTime(seconds);
     return new Scaffold(
       appBar: CustomsWidget().customNav(context: context,
         widget: new Text("订单详情",style: TextStyle(fontSize: ScreenAdapter.size((30)),
@@ -206,10 +226,86 @@ class _OrderContentState extends State<OrderContent> {
     );
   }
 
+  //倒计时==========================================================
+   
+
+    void countDownTest(){
+      _timeState =! _timeState;
+      setState(() {
+        if (_timeState) {
+          _title = 'start';
+        }else{
+          _title ='stop';
+        }
+      });
+      if (!_timeState) {
+        //获取当前时间
+        var now = DateTime.now();
+        //获取 30 分钟的时间间隔
+        var twoHours = now.add(Duration(minutes: 30)).difference(now);
+        //获取总秒数
+        seconds = twoHours.inSeconds;
+        startTimer();
+      }else{
+        seconds = 0;
+         cancelTimer();
+      }
+    }
+
+     void startTimer() {
+    //设置 1 秒回调一次
+    const period = const Duration(seconds: 1);
+    _timer = Timer.periodic(period, (timer) {
+      //更新界面
+      setState(() {
+        //秒数减一，因为一秒回调一次
+        seconds--;
+      });
+      if (seconds == 0) {
+        //倒计时秒数为0，取消定时器
+        cancelTimer();
+      }
+    });
+  }
+
+   void cancelTimer() {
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    }
+  }
+
+   //时间格式化，根据总秒数转换为对应的 hh:mm:ss 格式
+  String constructTime(int seconds) {
+    int hour = seconds ~/ 3600;
+    int minute = seconds % 3600 ~/ 60;
+    int second = seconds % 60;
+    print('second====>$second');
+    return formatTime(hour) + ":" + formatTime(minute) + ":" + formatTime(second);
+  }
+
+  //数字格式化，将 0~9 的时间转换为 00~09
+  String formatTime(int timeNum) {
+    return timeNum < 10 ? "0" + timeNum.toString() : timeNum.toString();
+  }
+
+  void _incrementCounter() {
+  const timeout = const Duration(seconds: 5);
+  print('currentTime ='+DateTime.now().toString());
+  Timer(timeout, () {
+    //到时回调
+    print('after 5s Time ='+DateTime.now().toString());
+  });
+}
+
+
+  //倒计时==========================================================
+
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
+
     _provide ??= widget._provide;
     _orderDetailProvide ??= widget._orderDetailProvide;
     _detailProvide ??= widget._detailProvide;
@@ -227,6 +323,14 @@ class _OrderContentState extends State<OrderContent> {
           print('listen data->$items');
           if(items!=null&&items.data!=null){
             OrderDetailModel model = OrderDetailModel.fromJson(items.data);
+            print('当前时间====================>${model.currentTime}');
+            print('过期时间====================>${model.expiryTime}');
+            print('orderType====================>${model.orderType}');
+            if (model.orderType == 0) {
+              _incrementCounter();
+              countDownTest();
+            }
+
             if(model.orderType==2 || model.orderType==3){
               isShowToast = true;
             }
@@ -243,8 +347,10 @@ class _OrderContentState extends State<OrderContent> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+   
     super.dispose();
+    //取消时间
+     cancelTimer();
     widget._orderDetailProvide.orderDetailModel = null;
     ///默认支付宝
     _detailProvide.defaultPayMode();
@@ -296,7 +402,14 @@ class _OrderContentState extends State<OrderContent> {
             }
           }, onError: (e) {});
         }
-      },child:new Text(btnTitle),
+      },child:Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Text(btnTitle),
+          _orderDetailProvide.orderDetailModel.orderType == 0? new Text('(剩余 $_content 分钟自动取消)',style: TextStyle(fontSize: ScreenAdapter.size(20))
+          ):Container(),
+        ],
+      )
     );
   }
 

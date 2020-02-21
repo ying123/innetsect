@@ -168,13 +168,15 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
       ),
       body: WebView(//m3
         initialUrl:
-            'http://m3.innersect.net/api/promotion/proartifacts/${provide.activitiedId}/detail',
+            'http://test.innersect.net/api/promotion/proartifacts/${provide.activitiedId}/detail',
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           //_controller.complete(webViewController);
           _controller = webViewController;
+          print('========>按钮被点击');
         },
         navigationDelegate: (NavigationRequest request) {
+          print(' 按钮被点击');
           // print('request====================>${request.url}');
           if (request.url.startsWith('https://test.innersect.net/')) {
             print('blocking navigation to =====>${request.url}}');
@@ -315,8 +317,13 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
         onPageStarted: (String url) {
           print('Page started loading---->: $url');
         },
+        
         onPageFinished: (String url) {
           print('Page finished loading---=============>: $url');
+          List subUrl = url.split('#');
+          if (subUrl[1] == 'back') {
+            Navigator.pop(context);
+          }
           _controller.evaluateJavascript("document.title").then((result) {
             print('result===============>$result');
             String title = result;

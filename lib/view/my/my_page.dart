@@ -231,6 +231,20 @@ class _MyContentPageState extends State<MyContentPage> {
                           44.0,
                           40.0),
                     ),
+                     SizedBox(
+                      width: ScreenAdapter.width(50),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        print('优惠卷');
+                       Navigator.pushNamed(context, '/myCouponsPage');
+                      },
+                      child: _setupBtn(
+                          'assets/images/my_ordered@3x.png',
+                          '优惠卷',
+                          44.0,
+                          40.0),
+                    ),
                   ],
                 )),
             Container(

@@ -100,6 +100,11 @@ class OrderDetailModel{
   int prodID;
   // 原订单号
   int itemID;
+  //过期时间
+  String expiryTime;
+  //当前时间
+  String currentTime;
+
 
 
   OrderDetailModel({
@@ -151,7 +156,9 @@ class OrderDetailModel{
     this.prodID,
     this.itemID,
     this.skuCode,
-    this.ladingTime
+    this.ladingTime,
+    this.expiryTime,
+    this.currentTime
   });
 
   factory OrderDetailModel.fromJson(Map<String,dynamic> json) {
@@ -204,7 +211,9 @@ class OrderDetailModel{
         prodID: json['prodID'],
         itemID: json['itemID'],
         skuCode: json['skuCode'],
-        ladingTime: json['ladingTime']
+        ladingTime: json['ladingTime'],
+        expiryTime: json['expiryTime'],
+        currentTime: json['currentTime']
     );
   }
 

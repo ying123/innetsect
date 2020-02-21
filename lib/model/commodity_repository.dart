@@ -20,6 +20,7 @@ class CommodityService {
 
   /// 详情请求
   Observable<BaseResponse> detailData(int types,int prodId,{BuildContext context}){
+    print('=================>详情请求');
     var url = '/api/eshop/$types/products/$prodId';
     var response = get(url,context: context);
     return response;
@@ -27,6 +28,7 @@ class CommodityService {
 
   /// 立即下单
   Observable<BaseResponse> createShopping(List json,BuildContext context){
+    print('=====================立即下单');
     var url = '/api/eshop/salesorders/shoppingorder/create';
     var response = post(url,body: json,context: context);
     return response;
@@ -123,8 +125,10 @@ class CommodityService {
 
   /// 支付后的订单详情
   Observable<BaseResponse> getOrderPayDetails ({@required int orderID,int payMode,int queryStatus}){
+    print('======================>支付后的订单详情');
     String url = '/api/eshop/salesorders/$orderID';
     if(payMode!=null&&queryStatus!=null){
+      print('payMode!=null&&queryStatus!=null======================>支付后的订单详情');
       url +="?payMode=$payMode&queryStatus=$queryStatus";
     }
     var response = get(url);

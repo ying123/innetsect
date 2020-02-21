@@ -24,6 +24,7 @@ import 'package:innetsect/view/hot_spots/hot_spots_homt_url_page.dart';
 import 'package:innetsect/view/hot_spots/hot_test_page.dart';
 import 'package:innetsect/view/login/login_page.dart';
 import 'package:innetsect/view/mall/commodity/commodity_page.dart';
+import 'package:innetsect/view/mall/coupons/my_coupons_page.dart';
 import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/mall/order/order_detail_page.dart';
 import 'package:innetsect/view/mall/search/search_page.dart';
@@ -81,6 +82,7 @@ final routes = {
   '/hotTestPage':(context)=>HotTestPage(),///热区测试
   '/temporaryOrderPage':(context)=>TemporaryOrderPage(),///临时订单也
   '/addressManagementPage':(context)=>AddressManagementPage(),///临时订单也
+  '/myCouponsPage':(context)=>MyCouponsPage(),///优惠卷
  
  
   //'/hotSpotsHomePage'
