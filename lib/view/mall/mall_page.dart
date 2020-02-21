@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
+import 'package:innetsect/base/const_config.dart';
+import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/user_info_model.dart';
+import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/mall/home/mall_home_page.dart';
 import 'package:innetsect/view/mall/information/information_page.dart';
 import 'package:innetsect/view/mall/series/series_main_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/mall_provide.dart';
 import 'package:innetsect/base/platform_menu_config.dart';
@@ -18,20 +23,32 @@ import 'package:rammus/rammus.dart' as rammus;
 class MallPage extends PageProvideNode{
   final MallProvide _provide = MallProvide.instance;
   final LoginProvide _loginProvide = LoginProvide();
-  MallPage(){
+  final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
+  final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final int types;
+  final int prodID;
+  final String redirectType;
+  MallPage({this.redirectType,this.types,this.prodID}){
     mProviders.provide(Provider<MallProvide>.value(_provide));
     mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
+    mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
+    mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
   
-    return MallContentPage(_provide);
+    return MallContentPage(_provide,_detailProvide,_cartProvide,redirectType:redirectType,types: types,prodID: prodID,);
   }
 }
 
 class MallContentPage extends StatefulWidget {
   final MallProvide _provide;
-  MallContentPage(this._provide);
+  final CommodityDetailProvide _detailProvide;
+  final CommodityAndCartProvide _cartProvide;
+  final int types;
+  final int prodID;
+  final String redirectType;
+  MallContentPage(this._provide,this._detailProvide,this._cartProvide,{this.redirectType,this.types,this.prodID});
 
   @override
   _MallContentPageState createState() => _MallContentPageState();
@@ -44,6 +61,11 @@ class _MallContentPageState extends State<MallContentPage> {
     // TODO: implement initState
     super.initState();
     _loginProvide=LoginProvide.instance;
+    if(widget.types!=null&&widget.prodID!=null&&widget.redirectType!=null){
+      if(widget.redirectType==ConstConfig.PRODUCT_DETAIL){
+        _commodityDetail(types: widget.types,prodID: widget.prodID);
+      }
+    }
   }
 
   @override
@@ -132,5 +154,35 @@ class _MallContentPageState extends State<MallContentPage> {
       }
   }
 
-
+  /// 商品详情
+  _commodityDetail({int types, int prodID}) {
+    /// 跳转商品详情
+    widget._detailProvide.clearCommodityModels();
+    widget._detailProvide.prodId = prodID;
+//    Loading.ctx=context;
+//    Loading.show();
+    /// 加载详情数据
+    widget._detailProvide
+        .detailData(types: types, prodId: prodID, context: context)
+        .doOnListen(() {
+      print('doOnListen');
+    })
+        .doOnCancel(() {})
+        .listen((item) {
+//          Loading.remove();
+      ///加载数据
+      print('listen data->$item');
+      if (item != null && item.data != null) {
+        widget._detailProvide
+            .setCommodityModels(CommodityModels.fromJson(item.data));
+        widget._detailProvide.setInitData();
+        widget._cartProvide.setInitCount();
+        widget._detailProvide.isBuy = false;
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return new CommodityDetailPage();
+        }));
+      }
+      //      _provide
+    }, onError: (e) {});
+  }
 }
