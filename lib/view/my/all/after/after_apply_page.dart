@@ -137,11 +137,14 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
   }
 
   @override
-  void initState() {
+  void initState(){
     // TODO: implement initState
     super.initState();
     _afterServiceProvide ??= widget._afterServiceProvide;
     _commodityDetailProvide ??= widget._commodityDetailProvide;
+    Future.delayed(Duration.zero,() async{
+      await _loadDetail();
+    });
   }
 
   @override
@@ -434,8 +437,8 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
               onTap: (){
                 // 商品详情请求
                 _commodityDetailProvide.prodId = _afterServiceProvide.orderDetailModel.prodID;
-                _loadDetail(prodId: _afterServiceProvide.orderDetailModel.prodID,
-                types: _afterServiceProvide.orderDetailModel.shopID);
+//                _loadDetail(prodId: _afterServiceProvide.orderDetailModel.prodID,
+//                types: _afterServiceProvide.orderDetailModel.shopID);
                 //选择规格请求
                 CommodityModalBottom.showBottomModal(context:context);
               },
@@ -752,9 +755,10 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
   }
 
   /// 商品详情请求
-  _loadDetail({int prodId,int types}){
+  _loadDetail(){
     /// 加载详情数据
-    _commodityDetailProvide.detailData(prodId: prodId,types: types,
+    _commodityDetailProvide.detailData(prodId: _afterServiceProvide.orderDetailModel.prodID,
+    types: _afterServiceProvide.orderDetailModel.shopID,
     context: context)
         .doOnListen(() {
       print('doOnListen');
@@ -767,6 +771,7 @@ class _AfterApplyContentState extends State<AfterApplyContent> {
       _commodityDetailProvide.setInitData();
       _commodityDetailProvide.isBuy = false;
       _commodityDetailProvide.afterBtn = true;
+
 //      _provide
     }, onError: (e) {});
   }

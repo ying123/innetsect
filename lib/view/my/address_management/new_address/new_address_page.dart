@@ -425,19 +425,28 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
               /// 保存地址
               if(provide.name==null){
                 CustomsWidget().showToast(title: "请输入收货人姓名");
+                return;
               }else if(provide.tel==null){
                 CustomsWidget().showToast(title: "请输入收货人手机号");
+                return;
               }else if(provide.countryModel==null||provide.cityModel==null){
                 CustomsWidget().showToast(title: "请选择国家地区");
+                return;
               }else if(provide.addressDetail==null){
                 CustomsWidget().showToast(title: "请填写详细地址");
+                return;
               }else if(provide.countryModel.telPrefix!='86'
                   &&provide.countryModel.telPrefix!='853'
                   &&provide.countryModel.telPrefix!='886'
                   &&provide.countryModel.telPrefix!='852'
               ){
-                CustomsWidget().showToast(title: "请填写邮政编码");
-              } else if(widget._addressManagementProvide.addressModel!=null){
+                if(provide.postalCode==null||provide.postalCode==""){
+                  CustomsWidget().showToast(title: "请填写邮政编码");
+                  return;
+                }
+              }
+
+              if(widget._addressManagementProvide.addressModel!=null){
                 provide.createAndEditAddresses(context,isEdit: true,
                     addressModel:widget._addressManagementProvide.addressModel)
                     .doOnListen(() {}).doOnCancel(() {})
