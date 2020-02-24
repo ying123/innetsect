@@ -82,7 +82,8 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
           _loadState = LoadState.State_Success;
         });
       }
-    });
+    }
+    );
   }
 
   @override
@@ -258,7 +259,8 @@ class _DrawPageContentPageState extends State<DrawPageContentPage> {
                           'suks': provide.drawsModel.shops[index].skus,
                           'endTime':provide.drawsModel.endTime,
                          
-                        });
+                        }
+                        );
                   }
                 },
                 child: Center(

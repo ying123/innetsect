@@ -362,7 +362,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                             ?Container()
                             :provide.dataModel[index].status == -1 && provide.dataModel[index].expired == true
                             ?Image.asset(
-                                 'assets/images/已过期.png',
+                                 'assets/images/未中签.png',
                               )
                               :provide.dataModel[index].status == -1 && provide.dataModel[index].expired ==false ?
                               Image.asset(

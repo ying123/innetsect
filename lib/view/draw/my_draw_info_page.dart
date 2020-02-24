@@ -1,6 +1,8 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:flutter/material.dart';
+import 'package:innetsect/data/draw/draw_data.dart';
+import 'package:innetsect/data/draw/shops_data.dart';
 import 'package:innetsect/data/draw/view_registration_information.dart';
 import 'package:innetsect/data/order_detail_model.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
@@ -45,6 +47,25 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
     orderDetailProvide ??= widget.orderDetailProvide;
 
     _loadViewRegistrationInformation();
+   
+  }
+  _loadDrawsData(){
+    provide.draws(provide.viewRegistrationInformationModel.drawee.drawID).doOnListen(() {}).listen((items) {
+      print('items.data====> ${items.data}');
+      if (items.data != null) {
+        provide.drawsModel = DrawsModel.fromJson(items.data);
+        print('steps=====>${provide.drawsModel.steps.length}');
+        print('shops=====>${provide.drawsModel.shops.length}');
+        print('pics====>${provide.drawsModel.pics.length}');
+        print('drawAwardType====>${provide.drawsModel.drawAwardType}');
+        print('drawBySku=========>${provide.drawsModel.drawBySku}');
+        print('skus===============>${provide.drawsModel.shops[0].skus}');
+
+        setState(() {
+          _loadState = LoadState.State_Success;
+        });
+      }
+    });
   }
 
   _loadViewRegistrationInformation() {
@@ -62,13 +83,14 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
       if (items.data != null) {
         provide.viewRegistrationInformationModel =
             ViewRegistrationInformationModel.fromJson(items.data);
+            _loadDrawsData();
         // print(
         //     'DraweeModel=======>${provide.viewRegistrationInformationModel.drawee.shopID}');
         // print(
         //     'ShopProductModel=======>${provide.viewRegistrationInformationModel.shopProduct.shopID}');
-        setState(() {
-          _loadState = LoadState.State_Success;
-        });
+        // setState(() {
+        //   _loadState = LoadState.State_Success;
+        // });
       }
     });
   }
@@ -155,36 +177,66 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: ScreenAdapter.width(690),
-                    height: ScreenAdapter.height(150),
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      children: <Widget>[
-                        SizedBox(
-                          width: ScreenAdapter.width(20),
-                        ),
-                        Container(
-                          width: ScreenAdapter.width(126),
-                          height: ScreenAdapter.width(126),
-                          child: Image.network(
-                            provide.viewRegistrationInformationModel.shopProduct
-                                .prodPic,
-                            fit: BoxFit.contain,
+                  InkWell(
+                    onTap: (){
+                      ShopsModel shopsModel = ShopsModel();
+                      shopsModel.drawID = provide.viewRegistrationInformationModel.shopProduct.drawID;
+                      shopsModel.shopID = provide.viewRegistrationInformationModel.shopProduct.shopID;
+                      shopsModel.shopName = provide.viewRegistrationInformationModel.shopProduct.shopName;
+                      
+                      print('InkWell.......');
+                      Navigator.pushNamed(context, '/endOfTheDrawPage'
+                      , arguments: {
+                          'pics': provide.drawsModel.pics,
+                          'shops':shopsModel,
+                          'longitude': provide.dataModel.longitude,
+                          'latitude': provide.dataModel.latitude,
+                          'steps': provide.drawsModel.steps,
+                          'drawAwardType': provide.drawsModel.drawAwardType,
+                          'drawBySku':provide.drawsModel.drawBySku,
+                          'drawProdID':provide.drawsModel.drawProdID,
+                          //'suks': provide.dataModel.skus,
+                          'endTime':provide.drawsModel.endTime,
+                         
+                        }
+                      );
+                      
+                    },
+                    child: Container(
+                      width: ScreenAdapter.width(690),
+                      height: ScreenAdapter.height(150),
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: ScreenAdapter.width(20),
                           ),
-                        ),
-                        SizedBox(
-                          width: ScreenAdapter.width(65),
-                        ),
-                        Text(
-                          '${provide.viewRegistrationInformationModel.shopProduct.shopName}   |   ￥${provide.viewRegistrationInformationModel.shopProduct.prodPrice}',
-                          style: TextStyle(
-                            fontSize: ScreenAdapter.size(30),
-                            //               color: Color.fromRGBO(160, 160, 160, 1.0),
-                            //               //    fontWeight: FontWeight.w700
+                          Container(
+                            width: ScreenAdapter.width(126),
+                            height: ScreenAdapter.width(126),
+                            child: Image.network(
+                              provide.viewRegistrationInformationModel.shopProduct
+                                  .prodPic,
+                              fit: BoxFit.contain,
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            width: ScreenAdapter.width(65),
+                          ),
+                          Text(
+                            '${provide.viewRegistrationInformationModel.shopProduct.shopName}   |   ￥${provide.viewRegistrationInformationModel.shopProduct.prodPrice}',
+                            style: TextStyle(
+                              fontSize: ScreenAdapter.size(30),
+                              //               color: Color.fromRGBO(160, 160, 160, 1.0),
+                              //               //    fontWeight: FontWeight.w700
+                            ),
+                          ),
+                          Expanded(
+                            child: Container()
+                          ),
+                          Icon(Icons.chevron_right),
+                        ],
+                      ),
                     ),
                   )
                 ],
@@ -528,7 +580,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                               : provide.dataModel.status == -1 &&
                                       provide.dataModel.expired == true
                                   ? Image.asset(
-                                      'assets/images/已过期.png',
+                                      'assets/images/未中签.png',
                                       width: ScreenAdapter.width(170),
                                       height: ScreenAdapter.height(170),
                                     )
