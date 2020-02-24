@@ -436,11 +436,11 @@ class _NewAddressContentPageState extends State<NewAddressContentPage> {
                 CustomsWidget().showToast(title: "请填写详细地址");
                 return;
               }else if(provide.countryModel.telPrefix!='86'
-                  ||provide.countryModel.telPrefix!='853'
-                  ||provide.countryModel.telPrefix!='886'
-                  ||provide.countryModel.telPrefix!='852'
+                  &&provide.countryModel.telPrefix!='853'
+                  &&provide.countryModel.telPrefix!='886'
+                  &&provide.countryModel.telPrefix!='852'
               ){
-                if(provide.postalCode==null){
+                if(provide.postalCode==null||provide.postalCode==""){
                   CustomsWidget().showToast(title: "请填写邮政编码");
                   return;
                 }
