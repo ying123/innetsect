@@ -69,14 +69,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   var netChangeStr = "点我获取当前网络状态";
 
   static GlobalKey<NavigatorState> navigatorState = new GlobalKey();
+  // app是否前后台
+  bool _isApp = false;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      if (AppLifecycleState.resumed == state) {
-      } else {}
-    });
     super.didChangeAppLifecycleState(state);
+    setState(() {
+      if(AppLifecycleState.resumed == state){
+        _isApp = false;
+      }
+      if (AppLifecycleState.paused == state){
+        _isApp = true;
+      }
+    });
+
   }
 
   @override
@@ -120,22 +127,42 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       print(data);
       print('======================================>onNotificationOpened===>${data.extras}');
       print("-----------> ${data.summary} 被点了");
+      //{"redirectType":"PRODUCT_DETAIL",
+      // "redirectTo":"\/eshop\/{shop}\/products\/{id}",
+      // "_ALIYUN_NOTIFICATION_PRIORITY_":"1",
+      // "redirectParam":"37:18161",
+      // "_ALIYUN_NOTIFICATION_ID_":"760988"}
+//      if(_bannersList[index].redirectType==ConstConfig.URL){
+//        /// 跳转URL
+//        Navigator.push(context, MaterialPageRoute(
+//            builder: (context){
+//              return new WebView(url: _bannersList[index].redirectParam,);
+//            }
+//        ));
+//      }
+      if(_isApp){
+        final AndroidIntent intent = AndroidIntent(
+          action: 'action_view',
+          package: "com.example.innetsect",
+        );
+        intent.launch();
+      }
 
       var json = jsonDecode(data.extras);
 
-      /// 跳转商品详情
       if(json['redirectType']==ConstConfig.PRODUCT_DETAIL){
+        /// 跳转商品详情
         List list = json['redirectParam'].split(":");
         _openApp(redirectType: ConstConfig.PRODUCT_DETAIL,
             types:int.parse(list[0]) ,
-            prodID: int.parse(list[1]));
-//        Navigator.push(context, MaterialPageRoute(
-//            builder: (context)=>MallPage(
-//                redirectType: ConstConfig.PRODUCT_DETAIL,
-//                types:int.parse(list[0]) ,
-//                prodID: int.parse(list[1])
-//            )
-//        ));
+            prodID: int.parse(list[1]),
+            contentID: int.parse(json['redirectParam']));
+      }else if(json['redirectType']==ConstConfig.CONTENT_DETAIL){
+        /// 跳转资讯详情
+        _openApp(redirectType: ConstConfig.CONTENT_DETAIL,
+            contentID: int.parse(json['redirectParam']));
+      }else if(json['redirectType']==ConstConfig.PROMOTION){
+        _openApp(redirectType: ConstConfig.PROMOTION,code:json['redirectParam']);
       }
 //      else if(_bannersList[index].redirectType==ConstConfig.PROMOTION){
 //        /// 跳转集合搜索列表
@@ -170,18 +197,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void _openApp({
-    String redirectType, int types, int prodID
+    String redirectType,
+    int types, int prodID,
+    int contentID,String code
   }) {
-    final AndroidIntent intent = AndroidIntent(
-      action: 'action_view',
-      package: "com.example.innetsect",
-    );
-    intent.launch();
     navigatorState.currentState.pushAndRemoveUntil(new MaterialPageRoute(
         builder: (ctx) => new MallPage(
-            redirectType: ConstConfig.PRODUCT_DETAIL,
-            types: types ,
-            prodID: prodID
+          redirectType: redirectType,
+          types: types ,
+          prodID: prodID,
+          contentID: contentID,
+          code: code,
         )), (Route<dynamic> route) => false);
   }
 

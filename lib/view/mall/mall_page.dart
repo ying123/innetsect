@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/base/app_config.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
@@ -6,11 +7,16 @@ import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/user_info_model.dart';
 import 'package:innetsect/view/mall/commodity/commodity_detail_page.dart';
 import 'package:innetsect/view/mall/home/mall_home_page.dart';
+import 'package:innetsect/view/mall/information/infor_web_page.dart';
 import 'package:innetsect/view/mall/information/information_page.dart';
+import 'package:innetsect/view/mall/search/search_screen_page.dart';
 import 'package:innetsect/view/mall/series/series_main_page.dart';
 import 'package:innetsect/view/my/my_page.dart';
 import 'package:innetsect/view_model/login/login_provide.dart';
 import 'package:innetsect/view_model/mall/commodity/commodity_detail_provide.dart';
+import 'package:innetsect/view_model/mall/commodity/commodity_list_provide.dart';
+import 'package:innetsect/view_model/mall/information/information_provide.dart';
+import 'package:innetsect/view_model/mall/search/search_provide.dart';
 import 'package:innetsect/view_model/widget/commodity_and_cart_provide.dart';
 import 'package:provide/provide.dart';
 import 'package:innetsect/view_model/mall/mall_provide.dart';
@@ -25,19 +31,32 @@ class MallPage extends PageProvideNode{
   final LoginProvide _loginProvide = LoginProvide();
   final CommodityDetailProvide _detailProvide = CommodityDetailProvide.instance;
   final CommodityAndCartProvide _cartProvide = CommodityAndCartProvide.instance;
+  final InformationProvide _informationProvide = InformationProvide.instance;
+  final SearchProvide _searchProvide = SearchProvide();
+  final CommodityListProvide _commodityListProvide =
+      CommodityListProvide.instance;
   final int types;
   final int prodID;
+  final int contentID;
+  final String code;
   final String redirectType;
-  MallPage({this.redirectType,this.types,this.prodID}){
+  MallPage({this.redirectType,this.types,this.prodID,this.contentID,this.code}){
     mProviders.provide(Provider<MallProvide>.value(_provide));
     mProviders.provide(Provider<LoginProvide>.value(_loginProvide));
     mProviders.provide(Provider<CommodityDetailProvide>.value(_detailProvide));
     mProviders.provide(Provider<CommodityAndCartProvide>.value(_cartProvide));
+    mProviders.provide(Provider<InformationProvide>.value(_informationProvide));
+    mProviders.provide(Provider<CommodityListProvide>.value(_commodityListProvide));
+    mProviders.provide(Provider<SearchProvide>.value(_searchProvide));
   }
   @override
   Widget buildContent(BuildContext context) {
   
-    return MallContentPage(_provide,_detailProvide,_cartProvide,redirectType:redirectType,types: types,prodID: prodID,);
+    return MallContentPage(_provide,_detailProvide,_cartProvide,_informationProvide,
+      _searchProvide,_commodityListProvide,
+      redirectType:redirectType,types: types,prodID: prodID,
+      contentID: contentID,code: code,
+    );
   }
 }
 
@@ -45,10 +64,17 @@ class MallContentPage extends StatefulWidget {
   final MallProvide _provide;
   final CommodityDetailProvide _detailProvide;
   final CommodityAndCartProvide _cartProvide;
+  final InformationProvide _informationProvide;
+  final SearchProvide _searchProvide ;
+  final CommodityListProvide _commodityListProvide;
   final int types;
   final int prodID;
+  final int contentID;
+  final String code;
   final String redirectType;
-  MallContentPage(this._provide,this._detailProvide,this._cartProvide,{this.redirectType,this.types,this.prodID});
+  MallContentPage(this._provide,this._detailProvide,this._cartProvide,this._informationProvide,
+    this._searchProvide,this._commodityListProvide,
+      {this.redirectType,this.types,this.prodID,this.contentID,this.code});
 
   @override
   _MallContentPageState createState() => _MallContentPageState();
@@ -56,14 +82,28 @@ class MallContentPage extends StatefulWidget {
 
 class _MallContentPageState extends State<MallContentPage> {
   LoginProvide _loginProvide;
+  InformationProvide _informationProvide;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _loginProvide=LoginProvide.instance;
-    if(widget.types!=null&&widget.prodID!=null&&widget.redirectType!=null){
-      if(widget.redirectType==ConstConfig.PRODUCT_DETAIL){
+    _informationProvide ??= widget._informationProvide;
+
+    if(widget.redirectType!=null){
+      if(widget.redirectType==ConstConfig.PRODUCT_DETAIL&&widget.types!=null&&widget.prodID!=null){
         _commodityDetail(types: widget.types,prodID: widget.prodID);
+      }else if(widget.redirectType==ConstConfig.CONTENT_DETAIL&&widget.contentID!=null){
+        _informationProvide.contentID =widget.contentID ;
+        Future.delayed(Duration.zero,(){
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context)=>InforWebPage()
+          ));
+        });
+      }else if(widget.redirectType == ConstConfig.PROMOTION&&widget.code!=null){
+        Future.delayed(Duration.zero,(){
+          _searchRequest(widget.code);
+        });
       }
     }
   }
@@ -183,6 +223,37 @@ class _MallContentPageState extends State<MallContentPage> {
         }));
       }
       //      _provide
+    }, onError: (e) {});
+  }
+
+  /// ================>搜索请求
+  void _searchRequest(String code) {
+    print('=====================>_searchRequest');
+    // 清除原数据
+    widget._commodityListProvide.clearList();
+    widget._commodityListProvide.requestUrl =
+    "/api/promotion/promotions/$code/products?";
+    Loading.ctx = context;
+    Loading.show();
+    widget._searchProvide
+        .onSearch(
+        widget._commodityListProvide.requestUrl + 'pageNo=1&sort=&pageSize=8',
+        context: context)
+        .doOnListen(() {})
+        .doOnCancel(() {})
+        .listen((items) {
+      Loading.remove();
+
+      ///加载数据
+      print('listen data->$items');
+      if (items != null && items.data != null) {
+        widget._searchProvide.searchValue = items.data['promotionName'];
+        widget._commodityListProvide
+            .addList(CommodityList.fromJson(items.data['products']).list);
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return SearchScreenPage();
+        }));
+      }
     }, onError: (e) {});
   }
 }
