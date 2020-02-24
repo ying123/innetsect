@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     //   print("_baidu========${item.longitude}");
     // });
 
-
+    WidgetsBinding.instance.addObserver(this);
 
     if (Platform.isAndroid) {
         SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
@@ -140,6 +140,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 //            }
 //        ));
 //      }
+
       if(_isApp){
         final AndroidIntent intent = AndroidIntent(
           action: 'action_view',
@@ -155,8 +156,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         List list = json['redirectParam'].split(":");
         _openApp(redirectType: ConstConfig.PRODUCT_DETAIL,
             types:int.parse(list[0]) ,
-            prodID: int.parse(list[1]),
-            contentID: int.parse(json['redirectParam']));
+            prodID: int.parse(list[1]));
       }else if(json['redirectType']==ConstConfig.CONTENT_DETAIL){
         /// 跳转资讯详情
         _openApp(redirectType: ConstConfig.CONTENT_DETAIL,

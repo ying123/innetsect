@@ -254,12 +254,17 @@ class _RegidterContentPageState extends State<RegidterContentPage> {
                       if(provide.userCode==null){
                         CustomsWidget().showToast(title: "请输入账号");
                       }else{
-                        bool flag = CommonUtil.isPhoneLegal(provide.userCode);
-                        if(!flag){
-                          CustomsWidget().showToast(title: "请输入正确的手机号");
-                        }else{
-                          _buttonClickListen();
+                        if(provide.telPrefix=='86'
+                            ||provide.telPrefix=='853'
+                            ||provide.telPrefix=='886'
+                            ||provide.telPrefix=='852'){
+                          bool flag = CommonUtil.isPhoneLegal(provide.userCode);
+                          if(!flag){
+                            CustomsWidget().showToast(title: "请输入正确的手机号");
+                            return;
+                          }
                         }
+                        _buttonClickListen();
                       }
                     },
                     child: Text(
