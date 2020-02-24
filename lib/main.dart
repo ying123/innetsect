@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:android_intent/android_intent.dart';
 import 'package:fluintl/fluintl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,15 +9,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:innetsect/app.dart';
 
 import 'package:innetsect/base/app_config.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/res/const_defines.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/common_util.dart';
+import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
-import 'package:flutter_baidu_map/flutter_baidu_map.dart';
 import 'package:innetsect/view/user_instructions_page.dart';
 
 import 'package:rammus/rammus.dart' as rammus;
+import 'package:url_launcher/url_launcher.dart';
 
 
 GlobalKey<NavigatorState> gNavKey = GlobalKey();
@@ -49,6 +53,7 @@ class MyApp extends StatefulWidget {
 
 /// WidgetsBindingObserver 监控当前app是否在前台
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+
   // 语言包
   Locale locale = null;
   String _deviceId = "Unknown device";
@@ -62,6 +67,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       const EventChannel('com.myflutterhelo.test/netChanged');
 
   var netChangeStr = "点我获取当前网络状态";
+
+  static GlobalKey<NavigatorState> navigatorState = new GlobalKey();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -90,6 +97,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           statusBarColor: Colors.white,
         );
         SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+
+
     }
     //配置简单多语言资源
     // setLocalizedSimpleValues(localizedSimpleValues);
@@ -111,19 +120,24 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       print(data);
       print('======================================>onNotificationOpened===>${data.extras}');
       print("-----------> ${data.summary} 被点了");
-    //  if(_bannersList[index].redirectType==ConstConfig.URL){
-    //    /// 跳转URL
-    //    Navigator.push(context, MaterialPageRoute(
-    //        builder: (context){
-    //          return new WebView(url: _bannersList[index].redirectParam,);
-    //        }
-    //    ));
-    //  }
+
+      var json = jsonDecode(data.extras);
+
       /// 跳转商品详情
-//      if(_bannersList[index].redirectType==ConstConfig.PRODUCT_DETAIL){
-//        List list = _bannersList[index].redirectParam.split(":");
-//        _commodityDetail(types:int.parse(list[0]) ,prodID: int.parse(list[1]));
-//      }else if(_bannersList[index].redirectType==ConstConfig.PROMOTION){
+      if(json['redirectType']==ConstConfig.PRODUCT_DETAIL){
+        List list = json['redirectParam'].split(":");
+        _openApp(redirectType: ConstConfig.PRODUCT_DETAIL,
+            types:int.parse(list[0]) ,
+            prodID: int.parse(list[1]));
+//        Navigator.push(context, MaterialPageRoute(
+//            builder: (context)=>MallPage(
+//                redirectType: ConstConfig.PRODUCT_DETAIL,
+//                types:int.parse(list[0]) ,
+//                prodID: int.parse(list[1])
+//            )
+//        ));
+      }
+//      else if(_bannersList[index].redirectType==ConstConfig.PROMOTION){
 //        /// 跳转集合搜索列表
 //        _searchRequest(_bannersList[index].redirectParam);
 //      }else if(_bannersList[index].redirectType==ConstConfig.CONTENT_DETAIL){
@@ -143,8 +157,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 //      }
 
     });
-   
-    
+
+
 
     rammus.onNotificationClickedWithNoAction.listen((data){
      /// print("============================》${data.summary} no action");
@@ -153,6 +167,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     });
 
+  }
+
+  void _openApp({
+    String redirectType, int types, int prodID
+  }) {
+    final AndroidIntent intent = AndroidIntent(
+      action: 'action_view',
+      package: "com.example.innetsect",
+    );
+    intent.launch();
+    navigatorState.currentState.pushAndRemoveUntil(new MaterialPageRoute(
+        builder: (ctx) => new MallPage(
+            redirectType: ConstConfig.PRODUCT_DETAIL,
+            types: types ,
+            prodID: prodID
+        )), (Route<dynamic> route) => false);
   }
 
   /// 百度定位
@@ -210,6 +240,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorState,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,

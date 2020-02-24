@@ -1,16 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:device_info/device_info.dart';
-import 'package:innetsect/app_navigation_bar.dart';
 import 'package:innetsect/app_navigation_bar_provide.dart';
 import 'package:innetsect/base/base.dart';
 import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/data/main/activity_model.dart';
 import 'package:innetsect/data/main/splash_model.dart';
-import 'package:innetsect/entrance_page.dart';
 import 'package:innetsect/main_provide.dart';
 import 'package:innetsect/tools/user_tool.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
+import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/mall/web_view.dart';
 import 'package:innetsect/view/widget/video_widget_page.dart';
 import 'package:innetsect/view_model/mall/mall_provide.dart';
@@ -57,11 +57,15 @@ class __AppContentPageState extends State<_AppContentPage> with TickerProviderSt
 //  AnimationController _animationController;
   @override
   void initState() {
+    super.initState();
     _provide ??= widget._provide;
     _appNavigationBarProvide ??= widget._appNavigationBarProvide;
     _mallProvide ??= widget._mallProvide;
+
+
+
+
     _loadData();
-    super.initState();
 
     _loadAndroidDevice().then((item){
       _deviceID().then((val){
