@@ -130,9 +130,9 @@ class _OrderContentState extends State<OrderContent> {
                 _addressWidget(),
                 // 订单详情
                 _orderDetailWidget(),
-                _orderDetailProvide.prodName == null
+                _orderDetailProvide.prodName == null 
                     ? Container()
-                    : Container(
+                    :  _orderDetailProvide.prodName != null &&  _orderDetailProvide.orderDetailModel.orderType == 2?  Container(
                         margin: EdgeInsets.only(left: ScreenAdapter.width(30)),
                         alignment: Alignment.centerLeft,
                         width: ScreenAdapter.width(750),
@@ -143,7 +143,7 @@ class _OrderContentState extends State<OrderContent> {
                               color: Color.fromRGBO(154, 163, 184, 1.0),
                               fontSize: ScreenAdapter.size(28)),
                         ),
-                      ),
+                      ):Container(),
                 // orderType==2\3
 
                 // isShowToast?
@@ -270,7 +270,7 @@ class _OrderContentState extends State<OrderContent> {
 
   //倒计时==========================================================
 
-  void countDownTest(minutes) {
+  void countDownTest() {
     _timeState = !_timeState;
     setState(() {
       if (_timeState) {
@@ -283,7 +283,7 @@ class _OrderContentState extends State<OrderContent> {
       //获取当前时间
       var now = DateTime.now();
       //获取 30 分钟的时间间隔
-      var twoHours = now.add(Duration(minutes: minutes)).difference(now);
+      var twoHours = now.add(Duration(seconds: secondsTime)).difference(now);
       //获取总秒数
       seconds = twoHours.inSeconds;
       startTimer();
@@ -360,7 +360,7 @@ class _OrderContentState extends State<OrderContent> {
                 if (model.orderType == 0 || model.orderType == 2 || model.orderType == 3) {
                   if (orderStatus == '待支付') {
                     _incrementCounter();
-                    countDownTest(minutes);
+                    countDownTest();
                   }
                 }
 
@@ -412,7 +412,7 @@ class _OrderContentState extends State<OrderContent> {
   }
 
   //倒计时==========================================================
-
+  int secondsTime ;
   @override
   void initState() {
     super.initState();
@@ -458,19 +458,19 @@ class _OrderContentState extends State<OrderContent> {
                   print('hours===========>$hours');
                   print('minutes===========>$minutes');
                   print('seconds===========>$seconds');
-                  if (hours > 0 ) {
-                    minutes = minutes + hours * 60;
-                  }
-                  if (seconds > 35) {
-                    minutes = minutes+1;
-                  }
-                 // seconds = seconds +(hours*60*60 + minutes *60);
+                  // if (hours > 0 ) {
+                  //   minutes = minutes + hours * 60;
+                  // }
+                  // if (seconds > 35) {
+                  //   minutes = minutes+1;
+                  // }
+                  secondsTime = seconds +(hours*60*60 + minutes *60);
                 orderStatus = OrderStatusEnum().getStatusTitle(model.status);
                 print('orderType========>>=============${model.orderType}');
                 if (model.orderType == 0 || model.orderType == 1|| model.orderType == 2) {
                   if (orderStatus == '待支付') {
                     _incrementCounter();
-                    countDownTest(minutes);
+                    countDownTest();
                   }
                 }
 
