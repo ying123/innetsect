@@ -17,9 +17,11 @@ import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
 import 'package:innetsect/view/user_instructions_page.dart';
+import 'package:intent/intent.dart';
 
 import 'package:rammus/rammus.dart' as rammus;
-import 'package:url_launcher/url_launcher.dart';
+import 'package:intent/intent.dart' as android_intent;
+import 'package:intent/action.dart' as android_action;
 
 
 GlobalKey<NavigatorState> gNavKey = GlobalKey();
@@ -142,11 +144,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 //      }
 
       if(_isApp){
-        final AndroidIntent intent = AndroidIntent(
-          action: 'action_view',
-          package: "com.example.innetsect",
-        );
-        intent.launch();
+//        final AndroidIntent intent = AndroidIntent(
+//          action: 'action_main',
+//          package: "com.example.innetsect",
+//        );
+//        intent.launch();
+        android_intent.Intent()
+          ..setAction(android_action.Action.ACTION_MAIN)
+            ..startActivity();
       }
 
       var json = jsonDecode(data.extras);
