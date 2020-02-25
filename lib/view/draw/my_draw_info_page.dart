@@ -529,7 +529,13 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                                   .expiryTime ==
                               null
                           ? Container()
-                          : provide.viewRegistrationInformationModel.drawee.status == 0? Container(): Container(
+                          : provide.viewRegistrationInformationModel.drawee.status == 0 
+                          ||(provide.viewRegistrationInformationModel.drawee.status == -1 
+                          && provide.viewRegistrationInformationModel.drawee.expired == true)
+                          ?Container()
+                          :provide.viewRegistrationInformationModel.drawee.status == 0 ||(provide.viewRegistrationInformationModel.drawee.status == -1 
+                          && provide.viewRegistrationInformationModel.drawee.expired == false) ? Container():
+                           Container(
                               width: ScreenAdapter.width(690),
                               height: ScreenAdapter.height(65),
                               child: Row(

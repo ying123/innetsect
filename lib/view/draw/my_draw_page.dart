@@ -185,7 +185,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                                           provide.dataModel[index].status == 1 || provide.dataModel[index].status == 2
                                               ? '有效期截止于:'
                                               :provide.dataModel[index].status == -1 && provide.dataModel[index].expired == true
-                                              ?'有效期截止于'
+                                              ?'登记时间'
                                               : "登记时间",
                                           style: TextStyle(
                                             fontSize: ScreenAdapter.size(30),
@@ -206,7 +206,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                                                   .dataModel[index].expiryTime
                                               :provide.dataModel[index].status == -1 && provide.dataModel[index].expired == true ?
                                                provide
-                                                  .dataModel[index].expiryTime:
+                                                  .dataModel[index].registerDate:
                                               provide.dataModel[index]
                                                   .registerDate,
                                           style: TextStyle(

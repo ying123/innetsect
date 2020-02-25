@@ -168,7 +168,7 @@ class _HotSpotsHomeContentPageState extends State<HotSpotsHomeContentPage> {
       ),
       body: WebView(//m3
         initialUrl:
-            'http://test.innersect.net/api/promotion/proartifacts/${provide.activitiedId}/detail',
+            'http://m3.innersect.net/api/promotion/proartifacts/${provide.activitiedId}/detail',
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           //_controller.complete(webViewController);
