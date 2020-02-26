@@ -91,8 +91,8 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         // test: applicationId "net.m3.innersect"
         // release: applicationId "net.innersect.pro"
-        applicationId "net.m3.innersect"
-//        applicationId "net.innersect.pro"
+       // applicationId "net.m3.innersect"
+        applicationId "net.innersect.pro"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()

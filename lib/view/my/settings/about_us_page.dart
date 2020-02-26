@@ -35,7 +35,7 @@ class AboutUsPage extends StatelessWidget {
                 ),
                 new Container(
                   margin: EdgeInsets.only(top: 20),
-                  child: new Text("INNERSECT v3.0.2",style: TextStyle(color: Colors.grey,
+                  child: new Text("INNERSECT v3.0.3",style: TextStyle(color: Colors.grey,
                       fontSize: ScreenAdapter.size(32)),),
                 ),
                 CustomsWidget().listSlider(title: "隐私协议",onTap: (){

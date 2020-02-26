@@ -221,7 +221,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
               List lists = CommonUtil.skuNameSplit(list[key].skuName);
               return new Container(
                 width: double.infinity,
-                height: ScreenAdapter.height(240),
+                height: ScreenAdapter.height(260),
                 margin: EdgeInsets.only(left: 10,right: 10),
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: AppConfig.assistLineColor))

@@ -11,10 +11,10 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.2+20200115
+version: 3.0.3+20200226
 
 environment:
-  sdk: ">=2.6.0 <3.0.2"
+  sdk: ">=2.6.0 <3.0.3"
 
 dependencies:
   # 添加国际化，中文支持
@@ -90,7 +90,7 @@ dependencies:
   flutter_baidu_map: ^0.0.5
   permission_handler: ^4.2.0+hotfix.3
   android_intent: ^0.3.5+1
-  intent: ^1.1.0
+  #intent: ^1.1.0
 
 dev_dependencies:
   flutter_test:

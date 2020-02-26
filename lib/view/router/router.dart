@@ -40,6 +40,7 @@ import 'package:innetsect/view/my_order/my_order_page.dart';
 import 'package:innetsect/view/registered/country_page.dart';
 import 'package:innetsect/view/registered/registered_page.dart';
 import 'package:innetsect/view/show_tickets/show_tickets.dart';
+import 'package:innetsect/view/user_instructions_page.dart';
 import 'package:innetsect/view/venues_map/venues_map_page.dart';
 
 final routes = {
@@ -83,6 +84,7 @@ final routes = {
   '/temporaryOrderPage':(context)=>TemporaryOrderPage(),///临时订单也
   '/addressManagementPage':(context)=>AddressManagementPage(),///临时订单也
   '/myCouponsPage':(context)=>MyCouponsPage(),///优惠卷
+  '/userInstructionsPage':(context)=>UserInstructionsPage(),///启动弹窗
  
  
   //'/hotSpotsHomePage'

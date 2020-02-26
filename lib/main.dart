@@ -17,11 +17,11 @@ import 'package:innetsect/view/mall/mall_page.dart';
 import 'package:innetsect/view/router/router.dart';
 import 'package:innetsect/res/strings.dart';
 import 'package:innetsect/view/user_instructions_page.dart';
-import 'package:intent/intent.dart';
+//import 'package:intent/intent.dart';
 
 import 'package:rammus/rammus.dart' as rammus;
-import 'package:intent/intent.dart' as android_intent;
-import 'package:intent/action.dart' as android_action;
+//import 'package:intent/intent.dart' as android_intent;
+//import 'package:intent/action.dart' as android_action;
 
 
 GlobalKey<NavigatorState> gNavKey = GlobalKey();
@@ -149,9 +149,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 //          package: "com.example.innetsect",
 //        );
 //        intent.launch();
-        android_intent.Intent()
-          ..setAction(android_action.Action.ACTION_MAIN)
-            ..startActivity();
+        // android_intent.Intent()
+        //   ..setAction(android_action.Action.ACTION_MAIN)
+        //     ..startActivity();
       }
 
       var json = jsonDecode(data.extras);
@@ -287,7 +287,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         accentColor: AppConfig.themedata.accentColor,
         backgroundColor: AppConfig.assistLineColor,
       ),
-      initialRoute: '/',
+      //initialRoute: '/',
       onGenerateRoute: onGenerateRoute,
       localeResolutionCallback:(deviceLocale, supportedLocales) {
         UserTools().setLocal(deviceLocale.toString());

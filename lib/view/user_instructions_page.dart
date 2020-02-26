@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -243,7 +245,9 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                         InkWell(
                           onTap: (){
                            AppConfig.userTools.setAppNumber('0');
-                           SystemNavigator.pop();
+                           print('====================>不同意');
+                         //  SystemNavigator.pop();
+                         exit(0);
                           },
                           child: Text(
                             '不同意',
@@ -252,6 +256,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                         ),
                         InkWell(
                           onTap: () {
+                            AppConfig.userTools.setAppNumber('1');
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
                               //ProtocolPage
