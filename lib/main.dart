@@ -293,7 +293,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         UserTools().setLocal(deviceLocale.toString());
 //        return locale;
       },
-      home:AppConfig.userTools.getAppNumber() !='1'? UserInstructionsPage():App()
+      home:AppConfig.userTools.getAppNumber() !='666'? UserInstructionsPage():App()
 
       //navigatorKey: gNavKey,
     );
