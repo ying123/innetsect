@@ -127,8 +127,10 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
                   onTap: () {
                     print(index);
                     Navigator.pushNamed(context, '/myDrawInfoPage', arguments: {
-                      'myDrawDataModel': provide.dataModel[index]
-                    });
+                      'drawID': provide.dataModel[index].drawID,
+                      'shopID': provide.dataModel[index].shopID,
+                    }
+                    );
                   },
                   child: Container(
                     width: ScreenAdapter.width(750),

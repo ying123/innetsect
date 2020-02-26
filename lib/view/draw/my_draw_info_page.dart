@@ -17,10 +17,12 @@ class MyDrawInfoPage extends PageProvideNode {
   final MyDrawInfoProvide _provide = MyDrawInfoProvide();
   final OrderDetailProvide _orderDetailProvide = OrderDetailProvide.instance;
   
-  final Map myDrawDataModel;
-  MyDrawInfoPage({this.myDrawDataModel}) {
+  final Map drawId;
+  MyDrawInfoPage({this.drawId}) {
     mProviders.provide(Provider<MyDrawInfoProvide>.value(_provide));
-    _provide.dataModel = myDrawDataModel['myDrawDataModel'];
+    //_provide.dataModel = myDrawDataModel['myDrawDataModel'];
+    _provide.drawID = drawId['drawID'];
+    _provide.shopID = drawId['shopID'];
   }
   @override
   Widget buildContent(BuildContext context) {
@@ -189,8 +191,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                       , arguments: {
                           'pics': provide.drawsModel.pics,
                           'shops':shopsModel,
-                          'longitude': provide.dataModel.longitude,
-                          'latitude': provide.dataModel.latitude,
+                          'longitude': provide.viewRegistrationInformationModel.drawee.longitude,
+                          'latitude': provide.viewRegistrationInformationModel.drawee.latitude,
                           'steps': provide.drawsModel.steps,
                           'drawAwardType': provide.drawsModel.drawAwardType,
                           'drawBySku':provide.drawsModel.drawBySku,
@@ -408,9 +410,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                         child: Container(),
                       ),
                       Text(
-                        '+' +
-                            provide.dataModel.telPrefix +
-                            provide.dataModel.mobile,
+                        '+' + provide.viewRegistrationInformationModel.drawee.telPrefix + provide.viewRegistrationInformationModel.drawee.mobile,     
                         style: TextStyle(
                             fontSize: ScreenAdapter.size(30),
                             color: Colors.black54),
@@ -435,7 +435,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                         child: Container(),
                       ),
                       Text(
-                        provide.dataModel.icNo,
+                        //provide.dataModel.icNo,
+                        provide.viewRegistrationInformationModel.drawee.icNo,
                         style: TextStyle(
                             fontSize: ScreenAdapter.size(30),
                             color: Colors.black54),
@@ -488,7 +489,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                         child: Container(),
                       ),
                       Text(
-                        provide.dataModel.registerDate,
+                        //provide.dataModel.registerDate,
+                        provide.viewRegistrationInformationModel.drawee.registerDate,
                         style: TextStyle(
                             fontSize: ScreenAdapter.size(30),
                             color: Colors.black54),
@@ -562,35 +564,35 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                       : Container(),
               Container(
                   alignment: Alignment.center,
-                  child: provide.dataModel.status == 1 &&
-                          provide.dataModel.expired == false
+                  child: provide.viewRegistrationInformationModel.drawee.status == 1 &&
+                          provide.viewRegistrationInformationModel.drawee.expired == false
                       ? Image.asset(
                           'assets/images/中签.png',
                           width: ScreenAdapter.width(170),
                           height: ScreenAdapter.height(170),
                         )
-                      : provide.dataModel.status == 1 &&
-                              provide.dataModel.expired == true
+                      : provide.viewRegistrationInformationModel.drawee.status == 1 &&
+                              provide.viewRegistrationInformationModel.drawee.expired == true
                           ? Image.asset(
                               'assets/images/已过期.png',
                               width: ScreenAdapter.width(170),
                               height: ScreenAdapter.height(170),
                             )
-                          : provide.dataModel.status == -1 &&
-                                  provide.dataModel.expired == false
+                          : provide.viewRegistrationInformationModel.drawee.status == -1 &&
+                                  provide.viewRegistrationInformationModel.drawee.expired == false
                               ? Image.asset(
                                   'assets/images/未中签.png',
                                   width: ScreenAdapter.width(170),
                                   height: ScreenAdapter.height(170),
                                 )
-                              : provide.dataModel.status == -1 &&
-                                      provide.dataModel.expired == true
+                              : provide.viewRegistrationInformationModel.drawee.status == -1 &&
+                                      provide.viewRegistrationInformationModel.drawee.expired == true
                                   ? Image.asset(
                                       'assets/images/未中签.png',
                                       width: ScreenAdapter.width(170),
                                       height: ScreenAdapter.height(170),
                                     )
-                                  : provide.dataModel.status == 2
+                                  : provide.viewRegistrationInformationModel.drawee.status == 2
                                       ? Image.asset(
                                           'assets/images/已使用.png',
                                           width: ScreenAdapter.width(170),
@@ -641,24 +643,24 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                 // _loadState = LoadState.State_Loading;
 
                 // Navigator.pop(context);
-                if (provide.dataModel.drawAwardType != 0 &&
-                    provide.dataModel.status == 0) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType != 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == 0) {
                   //线下已登记
                   // Navigator.pop(context);
                 }
-                if (provide.dataModel.drawAwardType == 0 &&
-                    provide.dataModel.status == 0) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == 0) {
                   //线上已登记
 
                 }
-                if (provide.dataModel.drawAwardType != 0 &&
-                    provide.dataModel.status == 0) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType != 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == 0) {
                   //线下中签
                   Navigator.pop(context);
                 }
-                if (provide.dataModel.drawAwardType == 0 &&
-                    provide.dataModel.status == 1 &&
-                    provide.dataModel.expired == false) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == 1 &&
+                    provide.viewRegistrationInformationModel.drawee.expired == false) {
                   //线上已中签
 
                   Fluttertoast.showToast(
@@ -693,39 +695,39 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                     }
                   });
                 }
-                if (provide.dataModel.drawAwardType == 0 &&
-                    provide.dataModel.status == 1 &&
-                    provide.dataModel.expired == true) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == 1 &&
+                    provide.viewRegistrationInformationModel.drawee.expired == true) {
                   ///线上已过期
                   Navigator.pop(context);
                 }
-                if (provide.dataModel.drawAwardType == 0 &&
-                    provide.dataModel.status == -1) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == -1) {
                   ///线上未中签
                   Navigator.pop(context);
                 }
-                if (provide.dataModel.drawAwardType != 0 &&
-                    provide.dataModel.status == -1) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType != 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == -1) {
                   //线下未中签
                   Navigator.pop(context);
                 }
-                if (provide.dataModel.drawAwardType != 0 &&
-                    provide.dataModel.status == 2) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType != 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == 2) {
                   //线下已使用
                   Navigator.pop(context);
                 }
-                if (provide.dataModel.drawAwardType == 0 &&
-                    provide.dataModel.status == 2) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == 2) {
                   //线上已使用
                   Navigator.pop(context);
                 }
-                if (provide.dataModel.drawAwardType == 0 &&
-                    provide.dataModel.status == -2) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == -2) {
                   //线上黑名单
                   Navigator.pop(context);
                 }
-                if (provide.dataModel.drawAwardType != 0 &&
-                    provide.dataModel.status == -2) {
+                if (provide.viewRegistrationInformationModel.drawee.drawAwardType != 0 &&
+                    provide.viewRegistrationInformationModel.drawee.status == -2) {
                   //线下黑名单
                   Navigator.pop(context);
                 }
@@ -733,16 +735,16 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
               child: Container(
                 width: ScreenAdapter.width(690),
                 height: ScreenAdapter.height(90),
-                color: provide.dataModel.drawAwardType != 0 &&
-                        provide.dataModel.status == 0
+                color: provide.viewRegistrationInformationModel.drawee.drawAwardType != 0 &&
+                        provide.viewRegistrationInformationModel.drawee.status == 0
                     ? Color.fromRGBO(242, 242, 242, 1.0)
-                    : provide.dataModel.drawAwardType == 0 &&
-                            provide.dataModel.status == 0
+                    : provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                            provide.viewRegistrationInformationModel.drawee.status == 0
                         ? Color.fromRGBO(242, 242, 242, 1.0)
                         : Colors.black,
                 child: Center(
-                  child: provide.dataModel.drawAwardType != 0 &&
-                          provide.dataModel.status == 0
+                  child: provide.viewRegistrationInformationModel.drawee.drawAwardType != 0 &&
+                          provide.viewRegistrationInformationModel.drawee.status == 0
                       ? Text(
                           //线下已登记
                           '等待结果',
@@ -751,8 +753,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                               fontSize: ScreenAdapter.size(30),
                               fontWeight: FontWeight.w800),
                         )
-                      : provide.dataModel.drawAwardType == 0 &&
-                              provide.dataModel.status == 0 //线上已登记
+                      : provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                              provide.viewRegistrationInformationModel.drawee.status == 0 //线上已登记
                           ? Text(
                               '等待结果',
                               style: TextStyle(
@@ -760,9 +762,9 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                                   fontSize: ScreenAdapter.size(30),
                                   fontWeight: FontWeight.w800),
                             )
-                          : provide.dataModel.drawAwardType == 0 &&
-                                  provide.dataModel.status == 1 &&
-                                  provide.dataModel.expired == false //线上已中签
+                          : provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                                  provide.viewRegistrationInformationModel.drawee.status == 1 &&
+                                  provide.viewRegistrationInformationModel.drawee.expired == false //线上已中签
                               ? Text(
                                   '立即购买',
                                   style: TextStyle(
@@ -770,9 +772,9 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                                       fontSize: ScreenAdapter.size(30),
                                       fontWeight: FontWeight.w800),
                                 )
-                              : provide.dataModel.drawAwardType == 0 &&
-                                      provide.dataModel.status == 1 &&
-                                      provide.dataModel.expired == true //线上已过期
+                              : provide.viewRegistrationInformationModel.drawee.drawAwardType == 0 &&
+                                      provide.viewRegistrationInformationModel.drawee.status == 1 &&
+                                      provide.viewRegistrationInformationModel.drawee.expired == true //线上已过期
                                   ? Text(
                                       '返回',
                                       style: TextStyle(

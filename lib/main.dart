@@ -168,6 +168,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             contentID: int.parse(json['redirectParam']));
       }else if(json['redirectType']==ConstConfig.PROMOTION){
         _openApp(redirectType: ConstConfig.PROMOTION,code:json['redirectParam']);
+
+      }else if(json['redirectType'] == ConstConfig.DRAW){
+         List list = json['redirectParam'].split(":");
+       // _openApp(redirectType: ConstConfig.DRAW)
+       
+       Navigator.pushNamed(context,"/myDrawInfoPage", arguments: {
+         'drawID':int.parse(list[0]),
+         'shopID':int.parse(list[1]),
+       });
       }
 //      else if(_bannersList[index].redirectType==ConstConfig.PROMOTION){
 //        /// 跳转集合搜索列表

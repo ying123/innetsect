@@ -166,7 +166,8 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                     height: ScreenAdapter.height(60),
                                     alignment: Alignment.centerLeft,
                                     margin: EdgeInsets.only(left: 10,right: 10),
-                                    child: CustomsWidget().subTitle(
+                                    child: 
+                                    CustomsWidget().subTitle(
                                       title: list[index].getTypes(list[index].types),
                                       color: AppConfig.blueBtnColor
                                     ),
@@ -221,9 +222,11 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
               List lists = CommonUtil.skuNameSplit(list[key].skuName);
               return new Container(
                 width: double.infinity,
-                height: ScreenAdapter.height(260),
+                
+                height: ScreenAdapter.height(270),
                 margin: EdgeInsets.only(left: 10,right: 10),
                 decoration: BoxDecoration(
+                   // color: Colors.yellow,
                     border: Border(bottom: BorderSide(color: AppConfig.assistLineColor))
                 ),
                 child: new InkWell(
@@ -272,7 +275,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                         children: <Widget>[
                                           // 商品描述
                                           new Expanded(
-                                              flex:2,
+                                              flex:3,
                                               child: lists!=null?
                                               new Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -285,6 +288,7 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                                     ),
                                                   ),
                                                   Expanded(
+                                                   // flex: 1,
                                                     child: Text(lists[1],style: TextStyle(color: Colors.grey,
                                                         fontSize: ScreenAdapter.size(24)),)
                                                   )
@@ -298,12 +302,12 @@ class _CommodityCartContentState extends State<CommodityCartContent> {
                                               )),
                                           // 商品价格
                                           new Expanded(
-                                              flex:1,
+                                              flex:0,
                                               child: CustomsWidget().priceTitle(price: list[key].salesPrice.toString())
                                           ),
                                           // 计数器
                                           new Expanded(
-                                              flex: 1,
+                                              flex: 0,
                                               child: new Container(
                                                 alignment: Alignment.topCenter,
                                                 child: CounterWidget(provide: provide,model: list[key],idx: key,detailProvide: _detailProvide, ),

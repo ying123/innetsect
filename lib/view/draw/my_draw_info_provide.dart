@@ -9,12 +9,30 @@ import 'package:rxdart/rxdart.dart';
 
 class MyDrawInfoProvide extends BaseProvide{
 
+
+int _drawID;
+int get drawID=>_drawID;
+set drawID(int drawID){
+  _drawID = drawID;
+}
+
+int _shopID;
+int get shopID=>_shopID;
+set shopID(int shopID){
+  _shopID = shopID;
+}
+
+
 ///抽签数据
   DrawsModel _drawsModel = DrawsModel();
   DrawsModel get drawsModel=>_drawsModel;
   set drawsModel(DrawsModel drawsModel){
     _drawsModel = drawsModel;
   }
+
+
+
+
 
 
   //MyDrawDataModel
@@ -35,9 +53,9 @@ class MyDrawInfoProvide extends BaseProvide{
 
   DrawshopRepo _drawshopRepo = DrawshopRepo();
   
-  Observable viewRegistrationInformation(){
+  Observable viewRegistrationInformation( ){
     return _drawshopRepo.viewRegistrationInformation(
-      id:dataModel.drawID,shopId:dataModel.shopID
+      id:drawID,shopId:shopID
       ).doOnData((item){
 
       }).doOnError((e,stack){

@@ -414,7 +414,7 @@ class _RegistrationInformationContentPageState
                               //  color:Colors.black,
                               alignment: Alignment.bottomLeft,
                               child: Wrap(
-                                  spacing: 5,
+                                  spacing: 0,
                                   runSpacing: 10,
                                   children: provide.skus.map((value) {
                                     print('value=====================> $value');
@@ -440,7 +440,7 @@ class _RegistrationInformationContentPageState
                                         });
                                       },
                                       child: Container(
-                                        width: ScreenAdapter.width(180),
+                                        width: ScreenAdapter.width(225),
                                         height: ScreenAdapter.height(80),
                                         decoration: BoxDecoration(
                                             border:
@@ -455,7 +455,7 @@ class _RegistrationInformationContentPageState
                                           children: <Widget>[
                                             Container(
                                               height: ScreenAdapter.height(80),
-                                              width:ScreenAdapter.width(128 / 5),
+                                              width:ScreenAdapter.width(30),
                                               child: Image.network(
                                                 value.skuPic,
                                                 fit: BoxFit.contain,
@@ -468,7 +468,7 @@ class _RegistrationInformationContentPageState
                                                 value.skuSpecs,
                                                 style: TextStyle(
                                                     fontSize:
-                                                        ScreenAdapter.size(22)),
+                                                        ScreenAdapter.size(21)),
                                               ),
                                             )
                                           ],
