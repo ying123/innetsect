@@ -257,6 +257,7 @@ class _UserInstructionsPageState extends State<UserInstructionsPage> {
                         InkWell(
                           onTap: () {
                             AppConfig.userTools.setAppNumber('1');
+                            print('========================>同意');
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
                               //ProtocolPage

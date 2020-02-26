@@ -287,13 +287,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         accentColor: AppConfig.themedata.accentColor,
         backgroundColor: AppConfig.assistLineColor,
       ),
-      //initialRoute: '/',
+      initialRoute: '/', //  AppConfig.userTools.getAppNumber() !='1'?'/userInstructionsPage':'/',
       onGenerateRoute: onGenerateRoute,
       localeResolutionCallback:(deviceLocale, supportedLocales) {
         UserTools().setLocal(deviceLocale.toString());
 //        return locale;
       },
-      home:AppConfig.userTools.getAppNumber() !='1'? UserInstructionsPage():App(),
+      home:AppConfig.userTools.getAppNumber() !='1'? UserInstructionsPage():App()
 
       //navigatorKey: gNavKey,
     );
