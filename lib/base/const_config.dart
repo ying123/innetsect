@@ -44,4 +44,7 @@ class ConstConfig {
   // 跳转参数常量，判断从哪个页面进入
   // 展会
   static const String EXHIBIT_PRODUCT = "EXHIBIT_PRODUCT";
+
+  // 版本号
+  static const String APP_VERSION = "3.0.4";
 }

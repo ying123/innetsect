@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/utils/screen_adapter.dart';
 import 'package:innetsect/view/my/settings/protocol_page.dart';
 import 'package:innetsect/view/widget/customs_widget.dart';
@@ -35,7 +36,7 @@ class AboutUsPage extends StatelessWidget {
                 ),
                 new Container(
                   margin: EdgeInsets.only(top: 20),
-                  child: new Text("INNERSECT v3.0.3",style: TextStyle(color: Colors.grey,
+                  child: new Text("INNERSECT v${ConstConfig.APP_VERSION}",style: TextStyle(color: Colors.grey,
                       fontSize: ScreenAdapter.size(32)),),
                 ),
                 CustomsWidget().listSlider(title: "隐私协议",onTap: (){
