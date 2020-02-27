@@ -169,7 +169,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       }else if(json['redirectType']==ConstConfig.PROMOTION){
         _openApp(redirectType: ConstConfig.PROMOTION,code:json['redirectParam']);
 
-      }else if(json['redirectType'] == ConstConfig.DRAW){
+      }else if(json['redirectType'] == "DRAW_WINNER"){
          List list = json['redirectParam'].split(":");
        // _openApp(redirectType: ConstConfig.DRAW)
        

@@ -90,15 +90,15 @@ class EndOfTheDrawProvide extends BaseProvide {
 
 
 
-  double _longitude = 1231.1;
-  double get longitude=>_longitude;
-  set longitude(double longitude){
+  dynamic _longitude = 1231.1;
+  dynamic get longitude=>_longitude;
+  set longitude(dynamic longitude){
     _longitude = longitude;
   }
 
-  double _latitude= 131.11;
-  double get latitude=>_latitude;
-   set latitude(double latitude){
+  dynamic _latitude= 131.11;
+  dynamic get latitude=>_latitude;
+   set latitude(dynamic latitude){
      _latitude = latitude;
   }
 

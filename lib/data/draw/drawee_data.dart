@@ -10,8 +10,8 @@ class DraweeModel {
   String registerDate;
   String ipAddr;
   String platform;
-  num longitude;
-  num latitude;
+  dynamic longitude;
+  dynamic latitude;
   num status;
   String expiryTime;
   String remark;

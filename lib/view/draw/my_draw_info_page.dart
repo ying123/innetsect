@@ -85,6 +85,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
       if (items.data != null) {
         provide.viewRegistrationInformationModel =
             ViewRegistrationInformationModel.fromJson(items.data);
+            print('latitude====================================>${provide.viewRegistrationInformationModel.drawee.latitude}');
+            print('longitude====================================>${provide.viewRegistrationInformationModel.drawee.longitude}');
             _loadDrawsData();
         // print(
         //     'DraweeModel=======>${provide.viewRegistrationInformationModel.drawee.shopID}');
@@ -182,7 +184,7 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                   InkWell(
                     onTap: (){
                       ShopsModel shopsModel = ShopsModel();
-                      shopsModel.drawID = provide.viewRegistrationInformationModel.shopProduct.drawID;
+                      shopsModel.drawID = provide.viewRegistrationInformationModel.shopProduct.drawID ;
                       shopsModel.shopID = provide.viewRegistrationInformationModel.shopProduct.shopID;
                       shopsModel.shopName = provide.viewRegistrationInformationModel.shopProduct.shopName;
                       
@@ -191,8 +193,8 @@ class _MyDrawInfoContentPageState extends State<MyDrawInfoContentPage> {
                       , arguments: {
                           'pics': provide.drawsModel.pics,
                           'shops':shopsModel,
-                          'longitude': provide.viewRegistrationInformationModel.drawee.longitude,
-                          'latitude': provide.viewRegistrationInformationModel.drawee.latitude,
+                          'longitude':provide.viewRegistrationInformationModel.drawee.longitude == 0 ? 0.0 :provide.viewRegistrationInformationModel.drawee.longitude,
+                          'latitude':provide.viewRegistrationInformationModel.drawee.latitude == 0? 0.0 :provide.viewRegistrationInformationModel.drawee.longitude,
                           'steps': provide.drawsModel.steps,
                           'drawAwardType': provide.drawsModel.drawAwardType,
                           'drawBySku':provide.drawsModel.drawBySku,

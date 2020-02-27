@@ -91,6 +91,8 @@ dependencies:
   permission_handler: ^4.2.0+hotfix.3
   android_intent: ^0.3.5+1
   #intent: ^1.1.0
+  #drawablestarttext: ^0.1.1
+  extended_text: ^0.7.1
 
 dev_dependencies:
   flutter_test:
@@ -351,6 +353,18 @@ flutter:
     - assets/images/def_head.png
     - assets/images/def_head_big.png
     - assets/images/search.png
+    # 优惠卷
+    - assets/images/立减券.png
+    - assets/images/满减券.png
+    - assets/images/运费券.png
+    - assets/images/折扣券.png
+
+    - assets/images/zk.jpg
+    - assets/images/lj.jpg
+    - assets/images/yf.jpg
+    - assets/images/mj.jpg
+    
+
 
     - assets/images/friend/1.png
     - assets/images/friend/2.png

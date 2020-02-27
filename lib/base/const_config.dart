@@ -33,6 +33,8 @@ class ConstConfig {
   // 跳转抽签
   static const String DRAW = 'DRAW';
 
+  
+
   // 图片尺寸
   static const String BANNER_SIZE = "?x-oss-process=image/resize,m_mfit,h_1125,w_582";
   static const String BANNER_MINI_SIZE = "?x-oss-process=image/resize,m_mfit,h_235,w_122";
