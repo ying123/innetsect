@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:innetsect/api/loading.dart';
 import 'package:innetsect/base/app_config.dart';
+import 'package:innetsect/base/const_config.dart';
 import 'package:innetsect/tools/user_tool.dart';
 
 class HttpUtil {
@@ -62,7 +63,8 @@ class HeaderInterceptor extends Interceptor {
       options.headers.putIfAbsent("osVersion", () => map['osVersion']);
       options.headers.putIfAbsent("osModel", () => map['osModel']);
       options.headers.putIfAbsent("locale", () => map['locale']);
-      options.headers.putIfAbsent("appVersion", () => map['appVersion']);
+      options.headers.putIfAbsent("appVersion", () => ConstConfig.APP_VERSION);
+
     }
 //    if(options.extra["context"]!=null
 //        &&options.path!="/api/eshop/app/splash"
