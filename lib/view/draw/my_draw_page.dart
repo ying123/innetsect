@@ -51,6 +51,11 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
         .doOnDone(() {})
         .listen((items) {
       print('===============>${items.data}');
+      if (provide.dataModel.length == 0) {
+        setState(() {
+           _loadState = LoadState.State_Success;
+        });
+      }
       if (items.data != null) {
         provide.addDataModel(MyDrawDataModelList.fromJson(items.data).list);
         print(
@@ -59,6 +64,7 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
           _loadState = LoadState.State_Success;
         });
       }
+     
     });
   }
 
@@ -83,7 +89,23 @@ class _MyDrawContentPageState extends State<MyDrawContentPage> {
         body: new LoadStateLayout(
           state: _loadState,
           loadingContent: '加载中...',
-          successWidget: ListWidgetPage(
+          successWidget:provide.dataModel.length == 0? Container(
+            child: Column(
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: ScreenAdapter.height(220),
+                ),
+                Image.asset(
+                  'assets/images/mall/no_data.png',width: ScreenAdapter.width(280),height: ScreenAdapter.width(280),
+                ),
+                SizedBox(
+                  height: ScreenAdapter.height(30),
+                ),
+                Text('暂无相关数据'),
+              ],
+            )
+          ) :ListWidgetPage(
             controller: _controller,
             onRefresh: () async {
               print('onRefresh');
