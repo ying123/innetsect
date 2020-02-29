@@ -4,7 +4,9 @@ import 'package:innetsect/data/commodity_badges_model.dart';
 import 'package:innetsect/data/commodity_brand_model.dart';
 import 'package:innetsect/data/commodity_feature_model.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
+import 'package:innetsect/data/coupons/promotions.dart';
 
+///商品详情模型
 /// 商品类
 class CommodityModels{
   // 产品id
@@ -99,6 +101,7 @@ class CommodityModels{
   String panicCountdownTime;
   // 开始时间,开始>服务器时间才开始倒计时
   String panicBuyingStart;
+  List<CouponsPromotionsModel> promotions;
 
   CommodityModels({
     this.prodID,
@@ -151,7 +154,8 @@ class CommodityModels{
     this.orderType,
     this.badges,
     this.brandModel,
-    this.catCode
+    this.catCode,
+    this.promotions
   });
 
   factory CommodityModels.fromJson(Map<String, dynamic> json){
@@ -206,7 +210,8 @@ class CommodityModels{
         panicCountdownTime: json['panicCountdownTime'],
         panicBuyingStart: json['panicBuyingStart'],
         orderType: json['orderType'],
-        badges: json['badges']!=null?CommodityBadgesModelList.fromJson(json['badges']).list:json['badges']
+        badges: json['badges']!=null?CommodityBadgesModelList.fromJson(json['badges']).list:json['badges'],
+        promotions:json['promotions']!=null?CouponsPromotionsModelList.fromJson(json['promotions']).list:json['promotions']
     );
   }
 

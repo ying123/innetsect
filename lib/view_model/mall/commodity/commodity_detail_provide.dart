@@ -4,7 +4,10 @@ import 'package:innetsect/base/base.dart';
 import 'package:innetsect/data/commodity_feature_model.dart';
 import 'package:innetsect/data/commodity_models.dart';
 import 'package:innetsect/data/commodity_skus_model.dart';
+import 'package:innetsect/data/coupons/access_coupon.dart';
+import 'package:innetsect/data/coupons/list_of_coupons.dart';
 import 'package:innetsect/model/commodity_repository.dart';
+import 'package:innetsect/model/coupons/coupons.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CommodityDetailProvide extends BaseProvide {
@@ -544,5 +547,43 @@ class CommodityDetailProvide extends BaseProvide {
   CommodityDetailProvide._internal() {
     print('CommodityDetailProvide init');
     // 初始化
+  }
+
+///商品优惠卷列表
+  List<ListOfCouponsModel> _listOfCouponsModel = List<ListOfCouponsModel> ();
+  List<ListOfCouponsModel> get listOfCouponsModel=> _listOfCouponsModel;
+  void addListOfCouponsModel(List<ListOfCouponsModel> model){
+    _listOfCouponsModel.addAll(model);
+  }
+
+///商品优惠卷
+  CouponsRepo _couponsRepo = CouponsRepo();
+  Observable listOfCoupons({int prodid}){
+    return _couponsRepo.listOfCoupons(prodid: prodid).doOnData((items){
+
+    }).doOnError((e,errorTeack){
+
+    }).doOnDone((){
+
+    });
+  }
+
+//领取优惠卷
+  AccessCouponModel _accessCouponModel = AccessCouponModel();
+  AccessCouponModel get accessCouponModel=> _accessCouponModel;
+  set accessCouponModel(AccessCouponModel accessCouponModel){
+    _accessCouponModel = accessCouponModel;
+  }
+
+///根据ID领取优惠卷
+  Observable couponByID({int csID, acctID,acctType,nickName,mobile,acctCode,portrait,acctPwd,status,qq,email}){
+   
+    return _couponsRepo.couponByID(csID:csID ).doOnData((items){
+
+    }).doOnError((e,t){
+
+    }).doOnDone((){
+
+    });
   }
 }

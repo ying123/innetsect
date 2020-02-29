@@ -502,6 +502,7 @@ class _MallHomeContentState extends State<MallHomeContent> {
           return InkWell(
             onTap: () {
               /// 跳转商品详情
+              print('==============>跳转商品详情  prodID======>${item.prodID}');
               _commodityDetail(types: 37, prodID: item.prodID);
             },
             child: Stack(

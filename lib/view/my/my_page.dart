@@ -234,18 +234,18 @@ class _MyContentPageState extends State<MyContentPage> {
                      SizedBox(
                       width: ScreenAdapter.width(50),
                     ),
-                    //优惠卷
-                    // InkWell(
-                    //   onTap: () {
-                    //     print('优惠卷');
-                    //    Navigator.pushNamed(context, '/myCouponsPage');
-                    //   },
-                    //   child: _setupBtn(
-                    //       'assets/images/my_ordered@3x.png',
-                    //       '优惠卷',
-                    //       44.0,
-                    //       40.0),
-                    // ),
+                   // 优惠卷
+                    InkWell(
+                      onTap: () {
+                        print('优惠卷');
+                       Navigator.pushNamed(context, '/myCouponsPage');
+                      },
+                      child: _setupBtn(
+                          'assets/images/my_ordered@3x.png',
+                          '优惠卷',
+                          44.0,
+                          40.0),
+                    ),
                   ],
                 )),
             Container(

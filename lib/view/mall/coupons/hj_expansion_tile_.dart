@@ -48,6 +48,7 @@ class HJExpansionTile extends StatefulWidget {
     this.children = const <Widget>[],
     this.trailing,
     this.initiallyExpanded = false,
+
   })  : assert(initiallyExpanded != null),
         super(key: key);
 
@@ -60,6 +61,8 @@ class HJExpansionTile extends StatefulWidget {
   ///
   /// Typically a [Text] widget.
   final Widget title;
+
+  
 
   /// Called when the tile expands or collapses.
   ///
@@ -114,7 +117,7 @@ class _HJExpansionTileState extends State<HJExpansionTile>
   Animation<Color> _iconColor;
   Animation<Color> _backgroundColor;
 
-  bool _isExpanded = false;
+  bool isExpanded = false;
 
   @override
   void initState() {
@@ -128,9 +131,9 @@ class _HJExpansionTileState extends State<HJExpansionTile>
     _backgroundColor =
         _controller.drive(_backgroundColorTween.chain(_easeOutTween));
 
-    _isExpanded =
+    isExpanded =
         PageStorage.of(context)?.readState(context) ?? widget.initiallyExpanded;
-    if (_isExpanded) _controller.value = 1.0;
+    if (isExpanded) _controller.value = 1.0;
   }
 
   @override
@@ -141,8 +144,8 @@ class _HJExpansionTileState extends State<HJExpansionTile>
 
   void _handleTap() {
     setState(() {
-      _isExpanded = !_isExpanded;
-      if (_isExpanded) {
+      isExpanded = !isExpanded;
+      if (isExpanded) {
         _controller.forward();
       } else {
         _controller.reverse().then<void>((void value) {
@@ -152,10 +155,10 @@ class _HJExpansionTileState extends State<HJExpansionTile>
           });
         });
       }
-      PageStorage.of(context)?.writeState(context, _isExpanded);
+      PageStorage.of(context)?.writeState(context, isExpanded);
     });
     if (widget.onExpansionChanged != null)
-      widget.onExpansionChanged(_isExpanded);
+      widget.onExpansionChanged(isExpanded);
   }
 
   Widget _buildChildren(BuildContext context, Widget child) {
@@ -252,7 +255,7 @@ class _HJExpansionTileState extends State<HJExpansionTile>
   }
   @override
   Widget build(BuildContext context) {
-    final bool closed = !_isExpanded && _controller.isDismissed;
+    final bool closed = !isExpanded && _controller.isDismissed;
     return AnimatedBuilder(
       animation: _controller.view,
       builder: _buildChildren,

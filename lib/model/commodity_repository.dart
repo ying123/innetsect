@@ -21,7 +21,7 @@ class CommodityService {
   /// 详情请求
   Observable<BaseResponse> detailData(int types,int prodId,{BuildContext context}){
     print('=================>详情请求');
-    var url = '/api/eshop/$types/products/$prodId';
+    var url = '/api/eshop/$types/products/$prodId';///api/eshop/37/products/18161'
     var response = get(url,context: context);
     return response;
   }
